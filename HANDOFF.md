@@ -114,7 +114,68 @@ for i in range(N):
 
 ## What is IN PROGRESS
 
-### Phase 1: RTL Design Library (JUST STARTED)
+### Phase 3: Build RL Dataset (NEXT)
+
+See phases section below.
+
+---
+
+## What is DONE (continued)
+
+### Phase 1: RTL Design Library (COMPLETE ✅)
+
+7 golden reference designs written, compile-checked (iverilog -g2012), and committed to repo under `rtl_library/`:
+- edge_detector, alu_mux, comb_always, bcd_counter, bit_manip, dff_array, shift_reg
+- Each has: `design.v`, `stimulus.txt`, `golden.py` (counter-driven, 32768 samples)
+
+### Phase 2: Hardware Waveform Capture (COMPLETE ✅)
+
+**Vivado block design (la_pynq project) — updated:**
+- Replaced c_counter_binary with `dut_top` (instantiates all 7 DUTs, free-running 32-bit counter as stimulus)
+- Added `axi_gpio_0` (3-bit output) at `0x41200000` — Python writes sel[0-6] to select active DUT
+- `la_axi_0` at `0x40000000` unchanged
+- New RTL sources: `rtl/la_axi.v`, `rtl/dut_top.v`, `rtl_library/*/design.v`
+- New bitstream deployed to PYNQ: `la_bd_wrapper.bit` + `la_bd_wrapper.hwh`
+
+**Hardware waveforms captured — all 7 DUTs, 32768 samples each:**
+- Location on server: `/zeng_gk/Amine/mas/rtl_library/<design>/waveform.npy`
+- Verified correct: BCD 79→80 wrap confirmed, shift_reg 0x55/0xAA pattern, bit_manip reversal+popcount ✅
+
+**PYNQ capture driver:**
+```python
+from pynq import Overlay
+import numpy as np, time
+ol = Overlay('/home/xilinx/jupyter_notebooks/la_bd_wrapper.bit')
+la   = ol.la_axi_0
+gpio = ol.axi_gpio_0
+
+def capture(sel_id):
+    gpio.write(0x00, sel_id)
+    time.sleep(0.001)
+    la.write(0x00, 0x1)
+    for _ in range(500000):
+        if la.read(0x04) & 1: break
+    data = []
+    for i in range(32768):
+        la.write(0x08, i)
+        data.append(la.read(0x0C) & 0xFFFF)
+    return np.array(data, dtype=np.uint16)
+# sel: 0=edge_detector 1=alu_mux 2=comb_always 3=bcd_counter
+#      4=bit_manip 5=dff_array 6=shift_reg
+```
+
+**Probe packing per sel (matches golden.py):**
+- 0: {14'b0, cnt[8], rise}
+- 1: {12'b0, result[3:0]}
+- 2: {12'b0, valid, out[2:0]}
+- 3: {8'b0, tens[3:0], ones[3:0]}
+- 4: {4'b0, reversed[7:0], popcount[3:0]}
+- 5: {8'b0, q[7:0]}
+- 6: {8'b0, q[7:0]}
+
+---
+
+### Phase 1: RTL Design Library (COMPLETE ✅) — original entry below
 
 Building a set of hand-written, known-correct golden reference designs. These are the **measuring instrument** — the model never sees them. The MAS generates candidates, the LA captures waveforms, and these golden references define what "correct hardware behavior" looks like.
 
