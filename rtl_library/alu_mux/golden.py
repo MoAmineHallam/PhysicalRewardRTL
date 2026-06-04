@@ -1,14 +1,17 @@
-"""Golden reference model for alu_mux."""
+"""
+Golden reference for alu_mux — counter-driven mode.
+Inputs: a=cnt[3:0], b=cnt[7:4], op=cnt[10:8]
+Probe: {12'b0, result[3:0]}
+"""
 import numpy as np
-from pathlib import Path
 
-def compute_golden(stimulus_path="stimulus.txt"):
-    rows = [l.split() for l in Path(stimulus_path).read_text().splitlines()
-            if l.strip() and not l.startswith("#")]
+def compute_golden(n_cycles: int = 32768) -> np.ndarray:
     result = 0
     out = []
-    for a_s, b_s, op_s in rows:
-        a, b, op = int(a_s) & 0xF, int(b_s) & 0xF, int(op_s) & 0x7
+    for c in range(n_cycles):
+        a  = c & 0xF
+        b  = (c >> 4) & 0xF
+        op = (c >> 8) & 0x7
         ops = [a+b, a-b, a&b, a|b, a^b, ~a, a, b]
         result = ops[op] & 0xF
         out.append(result)
@@ -16,10 +19,10 @@ def compute_golden(stimulus_path="stimulus.txt"):
 
 if __name__ == "__main__":
     golden = compute_golden()
-    rows = [l.split() for l in Path("stimulus.txt").read_text().splitlines()
-            if l.strip() and not l.startswith("#")]
     print("cycle |  a  b op | result")
-    for i, ((a,b,op), r) in enumerate(zip(rows, golden)):
-        print(f"  {i:3d} | {a:2s} {b:2s}  {op} |  {r}")
+    for i in range(min(20, len(golden))):
+        c = i
+        a, b, op = c&0xF, (c>>4)&0xF, (c>>8)&0x7
+        print(f"  {i:3d} | {a:2d} {b:2d}  {op} |  {golden[i]}")
     np.save("golden_waveform.npy", golden)
     print(f"\nSaved golden_waveform.npy  ({len(golden)} samples)")

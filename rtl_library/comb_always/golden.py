@@ -1,28 +1,27 @@
-"""Golden reference model for comb_always (priority encoder)."""
+"""
+Golden reference for comb_always (priority encoder) — counter-driven mode.
+Input: in = cnt[7:0]
+Probe: {12'b0, valid, out[2:0]}
+"""
 import numpy as np
-from pathlib import Path
 
-def compute_golden(stimulus_path="stimulus.txt"):
-    values = [int(l.strip()) for l in Path(stimulus_path).read_text().splitlines()
-              if l.strip() and not l.startswith("#")]
+def compute_golden(n_cycles: int = 32768) -> np.ndarray:
     out = []
-    for v in values:
-        v &= 0xFF
+    for c in range(n_cycles):
+        v = c & 0xFF
         enc, vld = 0, 0
         for bit in range(7, -1, -1):
             if (v >> bit) & 1:
                 enc, vld = bit, 1
                 break
-        out.append((enc << 1) | vld)  # pack enc[2:0] + valid into one word
+        out.append((vld << 3) | enc)
     return np.array(out, dtype=np.uint16)
 
 if __name__ == "__main__":
     golden = compute_golden()
-    values = [int(l.strip()) for l in Path("stimulus.txt").read_text().splitlines()
-              if l.strip() and not l.startswith("#")]
     print("cycle |  in  | enc valid")
-    for i, (v, g) in enumerate(zip(values, golden)):
-        enc, vld = g >> 1, g & 1
-        print(f"  {i:3d} | {v:3d}  |  {enc}   {vld}")
+    for i in range(min(20, len(golden))):
+        g = golden[i]
+        print(f"  {i:3d} | {i&0xFF:3d}  |  {g&7}   {(g>>3)&1}")
     np.save("golden_waveform.npy", golden)
     print(f"\nSaved golden_waveform.npy  ({len(golden)} samples)")
