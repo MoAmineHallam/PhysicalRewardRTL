@@ -2,10 +2,10 @@
 // Logic Analyzer with software-start and rising-edge trigger modes.
 // Register map (byte addresses, word-aligned):
 //   0x00 CTRL   : bit0=arm/start, bit1=trigger_mode (0=sw-start, 1=edge-trigger)
+//                 bits[4:2]=sel (selects active DUT 0-6, set alongside arm or alone)
 //   0x04 STATUS : bit0=done, bit1=armed (waiting for trigger)
 //   0x08 RADDR  : buffer read index
 //   0x0C RDATA  : buffer[RADDR]
-//   0x10 SEL    : bits[2:0] selects active DUT feeding probe (0-6)
 module la_axi #(
     parameter DW    = 16,
     parameter DEPTH = 32768,
@@ -13,7 +13,7 @@ module la_axi #(
 )(
     input  wire        S_AXI_ACLK,
     input  wire        S_AXI_ARESETN,
-    input  wire [4:0]  S_AXI_AWADDR,
+    input  wire [3:0]  S_AXI_AWADDR,
     input  wire        S_AXI_AWVALID,
     output reg         S_AXI_AWREADY,
     input  wire [31:0] S_AXI_WDATA,
@@ -23,7 +23,7 @@ module la_axi #(
     output reg  [1:0]  S_AXI_BRESP,
     output reg         S_AXI_BVALID,
     input  wire        S_AXI_BREADY,
-    input  wire [4:0]  S_AXI_ARADDR,
+    input  wire [3:0]  S_AXI_ARADDR,
     input  wire        S_AXI_ARVALID,
     output reg         S_AXI_ARREADY,
     output reg  [31:0] S_AXI_RDATA,
@@ -110,13 +110,13 @@ module la_axi #(
             if (wr_ok) begin
                 S_AXI_AWREADY <= 1'b1;
                 S_AXI_WREADY  <= 1'b1;
-                case (S_AXI_AWADDR[4:2])
-                    3'd0: begin
+                case (S_AXI_AWADDR[3:2])
+                    2'd0: begin
                         if (S_AXI_WDATA[0]) arm_pulse <= 1'b1;
                         trig_mode <= S_AXI_WDATA[1];
+                        sel_reg   <= S_AXI_WDATA[4:2];
                     end
-                    3'd2: rd_index <= S_AXI_WDATA[AW-1:0];
-                    3'd4: sel_reg  <= S_AXI_WDATA[2:0];
+                    2'd2: rd_index <= S_AXI_WDATA[AW-1:0];
                     default: ;
                 endcase
                 S_AXI_BVALID <= 1'b1;
@@ -139,10 +139,9 @@ module la_axi #(
         end else begin
             if (S_AXI_ARVALID && !S_AXI_RVALID) begin
                 S_AXI_ARREADY <= 1'b1;
-                case (S_AXI_ARADDR[4:2])
-                    3'd1: S_AXI_RDATA <= {30'd0, (state == ARMED), done};
-                    3'd3: S_AXI_RDATA <= {{(32-DW){1'b0}}, buf_q};
-                    3'd4: S_AXI_RDATA <= {29'd0, sel_reg};
+                case (S_AXI_ARADDR[3:2])
+                    2'd1: S_AXI_RDATA <= {30'd0, (state == ARMED), done};
+                    2'd3: S_AXI_RDATA <= {{(32-DW){1'b0}}, buf_q};
                     default: S_AXI_RDATA <= 32'd0;
                 endcase
                 S_AXI_RVALID <= 1'b1;
