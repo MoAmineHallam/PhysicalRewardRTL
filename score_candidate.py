@@ -46,9 +46,10 @@ DESIGN_NAMES = [
 PROBE_MASKS = [0x0003, 0x000F, 0x000F, 0x00FF, 0x0FFF, 0x00FF, 0x00FF]
 
 # For designs whose signal period doesn't divide 32768, trim both hw and sim
-# to the largest multiple of the period that fits in 32768 samples.
-# bcd_counter: period=100, 327x100=32700. All others divide 32768 exactly.
-N_COMPARE = [32768, 32768, 32768, 32700, 32768, 32768, 32768]
+# to the largest multiple of the period that fits in the usable capture window.
+# bcd_counter: hw buffer depth=1024 (not 32768), so usable unique samples=1024.
+# Use 1000 (10x period=100) to stay within the unique window.
+N_COMPARE = [32768, 32768, 32768, 1000, 32768, 32768, 32768]
 
 # -- testbench templates --------------------------------------------------------
 # Each template:
