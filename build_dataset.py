@@ -216,16 +216,11 @@ def generate_candidates(sel_id: int, n: int, temperature: float):
     spec = SPECS[sel_id]
     design_name = DESIGN_NAMES[sel_id]
 
+    messages = [{"role": "user", "content": spec}]
+
     for i in range(n):
         try:
-            raw = coder_call(spec, temperature=temperature)
-        except TypeError:
-            # coder_call may not accept temperature kwarg — try without
-            try:
-                raw = coder_call(spec)
-            except Exception as e2:
-                print(f"  [gen {i}] call failed: {e2}", file=sys.stderr)
-                continue
+            raw = coder_call(messages, temperature=temperature)
         except Exception as e:
             print(f"  [gen {i}] call failed: {e}", file=sys.stderr)
             continue
