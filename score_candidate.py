@@ -45,6 +45,11 @@ DESIGN_NAMES = [
 #   6: {8'b0, q[7:0]}                 → bits [7:0]   = 0x00FF
 PROBE_MASKS = [0x0003, 0x000F, 0x000F, 0x00FF, 0x0FFF, 0x00FF, 0x00FF]
 
+# For designs whose signal period doesn't divide 32768, trim both hw and sim
+# to the largest multiple of the period that fits in 32768 samples.
+# bcd_counter: period=100, 327×100=32700. All others divide 32768 exactly.
+N_COMPARE = [32768, 32768, 32768, 32700, 32768, 32768, 32768]
+
 # ── testbench templates ────────────────────────────────────────────────────────
 # Each template:
 #   - declares a 32-bit free-running counter (cnt), starting at 0
@@ -107,6 +112,7 @@ _DUT_BLOCKS = {
 """,
     1: """\
     // sel=1  alu_mux  probe={12'b0, result[3:0]}
+    // op: 0=ADD 1=NOT_A 2=PASS_A 3=AND 4=XOR 5=NOT_A 6=PASS_A 7=PASS_B
     wire [3:0] result;
     wire [15:0] probe = {12'b0, result};
 
@@ -296,13 +302,16 @@ def score(verilog_path: str, sel_id: int) -> float:
         raise FileNotFoundError(f"Hardware waveform not found: {hw_waveform_path}")
 
     hw = np.load(hw_waveform_path).astype(np.uint16)
-    if len(hw) != N_CYCLES:
-        raise ValueError(f"Hardware waveform has {len(hw)} samples, expected {N_CYCLES}")
+    if len(hw) < N_COMPARE[sel_id]:
+        raise ValueError(f"Hardware waveform has {len(hw)} samples, need {N_COMPARE[sel_id]}")
+
+    n = N_COMPARE[sel_id]
+    hw = hw[:n]
 
     with tempfile.TemporaryDirectory() as work_dir:
         sim_samples = simulate(verilog_path, sel_id, work_dir)
 
-    sim = np.array(sim_samples, dtype=np.uint16)
+    sim = np.array(sim_samples[:n], dtype=np.uint16)
     return align_and_score(hw, sim, PROBE_MASKS[sel_id])
 
 
