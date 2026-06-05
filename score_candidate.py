@@ -260,10 +260,32 @@ def hamming_similarity(a: np.ndarray, b: np.ndarray, mask: int) -> float:
     b_m = b.astype(np.uint32) & mask
     xor = np.bitwise_xor(a_m, b_m)
     differing_bits = int(np.unpackbits(xor.view(np.uint8)).sum())
-    # count bits set in mask = number of meaningful bits per sample
     meaningful_bits_per_sample = bin(mask).count('1')
     total_bits = len(a) * meaningful_bits_per_sample
     return 1.0 - differing_bits / total_bits
+
+
+def align_and_score(hw: np.ndarray, sim: np.ndarray, mask: int) -> float:
+    """
+    Find the circular phase offset between hw and sim using FFT cross-correlation,
+    align sim to hw, then return Hamming similarity on the meaningful bits.
+
+    The hardware waveform was captured at an unknown cnt offset (free-running
+    counter). The simulation always starts at cnt=0. FFT correlation finds the
+    shift that maximises dot-product agreement; a correct candidate aligns
+    perfectly, a wrong one won't correlate at any offset.
+    """
+    hw_f = (hw.astype(np.float64)) * mask   # scale by mask to weight meaningful bits
+    sim_f = (sim.astype(np.float64)) * mask
+
+    # circular cross-correlation via FFT: find shift s such that
+    # sum_i hw[i] * sim[(i - s) % N] is maximised
+    from numpy.fft import fft, ifft
+    corr = np.real(ifft(fft(hw_f) * np.conj(fft(sim_f))))
+    offset = int(np.argmax(corr))
+
+    sim_aligned = np.roll(sim, offset)
+    return hamming_similarity(hw, sim_aligned, mask)
 
 
 def score(verilog_path: str, sel_id: int) -> float:
@@ -281,7 +303,7 @@ def score(verilog_path: str, sel_id: int) -> float:
         sim_samples = simulate(verilog_path, sel_id, work_dir)
 
     sim = np.array(sim_samples, dtype=np.uint16)
-    return hamming_similarity(hw, sim, PROBE_MASKS[sel_id])
+    return align_and_score(hw, sim, PROBE_MASKS[sel_id])
 
 
 def main():
