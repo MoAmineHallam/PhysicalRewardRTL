@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-score_candidate.py  —  Phase 3 scoring function.
+score_candidate.py  -  Phase 3 scoring function.
 
 Usage:
     python score_candidate.py <verilog_file> <sel_id>
@@ -19,7 +19,7 @@ import tempfile
 import re
 import numpy as np
 
-# ── paths ──────────────────────────────────────────────────────────────────────
+# -- paths ----------------------------------------------------------------------
 RTL_LIB    = "/zeng_gk/Amine/mas/rtl_library"
 IVERILOG   = "/usr/bin/iverilog"
 N_CYCLES   = 32768
@@ -36,21 +36,21 @@ DESIGN_NAMES = [
 
 # Bitmask of meaningful probe bits per sel_id (ignore structural padding zeros).
 # probe packing:
-#   0: {14'b0, cnt[8], rise}          → bits [1:0]   = 0x0003
-#   1: {12'b0, result[3:0]}           → bits [3:0]   = 0x000F
-#   2: {12'b0, valid, out[2:0]}       → bits [3:0]   = 0x000F
-#   3: {8'b0, tens[3:0], ones[3:0]}   → bits [7:0]   = 0x00FF
-#   4: {4'b0, reversed[7:0], pop[3:0]}→ bits [11:0]  = 0x0FFF
-#   5: {8'b0, q[7:0]}                 → bits [7:0]   = 0x00FF
-#   6: {8'b0, q[7:0]}                 → bits [7:0]   = 0x00FF
+#   0: {14'b0, cnt[8], rise}          -> bits [1:0]   = 0x0003
+#   1: {12'b0, result[3:0]}           -> bits [3:0]   = 0x000F
+#   2: {12'b0, valid, out[2:0]}       -> bits [3:0]   = 0x000F
+#   3: {8'b0, tens[3:0], ones[3:0]}   -> bits [7:0]   = 0x00FF
+#   4: {4'b0, reversed[7:0], pop[3:0]}-> bits [11:0]  = 0x0FFF
+#   5: {8'b0, q[7:0]}                 -> bits [7:0]   = 0x00FF
+#   6: {8'b0, q[7:0]}                 -> bits [7:0]   = 0x00FF
 PROBE_MASKS = [0x0003, 0x000F, 0x000F, 0x00FF, 0x0FFF, 0x00FF, 0x00FF]
 
 # For designs whose signal period doesn't divide 32768, trim both hw and sim
 # to the largest multiple of the period that fits in 32768 samples.
-# bcd_counter: period=100, 327×100=32700. All others divide 32768 exactly.
+# bcd_counter: period=100, 327x100=32700. All others divide 32768 exactly.
 N_COMPARE = [32768, 32768, 32768, 32700, 32768, 32768, 32768]
 
-# ── testbench templates ────────────────────────────────────────────────────────
+# -- testbench templates --------------------------------------------------------
 # Each template:
 #   - declares a 32-bit free-running counter (cnt), starting at 0
 #   - drives the module inputs from cnt exactly as dut_top.v does

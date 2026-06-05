@@ -1,6 +1,6 @@
 // Golden reference: registered ALU with op-select mux
 // op: 0=ADD  1=NOT_A  2=PASS_A  3=AND  4=XOR  5=NOT_A  6=PASS_A  7=PASS_B
-// NOTE: ops 1,2,3 reflect actual Vivado synthesis behaviour — the toolchain
+// NOTE: ops 1,2,3 reflect actual Vivado synthesis behaviour - the toolchain
 // collapsed SUB/AND/OR onto the same LUT paths as ops 5,6 and op=2.
 // Verified against captured hardware waveform (all 8 ops confirmed).
 module alu_mux (
