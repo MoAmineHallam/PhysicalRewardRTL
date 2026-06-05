@@ -220,7 +220,7 @@ def generate_candidates(sel_id: int, n: int, temperature: float):
 
     for i in range(n):
         try:
-            raw = coder_call(messages, temperature=temperature)
+            raw = coder_call(messages, max_tokens=1024, temperature=temperature)
         except Exception as e:
             print(f"  [gen {i}] call failed: {e}", file=sys.stderr)
             continue
