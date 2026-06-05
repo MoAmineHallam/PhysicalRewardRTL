@@ -260,7 +260,7 @@ def main():
     with open(out_path, 'a') as fout:
         for sel_id in sel_ids:
             design_name = DESIGN_NAMES[sel_id]
-            print(f"\n=== {design_name} (sel={sel_id}) — generating {args.n} candidates ===")
+            print(f"\n=== {design_name} (sel={sel_id}) — generating {args.n} candidates ===", flush=True)
             scored = 0
             for idx, (verilog, _raw) in enumerate(
                     generate_candidates(sel_id, args.n, args.temp)):
@@ -279,7 +279,7 @@ def main():
                 fout.write(json.dumps(record) + '\n')
                 fout.flush()
                 scored += 1
-                print(f"  [{idx:3d}] reward={reward:.4f}")
+                print(f"  [{idx:3d}] reward={reward:.4f}", flush=True)
 
             print(f"  → {scored} records written for {design_name}")
 
