@@ -34,6 +34,17 @@ DESIGN_NAMES = [
     "shift_reg",       # 6
 ]
 
+# Bitmask of meaningful probe bits per sel_id (ignore structural padding zeros).
+# probe packing:
+#   0: {14'b0, cnt[8], rise}          → bits [1:0]   = 0x0003
+#   1: {12'b0, result[3:0]}           → bits [3:0]   = 0x000F
+#   2: {12'b0, valid, out[2:0]}       → bits [3:0]   = 0x000F
+#   3: {8'b0, tens[3:0], ones[3:0]}   → bits [7:0]   = 0x00FF
+#   4: {4'b0, reversed[7:0], pop[3:0]}→ bits [11:0]  = 0x0FFF
+#   5: {8'b0, q[7:0]}                 → bits [7:0]   = 0x00FF
+#   6: {8'b0, q[7:0]}                 → bits [7:0]   = 0x00FF
+PROBE_MASKS = [0x0003, 0x000F, 0x000F, 0x00FF, 0x0FFF, 0x00FF, 0x00FF]
+
 # ── testbench templates ────────────────────────────────────────────────────────
 # Each template:
 #   - declares a 32-bit free-running counter (cnt), starting at 0
@@ -240,17 +251,18 @@ def simulate(verilog_path: str, sel_id: int, work_dir: str) -> list[int]:
     return samples[:N_CYCLES]
 
 
-def hamming_similarity(a: np.ndarray, b: np.ndarray) -> float:
+def hamming_similarity(a: np.ndarray, b: np.ndarray, mask: int) -> float:
     """
-    Normalized bit-level similarity between two uint16 arrays.
-    Returns fraction of bits that match (1.0 = identical, 0.0 = all differ).
+    Normalized bit-level similarity over meaningful bits only (defined by mask).
+    Returns fraction of masked bits that match (1.0 = identical).
     """
-    bits = 16
-    xor = np.bitwise_xor(a.astype(np.uint32), b.astype(np.uint32))
-    differing_bits = np.unpackbits(
-        xor.astype(np.uint32).view(np.uint8)
-    ).sum()
-    total_bits = len(a) * bits
+    a_m = a.astype(np.uint32) & mask
+    b_m = b.astype(np.uint32) & mask
+    xor = np.bitwise_xor(a_m, b_m)
+    differing_bits = int(np.unpackbits(xor.view(np.uint8)).sum())
+    # count bits set in mask = number of meaningful bits per sample
+    meaningful_bits_per_sample = bin(mask).count('1')
+    total_bits = len(a) * meaningful_bits_per_sample
     return 1.0 - differing_bits / total_bits
 
 
@@ -269,7 +281,7 @@ def score(verilog_path: str, sel_id: int) -> float:
         sim_samples = simulate(verilog_path, sel_id, work_dir)
 
     sim = np.array(sim_samples, dtype=np.uint16)
-    return hamming_similarity(hw, sim)
+    return hamming_similarity(hw, sim, PROBE_MASKS[sel_id])
 
 
 def main():
