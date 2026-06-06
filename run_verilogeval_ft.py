@@ -14,6 +14,7 @@ import os
 import argparse
 
 os.environ["TRANSFORMERS_OFFLINE"] = "1"
+sys.path.insert(0, "/zeng_gk/Amine/verilog-eval")
 
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
