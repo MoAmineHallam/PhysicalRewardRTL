@@ -83,6 +83,21 @@ def main():
 
     # Patch output directory
     import run_verilogeval as ve
+    # Override strip_fences to cut at FIRST endmodule (model appends training
+    # examples after endmodule due to SFT overfitting)
+    import re as _re
+    def _strip_fences(rtl):
+        bt = chr(96)
+        rtl = rtl.replace(bt*3 + "verilog", "").replace(bt*3, "")
+        mm = _re.search(r"\bmodule\s+\w+\s*[(#;]", rtl)
+        if mm:
+            rtl = rtl[mm.start():]
+        rtl = rtl.strip()
+        if "endmodule" in rtl:
+            rtl = rtl[:rtl.index("endmodule") + len("endmodule")]
+        return rtl
+    ve.strip_fences = _strip_fences
+
     ve.OUTDIR = f"/zeng_gk/Amine/verilog-eval/{args.out}"
     os.makedirs(ve.OUTDIR, exist_ok=True)
 
