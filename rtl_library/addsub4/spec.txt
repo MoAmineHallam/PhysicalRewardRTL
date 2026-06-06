@@ -1,0 +1,15 @@
+Please write a Verilog module named `addsub4` that adds or subtracts two 4-bit unsigned numbers.
+
+Ports:
+  input  clk          - clock
+  input  rst_n        - active-low synchronous reset
+  input  [3:0] a      - 4-bit unsigned operand
+  input  [3:0] b      - 4-bit unsigned operand
+  input  sub          - 0 = add, 1 = subtract
+  output [4:0] result - 5-bit result
+
+Behavior:
+  - Registered: result updates on posedge clk.
+  - On !rst_n: result <= 0.
+  - When sub=0: result = a + b, with result[4] as the carry-out.
+  - When sub=1: result = a - b, with result[4] as the borrow (1 when a < b).
