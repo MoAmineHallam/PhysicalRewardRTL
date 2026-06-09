@@ -1,0 +1,11 @@
+// 7-bit threshold detector: above = (x > 64) (registered).
+module thresh7_64 (
+    input  wire clk, rst_n,
+    input  wire [6:0] x,
+    output reg  above
+);
+    always @(posedge clk) begin
+        if (!rst_n) above <= 0;
+        else        above <= (x > 7'd64);
+    end
+endmodule

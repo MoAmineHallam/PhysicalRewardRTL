@@ -1,12 +1,11 @@
-Please write a Verilog module named `mod10_counter` that implements a modulo-10 (decade) counter.
+Write a Verilog module named `mod10_counter` that is a free-running modulo-10 counter.
 
 Ports:
-  input  clk        - clock
-  input  rst_n      - active-low synchronous reset
-  output [3:0] count - 4-bit counter value (0 to 9)
+  input  clk
+  input  rst_n   active-low synchronous reset
+  output [3:0] count
 
 Behavior:
-  - Registered: count updates on posedge clk.
+  - Registered on posedge clk.
   - On !rst_n: count <= 0.
-  - Counts 0,1,2,...,9,0,1,... wrapping at 10.
-  - The module has no other inputs; it free-runs.
+  - Counts 0,1,...,9,0,... wrapping at 10.
