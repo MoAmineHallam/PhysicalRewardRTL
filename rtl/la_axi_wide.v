@@ -67,7 +67,11 @@ module la_axi_wide #(
                                if (wr_addr == DEPTH-1) begin state<=DONE; done<=1'b1; end
                                else wr_addr <= wr_addr + 1'b1;
                            end
-                DONE: ;
+                // Re-arm from DONE so each sel sweep captures fresh data.
+                DONE:      if (arm_pulse) begin
+                               done<=1'b0; wr_addr<={AW{1'b0}};
+                               state <= trig_mode ? ARMED : CAPTURING;
+                           end
             endcase
         end
     end
