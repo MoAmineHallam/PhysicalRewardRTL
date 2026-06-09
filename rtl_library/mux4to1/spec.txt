@@ -1,0 +1,16 @@
+Please write a Verilog module named `mux4to1` that implements a registered 4-to-1 multiplexer with 4-bit data paths.
+
+Ports:
+  input  clk          - clock
+  input  rst_n        - active-low synchronous reset
+  input  [3:0] d0     - data input 0
+  input  [3:0] d1     - data input 1
+  input  [3:0] d2     - data input 2
+  input  [3:0] d3     - data input 3
+  input  [1:0] sel    - select input
+  output [3:0] out    - selected output
+
+Behavior:
+  - Registered: out updates on posedge clk.
+  - On !rst_n: out <= 0.
+  - sel=0: out = d0, sel=1: out = d1, sel=2: out = d2, sel=3: out = d3.

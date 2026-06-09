@@ -1,0 +1,14 @@
+Please write a Verilog module named `parity_gen` that computes even and odd parity for an 8-bit input.
+
+Ports:
+  input  clk         - clock
+  input  rst_n       - active-low synchronous reset
+  input  [7:0] data  - 8-bit data input
+  output even_par    - registered even parity bit (XOR of all data bits)
+  output odd_par     - registered odd parity bit (XNOR of all data bits, i.e. ~even_par)
+
+Behavior:
+  - Registered: outputs update on posedge clk.
+  - On !rst_n: even_par <= 0, odd_par <= 1.
+  - even_par = ^data (1 if odd number of 1s in data, making even parity check zero).
+  - odd_par  = ~even_par.

@@ -1,0 +1,13 @@
+Please write a Verilog module named `updown_counter` that implements a 4-bit up/down counter.
+
+Ports:
+  input  clk        - clock
+  input  rst_n      - active-low synchronous reset
+  input  dir        - direction: 0 = count up, 1 = count down
+  output [3:0] count - 4-bit counter value
+
+Behavior:
+  - Registered: count updates on posedge clk.
+  - On !rst_n: count <= 0.
+  - When dir=0: count increments by 1 each cycle (wraps 15->0).
+  - When dir=1: count decrements by 1 each cycle (wraps 0->15).

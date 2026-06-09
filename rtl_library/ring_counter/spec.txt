@@ -1,0 +1,12 @@
+Please write a Verilog module named `ring_counter` that implements a 4-bit ring counter.
+
+Ports:
+  input  clk        - clock
+  input  rst_n      - active-low synchronous reset
+  output [3:0] count - 4-bit ring counter value
+
+Behavior:
+  - Registered: count updates on posedge clk.
+  - On !rst_n: count <= 4'b0001 (reset to initial hot-1 state).
+  - Each cycle, the single '1' bit rotates left: 0001->0010->0100->1000->0001->...
+  - The module has no other inputs; it free-runs.

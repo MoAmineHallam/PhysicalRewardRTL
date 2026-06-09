@@ -1,0 +1,14 @@
+Please write a Verilog module named `lfsr8` that implements an 8-bit Galois LFSR (Linear Feedback Shift Register).
+
+Ports:
+  input  clk         - clock
+  input  rst_n       - active-low synchronous reset
+  output [7:0] state - current LFSR state
+
+Behavior:
+  - Registered: state updates on posedge clk.
+  - On !rst_n: state <= 8'hAC  (non-zero seed).
+  - Galois LFSR with polynomial x^8 + x^6 + x^5 + x^4 + 1 (taps at bits 8,6,5,4; feedback from LSB).
+  - Each cycle: shift right by 1; if outgoing LSB=1, XOR with 8'b01110000 (mask 0x70 for taps 6,5,4).
+  - new_state = {1'b0, state[7:1]}; if state[0] then new_state = new_state ^ 8'h70.
+  - The module has no other inputs; it free-runs.

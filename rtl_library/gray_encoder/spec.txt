@@ -1,0 +1,15 @@
+Please write a Verilog module named `gray_encoder` that converts a 4-bit binary number to Gray code.
+
+Ports:
+  input  clk          - clock
+  input  rst_n        - active-low synchronous reset
+  input  [3:0] bin    - 4-bit binary input
+  output [3:0] gray   - 4-bit Gray code output
+
+Behavior:
+  - Registered: gray updates on posedge clk.
+  - On !rst_n: gray <= 0.
+  - gray[3] = bin[3]
+  - gray[2] = bin[3] ^ bin[2]
+  - gray[1] = bin[2] ^ bin[1]
+  - gray[0] = bin[1] ^ bin[0]

@@ -58,6 +58,86 @@ DESIGNS = {
         "ports":    ".a(cnt[3:0]), .b(cnt[7:4]), .sub(cnt[8]), .result(result)",
         "probe":    "{11'b0, result}",
     },
+    # --- Batch 2: counters, sequential, more datapath ---
+    "mod10_counter": {
+        "inputs":   [],
+        "outwires": ["wire [3:0] count;"],
+        "ports":    ".count(count)",
+        "probe":    "{12'b0, count}",
+    },
+    "updown_counter": {
+        "inputs":   [("dir", "cnt[0]")],
+        "outwires": ["wire [3:0] count;"],
+        "ports":    ".dir(cnt[0]), .count(count)",
+        "probe":    "{12'b0, count}",
+    },
+    "ring_counter": {
+        "inputs":   [],
+        "outwires": ["wire [3:0] count;"],
+        "ports":    ".count(count)",
+        "probe":    "{12'b0, count}",
+    },
+    "johnson_counter": {
+        "inputs":   [],
+        "outwires": ["wire [3:0] count;"],
+        "ports":    ".count(count)",
+        "probe":    "{12'b0, count}",
+    },
+    "parity_gen": {
+        "inputs":   [("data", "cnt[7:0]")],
+        "outwires": ["wire even_par, odd_par;"],
+        "ports":    ".data(cnt[7:0]), .even_par(even_par), .odd_par(odd_par)",
+        "probe":    "{14'b0, even_par, odd_par}",
+    },
+    "gray_encoder": {
+        "inputs":   [("bin", "cnt[3:0]")],
+        "outwires": ["wire [3:0] gray;"],
+        "ports":    ".bin(cnt[3:0]), .gray(gray)",
+        "probe":    "{12'b0, gray}",
+    },
+    "priority_enc4": {
+        "inputs":   [("req", "cnt[3:0]")],
+        "outwires": ["wire [1:0] enc;", "wire valid;"],
+        "ports":    ".req(cnt[3:0]), .enc(enc), .valid(valid)",
+        "probe":    "{13'b0, valid, enc}",
+    },
+    "mux4to1": {
+        "inputs":   [("sel", "cnt[1:0]"), ("d0", "cnt[5:2]"), ("d1", "cnt[9:6]"),
+                     ("d2", "cnt[13:10]"), ("d3", "cnt[17:14]")],
+        "outwires": ["wire [3:0] out;"],
+        "ports":    ".sel(cnt[1:0]), .d0(cnt[5:2]), .d1(cnt[9:6]), .d2(cnt[13:10]), .d3(cnt[17:14]), .out(out)",
+        "probe":    "{12'b0, out}",
+    },
+    "sign_ext": {
+        "inputs":   [("in4", "cnt[3:0]")],
+        "outwires": ["wire [7:0] out8;"],
+        "ports":    ".in4(cnt[3:0]), .out8(out8)",
+        "probe":    "{8'b0, out8}",
+    },
+    "abs_val": {
+        "inputs":   [("in", "cnt[3:0]")],
+        "outwires": ["wire [3:0] out;"],
+        "ports":    ".in(cnt[3:0]), .out(out)",
+        "probe":    "{12'b0, out}",
+    },
+    "lfsr8": {
+        "inputs":   [],
+        "outwires": ["wire [7:0] state;"],
+        "ports":    ".state(state)",
+        "probe":    "{8'b0, state}",
+    },
+    "clk_div4": {
+        "inputs":   [],
+        "outwires": ["wire [1:0] cnt2;", "wire en;"],
+        "ports":    ".cnt(cnt2), .en(en)",
+        "probe":    "{13'b0, en, cnt2}",
+    },
+    "shift_accum": {
+        "inputs":   [("data", "cnt[3:0]")],
+        "outwires": ["wire [7:0] accum;"],
+        "ports":    ".data(cnt[3:0]), .accum(accum)",
+        "probe":    "{8'b0, accum}",
+    },
 }
 
 
