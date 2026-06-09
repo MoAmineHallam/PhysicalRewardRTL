@@ -47,11 +47,21 @@ Splits the catalog into 16 batches (a Zynq-7020 can't hold 1000 DUTs + a
 Use `rtl/la_axi_wide.v` (6-bit sel) instead of `la_axi.v` (3-bit) for batches.
 
 ### 4. Build bitstreams headlessly  (one command per batch, no GUI)
+
+Runs on the **laptop** (Vivado lives there; the server has no Vivado and no link
+to the board). The build Tcl is self-contained — it builds the Zynq PS7 +
+AXI-Lite -> la_axi_wide -> dut_top block design inline (no external BD_TCL) and
+derives all paths from its own location, so it works as-is on Windows.
+
+Linux/macOS:
 ```
 for k in $(seq 0 15); do vivado -mode batch -source rtl/batches/build_b$k.tcl; done
 ```
-First fill in at the top of each `build_b{K}.tcl`: `PART` and `BD_TCL` (your
-Zynq PS + AXI + la_axi_wide block design hook). See "What I need from you".
+Windows (cmd):
+```
+for /L %k in (0,1,15) do vivado -mode batch -source rtl\batches\build_b%k.tcl
+```
+Each batch K writes `rtl/batches/out_bK/system_bK.bit` + `system_bK.hwh`.
 
 ### 5. Capture hardware goldens  (on the board, automated)
 ```
@@ -75,14 +85,18 @@ write JSONL — manifest-driven so it scales to all designs.
 Train on the 1000-design pool (weighted sampling), then run VerilogEval (156)
 vs the 35.9% baseline.
 
-## What I need from you to finish full automation of stage 4
+## Topology (resolved)
 
-The Vivado Tcl template is complete except for project specifics I can't infer:
-1. **PART** — confirm `xc7z020clg400-1` (PYNQ-Z2).
-2. **Block design** — the Tcl/path that builds your Zynq PS + AXI interconnect
-   + la_axi_wide instance + top wrapper (`BD_TCL`). If you share your existing
-   project's `*.tcl` export I'll wire it in so the build is truly one command.
-3. **LA AXI base address** + **buffer DEPTH** actually deployed (la_axi_wide
-   defaults DEPTH=32768; the old notes mentioned 1024 — confirm).
+- **Server** (`/zeng_gk/Amine/mas`): GPU box. Generates the catalog, verifies
+  with iverilog, generates batched sources + build Tcl, trains GRPO. No Vivado,
+  no link to the board.
+- **Laptop** (`C:\Users\Amine\mas\fpga`): has Vivado **and** the PYNQ-Z2 (board
+  connects to the laptop only). Builds bitstreams (stage 4) and captures
+  waveforms from the board (stage 5).
+- **Bridge**: git (or zip) moves files server <-> laptop.
 
-With those three, stage 4 becomes a single loop with zero manual steps.
+`PART = xc7z020clg400-1` is confirmed (matches the project's own synth flow).
+The block design is built inline by each `build_bK.tcl` — nothing left to fill
+in. After build, the laptop pushes `system_bK.bit`/`.hwh` to the board and runs
+`capture_waveforms.py` there (board is reachable from the laptop at the address
+the existing deployment flow uses).
