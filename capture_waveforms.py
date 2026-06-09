@@ -32,6 +32,14 @@ CTRL, STATUS, RADDR, RDATA = 0x00, 0x04, 0x08, 0x0C
 DEPTH_DEFAULT = 32768
 
 
+def _init_pynq():
+    """Work around XRT probe crash on Zynq (PYNQ 3.x)."""
+    import pynq.pl_server.embedded_device as _ed
+    from pynq.pl_server.device import Device
+    if not isinstance(Device.active_device, _ed.EmbeddedDevice):
+        Device.active_device = _ed.EmbeddedDevice()
+
+
 def capture_one(mmio, local_sel, depth):
     """Arm the LA for one DUT and read back the capture buffer."""
     # CTRL: bit0=arm, bit1=trig_mode(0=sw start), sel at bits[2+]
@@ -54,11 +62,12 @@ def main():
     ap.add_argument("--bit-dir", default="rtl/batches")
     ap.add_argument("--manifest", default="rtl/batches/batch_manifest.json")
     ap.add_argument("--rtl-lib", default="rtl_library")
-    ap.add_argument("--la-base", type=lambda x: int(x, 0), default=0x43C00000,
+    ap.add_argument("--la-base", type=lambda x: int(x, 0), default=0x40000000,
                     help="AXI base address of la_axi_wide (from your address map)")
     ap.add_argument("--depth", type=int, default=DEPTH_DEFAULT)
     args = ap.parse_args()
 
+    _init_pynq()
     from pynq import Overlay, MMIO  # noqa: import here so script imports off-board
 
     man = json.load(open(args.manifest))
