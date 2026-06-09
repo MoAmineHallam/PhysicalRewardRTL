@@ -11,6 +11,15 @@ Run on the board:
 """
 import time
 import numpy as np
+
+# This board is embedded Zynq with no XRT card. PYNQ's normal device
+# enumeration probes the XRT backend first and pyxrt.device(0) raises, which
+# aborts discovery before the embedded device is reached. So we construct the
+# EmbeddedDevice directly and set it active, bypassing enumeration.
+import pynq.pl_server.embedded_device as _ed
+from pynq.pl_server.device import Device
+Device.active_device = _ed.EmbeddedDevice()
+
 from pynq import Overlay, MMIO
 
 BIT   = "/home/xilinx/cap/out_b0/system_b0.bit"
