@@ -63,23 +63,35 @@ for /L %k in (0,1,15) do vivado -mode batch -source rtl\batches\build_b%k.tcl
 ```
 Each batch K writes `rtl/batches/out_bK/system_bK.bit` + `system_bK.hwh`.
 
-### 5. Capture hardware goldens  (on the board, automated)
+### 5. Capture hardware goldens  (done — on the board, automated)
 ```
 sudo python3 capture_waveforms.py --bit-dir rtl/batches \
      --manifest rtl/batches/batch_manifest.json --rtl-lib rtl_library
 ```
 Loads each bitstream, sweeps sel, reads the LA buffer, writes
 `rtl_library/<name>/waveform.npy`. Adjust `--la-base` to your AXI address map.
+**1004/1004 captured.**
 
-### 6. Validate hardware vs golden  (gate before trusting reward)
+### 6. Validate hardware vs golden  (done — gate before trusting reward)
 ```
 python validate_hw.py --report hw_bad.json
 ```
-Excludes any design whose silicon capture disagrees with the golden RTL.
+The stimulus counter free-runs (not reset on arm), so each capture is an
+exact window of the golden sequence at an unknown phase; validation searches
+the window inside a long golden (see validate_hw.py docstring).
+**Result: 966 exact match, 0 mismatch, 38 long-period.** The 38 (wide
+add/sub/cmp/satadd, true periods 4M-4G cycles) are excluded because a 32768-
+sample capture at unknown phase cannot be verified against them — not because
+they failed. Training pool = 966 hardware-validated designs (hw_bad.json:
+use "good", exclude "bad" + "long_period").
 
 ### 7. Build the RL dataset  (on the GPU box)
 Generate N candidates per design with RTLCoder, score each (sim vs hw golden),
-write JSONL — manifest-driven so it scales to all designs.
+write JSONL — manifest-driven so it scales to all designs. Must consume
+hw_bad.json and skip excluded designs. NOTE: build_dataset.py and
+score_candidate.py are still the old 7-design versions; the manifest `period`
+field understates the state period for acc/mac (input period only), so the
+scorer must not trust it for alignment/trimming.
 
 ### 8. GRPO-v3 + evaluate
 Train on the 1000-design pool (weighted sampling), then run VerilogEval (156)
