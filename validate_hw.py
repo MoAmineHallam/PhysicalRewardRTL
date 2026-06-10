@@ -60,14 +60,30 @@ def _find_window(goldm, hwm):
     m, L = len(hwm), len(goldm)
     if L < m:
         return False
-    idx = np.flatnonzero(goldm[:L - m + 1] == hwm[0])
-    # progressively filter candidate positions on successive samples
+    # Anchor the probe at the first transition in hwm: degenerate prefixes
+    # (e.g. the long zero-runs ALUs emit for unused opcodes) match everywhere
+    # and would swamp the candidate list.
+    diffs = np.flatnonzero(hwm[1:] != hwm[:-1])
+    if len(diffs) == 0:
+        # constant capture window: look for an m-long constant run in goldm
+        run = np.concatenate(([0], (goldm == hwm[0]).astype(np.int8), [0]))
+        edges = np.diff(run)
+        starts = np.flatnonzero(edges == 1)
+        ends = np.flatnonzero(edges == -1)
+        return bool(np.any(ends - starts >= m))
+    ps = min(int(diffs[0]), m - 64)
+    probe = hwm[ps:ps + 64]
+    # candidate window starts p such that goldm[p+ps : p+ps+64] == probe
+    idx = np.flatnonzero(goldm[ps:L - m + ps + 1] == probe[0])
     j = 1
-    while j < m and len(idx) > 8 and j < 4096:
-        idx = idx[goldm[idx + j] == hwm[j]]
+    while j < 64 and len(idx) > MAX_FULL_VERIFY:
+        idx = idx[goldm[idx + ps + j] == probe[j]]
         j += 1
-    # survivors of a 4096-sample prefix on periodic content are equivalent;
-    # fully verifying a handful decides the rest
+    # strided filtering across the whole window for periodic content
+    for j in range(0, m, 257):
+        if len(idx) <= MAX_FULL_VERIFY:
+            break
+        idx = idx[goldm[idx + j] == hwm[j]]
     for t in idx[:MAX_FULL_VERIFY]:
         if np.array_equal(goldm[t:t + m], hwm):
             return True
@@ -80,6 +96,10 @@ def _true_period(goldm, n, w0=8192):
     L = len(goldm)
     if L <= w0 + n:
         w0 = 64
+    # move the anchor to a transition so it can't sit inside a constant run
+    diffs = np.flatnonzero(goldm[w0:w0 + n][1:] != goldm[w0:w0 + n][:-1])
+    if len(diffs):
+        w0 += int(diffs[0])
     plen = min(4096, L - w0 - 1)
     anchor = goldm[w0:w0 + plen]
     idx = np.flatnonzero(goldm[w0 + 1:L - plen] == anchor[0]) + w0 + 1
