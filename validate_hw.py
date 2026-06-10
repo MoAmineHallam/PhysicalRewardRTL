@@ -9,17 +9,22 @@ phase c0. Since the whole fabric (cnt + DUT state) evolves deterministically
 from the boot reset, hw[i] == golden[c0 + i]: the capture is an exact window
 of the golden sequence at an unknown offset.
 
-Validation therefore searches the full design period for a phase at which the
-capture matches the golden EXACTLY (masked to the probe bits). Three verdicts:
+Validation therefore searches for the capture window inside a long golden
+sequence (exact masked match). The manifest `period` field is used only as a
+fast-path hint -- it is WRONG for stateful families like acc/mac (it records
+the input period, not the state period), so when the fast path misses we
+re-search a golden of --max-period samples. Three verdicts:
 
-  good        - exact match found at some phase            -> usable for reward
-  bad         - no phase matches (real synthesis/wiring bug) -> exclude
-  long_period - period > capture depth, phase unrecoverable  -> exclude
-                (or rebuild with reset-on-arm hardware to validate these)
+  good        - exact match found at some phase             -> usable for reward
+  bad         - golden is periodic within the search cap and the window is
+                nowhere in it (real synthesis/wiring bug)   -> exclude
+  long_period - golden not periodic within the search cap; phase
+                unrecoverable -> exclude (or rebuild with reset-on-arm hw)
 
 Usage:
     python validate_hw.py                 # validate every captured design
     python validate_hw.py --report hw_bad.json
+    python validate_hw.py --max-period $((1<<23))   # search harder
 """
 
 import os
@@ -33,8 +38,8 @@ RTL_LIB = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rtl_library"
 # Samples to skip at the head of each capture: the sel mux switches at arm
 # time, so the first few samples can carry the previously-selected DUT.
 HEAD_SKIP = 4
-# Probe length used to find candidate phases before full verification.
-PROBE_LEN = 64
+# Up to this many positions are fully verified after prefix filtering.
+MAX_FULL_VERIFY = 16
 
 
 def golden_from_body(body, n):
@@ -50,42 +55,81 @@ def golden_from_body(body, n):
     return ns["_g"](n)
 
 
-def find_phase(hw, rec):
-    """Exact-match phase search of hw inside the periodic golden sequence.
+def _find_window(goldm, hwm):
+    """True iff hwm appears (exactly) as a contiguous window of goldm."""
+    m, L = len(hwm), len(goldm)
+    if L < m:
+        return False
+    idx = np.flatnonzero(goldm[:L - m + 1] == hwm[0])
+    # progressively filter candidate positions on successive samples
+    j = 1
+    while j < m and len(idx) > 8 and j < 4096:
+        idx = idx[goldm[idx + j] == hwm[j]]
+        j += 1
+    # survivors of a 4096-sample prefix on periodic content are equivalent;
+    # fully verifying a handful decides the rest
+    for t in idx[:MAX_FULL_VERIFY]:
+        if np.array_equal(goldm[t:t + m], hwm):
+            return True
+    return False
 
-    Returns (verdict, phase) where verdict is 'good', 'bad' or 'long_period'.
+
+def _true_period(goldm, n, w0=8192):
+    """Smallest verified self-repeat distance of goldm past the transient,
+    or None if goldm is not periodic within its own length."""
+    L = len(goldm)
+    if L <= w0 + n:
+        w0 = 64
+    plen = min(4096, L - w0 - 1)
+    anchor = goldm[w0:w0 + plen]
+    idx = np.flatnonzero(goldm[w0 + 1:L - plen] == anchor[0]) + w0 + 1
+    # two-stage prefix filtering: ramp-like sequences carry many short false
+    # repeats, so escalate the prefix length before giving up
+    j = 1
+    for stop, keep in ((64, 32), (plen, 4)):
+        while j < stop and len(idx) > keep:
+            idx = idx[goldm[idx + j] == anchor[j]]
+            j += 1
+        for p in idx[:32]:
+            K = L - p
+            if K >= n and np.array_equal(goldm[w0:w0 + K], goldm[p:p + K]):
+                return int(p - w0)
+    return None
+
+
+def find_phase(hw, rec, cap):
+    """Exact-match search of hw inside the golden sequence.
+
+    Returns 'good', 'bad' or 'long_period'.
     """
     mask = rec["probe_mask"]
-    period = rec["period"]
+    P = max(2, rec["period"])
     n = len(hw)
     hwm = (hw & mask).astype(np.uint16)[HEAD_SKIP:]
-    m = len(hwm)
 
-    if period > n:
-        # capture window holds less than one period: cannot recover the phase
-        return "long_period", None
+    # fast path: listed period (correct for most families)
+    if 2 * P + n <= (1 << 18):
+        goldm = (golden_from_body(rec["golden_body"], 2 * P + n)
+                 & mask).astype(np.uint16)
+        if _find_window(goldm, hwm):
+            return "good"
 
-    # Golden long enough that any start t in [period, 2*period) plus the
-    # capture length stays in-bounds; [0, period) is skipped so the golden's
-    # reset transient never lands inside the comparison window.
-    gold = golden_from_body(rec["golden_body"], 2 * period + n)
-    goldm = (gold & mask).astype(np.uint16)
-
-    probe_len = min(PROBE_LEN, m)
-    probe = hwm[:probe_len]
-    windows = np.lib.stride_tricks.sliding_window_view(
-        goldm[period:2 * period + probe_len - 1], probe_len)[:period]
-    cand = np.nonzero((windows == probe).all(axis=1))[0]
-    for t in cand:
-        start = period + t
-        if np.array_equal(goldm[start:start + m], hwm):
-            return "good", int(t)
-    return "bad", None
+    # full search: listed period is unreliable (acc/mac understate it) and
+    # many designs have true periods far beyond the capture depth
+    goldm = (golden_from_body(rec["golden_body"], cap + n)
+             & mask).astype(np.uint16)
+    if _find_window(goldm, hwm):
+        return "good"
+    if _true_period(goldm, n) is not None:
+        return "bad"          # searched a full period: window truly absent
+    return "long_period"      # period exceeds cap: phase unrecoverable
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--report", default=None)
+    ap.add_argument("--max-period", type=int, default=1 << 22,
+                    help="golden search length for the slow path (samples)")
     args = ap.parse_args()
 
     man = json.load(open(os.path.join(RTL_LIB, "manifest.json")))
@@ -98,7 +142,7 @@ def main():
             continue
         checked += 1
         hw = np.load(wf)
-        verdict, _ = find_phase(hw, rec)
+        verdict = find_phase(hw, rec, args.max_period)
         {"good": good, "bad": bad, "long_period": longp}[verdict].append(name)
         if checked % 100 == 0:
             print(f"  ... {checked} checked")
@@ -110,8 +154,8 @@ def main():
         for n in bad[:50]:
             print(f"   {n}")
     if longp:
-        print(f"LONG PERIOD ({len(longp)}, period > capture depth; exclude or "
-              "rebuild with reset-on-arm):")
+        print(f"LONG PERIOD ({len(longp)}, period > search cap; exclude, "
+              "raise --max-period, or rebuild with reset-on-arm):")
         for n in longp[:20]:
             print(f"   {n}")
     if args.report:
