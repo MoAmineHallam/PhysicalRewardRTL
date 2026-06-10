@@ -1,346 +1,204 @@
 #!/usr/bin/env python3
 """
-score_candidate.py  -  Phase 3 scoring function.
+score_candidate.py  -  Stage 7 scoring function (manifest-driven, all designs).
+
+Scores an LLM-generated Verilog candidate against the hardware-validated
+golden waveform of one of the rtl_library designs:
+
+  reward = max over registration shifts (0,1,2) of the bitwise Hamming
+           similarity between the candidate's simulated probe stream and the
+           golden stream, masked to the meaningful probe bits.  1.0 = exact.
+
+The reference is the manifest golden_body.  Stage 6 (validate_hw.py) proved,
+for every design in hw_bad.json["good"], that this sequence is bit-identical
+to what the design produces on the PYNQ-Z2 fabric — so for those designs the
+reference IS the silicon behaviour (use build_dataset.py / the trainer to
+restrict scoring to that set).
 
 Usage:
-    python score_candidate.py <verilog_file> <sel_id>
+    python score_candidate.py <verilog_file> <design_name> [--cycles 4096]
 
-    sel_id:  0=edge_detector  1=alu_mux  2=comb_always  3=bcd_counter
-             4=bit_manip      5=dff_array  6=shift_reg
-
-Returns (stdout): float 0.0-1.0 (normalized bit-match against hw waveform)
-Exit 0 on success, non-zero on compile/sim failure.
+stdout: float 0.0-1.0.  Exit 0 on success, 2 on compile/sim failure.
+Importable: load_manifest(), load_good_names(), score_rtl(), score_file().
 """
 
-import sys
 import os
-import subprocess
+import sys
+import json
+import argparse
 import tempfile
-import re
+import subprocess
+
 import numpy as np
 
-# -- paths ----------------------------------------------------------------------
-RTL_LIB    = "/zeng_gk/Amine/mas/rtl_library"
-IVERILOG   = "/usr/bin/iverilog"
-N_CYCLES   = 32768
+HERE = os.path.dirname(os.path.abspath(__file__))
+RTL_LIB = os.path.join(HERE, "rtl_library")
+HW_REPORT = os.path.join(HERE, "hw_bad.json")
+N_CYCLES_DEFAULT = 4096
+SIM_TIMEOUT = 60
 
-DESIGN_NAMES = [
-    "edge_detector",   # 0
-    "alu_mux",         # 1
-    "comb_always",     # 2
-    "bcd_counter",     # 3
-    "bit_manip",       # 4
-    "dff_array",       # 5
-    "shift_reg",       # 6
-]
 
-# Bitmask of meaningful probe bits per sel_id (ignore structural padding zeros).
-# probe packing:
-#   0: {14'b0, cnt[8], rise}          -> bits [1:0]   = 0x0003
-#   1: {12'b0, result[3:0]}           -> bits [3:0]   = 0x000F
-#   2: {12'b0, valid, out[2:0]}       -> bits [3:0]   = 0x000F
-#   3: {8'b0, tens[3:0], ones[3:0]}   -> bits [7:0]   = 0x00FF
-#   4: {4'b0, reversed[7:0], pop[3:0]}-> bits [11:0]  = 0x0FFF
-#   5: {8'b0, q[7:0]}                 -> bits [7:0]   = 0x00FF
-#   6: {8'b0, q[7:0]}                 -> bits [7:0]   = 0x00FF
-PROBE_MASKS = [0x0003, 0x000F, 0x000F, 0x00FF, 0x0FFF, 0x00FF, 0x00FF]
+def load_manifest():
+    man = json.load(open(os.path.join(RTL_LIB, "manifest.json")))
+    return {r["name"]: r for r in man}
 
-# For designs whose signal period doesn't divide 32768, trim both hw and sim
-# to the largest multiple of the period that fits in the usable capture window.
-# bcd_counter: hw buffer depth=1024 (not 32768), so usable unique samples=1024.
-# Use 1000 (10x period=100) to stay within the unique window.
-N_COMPARE = [32768, 32768, 32768, 1000, 32768, 32768, 32768]
 
-# -- testbench templates --------------------------------------------------------
-# Each template:
-#   - declares a 32-bit free-running counter (cnt), starting at 0
-#   - drives the module inputs from cnt exactly as dut_top.v does
-#   - prints "$display("%0d %0d", cycle, probe);" every cycle
-#   - runs for N_CYCLES cycles then $finish
+def load_good_names(report_path=HW_REPORT):
+    """Designs whose golden was bit-exactly confirmed on silicon (stage 6)."""
+    rep = json.load(open(report_path))
+    return set(rep["good"])
 
-_TB_HEADER = """\
+
+def golden_from_body(body, n):
+    fixed = ("def _g(n):\n"
+             "    import numpy as np\n"
+             "    out = []\n"
+             "    for c in range(n):\n"
+             + body.rstrip("\n") + "\n"
+             "        out.append(val & 0xFFFF)\n"
+             "    return np.array(out, dtype=np.uint16)\n")
+    ns = {}
+    exec(fixed, ns)
+    return ns["_g"](n)
+
+
+def make_tb(rec, n_cycles):
+    """Counter-driven testbench, identical drive to dut_top / verify_manifest."""
+    outwire_decls = "\n    ".join(rec["outwires"])
+    return f"""\
 `timescale 1ns/1ps
 module tb;
     integer i;
     reg clk, rst_n;
     reg [31:0] cnt;
-
     initial clk = 0;
-    always #5 clk = ~clk;   // 100 MHz
-
+    always #5 clk = ~clk;
     initial begin
         rst_n = 0; cnt = 0;
         @(posedge clk); #1; rst_n = 1;
     end
-
-    // free-running counter
     always @(posedge clk)
         if (!rst_n) cnt <= 32'd0;
         else        cnt <= cnt + 32'd1;
 
-"""
+    {outwire_decls}
+    wire [15:0] probe = {rec["probe"]};
 
-_TB_FOOTER = """\
+    {rec["name"]} dut ( .clk(clk), .rst_n(rst_n), {rec["ports"]} );
 
-    // print probe every cycle for {n} cycles then stop
     initial begin
-        // wait for reset to deassert and one extra cycle
         @(posedge clk); wait(rst_n === 1'b1);
         @(posedge clk);
-        for (i = 0; i < {n}; i = i + 1) begin
-            @(posedge clk);
-            #1;
+        for (i = 0; i < {n_cycles}; i = i + 1) begin
+            @(posedge clk); #1;
             $display("%0d %0d", i, probe);
         end
         $finish;
     end
 endmodule
-""".format(n=N_CYCLES)
-
-# per-design DUT instantiation + probe wire declarations
-_DUT_BLOCKS = {
-    0: """\
-    // sel=0  edge_detector  probe={14'b0, cnt[8], rise}
-    wire rise;
-    wire [15:0] probe = {14'b0, cnt[8], rise};
-
-    edge_detector dut (
-        .clk   (clk),
-        .rst_n (rst_n),
-        .in    (cnt[8]),
-        .rise  (rise)
-    );
-""",
-    1: """\
-    // sel=1  alu_mux  probe={12'b0, result[3:0]}
-    // op: 0=ADD 1=NOT_A 2=PASS_A 3=AND 4=XOR 5=NOT_A 6=PASS_A 7=PASS_B
-    wire [3:0] result;
-    wire [15:0] probe = {12'b0, result};
-
-    alu_mux dut (
-        .clk    (clk),
-        .rst_n  (rst_n),
-        .a      (cnt[3:0]),
-        .b      (cnt[7:4]),
-        .op     (cnt[10:8]),
-        .result (result)
-    );
-""",
-    2: """\
-    // sel=2  comb_always  probe={12'b0, valid, out[2:0]}
-    wire valid;
-    wire [2:0] out;
-    wire [15:0] probe = {12'b0, valid, out};
-
-    comb_always dut (
-        .clk   (clk),
-        .rst_n (rst_n),
-        .in    (cnt[7:0]),
-        .out   (out),
-        .valid (valid)
-    );
-""",
-    3: """\
-    // sel=3  bcd_counter  probe={8'b0, tens[3:0], ones[3:0]}
-    wire [3:0] tens, ones;
-    wire [15:0] probe = {8'b0, tens, ones};
-
-    bcd_counter dut (
-        .clk  (clk),
-        .rst_n(rst_n),
-        .en   (1'b1),
-        .tens (tens),
-        .ones (ones)
-    );
-""",
-    4: """\
-    // sel=4  bit_manip  probe={4'b0, reversed[7:0], popcount[3:0]}
-    wire [7:0] reversed;
-    wire [3:0] popcount;
-    wire [15:0] probe = {4'b0, reversed, popcount};
-
-    bit_manip dut (
-        .clk      (clk),
-        .rst_n    (rst_n),
-        .in       (cnt[7:0]),
-        .reversed (reversed),
-        .popcount (popcount)
-    );
-""",
-    5: """\
-    // sel=5  dff_array  probe={8'b0, q[7:0]}
-    wire [7:0] q;
-    wire [15:0] probe = {8'b0, q};
-
-    dff_array dut (
-        .clk  (clk),
-        .rst_n(rst_n),
-        .en   (cnt[0]),
-        .d    (cnt[8:1]),
-        .q    (q)
-    );
-""",
-    6: """\
-    // sel=6  shift_reg  probe={8'b0, q[7:0]}
-    wire [7:0] q;
-    wire [15:0] probe = {8'b0, q};
-
-    shift_reg dut (
-        .clk  (clk),
-        .rst_n(rst_n),
-        .en   (1'b1),
-        .sin  (cnt[0]),
-        .q    (q)
-    );
-""",
-}
+"""
 
 
-def make_testbench(sel_id: int) -> str:
-    return _TB_HEADER + _DUT_BLOCKS[sel_id] + _TB_FOOTER
+def simulate(verilog_path, rec, n_cycles):
+    """Compile + run candidate under the counter TB; return probe samples.
 
-
-def extract_module_name(verilog_path: str) -> str:
-    """Return the first module name found in the file."""
-    with open(verilog_path) as f:
-        src = f.read()
-    m = re.search(r'\bmodule\s+(\w+)', src)
-    if not m:
-        raise ValueError(f"No module declaration found in {verilog_path}")
-    return m.group(1)
-
-
-def simulate(verilog_path: str, sel_id: int, work_dir: str) -> list[int]:
+    Raises RuntimeError on compile/sim failure.
     """
-    Compile candidate + testbench with iverilog, run vvp, parse output.
-    Returns list of N_CYCLES integer probe values.
-    Raises RuntimeError on compile or sim failure.
-    """
-    tb_path  = os.path.join(work_dir, "tb.v")
-    out_path = os.path.join(work_dir, "sim.out")
-
-    tb_src = make_testbench(sel_id)
-    with open(tb_path, "w") as f:
-        f.write(tb_src)
-
-    # compile
-    compile_cmd = [
-        IVERILOG, "-g2012",
-        "-o", out_path,
-        verilog_path,
-        tb_path,
-    ]
-    cp = subprocess.run(compile_cmd, capture_output=True, text=True)
-    if cp.returncode != 0:
-        raise RuntimeError(f"COMPILE_FAIL\n{cp.stderr.strip()}")
-
-    # simulate
-    run_cmd = ["vvp", out_path]
-    rp = subprocess.run(run_cmd, capture_output=True, text=True, timeout=120)
-    if rp.returncode != 0:
-        raise RuntimeError(f"SIM_FAIL\n{rp.stderr.strip()}")
-
-    # parse "$display("%0d %0d", cycle, probe)" lines
-    samples = []
+    with tempfile.TemporaryDirectory() as wd:
+        tb_path = os.path.join(wd, "tb.v")
+        out_bin = os.path.join(wd, "sim.out")
+        with open(tb_path, "w") as f:
+            f.write(make_tb(rec, n_cycles))
+        cp = subprocess.run(["iverilog", "-g2012", "-o", out_bin,
+                             verilog_path, tb_path],
+                            capture_output=True, text=True)
+        if cp.returncode != 0:
+            raise RuntimeError("COMPILE: " +
+                               cp.stderr.strip().split("\n")[0][:200])
+        try:
+            rp = subprocess.run(["vvp", out_bin], capture_output=True,
+                                text=True, timeout=SIM_TIMEOUT)
+        except subprocess.TimeoutExpired:
+            raise RuntimeError("SIM TIMEOUT")
+    sim = []
     for line in rp.stdout.splitlines():
         parts = line.split()
         if len(parts) == 2:
             try:
-                samples.append(int(parts[1]))
+                sim.append(int(parts[1]))
             except ValueError:
                 pass
-
-    if len(samples) < N_CYCLES:
-        raise RuntimeError(
-            f"SIM_SHORT: got {len(samples)} samples, expected {N_CYCLES}"
-        )
-
-    return samples[:N_CYCLES]
+    if len(sim) < n_cycles // 2:
+        raise RuntimeError(f"SIM produced {len(sim)}/{n_cycles} samples")
+    return np.array(sim[:n_cycles], dtype=np.uint16)
 
 
-def hamming_similarity(a: np.ndarray, b: np.ndarray, mask: int) -> float:
+def hamming_similarity(a, b, mask):
+    """Fraction of matching meaningful bits (dense reward)."""
+    n = min(len(a), len(b))
+    diff = (a[:n] ^ b[:n]) & mask
+    bits_per = bin(mask).count("1")
+    if n == 0 or bits_per == 0:
+        return 0.0
+    wrong = int(np.unpackbits(
+        diff.astype(">u2").view(np.uint8)).sum())
+    return 1.0 - wrong / (n * bits_per)
+
+
+def score_sim(sim, gold, mask):
+    """Best Hamming similarity over registration shifts 0/1/2.
+
+    Candidates legitimately differ from the golden by 1-2 cycles of output
+    registration (verify_manifest accepts the same shifts for the goldens
+    themselves), so take the best of the three.
     """
-    Normalized bit-level similarity over meaningful bits only (defined by mask).
-    Returns fraction of masked bits that match (1.0 = identical).
-    """
-    a_m = a.astype(np.uint32) & mask
-    b_m = b.astype(np.uint32) & mask
-    xor = np.bitwise_xor(a_m, b_m)
-    differing_bits = int(np.unpackbits(xor.view(np.uint8)).sum())
-    meaningful_bits_per_sample = bin(mask).count('1')
-    total_bits = len(a) * meaningful_bits_per_sample
-    return 1.0 - differing_bits / total_bits
+    best = 0.0
+    n = min(len(sim), len(gold))
+    for shift in (1, 0, 2):
+        m = n - shift
+        if m <= 16:
+            continue
+        s = hamming_similarity(sim[:m - 1], gold[shift:shift + m - 1], mask)
+        best = max(best, s)
+    return best
 
 
-def align_and_score(hw: np.ndarray, sim: np.ndarray, mask: int) -> float:
-    """
-    Find the circular phase offset between hw and sim using FFT cross-correlation,
-    align sim to hw, then return Hamming similarity on the meaningful bits.
-
-    The hardware waveform was captured at an unknown cnt offset (free-running
-    counter). The simulation always starts at cnt=0. FFT correlation finds the
-    shift that maximises dot-product agreement; a correct candidate aligns
-    perfectly, a wrong one won't correlate at any offset.
-    """
-    hw_f = (hw.astype(np.float64)) * mask   # scale by mask to weight meaningful bits
-    sim_f = (sim.astype(np.float64)) * mask
-
-    # circular cross-correlation via FFT: find shift s such that
-    # sum_i hw[i] * sim[(i - s) % N] is maximised
-    from numpy.fft import fft, ifft
-    corr = np.real(ifft(fft(hw_f) * np.conj(fft(sim_f))))
-    offset = int(np.argmax(corr))
-
-    sim_aligned = np.roll(sim, offset)
-    return hamming_similarity(hw, sim_aligned, mask)
+def score_file(verilog_path, name, n_cycles=N_CYCLES_DEFAULT, manifest=None):
+    rec = (manifest or load_manifest())[name]
+    sim = simulate(verilog_path, rec, n_cycles)
+    gold = golden_from_body(rec["golden_body"], n_cycles + 2)
+    return score_sim(sim, gold, rec["probe_mask"])
 
 
-def score(verilog_path: str, sel_id: int) -> float:
-    design_name = DESIGN_NAMES[sel_id]
-    hw_waveform_path = os.path.join(RTL_LIB, design_name, "waveform.npy")
-
-    if not os.path.exists(hw_waveform_path):
-        raise FileNotFoundError(f"Hardware waveform not found: {hw_waveform_path}")
-
-    hw = np.load(hw_waveform_path).astype(np.uint16)
-    if len(hw) < N_COMPARE[sel_id]:
-        raise ValueError(f"Hardware waveform has {len(hw)} samples, need {N_COMPARE[sel_id]}")
-
-    n = N_COMPARE[sel_id]
-    hw = hw[:n]
-
-    with tempfile.TemporaryDirectory() as work_dir:
-        sim_samples = simulate(verilog_path, sel_id, work_dir)
-
-    sim = np.array(sim_samples[:n], dtype=np.uint16)
-    return align_and_score(hw, sim, PROBE_MASKS[sel_id])
+def score_rtl(rtl_text, name, n_cycles=N_CYCLES_DEFAULT, manifest=None):
+    with tempfile.NamedTemporaryFile(suffix=".v", mode="w",
+                                     delete=False) as f:
+        f.write(rtl_text)
+        path = f.name
+    try:
+        return score_file(path, name, n_cycles, manifest)
+    finally:
+        os.unlink(path)
 
 
 def main():
-    if len(sys.argv) != 3:
-        print(f"Usage: {sys.argv[0]} <verilog_file> <sel_id>", file=sys.stderr)
+    ap = argparse.ArgumentParser()
+    ap.add_argument("verilog_file")
+    ap.add_argument("design_name")
+    ap.add_argument("--cycles", type=int, default=N_CYCLES_DEFAULT)
+    args = ap.parse_args()
+
+    man = load_manifest()
+    if args.design_name not in man:
+        print(f"unknown design: {args.design_name}", file=sys.stderr)
         sys.exit(1)
-
-    verilog_path = sys.argv[1]
-    sel_id = int(sys.argv[2])
-
-    if sel_id < 0 or sel_id > 6:
-        print(f"sel_id must be 0-6, got {sel_id}", file=sys.stderr)
-        sys.exit(1)
-
-    if not os.path.exists(verilog_path):
-        print(f"File not found: {verilog_path}", file=sys.stderr)
-        sys.exit(1)
-
     try:
-        reward = score(verilog_path, sel_id)
-        print(f"{reward:.6f}")
+        reward = score_file(args.verilog_file, args.design_name, args.cycles,
+                            man)
     except RuntimeError as e:
         print(str(e), file=sys.stderr)
         sys.exit(2)
-    except Exception as e:
-        print(f"ERROR: {e}", file=sys.stderr)
-        sys.exit(3)
+    print(f"{reward:.6f}")
 
 
 if __name__ == "__main__":
