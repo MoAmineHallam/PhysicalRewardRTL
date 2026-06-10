@@ -51,6 +51,25 @@ def extract_verilog(text, module_name):
     return None
 
 
+def make_prompt(rec, spec):
+    """Spec + the exact module interface from design.v.
+
+    The generated spec.txt files are one-liners that don't pin down port
+    names; the scoring testbench connects by name, so candidates with
+    invented ports fail to compile. Giving the interface is legitimate --
+    it's part of the problem statement, not the solution.
+    """
+    import re
+    src = open(os.path.join(SC.RTL_LIB, rec["name"], "design.v")).read()
+    m = re.search(rf"(?s)(module\s+{re.escape(rec['name'])}\b.*?\);)", src)
+    header = m.group(1)
+    return (f"{spec}\n\n"
+            f"Use exactly this module interface (port names and widths "
+            f"must match):\n\n{header}\n\n"
+            f"Active-low reset rst_n clears the outputs; outputs are "
+            f"registered on posedge clk.\n")
+
+
 def load_pool(hw_report):
     """Hardware-validated designs that have a spec.txt, manifest order."""
     man = SC.load_manifest()
@@ -63,7 +82,7 @@ def load_pool(hw_report):
         if not os.path.exists(spec_path):
             print(f"[warn] {name}: spec.txt missing, skipped", file=sys.stderr)
             continue
-        pool.append((rec, open(spec_path).read()))
+        pool.append((rec, make_prompt(rec, open(spec_path).read())))
     return pool
 
 
