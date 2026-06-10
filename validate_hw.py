@@ -79,8 +79,11 @@ def _find_window(goldm, hwm):
     while j < 64 and len(idx) > MAX_FULL_VERIFY:
         idx = idx[goldm[idx + ps + j] == probe[j]]
         j += 1
-    # strided filtering across the whole window for periodic content
-    for j in range(0, m, 257):
+    # filter at random window positions: a fixed stride can alias with the
+    # design's internal period (e.g. 257 vs sub9b's 512 ramp), letting
+    # thousands of near-miss candidates survive
+    rng = np.random.default_rng(12345)
+    for j in rng.choice(m, size=min(1024, m), replace=False):
         if len(idx) <= MAX_FULL_VERIFY:
             break
         idx = idx[goldm[idx + j] == hwm[j]]
