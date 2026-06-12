@@ -97,12 +97,78 @@ def existing_counts(out_path):
     return counts
 
 
+def get_generator(args):
+    """Return gen(prompt, k) -> list[str] of k candidate completions.
+
+    backend 'local' (default): batched fp16 generation on one GPU.
+      - all k samples in ONE generate() call (num_return_sequences=k)
+      - fp16, not bf16: V100s have no bf16 hardware, PyTorch emulates it
+      - whole model on cuda:0 (7B fp16 ~14GB): device_map='auto' sharding
+        across 2 GPUs makes each wait on the other
+      - stops at 'endmodule' instead of rambling to the token cap
+    backend 'llm': the original sequential llm.coder_call (fallback).
+    """
+    if args.backend == "llm":
+        from llm import coder_call
+
+        def gen(prompt, k):
+            outs = []
+            for _ in range(k):
+                outs.append(coder_call(
+                    [{"role": "user", "content": prompt}],
+                    max_tokens=args.max_tokens, temperature=args.temp))
+            return outs
+        return gen
+
+    import torch
+    from transformers import AutoTokenizer, AutoModelForCausalLM
+    path = os.environ.get("RTLCODER_PATH", os.path.join(LLM_DIR, "rtlcoder"))
+    print(f"[LLM] loading RTLCoder from {path} (fp16, single GPU, batched)",
+          flush=True)
+    tok = AutoTokenizer.from_pretrained(path)
+    model = AutoModelForCausalLM.from_pretrained(
+        path, torch_dtype=torch.float16, device_map={"": 0})
+    model.eval()
+
+    def _clean(text):
+        if "endmodulemodule" in text:
+            return text.split("endmodulemodule")[0] + "endmodule"
+        idx = text.rfind("endmodule")
+        if idx >= 0:
+            return text[:idx + len("endmodule")]
+        return text
+
+    def gen(prompt, k):
+        chat = tok.apply_chat_template(
+            [{"role": "user", "content": prompt}],
+            tokenize=False, add_generation_prompt=True)
+        inputs = tok(chat, return_tensors="pt",
+                     return_token_type_ids=False).to("cuda:0")
+        with torch.inference_mode():
+            out = model.generate(
+                **inputs,
+                max_new_tokens=args.max_tokens,
+                do_sample=args.temp > 0,
+                temperature=args.temp,
+                num_return_sequences=k,
+                stop_strings=["endmodule"],
+                tokenizer=tok,
+                pad_token_id=tok.eos_token_id)
+        plen = inputs["input_ids"].shape[1]
+        return [_clean(tok.decode(seq[plen:], skip_special_tokens=True))
+                for seq in out]
+    return gen
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=20,
                     help="candidates per design")
     ap.add_argument("--temp", type=float, default=0.9)
-    ap.add_argument("--max-tokens", type=int, default=1024)
+    ap.add_argument("--max-tokens", type=int, default=512)
+    ap.add_argument("--backend", choices=["local", "llm"], default="local",
+                    help="local = batched fp16 single-GPU (fast); "
+                         "llm = original llm.coder_call")
     ap.add_argument("--cycles", type=int, default=SC.N_CYCLES_DEFAULT,
                     help="simulation cycles per score")
     ap.add_argument("--out", default="dataset.jsonl")
@@ -115,7 +181,7 @@ def main():
                     help="process at most LIMIT designs")
     args = ap.parse_args()
 
-    from llm import coder_call  # GPU server only
+    gen = get_generator(args)
 
     pool = load_pool(args.hw_report)
     if args.designs:
@@ -138,15 +204,13 @@ def main():
                 continue
             print(f"[{di + 1}/{len(pool)}] {name}: generating {need}",
                   flush=True)
-            messages = [{"role": "user", "content": spec}]
             stats = []
-            for i in range(need):
-                try:
-                    raw = coder_call(messages, max_tokens=args.max_tokens,
-                                     temperature=args.temp)
-                except Exception as e:
-                    print(f"   [gen {i}] call failed: {e}", file=sys.stderr)
-                    continue
+            try:
+                raws = gen(spec, need)
+            except Exception as e:
+                print(f"   generation failed: {e}", file=sys.stderr)
+                continue
+            for raw in raws:
                 rtl = extract_verilog(raw, name)
                 if rtl is None:
                     rtl, reward, ok = raw[-2000:], 0.0, False
