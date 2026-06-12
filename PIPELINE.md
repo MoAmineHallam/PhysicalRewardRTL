@@ -85,17 +85,30 @@ sample capture at unknown phase cannot be verified against them — not because
 they failed. Training pool = 966 hardware-validated designs (hw_bad.json:
 use "good", exclude "bad" + "long_period").
 
-### 7. Build the RL dataset  (on the GPU box)
-Generate N candidates per design with RTLCoder, score each (sim vs hw golden),
-write JSONL — manifest-driven so it scales to all designs. Must consume
-hw_bad.json and skip excluded designs. NOTE: build_dataset.py and
-score_candidate.py are still the old 7-design versions; the manifest `period`
-field understates the state period for acc/mac (input period only), so the
-scorer must not trust it for alignment/trimming.
+### 7. Build the RL dataset  (on the GPU box — in progress)
+```
+cd /zeng_gk/Amine/mas
+python fpga/build_dataset.py --n 10 --out fpga/dataset.jsonl
+python fpga/analyze_dataset.py fpga/dataset.jsonl --weights fpga/design_weights.json
+```
+build_dataset.py and score_candidate.py are manifest-driven (all 966 good
+designs, hw_bad.json consumed, append+resume). The scorer never trusts the
+manifest `period` field (it understates the state period for acc/mac); it
+compares fixed-cycle sims against golden_from_body directly — stage 6 proved
+that sequence bit-identical to silicon for every "good" design.
+analyze_dataset.py turns the JSONL into per-design sampling weights
+(proportional to within-design reward std: saturated families contribute no
+GRPO gradient and are down-weighted to a floor).
 
 ### 8. GRPO-v3 + evaluate
-Train on the 1000-design pool (weighted sampling), then run VerilogEval (156)
-vs the 35.9% baseline.
+```
+python fpga/grpo_train_v3.py --steps 600 --group_size 8
+```
+Trains a fresh LoRA on the 966-design pool: variance-weighted design
+sampling (design_weights.json), batched group generation, in-process
+hardware-grounded reward, KL-to-base via adapter-disable, fp16+GradScaler
+on V100 / bf16 on Ampere (auto). Then run VerilogEval (156) with
+run_verilogeval_ft.py under conditions identical to the baseline run.
 
 ## Topology (resolved)
 
