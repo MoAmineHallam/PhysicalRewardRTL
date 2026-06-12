@@ -246,42 +246,43 @@ def main():
         entry = {"step": step, "design": name, "family": rec["family"],
                  "rewards": rewards, "mean_r": r.mean().item(),
                  "max_r": r.max().item()}
-        if r.std() < 1e-6:
+        flat = r.std() < 1e-6
+        if flat:
             # identical rewards: zero advantage everywhere, skip the update
-            # (rare under variance-weighted sampling)
+            # (still falls through to the periodic checkpoint save)
             print(f"[{step:4d}] {name:16s} mean={r.mean():.3f} (flat, skip) "
                   f"roll={sum(recent)/len(recent):.3f}", flush=True)
             entry["loss"] = None
             log_file.write(json.dumps(entry) + "\n")
             log_file.flush()
-            continue
-        adv = (r - r.mean()) / (r.std() + 1e-8)
+        if not flat:
+            adv = (r - r.mean()) / (r.std() + 1e-8)
 
-        opt.zero_grad(set_to_none=True)
-        loss_val, kl_val = 0.0, 0.0
-        for g, a in zip(gens, adv.tolist()):
-            lp = seq_mean_logprob(model, prompt_ids, g, use_adapter=True)
-            base_lp = seq_mean_logprob(model, prompt_ids, g,
-                                       use_adapter=False).detach()
-            d = base_lp - lp
-            kl = torch.exp(d) - d - 1.0          # k3 estimator, >= 0
-            loss = (-a * lp + args.kl_coef * kl) / len(gens)
-            scaler.scale(loss).backward()
-            loss_val += loss.item()
-            kl_val += kl.item() / len(gens)
-        scaler.unscale_(opt)
-        torch.nn.utils.clip_grad_norm_(trainable, 1.0)
-        scaler.step(opt)
-        scaler.update()
+            opt.zero_grad(set_to_none=True)
+            loss_val, kl_val = 0.0, 0.0
+            for g, a in zip(gens, adv.tolist()):
+                lp = seq_mean_logprob(model, prompt_ids, g, use_adapter=True)
+                base_lp = seq_mean_logprob(model, prompt_ids, g,
+                                           use_adapter=False).detach()
+                d = base_lp - lp
+                kl = torch.exp(d) - d - 1.0      # k3 estimator, >= 0
+                loss = (-a * lp + args.kl_coef * kl) / len(gens)
+                scaler.scale(loss).backward()
+                loss_val += loss.item()
+                kl_val += kl.item() / len(gens)
+            scaler.unscale_(opt)
+            torch.nn.utils.clip_grad_norm_(trainable, 1.0)
+            scaler.step(opt)
+            scaler.update()
 
-        entry.update(loss=loss_val, kl=kl_val)
-        log_file.write(json.dumps(entry) + "\n")
-        log_file.flush()
-        print(f"[{step:4d}] {name:16s} "
-              f"r={[f'{x:.2f}' for x in rewards]} mean={r.mean():.3f} "
-              f"loss={loss_val:.4f} kl={kl_val:.4f} "
-              f"roll={sum(recent)/len(recent):.3f} {time.time()-t0:.0f}s",
-              flush=True)
+            entry.update(loss=loss_val, kl=kl_val)
+            log_file.write(json.dumps(entry) + "\n")
+            log_file.flush()
+            print(f"[{step:4d}] {name:16s} "
+                  f"r={[f'{x:.2f}' for x in rewards]} mean={r.mean():.3f} "
+                  f"loss={loss_val:.4f} kl={kl_val:.4f} "
+                  f"roll={sum(recent)/len(recent):.3f} {time.time()-t0:.0f}s",
+                  flush=True)
 
         if (step + 1) % args.save_every == 0:
             ckpt = os.path.join(args.out, f"step_{step + 1}")
