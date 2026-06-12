@@ -14,13 +14,16 @@ import os
 import argparse
 
 os.environ["TRANSFORMERS_OFFLINE"] = "1"
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
+LLM_DIR = "/zeng_gk/Amine/mas"
 sys.path.insert(0, "/zeng_gk/Amine/verilog-eval")
+sys.path.insert(0, LLM_DIR)
 
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from peft import PeftModel
 
-BASE_MODEL = "rtlcoder"
+BASE_MODEL = os.environ.get("RTLCODER_PATH", os.path.join(LLM_DIR, "rtlcoder"))
 
 def load_ft_model(model_path: str):
     print(f"[FT] Loading fine-tuned model from {model_path}...")
