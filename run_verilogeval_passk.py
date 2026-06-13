@@ -139,6 +139,9 @@ def main():
     ap.add_argument("--tag", required=True,
                     help="output name: fpga/passk_<tag>.jsonl")
     ap.add_argument("--n", type=int, default=10, help="samples per problem")
+    ap.add_argument("--gen-batch", type=int, default=5,
+                    help="samples generated per forward batch (caps peak "
+                         "KV-cache memory; 5 fits a 7B fp16 on a 32GB V100)")
     ap.add_argument("--temp", type=float, default=0.8)
     ap.add_argument("--max-tokens", type=int, default=1024)
     ap.add_argument("--limit", type=int, default=None)
@@ -184,16 +187,26 @@ def main():
             tokenize=False, add_generation_prompt=True)
         inputs = tok(chat, return_tensors="pt",
                      return_token_type_ids=False).to("cuda:0")
-        with torch.inference_mode():
-            out = model.generate(
-                **inputs, max_new_tokens=args.max_tokens,
-                do_sample=True, temperature=args.temp,
-                num_return_sequences=k,
-                stop_strings=["endmodule"], tokenizer=tok,
-                pad_token_id=tok.eos_token_id)
         plen = inputs["input_ids"].shape[1]
-        return [tok.decode(seq[plen:], skip_special_tokens=True)
-                for seq in out]
+        # Generate in sub-batches: a 7B model's KV cache for k=20 wide x
+        # 1024 new tokens on the long-prompt FSM problems blows past 32 GiB.
+        # Chunking caps peak memory at gen_batch-wide while keeping all k
+        # samples i.i.d. (do_sample with no fixed seed per chunk).
+        outs = []
+        for start in range(0, k, args.gen_batch):
+            chunk = min(args.gen_batch, k - start)
+            with torch.inference_mode():
+                out = model.generate(
+                    **inputs, max_new_tokens=args.max_tokens,
+                    do_sample=True, temperature=args.temp,
+                    num_return_sequences=chunk,
+                    stop_strings=["endmodule"], tokenizer=tok,
+                    pad_token_id=tok.eos_token_id)
+            outs.extend(tok.decode(seq[plen:], skip_special_tokens=True)
+                        for seq in out)
+            del out
+            torch.cuda.empty_cache()
+        return outs
 
     print(f"{len(probs)} problems, {args.n} samples each -> {out_path}",
           flush=True)
