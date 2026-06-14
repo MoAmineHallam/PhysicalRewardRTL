@@ -84,11 +84,13 @@ def main():
             print(f"{module:24s}  (sim failed, skipped)")
             continue
         n += 1
-        clean = g["hw_reward"] - sim_hw
+        # match analyze_gap's convention: gap = sim - silicon.
+        # positive => sim over-rewards (silicon reveals a defect sim missed).
+        clean = sim_hw - g["hw_reward"]
         if abs(clean) > args.threshold:
             survived += 1
-            under += clean < 0
             over += clean > 0
+            under += clean < 0
         fout.write(json.dumps({**g, "sim_hw_reward": sim_hw,
                                "gap_clean": clean}) + "\n")
         flag = "SURVIVES" if abs(clean) > args.threshold else "artifact"
@@ -98,8 +100,8 @@ def main():
 
     print(f"\n{survived}/{n} flagged gaps SURVIVE identical scoring "
           f"(real sim/silicon differences):")
-    print(f"   sim under-rewards (silicon right): {under}")
-    print(f"   sim over-rewards  (silicon catches defect): {over}")
+    print(f"   sim over-rewards  (silicon catches a defect sim missed): {over}")
+    print(f"   sim under-rewards (silicon right, sim too harsh): {under}")
     print(f"the remaining {n - survived} were scoring-method artifacts.")
     print(f"wrote {args.out}")
 
