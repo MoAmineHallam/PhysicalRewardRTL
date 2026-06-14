@@ -167,6 +167,12 @@ add_files [list \\
     [file join $ROOT rtl cand_batches dut_top_cb{batch_id}.v] \\
     {cand_files} ]
 update_compile_order -fileset sources_1
+# Read candidates as SystemVerilog, matching how they were sim-validated
+# (iverilog -g2012) and synth_check.tcl. Verilog-2001 mode is stricter and
+# would reject valid-under-SV constructs (e.g. logic driven by assign),
+# injecting language-mode artifacts into the gap study.
+set_property file_type SystemVerilog \\
+    [get_files -filter {{NAME =~ "*cand_batches/cand/*"}}]
 
 create_bd_design "system"
 create_bd_cell -type ip -vlnv xilinx.com:ip:processing_system7:5.5 ps7
