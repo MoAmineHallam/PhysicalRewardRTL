@@ -35,24 +35,26 @@ from capture_waveforms import _init_pynq, capture_one
 HEAD_SKIP = 4
 
 
-def hw_reward(capture, rec, n_score, max_phase):
-    """Best masked-Hamming similarity of the capture to the golden, any phase."""
+def hw_reward(capture, rec, n_score, max_shift=8):
+    """Masked-Hamming similarity to golden[0:], best over a small registration
+    shift.  Reset-on-arm starts every capture at counter phase 0, so only a
+    fixed few-cycle pipeline offset remains -- NO unbounded phase search (which
+    spuriously penalised large-period designs in the free-running version)."""
     mask = rec["probe_mask"]
     hwm = (capture & mask).astype(np.uint16)[HEAD_SKIP:HEAD_SKIP + n_score]
     m = len(hwm)
     if m < 16:
         return 0.0
-    P = max(2, rec["period"])
-    span = int(min(max(2 * P, 4096), max_phase))
-    gold = (SC.golden_from_body(rec["golden_body"], span + m)
+    gold = (SC.golden_from_body(rec["golden_body"], m + max_shift + 2)
             & mask).astype(np.uint16)
     best = 0.0
-    for off in range(span):
-        s = SC.hamming_similarity(hwm, gold[off:off + m], mask)
+    for sh in range(max_shift + 1):
+        k = min(m, len(gold) - sh)
+        if k < 16:
+            continue
+        s = SC.hamming_similarity(hwm[:k], gold[sh:sh + k], mask)
         if s > best:
             best = s
-            if best >= 0.9999:
-                break
     return best
 
 
@@ -66,8 +68,11 @@ def main():
                     help="capture samples to read per candidate")
     ap.add_argument("--n-score", type=int, default=1024,
                     help="samples actually scored (<= depth)")
-    ap.add_argument("--max-phase", type=int, default=4096,
-                    help="phase offsets searched for best alignment")
+    ap.add_argument("--max-shift", type=int, default=8,
+                    help="registration shifts tried (reset-on-arm: small)")
+    ap.add_argument("--save-dir", default=None,
+                    help="if set, save each raw capture as <save-dir>/<module>.npy "
+                         "so scoring can be re-run offline without re-capturing")
     args = ap.parse_args()
 
     _init_pynq()
@@ -105,7 +110,11 @@ def main():
                 rec = manifest[d["design"]]
                 try:
                     cap = capture_one(mmio, d["local_sel"], args.depth)
-                    hwr = hw_reward(cap, rec, args.n_score, args.max_phase)
+                    if args.save_dir:
+                        os.makedirs(args.save_dir, exist_ok=True)
+                        np.save(os.path.join(args.save_dir, d["module"] + ".npy"),
+                                cap)
+                    hwr = hw_reward(cap, rec, args.n_score, args.max_shift)
                 except Exception as e:
                     print(f"   [{d['module']}] FAIL: {e}")
                     continue

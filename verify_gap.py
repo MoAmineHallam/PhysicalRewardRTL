@@ -39,7 +39,7 @@ def main():
     ap.add_argument("--dataset", required=True, help="dataset.jsonl (candidate RTL)")
     ap.add_argument("--threshold", type=float, default=0.1)
     ap.add_argument("--n-score", type=int, default=1024)
-    ap.add_argument("--max-phase", type=int, default=4096)
+    ap.add_argument("--max-shift", type=int, default=8)
     ap.add_argument("--cycles", type=int, default=4096)
     ap.add_argument("--out", default="gap_verified.jsonl")
     args = ap.parse_args()
@@ -75,7 +75,7 @@ def main():
             path = f.name
         try:
             sim_wave = SC.simulate(path, rec, args.cycles)
-            sim_hw = hw_reward(sim_wave, rec, args.n_score, args.max_phase)
+            sim_hw = hw_reward(sim_wave, rec, args.n_score, args.max_shift)
         except Exception:
             sim_hw = None
         finally:

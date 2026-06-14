@@ -34,7 +34,8 @@ module la_axi_wide #(
     output reg         S_AXI_RVALID,
     input  wire        S_AXI_RREADY,
     input  wire [DW-1:0]   probe,
-    output wire [SELW-1:0] sel
+    output wire [SELW-1:0] sel,
+    output wire            capturing   // high while writing buffer -> reset-on-arm
 );
     localparam IDLE=2'd0, ARMED=2'd1, CAPTURING=2'd2, DONE=2'd3;
 
@@ -47,6 +48,7 @@ module la_axi_wide #(
     reg [SELW-1:0] sel_reg;
 
     assign sel = sel_reg;
+    assign capturing = (state == CAPTURING);
 
     reg probe0_prev;
     wire rising_edge = probe[0] & ~probe0_prev;
