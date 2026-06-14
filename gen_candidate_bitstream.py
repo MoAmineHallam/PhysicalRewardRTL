@@ -220,6 +220,10 @@ def main():
                     help="candidates to pack (across all batches)")
     ap.add_argument("--batch", type=int, default=64)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--exclude", default=None,
+                    help="file of module names to skip (e.g. ppa.jsonl.fails "
+                         "from run_ppa); use the same --seed to reproduce the "
+                         "selection")
     args = ap.parse_args()
 
     manifest = load_manifest()
@@ -238,10 +242,19 @@ def main():
     picked = select(records, manifest, args.n, args.seed)
     os.makedirs(CAND_DIR, exist_ok=True)
 
+    exclude = set()
+    if args.exclude and os.path.exists(args.exclude):
+        exclude = {ln.strip() for ln in open(args.exclude) if ln.strip()}
+        print(f"excluding {len(exclude)} modules from {args.exclude}")
+
     slots = []
-    for slot_id, rec in enumerate(picked):
+    for rec in picked:
         design = rec["design"]
-        module = f"u{slot_id}_{design}"
+        # identity-based name (design + per-design candidate index): stable
+        # across re-runs, so a run_ppa .fails list stays valid under --exclude.
+        module = f"c{rec['_idx']}_{design}"
+        if module in exclude:
+            continue
         rtl = rename_module(rec["rtl"], design, module)
         with open(os.path.join(CAND_DIR, module + ".v"), "w") as f:
             f.write(rtl)
