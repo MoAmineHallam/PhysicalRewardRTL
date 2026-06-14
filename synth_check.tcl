@@ -22,7 +22,8 @@ set out      [lindex $argv 1]
 set part     [lindex $argv 2]
 if {$part eq ""} { set part "xc7z020clg400-1" }
 
-set files [lsort [glob [file join $cand_dir *.v]]]
+set files [lsort [concat [glob -nocomplain [file join $cand_dir *.sv]] \
+                          [glob -nocomplain [file join $cand_dir *.v]]]]
 set failfh [open $out w]
 set detfh  [open $out.detail w]
 set nfail 0

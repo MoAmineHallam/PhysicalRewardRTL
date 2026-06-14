@@ -38,6 +38,7 @@ Then on the board:
 import os
 import re
 import json
+import shutil
 import random
 import argparse
 import collections
@@ -151,7 +152,7 @@ endmodule
         f.write(body)
 
     cand_files = " \\\n    ".join(
-        f"[file join $ROOT rtl cand_batches cand {s['module']}.v]"
+        f"[file join $ROOT rtl cand_batches cand {s['module']}.sv]"
         for s in slots)
     tcl = f"""# Auto-generated - candidate batch {batch_id} (self-contained).
 set BATCH   {batch_id}
@@ -246,6 +247,9 @@ def main():
             records.append(rec)
 
     picked = select(records, manifest, args.n, args.seed)
+    # fresh cand/ each run so stale .v files from earlier modes don't linger
+    if os.path.isdir(CAND_DIR):
+        shutil.rmtree(CAND_DIR)
     os.makedirs(CAND_DIR, exist_ok=True)
 
     exclude = set()
@@ -262,7 +266,11 @@ def main():
         if module in exclude:
             continue
         rtl = rename_module(rec["rtl"], design, module)
-        with open(os.path.join(CAND_DIR, module + ".v"), "w") as f:
+        # .sv extension: Vivado add_files auto-reads as SystemVerilog, the
+        # mode the candidates were sim-validated in (iverilog -g2012). Verilog
+        # -2001 mode rejects SV constructs (int, inline loop vars, logic driven
+        # by assign) that are valid here -- those are not real hardware faults.
+        with open(os.path.join(CAND_DIR, module + ".sv"), "w") as f:
             f.write(rtl)
         srec = dict(manifest[design])
         srec["name"] = module
