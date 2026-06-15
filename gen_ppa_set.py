@@ -37,7 +37,16 @@ def main():
     ap.add_argument("--max-per-design", type=int, default=6)
     ap.add_argument("--max-designs", type=int, default=60,
                     help="cap total designs to bound synthesis time")
+    ap.add_argument("--families", default=None,
+                    help="comma-separated family allowlist (e.g. "
+                         "add,sub,addsub,mul,mac,satadd,shift,rotate_const) -- "
+                         "the spread-rich arithmetic/sequential designs; "
+                         "default = all families")
     args = ap.parse_args()
+
+    fams_keep = None
+    if args.families:
+        fams_keep = {f.strip() for f in args.families.split(",") if f.strip()}
 
     bydesign = collections.defaultdict(list)
     fam = {}
@@ -50,7 +59,9 @@ def main():
         if r.get("compile_ok") and r["reward"] >= args.min_reward:
             bydesign[r["design"]].append(r["rtl"])
 
-    designs = [(d, c) for d, c in bydesign.items() if len(c) >= args.min_count]
+    designs = [(d, c) for d, c in bydesign.items()
+               if len(c) >= args.min_count
+               and (fams_keep is None or fam.get(d) in fams_keep)]
     designs.sort(key=lambda x: -len(x[1]))           # most-correct designs first
     designs = designs[:args.max_designs]
 
