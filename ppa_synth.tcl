@@ -53,6 +53,14 @@ if {[catch {
 
 if {[llength [get_ports -quiet $clkp]]} {
     create_clock -name vclk -period $period [get_ports $clkp]
+    # Constrain I/O so input->reg and reg->output paths are timed. Without
+    # this, simple designs have only unconstrained I/O paths and SLACK comes
+    # back empty (breaking Fmax). Zero delay => slack reflects the design's own
+    # logic depth, consistently across candidates.
+    set din [remove_from_collection [all_inputs] [get_ports $clkp]]
+    if {[llength $din]} { set_input_delay -clock vclk 0.000 $din }
+    set dout [all_outputs]
+    if {[llength $dout]} { set_output_delay -clock vclk 0.000 $dout }
 }
 opt_design
 place_design
@@ -60,7 +68,10 @@ route_design
 
 set wns 0.0
 set paths [get_timing_paths -max_paths 1 -nworst 1 -setup -quiet]
-if {[llength $paths]} { set wns [get_property SLACK [lindex $paths 0]] }
+if {[llength $paths]} {
+    set s [get_property SLACK [lindex $paths 0]]
+    if {$s ne "" && [string is double -strict $s]} { set wns $s }
+}
 set achieved [expr {$period - $wns}]
 set fmax [expr {$achieved > 0 ? 1000.0 / $achieved : 0}]
 
