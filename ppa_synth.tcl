@@ -57,9 +57,12 @@ if {[llength [get_ports -quiet $clkp]]} {
     # this, simple designs have only unconstrained I/O paths and SLACK comes
     # back empty (breaking Fmax). Zero delay => slack reflects the design's own
     # logic depth, consistently across candidates.
-    set din [remove_from_collection [all_inputs] [get_ports $clkp]]
+    set din {}
+    foreach p [get_ports -quiet -filter {DIRECTION == IN}] {
+        if {[get_property NAME $p] ne $clkp} { lappend din $p }
+    }
     if {[llength $din]} { set_input_delay -clock vclk 0.000 $din }
-    set dout [all_outputs]
+    set dout [get_ports -quiet -filter {DIRECTION == OUT}]
     if {[llength $dout]} { set_output_delay -clock vclk 0.000 $dout }
 }
 opt_design
