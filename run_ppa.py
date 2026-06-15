@@ -81,7 +81,8 @@ def main():
 
     files = []
     if args.dir:
-        files += sorted(glob.glob(os.path.join(args.dir, "*.v")))
+        files += sorted(glob.glob(os.path.join(args.dir, "*.sv"))
+                        + glob.glob(os.path.join(args.dir, "*.v")))
     if args.files:
         files += args.files
     if not files:
