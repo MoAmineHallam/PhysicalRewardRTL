@@ -26,41 +26,61 @@ import numpy as np
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--ppa", required=True)
-    ap.add_argument("--dataset", required=True)
+    ap.add_argument("--dataset", default=None,
+                    help="join rewards from here (gap-study pool naming)")
+    ap.add_argument("--manifest", default=None,
+                    help="module->{design,family} map (gen_ppa_set output); "
+                         "candidates are all correct by construction")
     ap.add_argument("--min-reward", type=float, default=0.999,
-                    help="only candidates at/above this functional reward")
+                    help="only candidates at/above this functional reward "
+                         "(used with --dataset)")
     args = ap.parse_args()
 
-    rew = collections.defaultdict(list)
-    fam = {}
-    for line in open(args.dataset):
-        try:
-            r = json.loads(line)
-        except ValueError:
-            continue
-        rew[r["design"]].append(r["reward"])
-        fam[r["design"]] = r.get("family", "?")
-
     rows, n_synth, n_fail = [], 0, 0
-    for line in open(args.ppa):
-        try:
-            p = json.loads(line)
-        except ValueError:
-            continue
-        if not p.get("compiled"):
-            n_fail += 1
-            continue
-        n_synth += 1
-        mod = p["module"]
-        try:
-            idx = int(mod[1:].split("_", 1)[0])
-            design = mod[1:].split("_", 1)[1]
-            r = rew[design][idx]
-        except (ValueError, KeyError, IndexError):
-            continue
-        if r < args.min_reward:
-            continue
-        rows.append({**p, "design": design, "family": fam.get(design, "?")})
+    if args.manifest:
+        mani = json.load(open(args.manifest))
+        for line in open(args.ppa):
+            try:
+                p = json.loads(line)
+            except ValueError:
+                continue
+            if not p.get("compiled"):
+                n_fail += 1
+                continue
+            n_synth += 1
+            m = mani.get(p["module"])
+            if m:
+                rows.append({**p, "design": m["design"],
+                             "family": m.get("family", "?")})
+    else:
+        rew = collections.defaultdict(list)
+        fam = {}
+        for line in open(args.dataset):
+            try:
+                r = json.loads(line)
+            except ValueError:
+                continue
+            rew[r["design"]].append(r["reward"])
+            fam[r["design"]] = r.get("family", "?")
+        for line in open(args.ppa):
+            try:
+                p = json.loads(line)
+            except ValueError:
+                continue
+            if not p.get("compiled"):
+                n_fail += 1
+                continue
+            n_synth += 1
+            mod = p["module"]
+            try:
+                idx = int(mod[1:].split("_", 1)[0])
+                design = mod[1:].split("_", 1)[1]
+                r = rew[design][idx]
+            except (ValueError, KeyError, IndexError):
+                continue
+            if r < args.min_reward:
+                continue
+            rows.append({**p, "design": design, "family": fam.get(design, "?")})
 
     by = collections.defaultdict(list)
     for r in rows:
