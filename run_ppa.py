@@ -52,11 +52,15 @@ def run_one(vivado, vfile, top, clk, period):
     """Run ppa_synth.tcl on one file; return the parsed PPA dict."""
     with tempfile.TemporaryDirectory() as wd:
         outj = os.path.join(wd, "ppa.json")
-        cp = subprocess.run(
-            [vivado, "-mode", "batch", "-nojournal", "-nolog",
-             "-source", TCL, "-tclargs", vfile, top, clk,
-             str(period), outj],
-            capture_output=True, text=True)
+        cmd = [vivado, "-mode", "batch", "-nojournal", "-nolog",
+               "-source", TCL, "-tclargs", vfile, top, clk,
+               str(period), outj]
+        if os.name == "nt":
+            # vivado is a .bat on Windows -> needs the shell; quote args w/ spaces
+            cmd = " ".join(f'"{c}"' if " " in c else c for c in cmd)
+            cp = subprocess.run(cmd, capture_output=True, text=True, shell=True)
+        else:
+            cp = subprocess.run(cmd, capture_output=True, text=True)
         if os.path.exists(outj):
             try:
                 return json.load(open(outj))
