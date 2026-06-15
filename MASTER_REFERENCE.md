@@ -257,32 +257,50 @@ reveals. Two tiers.
 - `synth.fails` — exclude list (synth + impl failures).
 - `cand_gap.jsonl` — `{module, design, family, sim_reward, hw_reward, gap}` per candidate.
 
-### CURRENT STATE (2026-06-14)
-- 462 candidates selected (stratified: lo 154, mid 154, hi 102, sat 51, dead 1;
-  283 distinct designs, 40 families).
-- **5 of 8 bitstreams built** (cb0,1,5,6,7 ≈ ~300 candidates). cb2,3,4 fail on
-  multiple-driver candidates — **deliberately skipped** (~300 is plenty; no bias,
-  selection was shuffled). `score_hw_candidates.py` auto-skips missing batches.
-- **Board capture RUNNING / next:** transfer to `~/gap_study` on board, run with
-  the pynq-venv python (see §1). Then `analyze_gap.py` → the tier-2 number.
+### CURRENT STATE / RESULT (2026-06-15) — tier-2 is essentially NULL
 
-### EXACT COMMANDS (gap study)
+**Two confounds were found and fixed; after fixing them the behavioral gap
+vanishes.** History (do not quote the intermediate numbers — they were artifacts):
+- First free-running capture (267 cand): looked like 14.2% gap. CONFOUND 1: the
+  sim reward (3 registration shifts) and silicon reward (4096-offset phase search)
+  used different scorers.
+- `verify_gap.py` control (re-sim, identical scorer): 13/38 "survived", looked like
+  4.9% sim-over-rewards in ALU/gray. CONFOUND 2: `hw_reward` phase search
+  (max_phase=4096) is far too small for large-period designs (ALU is aperiodic);
+  a perfectly-correct ALU window scores 0.57–0.78 under that scorer (proven by a
+  golden-vs-golden test). The "defects" were alignment failures.
+- **FIX: reset-on-arm capture** (LA `capturing` output → `dut_top` holds the
+  stimulus counter AND DUTs in reset until capture; every capture starts at phase 0
+  = `golden[0:N]`; scorer = small registration-shift search, no phase search).
+- **Reset-on-arm cb0 (64 candidates), verify_gap clean result: 1/8 survive.**
+  Sanity gate PASSED — correct candidates (sim=1.0) score hw=1.0; ALU now 1.0.
+  The lone survivor `c1_cmp2b` (sim 0.92 vs silicon 0.79, ~0.13) is small and
+  possibly residual. **Tier-2 behavioral gap ≈ 1.6%, tiny — simulation is a
+  faithful behavioral proxy for this synthesizable synchronous-logic catalog.**
+
+**Honest conclusion:** the "silicon catches hidden behavioral defects" jackpot is
+NOT real for this design class. LLM RTL broken enough to behave differently is
+caught earlier in TIER 1 (won't synthesize/implement); what survives to run is
+clean, and sim predicts it faithfully. Hardware-necessity therefore lives in:
+(1) tier-1 (sim-valid but unsynthesizable/unimplementable — real, alignment-free),
+(2) physical PPA / silicon-Fmax (sim-impossible). NOT behavioral re-checking.
+This negative tier-2 result is itself publishable (it scopes when sim suffices).
+
+TODO to finalize: build cb1–7 and re-capture (reset-on-arm) for the full ~460-
+candidate confirmation; inspect `caps/c1_cmp2b.npy` to classify the one survivor.
+
+### EXACT COMMANDS (gap study, reset-on-arm)
 ```powershell
 # laptop, in C:\Users\Amine\mas\fpga-repo
 git pull
-python gen_candidate_bitstream.py --dataset dataset.jsonl --n 512
-$env:PATH += ";C:\Xilinx\Vivado\2023.1\bin"
-vivado -mode batch -source synth_check.tcl -tclargs rtl\cand_batches\cand rtl\cand_batches\synth.fails
 python gen_candidate_bitstream.py --dataset dataset.jsonl --n 512 --exclude rtl\cand_batches\synth.fails
+$env:PATH += ";C:\Xilinx\Vivado\2023.1\bin"
 for ($k=0; $k -le 7; $k++) { vivado -mode batch -source rtl\cand_batches\build_cb$k.tcl }
-# if batches fail: python extract_build_fails.py ; then regenerate + rebuild
-# stage + scp to board (see chat), then on board:
-#   cd ~/gap_study
-#   sudo /usr/local/share/pynq-venv/bin/python3 score_hw_candidates.py \
-#       --bit-dir rtl/cand_batches --manifest rtl/cand_batches/cand_manifest.json \
-#       --out rtl/cand_batches/cand_gap.jsonl
-# back anywhere:
-python analyze_gap.py rtl/cand_batches/cand_gap.jsonl
+# stage bitstreams + scripts + rtl_library/manifest.json, scp to board ~/gap_study
+# board: cd ~/gap_study; sudo /usr/local/share/pynq-venv/bin/python3 \
+#   score_hw_candidates.py --bit-dir rtl/cand_batches \
+#   --manifest rtl/cand_batches/cand_manifest.json --out cand_gap.jsonl --save-dir caps
+# server (iverilog): python verify_gap.py --gap cand_gap.jsonl --dataset dataset.jsonl
 ```
 
 ---
