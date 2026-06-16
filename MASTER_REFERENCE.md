@@ -289,6 +289,32 @@ This negative tier-2 result is itself publishable (it scopes when sim suffices).
 TODO to finalize: build cb1–7 and re-capture (reset-on-arm) for the full ~460-
 candidate confirmation; inspect `caps/c1_cmp2b.npy` to classify the one survivor.
 
+### RL-PPA RESULTS (2026-06-16) — physical-quality direction, fully measured
+Pipeline: `gen_ppa_set.py` (correct candidates from dataset.jsonl, by family) ->
+`run_ppa.py`/`ppa_synth.tcl` (Vivado OOC synth+impl -> Fmax/LUT) -> `analyze_ppa.py`
+(spread), `grpo_train_v4.py` (offline PPA GRPO), `eval_ppa_gen.py` (generate+score),
+`bestofn_ppa.py` (reranking gain). All PPA metrics are Vivado estimates (CAD), not
+silicon — clock-sweep Fmax not usable here (designs ~400 MHz, above the Z2 ceiling).
+
+1. **Headroom exists but is CONCENTRATED.** Functionally-correct candidates of the
+   same design vary physically only where coding style matters: satadd12b 13–38 LUT
+   (236–410 MHz), free-running counters 2–20+ LUT. Multipliers: ZERO spread (`*` maps
+   identically). Simple/idiomatic designs: zero spread. Mean LUT spread ~1.3 (diluted).
+2. **Naive offline RL toward PPA FAILS (negative result).** `grpo_train_v4` (reward =
+   timing_w·Fmax − area_w·LUT, group-relative, KL to base) over-optimised: KL ran to
+   ~7 by step 400, and even step_100 DEGRADED functional correctness (mod108_counter
+   0/8, mod152 1/8 vs base 8/8, 6/8). Cause: reward had no correctness term, so the
+   model memorised lean candidates' tokens and lost correctness generalisation.
+3. **Best-of-N reranking captures it safely.** Keep only correct generations, pick the
+   leanest: **+3.6% area / +1.2% Fmax averaged over 80 designs**, but **−48% LUT on
+   satadd12b (25→13), −82% on counter15b (11→2)** on the headroom subset. Never hurts
+   correctness (selects among correct outputs only). This is the robust deliverable.
+
+Honest verdict: as a standalone PPA contribution this is MODEST (concentrated headroom,
+mostly idiomatic-vs-clumsy coding; avg gain small). The project's strength is the
+silicon-grounded CHARACTERISATION (methodology + tier-1/tier-2 gap findings + this PPA
+characterisation incl. the RL negative result), not a flashy optimisation number.
+
 ### EXACT COMMANDS (gap study, reset-on-arm)
 ```powershell
 # laptop, in C:\Users\Amine\mas\fpga-repo
