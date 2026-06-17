@@ -12,17 +12,24 @@
 
 ---
 
-## 0. TL;DR — what exists and what it's worth
+## 0. TL;DR — what exists and what it's worth (honest provenance)
 
-| Thing | State | Headline result |
-|---|---|---|
-| MAS (design+verification agents) | works (server) | self-correcting RTL gen + sim verify, retries |
-| MAS (synthesis→deploy loop) | **coded, never run end-to-end** | no MAS bitstream ever produced (no Vivado on server) |
-| Hardware golden capture (966 designs) | **done, validated** | 966 designs bit-exact vs silicon, 0 mismatch |
-| RL dataset | done | 9,660 candidates scored vs silicon golden |
-| GRPO fine-tune (grpo_v3) | done | VerilogEval pass@1 +2.2, compile +1.4 vs base |
-| Sim/silicon gap study | **in progress** | tier-1 measured; tier-2 capture running on board |
-| PPA / silicon-Fmax reward | not started (idea) | clock-sweep confirmed feasible on Z2 |
+| Thing | State | Measurement basis | Headline result |
+|---|---|---|---|
+| MAS (design+verification agents) | works (server) | server run | self-correcting RTL gen + sim verify |
+| MAS (synthesis→deploy loop) | **coded, never run end-to-end** | — | no MAS bitstream ever produced |
+| Hardware golden capture (966 designs) | done | **silicon-measured** | 966 designs bit-exact vs board, 0 mismatch |
+| RL dataset | done | **silicon-grounded** (silicon goldens, sim scoring) | 9,660 candidates, mean reward 0.858 |
+| GRPO fine-tune (grpo_v3) | done | simulation (VerilogEval) | pass@1 **+2.2pp**, compile +1.4pp vs base |
+| Sim/silicon gap — tier 1 | done | **silicon-measured** | 3 synth + multiple impl failures confirmed |
+| Sim/silicon gap — tier 2 | done (1 batch) | **silicon-measured** | ≈1.6% gap; simulation is faithful for this catalog |
+| PPA spread characterisation | done | **Vivado estimate (CAD)** | headroom concentrated; mean spread small on trivial catalog |
+| PPA offline RL (grpo_v4) | done — **FAILED** | Vivado estimate (CAD) | KL explosion, correctness degraded |
+| Best-of-N PPA reranking | done | **Vivado estimate (CAD)** | +3.6% avg LUT, −48% on satadd12b |
+| Silicon Fmax measurement | **NOT done** | — | not possible on current catalog (designs >400 MHz, above Z2 ceiling) |
+| Accelerator-block catalog | **NOT built** | — | prerequisite for everything real below |
+
+**Root problem with all PPA numbers:** the 966-design catalog consists of trivial primitives (counters, adders, comparators). These have no real architectural degrees of freedom, and their Fmax is ~400 MHz — above the Z2's programmable clock ceiling (~250 MHz). The PPA numbers above are Vivado CAD estimates on a catalog where silicon Fmax is unmeasurable. That is why the gains are modest. **This must be fixed before any more RL or PPA experiments.**
 
 **Baseline to beat:** RTLCoder on VerilogEval-156 = **37.2% functional / 68.6% compile** (greedy).
 
@@ -394,11 +401,246 @@ number against the original paper before quoting.
 
 ---
 
-## 8. WHAT'S LEFT (priority order)
-1. **Finish gap study tier-2:** board capture (running) → `analyze_gap.py` → the number.
-2. If gap is real: write it up as the core contribution.
-3. Wire `grpo_v3` adapter into the MAS Design Agent (cheap integration win).
-4. 2nd base model (generality).
-5. Catalog expansion (FSM/combinational families).
-6. Silicon-Fmax / PPA reward (Lever 3, = supervisor's RL-PPA on the generation side).
-7. Supervisor conversation: reconcile the two tracks into one story.
+## 8. HONEST PROVENANCE OF ALL RESULTS TO DATE
+
+The table below labels every number in this project by its actual measurement basis.
+**Do not cite any of these numbers as "silicon-measured" unless the row says so.**
+
+| Result | Value | Measurement basis | Status |
+|---|---|---|---|
+| 966 designs captured, 0 mismatch | 966/966 bit-exact | **SILICON** (PYNQ-Z2 board) | ✅ Real, validated |
+| Tier-1 gap: 3 synth failures | 3 of 462 candidates | **SILICON** (Vivado synth/impl on laptop) | ✅ Real |
+| Tier-1 gap: multiple-driver impl failures | several candidates | **SILICON** (Vivado impl DRC) | ✅ Real |
+| Tier-2 gap after confound fixes | ~1.6% (1/64 candidates) | **SILICON** (board capture, reset-on-arm) | ✅ Real; negative result |
+| GRPO v3 pass@1 +2.2pp | 32.3% → 34.5% | **simulation** (VerilogEval iverilog) | ✅ Real, not silicon |
+| GRPO v3 compile +1.4pp | 65.6% → 67.0% | **simulation** | ✅ Real, not silicon |
+| PPA spread on 300-candidate pool | mean LUT spread ~1.3 | **Vivado estimate (CAD)** | ✅ Measured; but catalog too trivial for silicon Fmax |
+| grpo_v4 KL explosion / correctness degradation | KL→7, mod108 0/8 | **simulation** | ✅ Confirmed failure (documented negative result) |
+| Best-of-N: +3.6% avg LUT reduction | 3.6% avg, −48% satadd12b | **Vivado estimate (CAD)** | ✅ Measured; catalog-limited |
+| Silicon Fmax on current catalog | **NOT MEASURED** | — | ❌ Not possible: designs ~400 MHz > Z2 ceiling (~250 MHz) |
+| Silicon Fmax on accelerator-class designs | **NOT MEASURED** | — | ❌ Not yet done; this is the gap to fill |
+| GRPO with correctness-gated PPA/Fmax reward | **NOT TRAINED** | — | ❌ Never attempted |
+
+**What is actually silicon-grounded right now:**
+- The golden waveforms (scoring oracle) are real silicon captures.
+- The functional reward training signal is silicon-grounded in the sense that correctness is
+  defined by silicon-validated goldens — but the scoring itself is iverilog simulation against
+  those goldens, which is equivalent for correct designs.
+- Tier-1 and tier-2 gap measurements are real silicon measurements.
+- Everything PPA-related is Vivado CAD estimates, **not hardware**.
+
+**What is NOT real yet:**
+- Silicon Fmax (no clock-sweep, no board measurement of timing).
+- Any RL experiment that genuinely optimizes for a hardware-measured physical property.
+- MAS end-to-end (synthesis→deploy never ran).
+
+---
+
+## 9. PHASED EXECUTION PLAN — THE REAL WORK
+
+**Principle:** no phase produces numbers until its validation gate passes. If a gate fails,
+stop, diagnose, fix the catalog/harness, and repeat before proceeding. Numbers from a failed
+gate are worthless and must be discarded.
+
+---
+
+### Phase 0 — Accelerator-Block Catalog (PREREQUISITE FOR EVERYTHING)
+
+**Goal:** replace the trivial-primitive catalog with designs that have real architectural
+degrees of freedom AND run at Fmax in the 80–250 MHz range (within Z2's clock-sweep window).
+
+**Why this is the fix:** a mod-counter or 2-bit AND has exactly one correct implementation
+style — there is nothing to optimise, no architectural headroom, and no measurable silicon
+Fmax. Accelerator blocks (FIR, CORDIC, systolic matmul, sorting net) have multiple
+equivalent-but-physically-different implementations and run at 100–200 MHz on a 7-series part.
+
+**Target designs (5–8 families, 3–5 parameterised variants each):**
+
+| Family | Variants | Expected Fmax | Why this family |
+|---|---|---|---|
+| FIR filter (direct-form) | 8-tap, 16-tap, 32-tap; 8-bit, 12-bit coeff | 120–200 MHz | multiply-accumulate chain, pipelining has huge impact |
+| CORDIC (iterative) | 8-stage, 16-stage rotation; sin/cos/atan | 100–180 MHz | shift-add chain, stage ordering matters |
+| Systolic MAC array | 2×2, 4×4; int8, int16 | 80–160 MHz | local accumulator vs systolic vs tree — large area/Fmax spread |
+| Bitonic sorting network | N=8, N=16 comparators; 8-bit keys | 150–250 MHz | comparator tree depth directly limits Fmax |
+| Barrel shifter / priority encoder | 8/16/32-bit | 200–250 MHz | optional: gives continuity with current catalog |
+
+**Deliverable per design:**
+1. `rtl_library/<name>/design.v` — parameterised RTL (at least one straightforward impl)
+2. `rtl_library/<name>/golden.py` — Python reference model producing expected outputs
+3. `rtl_library/<name>/spec.txt` — natural-language prompt spec for the LLM
+4. `rtl_library/<name>/waveform.npy` — silicon-captured golden (Phase 1 gate)
+
+**Validation gate (must pass before Phase 1):**
+- `verify_manifest.py` on all new designs: 100% PASS (iverilog sim vs golden_body)
+- `run_ppa.py` on at least 3 hand-written stylistic variants per design: Vivado reports
+  Fmax in range [80, 250] MHz for at least 3 designs.
+  If Fmax > 250 MHz for ALL variants → design is still too fast → replace it.
+
+**Estimated effort:** 2–3 days (writing RTL + goldens; running Vivado to check Fmax range).
+
+---
+
+### Phase 1 — Silicon Fmax Harness (FIRST REAL SILICON PPA NUMBER)
+
+**Goal:** measure actual silicon Fmax for at least one accelerator-class design on the Z2
+board via clock sweep. This produces the first number that simulation cannot produce.
+
+**Method:**
+1. Build bitstream with ONE design under test (or a small batch of 4–8 DUTs) using the
+   existing `gen_bitstream.py` / `gen_candidate_bitstream.py` infrastructure.
+2. On the board: sweep `Clocks.fclk0_mhz` from 50 MHz up in 5–10 MHz steps.
+3. At each frequency: run `capture_waveforms.py`, score capture vs golden (reset-on-arm,
+   small registration shift).
+4. Silicon Fmax = the highest frequency at which hw_reward ≥ 0.99 (or last frequency before
+   the first failure if the failure is decisive).
+5. Compare to Vivado's reported Fmax: document the ratio.
+
+**Validation gate (must pass before Phase 2):**
+- For at least 2 designs, silicon Fmax measurement is repeatable (±5 MHz across 3 runs).
+- Silicon Fmax / Vivado Fmax ratio is consistent (within ±15%) across the designs tested.
+  If the ratio is wildly inconsistent → harness bug; debug before proceeding.
+- If ALL designs have silicon Fmax > 250 MHz → catalog still has wrong designs → return to Phase 0.
+
+**Key harness file to write:** `clock_sweep_fmax.py` on the board:
+```python
+# pseudo-code
+from pynq import Clocks, Overlay
+import numpy as np
+
+def measure_fmax(overlay, design_idx, golden, lo=50, hi=250, step=5):
+    last_ok = lo
+    for f in range(lo, hi + step, step):
+        Clocks.fclk0_mhz = f
+        time.sleep(0.01)  # PLL settle
+        cap = capture(overlay, design_idx)
+        if score(cap, golden) >= 0.99:
+            last_ok = f
+        else:
+            break
+    return last_ok
+```
+
+**Estimated effort:** 1–2 days (harness + board time + validation runs).
+
+---
+
+### Phase 2 — Correctness-Gated PPA / Silicon-Fmax RL
+
+**Goal:** train GRPO where PPA reward is ONLY given to functionally-correct candidates.
+This is the correct formulation that grpo_v4 skipped.
+
+**Two sub-options (run both; silicon-Fmax is the gold standard):**
+
+#### 2a — Vivado-estimated Fmax (offline, fast to iterate)
+- Generate N candidates per accelerator design → score correctness with iverilog
+- For correct candidates only: run `ppa_synth.tcl` → get Vivado Fmax + LUT
+- Reward: `correctness × (timing_w × vivado_fmax − area_w × lut)` (zero reward if incorrect)
+- This is online-ish: correctness gate is fast (iverilog); Vivado is slow (run offline, cache)
+
+#### 2b — Silicon Fmax (online, slower but hardware-measured)
+- Same as 2a but replace Vivado Fmax with measured silicon Fmax (Phase 1 harness)
+- Only feasible for a subset of designs at a time (board throughput)
+- This is the number that is genuinely novel and defensible vs reviewers
+
+**Training recipe (fixing grpo_v4's failure):**
+- Reward = `correctness_gate(c) × ppa_quality(c)` where `correctness_gate` = 0/1 from iverilog
+- Group advantage normalised over correct candidates only; incorrect = zero advantage, not negative
+  (negative advantage on wrong RTL teaches the model TO write wrong RTL to avoid the penalty)
+- KL coef ≥ 0.1 (grpo_v4 used 0.05; insufficient)
+- Log correctness rate alongside loss; stop immediately if correctness < base at any checkpoint
+
+**New file to write:** `grpo_train_v5.py` — correctness-gated PPA GRPO using accelerator catalog.
+
+**Validation gate (must pass before writing up Phase 2 results):**
+- Correctness of grpo_v5 ≥ base model at every saved checkpoint (no regression).
+- On accelerator designs: at least 3 designs show measurable silicon Fmax improvement
+  (grpo_v5 best-of-8 correct gens vs base best-of-8 correct gens, board-measured).
+- Numbers must come from the same scoring harness for both base and grpo_v5 — no different
+  evaluation pipelines.
+- If correctness degrades → do NOT keep training; investigate the reward formula and fix it.
+
+**Estimated effort:** 3–5 days (training + board eval).
+
+---
+
+### Phase 3 — MAS Completion (System Integration)
+
+**Goal:** make the MAS end-to-end path actually run at least once, and wire the fine-tuned
+model (grpo_v3 or grpo_v5) into the Design Agent.
+
+**Steps:**
+1. Point `llm.py` `coder_call()` at `base + grpo_v3 adapter` (one-line change).
+2. Run `main.py` on a simple accelerator design with Vivado reachable (laptop).
+   The synthesis agent needs `shutil.which("vivado")` to find Vivado on the laptop.
+3. If synthesis produces a bitstream: upload to board via deployment agent (paramiko);
+   capture waveform; confirm `VALIDATION_PASS`.
+
+**Validation gate:**
+- At least one MAS-generated design, synthesised end-to-end, deployed to board, passes
+  `validate_hw.py` (hw_reward ≥ 0.99 on board). Document the full run.
+- Record whether grpo_v3 Design Agent produces better first-attempt RTL than base
+  (fewer verification retries or fewer synth warnings).
+
+**Estimated effort:** 1–2 days (mostly debugging the synthesis→deploy path).
+
+---
+
+### Phase 4 — Second Model for Generality (Optional, Strengthens Paper)
+
+**Goal:** show that the silicon-grounded reward framework is not specific to RTLCoder-7B.
+
+**Steps:**
+1. Run `build_dataset.py` with DeepSeek-Coder-6.7B (available on server) on the 966-design
+   pool → `dataset_dsc.jsonl`.
+2. Run `grpo_train_v3.py` (same recipe) → `grpo_dsc/`.
+3. Eval: `run_verilogeval_passk.py` base vs grpo_dsc, same 156 problems.
+4. Run tier-1 gap study (synth screen) on DeepSeek-Coder candidates — no board needed.
+
+**Validation gate:**
+- Eval run with identical script and seed for both base and grpo_dsc.
+- Tier-1 gap measurement uses the same `synth_check.tcl` pipeline.
+- Report the generality claim ONLY if BOTH models show positive direction (even if small).
+
+**Estimated effort:** 1–2 days (dataset gen + training; eval is a known script).
+
+---
+
+### Summary: what produces real numbers and in what order
+
+```
+Phase 0: catalog built, Vivado Fmax in [80,250] MHz confirmed
+    ↓ gate: iverilog 100% pass + Vivado Fmax range check
+Phase 1: silicon Fmax measured on board for ≥2 designs, repeatable ±5 MHz
+    ↓ gate: repeatability + Vivado ratio consistency
+Phase 2a: correctness-gated PPA GRPO, Vivado estimates (fast, first publishable RL result)
+    ↓ gate: zero correctness regression + ≥3 designs with measurable Vivado Fmax gain
+Phase 2b: same but silicon Fmax (the gold number, genuinely hardware-measured)
+    ↓ gate: same + board-measured Fmax improvement
+Phase 3: MAS end-to-end with fine-tuned model (system paper contribution)
+    ↓ gate: at least one bitstream deployed and board-validated
+Phase 4: second model generality (optional but important for reviewers)
+    ↓ gate: identical eval pipeline, both models positive
+```
+
+**Stop and reassess if:**
+- Phase 0 Vivado Fmax check shows ALL accelerator designs > 250 MHz → need different designs
+- Phase 1 silicon Fmax / Vivado ratio is unstable → harness bug, or Z2 PLL noise
+- Phase 2 correctness drops at any checkpoint → reward formula wrong, stop immediately
+
+**Do NOT start Phase 2 until Phase 1 gate passes.** The whole point of Phase 2 is to optimise
+for a real hardware signal. If the silicon Fmax harness is broken or produces inconsistent
+numbers, any training result is meaningless.
+
+---
+
+### Files to write (not yet existing)
+
+| File | Phase | Purpose |
+|---|---|---|
+| `gen_accelerator_catalog.py` | 0 | generate RTL + golden.py + spec.txt for accelerator families |
+| `clock_sweep_fmax.py` | 1 | board-side: sweep fclk0, capture, score → silicon Fmax |
+| `grpo_train_v5.py` | 2 | correctness-gated PPA/Fmax GRPO on accelerator catalog |
+| `eval_silicon_fmax.py` | 2b | board eval: compare base vs grpo_v5 silicon Fmax, best-of-N |
+
+The existing `run_ppa.py`, `ppa_synth.tcl`, `gen_candidate_bitstream.py`,
+`score_hw_candidates.py`, `bestofn_ppa.py` all re-use without modification.
