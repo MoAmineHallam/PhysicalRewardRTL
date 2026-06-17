@@ -1,13 +1,16 @@
 # Auto-generated - Phase-0 silicon-Fmax spike (self-contained).
+# Constrained at 200 MHz so the tools optimise the (shallow) LA readback path
+# to be valid across the whole sweep range; the DUTs will not meet 200 MHz
+# (that is the point -- we over-clock and find where each breaks).
 set PART    "xc7z020clg400-1"
-set CLK_MHZ 100
+set CLK_MHZ 200
 set ROOT    [file normalize [file join [file dirname [info script]] .. ..]]
 set OUT     [file join $ROOT rtl spike out]
 file mkdir $OUT
 
 create_project sys_spike [file join $OUT proj] -part $PART -force
 add_files [list \
-    [file join $ROOT rtl la_axi_wide.v] \
+    [file join $ROOT rtl la_axi_fast.v] \
     [file join $ROOT rtl spike dut_top_spike.v] \
     [file join $ROOT rtl_library fir16_8b design.v] \
     [file join $ROOT rtl_library echo8b design.v] ]
@@ -20,7 +23,7 @@ apply_bd_automation -rule xilinx.com:bd_rule:processing_system7 \
     [get_bd_cells ps7]
 set_property -dict [list CONFIG.PCW_FPGA0_PERIPHERAL_FREQMHZ $CLK_MHZ] \
     [get_bd_cells ps7]
-create_bd_cell -type module -reference la_axi_wide la0
+create_bd_cell -type module -reference la_axi_fast la0
 create_bd_cell -type module -reference dut_top      dut0
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 \
     -config {Master "/ps7/M_AXI_GP0" Clk "Auto"} \

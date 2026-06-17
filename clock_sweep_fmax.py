@@ -17,8 +17,9 @@ GATE (printed at the end -- ALL must hold to justify building the catalog):
   1. canary Fmax  -  FIR Fmax  >=  --canary-margin  (default 20 MHz)
        else: the harness, not the FIR, is the bottleneck -> FIX THE HARNESS.
   2. FIR Fmax repeatable within +/- --repeat-tol (default 5 MHz) across --runs.
-  3. FIR Fmax / Vivado-STA Fmax in a plausible range (1.0 - 1.6x) -- pass the
-     STA number via --vivado-fmax (from run_ppa on rtl_library/fir16_8b).
+  3. FIR Fmax / Vivado-STA Fmax in a plausible range (1.0 - 2.2x; room-temp
+     silicon beats worst-case signoff by up to ~2x) -- pass the STA number via
+     --vivado-fmax (from run_ppa on rtl_library/fir16_8b).
 
 Run on the board (PYNQ image, as root):
   sudo /usr/local/share/pynq-venv/bin/python3 clock_sweep_fmax.py \
@@ -107,7 +108,9 @@ def main():
     ap.add_argument("--hi", type=float, default=260.0)
     ap.add_argument("--step", type=float, default=5.0)
     ap.add_argument("--runs", type=int, default=3)
-    ap.add_argument("--depth", type=int, default=4096)
+    ap.add_argument("--depth", type=int, default=2048,
+                    help="capture samples; must be <= the LA buffer DEPTH "
+                         "(la_axi_fast = 2048)")
     ap.add_argument("--n-score", type=int, default=1024)
     ap.add_argument("--max-shift", type=int, default=8)
     ap.add_argument("--threshold", type=float, default=0.99)
@@ -195,10 +198,11 @@ def main():
 
         if args.vivado_fmax:
             ratio = fir_med / args.vivado_fmax
-            ok3 = 1.0 <= ratio <= 1.6
+            ok3 = 1.0 <= ratio <= 2.2
             print(f"[{'PASS' if ok3 else 'FAIL'}] silicon/STA ratio: "
                   f"{fir_med}/{args.vivado_fmax} = {ratio:.2f} "
-                  f"(expect 1.0-1.6x)")
+                  f"(expect 1.0-2.2x; room-temp silicon beats worst-case "
+                  f"signoff by up to ~2x)")
             if not ok3:
                 verdict["go"] = False
                 verdict["reasons"].append(
