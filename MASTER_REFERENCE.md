@@ -442,9 +442,64 @@ The table below labels every number in this project by its actual measurement ba
 stop, diagnose, fix the catalog/harness, and repeat before proceeding. Numbers from a failed
 gate are worthless and must be discarded.
 
+**Why this order (changed 2026-06-17):** the original draft built the whole accelerator
+catalog FIRST and only then checked whether silicon Fmax is even measurable. That repeats the
+old mistake — investing days of catalog work before knowing the measurement is real. The
+silicon-Fmax harness is the single load-bearing, unproven assumption of this entire plan, so
+**Phase 0 now proves the measurement on ONE hand-written design before anything else is
+built.** If that fails, we learn it in half a day and pivot, instead of after a 3-day catalog.
+
+**Two risks this plan explicitly guards against:**
+1. **The harness measuring itself, not the DUT.** When `fclk0` is swept, the capture counter,
+   the AXI interface, and the logic analyzer are all clocked by the same fabric clock. If the
+   harness's timing fails before the DUT's, the "silicon Fmax" is the harness's, not the
+   design's — a silent way to generate confident wrong numbers. Phase 0 must prove the DUT
+   fails first.
+2. **The framing risk.** Vivado static timing (STA) is signoff — the trusted number the field
+   ships on. A reviewer will ask "why measure silicon Fmax when STA already exists?" Silicon
+   typically runs 1.1–1.5× faster than signoff (room temp, -1 part), but nobody ships above
+   signoff, so "sim can't produce it" is NOT a sufficient justification (it's not sim, it's
+   STA). Treat the **Vivado-estimated, correctness-gated PPA result (Phase 3a) as the primary
+   defensible contribution**; silicon Fmax (3b) is the novel bonus, not the foundation. If
+   Phase 0 shows silicon Fmax is noisy/unviable, the paper still stands on 3a + the silicon
+   characterisation (goldens, tier-1, tier-2) already in hand.
+
 ---
 
-### Phase 0 — Accelerator-Block Catalog (PREREQUISITE FOR EVERYTHING)
+### Phase 0 — Silicon-Fmax Feasibility Spike (DO THIS FIRST, ~½–1 day)
+
+**Goal:** before building any catalog, prove on ONE hand-written accelerator that silicon Fmax
+is measurable, crisp, and attributable to the DUT. This is a go/no-go gate for the whole
+silicon-Fmax direction.
+
+**Steps:**
+1. Hand-write ONE design with real timing depth and an expected Fmax well inside the Z2 range —
+   a 16-tap direct-form FIR (8-bit data, 8-bit coeffs) is ideal: long MAC carry chain, ~120–180
+   MHz, plenty of timing margin to fail before the harness does.
+2. **Instrument the harness to prove it is NOT the bottleneck:** include a trivial "canary" DUT
+   (e.g. a shift-register echo) in the same bitstream on the same clock. As you raise the clock,
+   the FIR must diverge from its golden BEFORE the canary does. If the canary fails first (or
+   with the FIR), you are measuring harness/capture timing, not the design — STOP and fix the
+   harness (cross the DUT clock vs the capture/AXI clock, or pipeline the capture path).
+3. Build bitstream (one FIR + one canary), sweep `Clocks.fclk0_mhz` 50 MHz up, reset-on-arm
+   capture + score at each step (reuse `score_hw_candidates.py` scorer).
+4. Record: FIR silicon Fmax, canary silicon Fmax, Vivado STA Fmax for the FIR.
+
+**Validation gate (ALL must pass to proceed to Phase 1):**
+- Canary Fmax > FIR Fmax by a clear margin (≥ 20 MHz) → the measured number is the DUT's, not
+  the harness's.
+- FIR silicon Fmax repeatable within ±5 MHz across 3 runs (re-arm; ideally a board power-cycle).
+- FIR silicon Fmax / Vivado STA Fmax is in a plausible range (≈ 1.0–1.6×).
+- **If the divergence point is noisy (jumps > ±10 MHz), or the canary fails first, or the ratio
+  is implausible → silicon Fmax is NOT viable on this board. Do NOT build the accelerator
+  catalog for silicon-Fmax. Pivot: the PPA story becomes Vivado-estimated only (Phase 3a), and
+  the catalog is still built (Phase 1) but justified by Vivado-measured headroom, not silicon.**
+
+**File to write:** `clock_sweep_fmax.py` (board-side; see pseudo-code at end of this section).
+
+---
+
+### Phase 1 — Accelerator-Block Catalog (only after Phase 0 go/no-go)
 
 **Goal:** replace the trivial-primitive catalog with designs that have real architectural
 degrees of freedom AND run at Fmax in the 80–250 MHz range (within Z2's clock-sweep window).
@@ -464,13 +519,15 @@ equivalent-but-physically-different implementations and run at 100–200 MHz on 
 | Bitonic sorting network | N=8, N=16 comparators; 8-bit keys | 150–250 MHz | comparator tree depth directly limits Fmax |
 | Barrel shifter / priority encoder | 8/16/32-bit | 200–250 MHz | optional: gives continuity with current catalog |
 
+(The Phase-0 FIR is the first catalog entry — it is reused, not thrown away.)
+
 **Deliverable per design:**
 1. `rtl_library/<name>/design.v` — parameterised RTL (at least one straightforward impl)
 2. `rtl_library/<name>/golden.py` — Python reference model producing expected outputs
 3. `rtl_library/<name>/spec.txt` — natural-language prompt spec for the LLM
-4. `rtl_library/<name>/waveform.npy` — silicon-captured golden (Phase 1 gate)
+4. `rtl_library/<name>/waveform.npy` — silicon-captured golden
 
-**Validation gate (must pass before Phase 1):**
+**Validation gate (must pass before Phase 2):**
 - `verify_manifest.py` on all new designs: 100% PASS (iverilog sim vs golden_body)
 - `run_ppa.py` on at least 3 hand-written stylistic variants per design: Vivado reports
   Fmax in range [80, 250] MHz for at least 3 designs.
@@ -480,67 +537,46 @@ equivalent-but-physically-different implementations and run at 100–200 MHz on 
 
 ---
 
-### Phase 1 — Silicon Fmax Harness (FIRST REAL SILICON PPA NUMBER)
+### Phase 2 — Silicon Fmax Harness at Scale (only if Phase 0 said GO)
 
-**Goal:** measure actual silicon Fmax for at least one accelerator-class design on the Z2
-board via clock sweep. This produces the first number that simulation cannot produce.
+**Goal:** extend the Phase-0 harness to the full catalog and produce silicon Fmax for every
+design (skip this phase entirely if Phase 0 was no-go; PPA stays Vivado-estimated).
 
 **Method:**
-1. Build bitstream with ONE design under test (or a small batch of 4–8 DUTs) using the
-   existing `gen_bitstream.py` / `gen_candidate_bitstream.py` infrastructure.
-2. On the board: sweep `Clocks.fclk0_mhz` from 50 MHz up in 5–10 MHz steps.
-3. At each frequency: run `capture_waveforms.py`, score capture vs golden (reset-on-arm,
-   small registration shift).
-4. Silicon Fmax = the highest frequency at which hw_reward ≥ 0.99 (or last frequency before
-   the first failure if the failure is decisive).
-5. Compare to Vivado's reported Fmax: document the ratio.
+1. Build bitstreams with the catalog designs (+ canary) via the existing `gen_bitstream.py`
+   infrastructure.
+2. Run `clock_sweep_fmax.py` per design; the canary must still fail last in every bitstream.
+3. Silicon Fmax = highest frequency at which hw_reward ≥ 0.99 (reset-on-arm, small shift).
+4. Tabulate silicon Fmax vs Vivado STA Fmax across the catalog.
 
-**Validation gate (must pass before Phase 2):**
-- For at least 2 designs, silicon Fmax measurement is repeatable (±5 MHz across 3 runs).
-- Silicon Fmax / Vivado Fmax ratio is consistent (within ±15%) across the designs tested.
-  If the ratio is wildly inconsistent → harness bug; debug before proceeding.
-- If ALL designs have silicon Fmax > 250 MHz → catalog still has wrong designs → return to Phase 0.
+**Validation gate (must pass before Phase 3b):**
+- Canary fails last in every bitstream (re-confirm the Phase-0 guarantee at scale).
+- Each design's silicon Fmax repeatable within ±5 MHz across 3 runs.
+- Silicon/STA ratio consistent (within ±15%) across designs. If wildly inconsistent → harness
+  bug or board PLL noise; debug before any RL.
 
-**Key harness file to write:** `clock_sweep_fmax.py` on the board:
-```python
-# pseudo-code
-from pynq import Clocks, Overlay
-import numpy as np
-
-def measure_fmax(overlay, design_idx, golden, lo=50, hi=250, step=5):
-    last_ok = lo
-    for f in range(lo, hi + step, step):
-        Clocks.fclk0_mhz = f
-        time.sleep(0.01)  # PLL settle
-        cap = capture(overlay, design_idx)
-        if score(cap, golden) >= 0.99:
-            last_ok = f
-        else:
-            break
-    return last_ok
-```
-
-**Estimated effort:** 1–2 days (harness + board time + validation runs).
+**Estimated effort:** 1–2 days (board time + validation runs).
 
 ---
 
-### Phase 2 — Correctness-Gated PPA / Silicon-Fmax RL
+### Phase 3 — Correctness-Gated PPA / Silicon-Fmax RL
 
 **Goal:** train GRPO where PPA reward is ONLY given to functionally-correct candidates.
 This is the correct formulation that grpo_v4 skipped.
 
-**Two sub-options (run both; silicon-Fmax is the gold standard):**
+**Two sub-options — 3a is the PRIMARY deliverable, 3b is the bonus (see framing risk above):**
 
-#### 2a — Vivado-estimated Fmax (offline, fast to iterate)
+#### 3a — Vivado-estimated Fmax (PRIMARY; offline, fast to iterate)
 - Generate N candidates per accelerator design → score correctness with iverilog
 - For correct candidates only: run `ppa_synth.tcl` → get Vivado Fmax + LUT
 - Reward: `correctness × (timing_w × vivado_fmax − area_w × lut)` (zero reward if incorrect)
 - This is online-ish: correctness gate is fast (iverilog); Vivado is slow (run offline, cache)
+- This is the defensible result even if silicon-Fmax (Phase 0) turned out non-viable.
 
-#### 2b — Silicon Fmax (online, slower but hardware-measured)
-- Same as 2a but replace Vivado Fmax with measured silicon Fmax (Phase 1 harness)
+#### 3b — Silicon Fmax (BONUS; only if Phase 0/2 passed; slower, hardware-measured)
+- Same as 3a but replace Vivado Fmax with measured silicon Fmax (Phase 2 harness)
 - Only feasible for a subset of designs at a time (board throughput)
-- This is the number that is genuinely novel and defensible vs reviewers
+- The genuinely novel number — but it rides on 3a, it does not replace it
 
 **Training recipe (fixing grpo_v4's failure):**
 - Reward = `correctness_gate(c) × ppa_quality(c)` where `correctness_gate` = 0/1 from iverilog
@@ -551,10 +587,11 @@ This is the correct formulation that grpo_v4 skipped.
 
 **New file to write:** `grpo_train_v5.py` — correctness-gated PPA GRPO using accelerator catalog.
 
-**Validation gate (must pass before writing up Phase 2 results):**
+**Validation gate (must pass before writing up Phase 3 results):**
 - Correctness of grpo_v5 ≥ base model at every saved checkpoint (no regression).
-- On accelerator designs: at least 3 designs show measurable silicon Fmax improvement
-  (grpo_v5 best-of-8 correct gens vs base best-of-8 correct gens, board-measured).
+- On accelerator designs: at least 3 designs show measurable Fmax/area improvement
+  (grpo_v5 best-of-8 correct gens vs base best-of-8 correct gens). For 3a this is Vivado-
+  measured; for 3b it is board-measured.
 - Numbers must come from the same scoring harness for both base and grpo_v5 — no different
   evaluation pipelines.
 - If correctness degrades → do NOT keep training; investigate the reward formula and fix it.
@@ -563,7 +600,7 @@ This is the correct formulation that grpo_v4 skipped.
 
 ---
 
-### Phase 3 — MAS Completion (System Integration)
+### Phase 4 — MAS Completion (System Integration)
 
 **Goal:** make the MAS end-to-end path actually run at least once, and wire the fine-tuned
 model (grpo_v3 or grpo_v5) into the Design Agent.
@@ -585,7 +622,7 @@ model (grpo_v3 or grpo_v5) into the Design Agent.
 
 ---
 
-### Phase 4 — Second Model for Generality (Optional, Strengthens Paper)
+### Phase 5 — Second Model for Generality (Optional, Strengthens Paper)
 
 **Goal:** show that the silicon-grounded reward framework is not specific to RTLCoder-7B.
 
@@ -608,28 +645,34 @@ model (grpo_v3 or grpo_v5) into the Design Agent.
 ### Summary: what produces real numbers and in what order
 
 ```
-Phase 0: catalog built, Vivado Fmax in [80,250] MHz confirmed
+Phase 0: silicon-Fmax feasibility spike on ONE hand-written FIR + canary DUT
+    ↓ GO/NO-GO gate: DUT fails before canary, Fmax repeatable ±5 MHz, ratio 1.0-1.6x
+    │   NO-GO -> silicon Fmax dropped; PPA stays Vivado-estimated (skip Phases 2 & 3b)
+Phase 1: accelerator catalog built, Vivado Fmax in [80,250] MHz confirmed
     ↓ gate: iverilog 100% pass + Vivado Fmax range check
-Phase 1: silicon Fmax measured on board for ≥2 designs, repeatable ±5 MHz
-    ↓ gate: repeatability + Vivado ratio consistency
-Phase 2a: correctness-gated PPA GRPO, Vivado estimates (fast, first publishable RL result)
-    ↓ gate: zero correctness regression + ≥3 designs with measurable Vivado Fmax gain
-Phase 2b: same but silicon Fmax (the gold number, genuinely hardware-measured)
+Phase 2: silicon Fmax at scale (only if Phase 0 = GO)
+    ↓ gate: canary fails last everywhere, repeatable ±5 MHz, ratio consistent
+Phase 3a: correctness-gated PPA GRPO, Vivado estimates (PRIMARY publishable RL result)
+    ↓ gate: zero correctness regression + >=3 designs with measurable Vivado Fmax/area gain
+Phase 3b: same but silicon Fmax (BONUS number, genuinely hardware-measured)
     ↓ gate: same + board-measured Fmax improvement
-Phase 3: MAS end-to-end with fine-tuned model (system paper contribution)
+Phase 4: MAS end-to-end with fine-tuned model (system paper contribution)
     ↓ gate: at least one bitstream deployed and board-validated
-Phase 4: second model generality (optional but important for reviewers)
+Phase 5: second model generality (optional but important for reviewers)
     ↓ gate: identical eval pipeline, both models positive
 ```
 
 **Stop and reassess if:**
-- Phase 0 Vivado Fmax check shows ALL accelerator designs > 250 MHz → need different designs
-- Phase 1 silicon Fmax / Vivado ratio is unstable → harness bug, or Z2 PLL noise
-- Phase 2 correctness drops at any checkpoint → reward formula wrong, stop immediately
+- Phase 0 canary fails first / Fmax noisy / ratio implausible → silicon Fmax not viable on this
+  board → pivot to Vivado-estimated PPA (the plan still works, just without 3b)
+- Phase 1 Vivado Fmax check shows ALL accelerator designs > 250 MHz → need different designs
+- Phase 2 silicon/STA ratio unstable at scale → harness bug or Z2 PLL noise
+- Phase 3 correctness drops at any checkpoint → reward formula wrong, stop immediately
 
-**Do NOT start Phase 2 until Phase 1 gate passes.** The whole point of Phase 2 is to optimise
-for a real hardware signal. If the silicon Fmax harness is broken or produces inconsistent
-numbers, any training result is meaningless.
+**Do NOT start Phase 1's catalog build until Phase 0's go/no-go is answered**, and **do NOT
+start Phase 3b until Phase 2's gate passes.** The point of the silicon-Fmax track is a real
+hardware signal; if the harness is broken or noisy, any training result built on it is
+meaningless — and we'd rather find that out in half a day (Phase 0) than after a 3-day catalog.
 
 ---
 
@@ -637,10 +680,31 @@ numbers, any training result is meaningless.
 
 | File | Phase | Purpose |
 |---|---|---|
-| `gen_accelerator_catalog.py` | 0 | generate RTL + golden.py + spec.txt for accelerator families |
-| `clock_sweep_fmax.py` | 1 | board-side: sweep fclk0, capture, score → silicon Fmax |
-| `grpo_train_v5.py` | 2 | correctness-gated PPA/Fmax GRPO on accelerator catalog |
-| `eval_silicon_fmax.py` | 2b | board eval: compare base vs grpo_v5 silicon Fmax, best-of-N |
+| `clock_sweep_fmax.py` | 0 | board-side: sweep fclk0, capture, score DUT + canary → silicon Fmax (built and proven in the spike, scaled in Phase 2) |
+| `gen_accelerator_catalog.py` | 1 | generate RTL + golden.py + spec.txt for accelerator families |
+| `grpo_train_v5.py` | 3 | correctness-gated PPA/Fmax GRPO on accelerator catalog |
+| `eval_silicon_fmax.py` | 3b | board eval: compare base vs grpo_v5 silicon Fmax, best-of-N |
+
+`clock_sweep_fmax.py` (board, pseudo-code — the canary check is the load-bearing part):
+```python
+from pynq import Clocks
+import time
+
+def measure_fmax(overlay, dut_idx, golden, lo=50, hi=250, step=5):
+    last_ok = lo
+    for f in range(lo, hi + step, step):
+        Clocks.fclk0_mhz = f
+        time.sleep(0.01)                       # PLL settle
+        cap = capture(overlay, dut_idx)        # reset-on-arm
+        if score(cap, golden) >= 0.99:
+            last_ok = f
+        else:
+            break
+    return last_ok
+
+# GATE: measure_fmax(canary) MUST exceed measure_fmax(FIR) by >= 20 MHz,
+# else you are timing the harness, not the design -- fix before trusting any number.
+```
 
 The existing `run_ppa.py`, `ppa_synth.tcl`, `gen_candidate_bitstream.py`,
 `score_hw_candidates.py`, `bestofn_ppa.py` all re-use without modification.
