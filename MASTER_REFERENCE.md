@@ -495,7 +495,15 @@ silicon-Fmax direction.
   catalog for silicon-Fmax. Pivot: the PPA story becomes Vivado-estimated only (Phase 3a), and
   the catalog is still built (Phase 1) but justified by Vivado-measured headroom, not silicon.**
 
-**File to write:** `clock_sweep_fmax.py` (board-side; see pseudo-code at end of this section).
+**STATUS (2026-06-17): Phase-0 artifacts BUILT and locally verified — ready to run.**
+- `rtl_library/fir16_8b/` — 16-tap direct-form FIR (design.v + golden.py + spec.txt);
+  iverilog-verified, output matches golden at 100% (shift 2).
+- `rtl_library/echo8b/` — the canary (3-deep flip-flop echo); iverilog-verified.
+- `gen_spike_bitstream.py` — packs FIR (sel 0) + canary (sel 1) into one reset-on-arm
+  dut_top → `rtl/spike/{dut_top_spike.v, build_spike.tcl}` (generated).
+- `clock_sweep_fmax.py` — board sweep + automatic GO/NO-GO gate (canary margin,
+  repeatability, silicon/STA ratio). Imports verified off-board.
+Remaining to actually GET the number: build on laptop (Vivado), run on board.
 
 ---
 
@@ -680,7 +688,8 @@ meaningless — and we'd rather find that out in half a day (Phase 0) than after
 
 | File | Phase | Purpose |
 |---|---|---|
-| `clock_sweep_fmax.py` | 0 | board-side: sweep fclk0, capture, score DUT + canary → silicon Fmax (built and proven in the spike, scaled in Phase 2) |
+| `clock_sweep_fmax.py` | 0 | **(WRITTEN)** board-side: sweep fclk0, capture, score DUT + canary → silicon Fmax + GO/NO-GO gate |
+| `gen_spike_bitstream.py` | 0 | **(WRITTEN)** pack FIR + canary into one reset-on-arm dut_top + build TCL |
 | `gen_accelerator_catalog.py` | 1 | generate RTL + golden.py + spec.txt for accelerator families |
 | `grpo_train_v5.py` | 3 | correctness-gated PPA/Fmax GRPO on accelerator catalog |
 | `eval_silicon_fmax.py` | 3b | board eval: compare base vs grpo_v5 silicon Fmax, best-of-N |
