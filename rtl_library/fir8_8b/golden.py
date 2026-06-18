@@ -1,19 +1,19 @@
-"""Golden for a 16-tap direct-form FIR (family=fir), 8-bit samples
-x[c]=c&0xFF, fixed coefficients [3, 7, 12, 19, 27, 34, 40, 43, 43, 40, 34, 27, 19, 12, 7, 3]. Output {y[15:0]} mask=0xFFFF.
+"""Golden for a 8-tap direct-form FIR (family=fir), 8-bit samples
+x[c]=c&0xFF, fixed coefficients [3, 5, 7, 9, 9, 7, 5, 3]. Output {y[15:0]} mask=0xFFFF.
 Hardware output is this stream delayed by pipeline latency; the sweep/score
 two-sided registration shift absorbs that, so this is the un-delayed ideal."""
 import numpy as np
 
-H = [3, 7, 12, 19, 27, 34, 40, 43, 43, 40, 34, 27, 19, 12, 7, 3]
+H = [3, 5, 7, 9, 9, 7, 5, 3]
 
 
 def compute_golden(n_cycles: int = 32768) -> np.ndarray:
     out = []
-    xline = [0] * 16
+    xline = [0] * 8
     for c in range(n_cycles):
         x = c & 0xFF
-        xline = [x] + xline[:15]
-        out.append(sum(H[k] * xline[k] for k in range(16)) & 0xFFFF)
+        xline = [x] + xline[:7]
+        out.append(sum(H[k] * xline[k] for k in range(8)) & 0xFFFF)
     return np.array(out, dtype=np.uint16)
 
 

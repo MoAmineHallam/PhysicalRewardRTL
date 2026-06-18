@@ -1,6 +1,6 @@
 // 16-tap direct-form FIR, 8-bit samples, unpipelined MAC cone (the long
 // register-to-register path -> lower Fmax; pipeline it to go faster).
-module fir16_8b (
+module fir16_8b__v0 (
     input  wire        clk,
     input  wire        rst_n,
     input  wire [7:0]  x,
