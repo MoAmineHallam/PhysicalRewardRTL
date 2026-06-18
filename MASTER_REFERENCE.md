@@ -27,7 +27,7 @@
 | PPA offline RL (grpo_v4) | done — **FAILED** | Vivado estimate (CAD) | KL explosion, correctness degraded |
 | Best-of-N PPA reranking | done | **Vivado estimate (CAD)** | +3.6% avg LUT, −48% on satadd12b |
 | Silicon Fmax measurement | **VALIDATED (Phase 0)** | **silicon-measured** | fir16_8b = 90.9 MHz, repeatable ±0; harness good >200 MHz |
-| Accelerator-block catalog | **NOT built (Phase 1 next)** | — | prerequisite for the RL; Phase-0 gate now passed |
+| Accelerator-block catalog | **BUILT, gate PASSED (Phase 1)** | Vivado + iverilog | 5 designs (FIR 8/16/32, poly 4/6); poly pipelines 3–5×, in-window |
 
 **Root problem with all PPA numbers:** the 966-design catalog consists of trivial primitives (counters, adders, comparators). These have no real architectural degrees of freedom, and their Fmax is ~400 MHz — above the Z2's programmable clock ceiling (~250 MHz). The PPA numbers above are Vivado CAD estimates on a catalog where silicon Fmax is unmeasurable. That is why the gains are modest. **This must be fixed before any more RL or PPA experiments.**
 
@@ -551,7 +551,37 @@ equivalent-but-physically-different implementations and run at 100–200 MHz on 
 
 **Estimated effort:** 2–3 days (writing RTL + goldens; running Vivado to check Fmax range).
 
----
+**STATUS (2026-06-18): Phase-1 catalog BUILT, gate PASSED.**
+`gen_accelerator_catalog.py` → 5 designs in `rtl_library/` + 10 stylistic
+variants in `rtl/accel_variants/` (+ `accel_manifest.json`).
+- Correctness gate: all 5 designs + both variants each match their golden at
+  100% under a two-sided shift (iverilog -g2012). fir16_8b regenerated with the
+  silicon-validated coefficients/behaviour.
+- Fmax-spread gate (Vivado OOC, `run_ppa.py --period 5.0`, laptop):
+
+  | design | v0 (unpipelined) Fmax | v1 (pipelined) Fmax | note |
+  |---|---|---|---|
+  | poly4_8b | 61 MHz (2 DSP) | **191 MHz** (3 DSP) | clean 3.1× from pipelining |
+  | poly6_8b | 39 MHz | **191 MHz** | clean 4.9× |
+  | fir8_8b  | 82 MHz (LUT tree) | 80 MHz (8-DSP cascade) | ~flat |
+  | fir16_8b | 48 MHz (LUT tree) | 38 MHz (16-DSP cascade) | v1 SLOWER |
+  | fir32_8b | 25 MHz | 19 MHz (32-DSP cascade) | v1 SLOWER |
+
+- **Silicon/Vivado ≈ 1.9× (validated on fir16: 48 Vivado → 91 silicon).** So the
+  measurable-silicon window is Vivado ∈ ~[42,130]. In silicon terms the catalog
+  spans ~48–360 MHz: slow ends measurable (fir16 91, fir8 156, poly4 116,
+  poly6 74), headroom above (poly v1 ~360, above the 250 ceiling but a fine
+  Vivado anchor).
+- **Finding (kept, not hidden):** naive "register each product" pipelining of the
+  FIRs forces all multiplies into a *linear DSP cascade* that is SLOWER than the
+  balanced LUT adder tree (fir16 v1 38 < v0 48). Pipelining is NOT automatically
+  beneficial — which is exactly why a search/RL over implementations is needed,
+  not a fixed "add pipeline registers" rule. The scalar Horner chain (poly)
+  pipelines cleanly (3–5×); the FIR MAC does not, naively.
+- Verdict: in-window specs with large, real, pipelining-driven Fmax headroom
+  exist and are demonstrated. **Phase-1 gate passed; proceed to Phase 2.**
+- Files: `gen_accelerator_catalog.py`, `rtl_library/{fir8,fir16,fir32}_8b/`,
+  `rtl_library/poly{4,6}_8b/`, `rtl/accel_variants/` (+ `ppa.jsonl`, laptop).
 
 ### Phase 2 — Silicon Fmax Harness at Scale (only if Phase 0 said GO)
 
