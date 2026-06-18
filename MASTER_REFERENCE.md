@@ -26,8 +26,8 @@
 | PPA spread characterisation | done | **Vivado estimate (CAD)** | headroom concentrated; mean spread small on trivial catalog |
 | PPA offline RL (grpo_v4) | done — **FAILED** | Vivado estimate (CAD) | KL explosion, correctness degraded |
 | Best-of-N PPA reranking | done | **Vivado estimate (CAD)** | +3.6% avg LUT, −48% on satadd12b |
-| Silicon Fmax measurement | **NOT done** | — | not possible on current catalog (designs >400 MHz, above Z2 ceiling) |
-| Accelerator-block catalog | **NOT built** | — | prerequisite for everything real below |
+| Silicon Fmax measurement | **VALIDATED (Phase 0)** | **silicon-measured** | fir16_8b = 90.9 MHz, repeatable ±0; harness good >200 MHz |
+| Accelerator-block catalog | **NOT built (Phase 1 next)** | — | prerequisite for the RL; Phase-0 gate now passed |
 
 **Root problem with all PPA numbers:** the 966-design catalog consists of trivial primitives (counters, adders, comparators). These have no real architectural degrees of freedom, and their Fmax is ~400 MHz — above the Z2's programmable clock ceiling (~250 MHz). The PPA numbers above are Vivado CAD estimates on a catalog where silicon Fmax is unmeasurable. That is why the gains are modest. **This must be fixed before any more RL or PPA experiments.**
 
@@ -495,15 +495,23 @@ silicon-Fmax direction.
   catalog for silicon-Fmax. Pivot: the PPA story becomes Vivado-estimated only (Phase 3a), and
   the catalog is still built (Phase 1) but justified by Vivado-measured headroom, not silicon.**
 
-**STATUS (2026-06-17): Phase-0 artifacts BUILT and locally verified — ready to run.**
-- `rtl_library/fir16_8b/` — 16-tap direct-form FIR (design.v + golden.py + spec.txt);
-  iverilog-verified, output matches golden at 100% (shift 2).
-- `rtl_library/echo8b/` — the canary (3-deep flip-flop echo); iverilog-verified.
-- `gen_spike_bitstream.py` — packs FIR (sel 0) + canary (sel 1) into one reset-on-arm
-  dut_top → `rtl/spike/{dut_top_spike.v, build_spike.tcl}` (generated).
-- `clock_sweep_fmax.py` — board sweep + automatic GO/NO-GO gate (canary margin,
-  repeatability, silicon/STA ratio). Imports verified off-board.
-Remaining to actually GET the number: build on laptop (Vivado), run on board.
+**STATUS (2026-06-18): Phase-0 PASSED — silicon-Fmax measurement validated (GO).**
+First real silicon Fmax number in the project, on the PYNQ-Z2:
+- `fir16_8b` silicon Fmax = **90.9 MHz** (highest passing; first fail 100 MHz),
+  **perfectly repeatable: 0 MHz spread across 3 runs.** SILICON-MEASURED.
+- canary `echo8b` ran to **>200 MHz** (top of sweep, never failed) after the
+  `la_axi_fast` (DEPTH=2048) fix → capture-harness ceiling > 200 MHz.
+- canary margin = 109 MHz (≫ 20 MHz gate) → the 90.9 MHz is the DUT's own
+  timing, NOT the harness. Vivado STA ≈ 46 MHz → silicon/STA ≈ 1.98× (high end
+  of plausible room-temp-vs-worst-case-signoff; the canary rules out artifact).
+- Harness lesson: la_axi_wide's 32768-deep distributed-RAM readback capped the
+  harness at 111 MHz; the slim `la_axi_fast` (2048) lifted it past 200 MHz. Use
+  `la_axi_fast` for all Fmax-sweep bitstreams.
+
+Artifacts (all committed): `rtl_library/fir16_8b/`, `rtl_library/echo8b/`,
+`rtl/la_axi_fast.v`, `gen_spike_bitstream.py`, `clock_sweep_fmax.py`,
+board sweep log `rtl/spike/sweep_result.json`.
+**Phase-1 (accelerator catalog) is now justified — proceed.**
 
 ---
 
