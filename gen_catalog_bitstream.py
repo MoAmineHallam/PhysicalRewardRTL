@@ -29,13 +29,23 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.join(HERE, "rtl", "catalog")
 
 # sel -> (module/design dir name, role).  All share .x(cnt[7:0]) .y(16-bit).
+# The unpipelined reference designs (rtl_library/<name>/design.v); the canary
+# (echo8b) certifies per design that the measured Fmax is the DUT's, not the rig.
 DUTS = [
-    (0, "fir8_8b",  "dut"),
-    (1, "fir16_8b", "dut"),
-    (2, "fir32_8b", "dut"),
-    (3, "poly4_8b", "dut"),
-    (4, "poly6_8b", "dut"),
-    (5, "echo8b",   "canary"),
+    (0,  "fir8_8b",   "dut"),
+    (1,  "fir12_8b",  "dut"),
+    (2,  "fir16_8b",  "dut"),
+    (3,  "fir24_8b",  "dut"),
+    (4,  "fir32_8b",  "dut"),
+    (5,  "poly3_8b",  "dut"),
+    (6,  "poly4_8b",  "dut"),
+    (7,  "poly5_8b",  "dut"),
+    (8,  "poly6_8b",  "dut"),
+    (9,  "poly8_8b",  "dut"),
+    (10, "cordic8",   "dut"),
+    (11, "cordic12",  "dut"),
+    (12, "cordic16",  "dut"),
+    (13, "echo8b",    "canary"),
 ]
 
 

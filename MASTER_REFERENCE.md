@@ -590,10 +590,20 @@ shift-add, a genuinely different archetype — iterative, not MAC). All single-
 input (x=cnt[7:0]) so they reuse the validated capture/sweep harness unchanged.
 CORDIC uses pure integer signed arithmetic (Verilog `>>>` ≡ Python `>>`), so the
 golden is exact. **Correctness re-verified: all 13 designs + both variants each
-match their golden at 100% (iverilog, two-sided shift).** Pending: Vivado Fmax
-(run_ppa on the 26 variants) → pick the in-window set → rebuild the catalog
-bitstream → silicon-sweep. Matmul / sorting nets need PARALLEL inputs → a
-multi-input harness variant (deferred, not yet built).
+match their golden at 100% (iverilog, two-sided shift).**
+
+**Vivado Fmax of the broadened set (run_ppa, 26 variants, laptop):** all 13
+unpipelined refs land in the measurable silicon band (est. ×1.9 ≈ 48–160 MHz);
+nothing dropped. Key per-family headroom (v0 unpipelined → v1 pipelined, Vivado):
+- **CORDIC pipelines superbly** (pure-LUT shift-add, no DSP, retimes cleanly):
+  cordic8 66→276 (4.2×), cordic12 43→284 (6.6×), cordic16 32→**275 (8.6×)**.
+- **poly clean** across degrees: v0 28–84 → v1 191–200 (2.4–7×).
+- **FIR pipelining still backfires** (DSP-cascade, every v1<v0) — the "hard"
+  family where naive register-adding fails and a smart restructuring is needed.
+So poly + CORDIC give clean large headroom; FIR gives hard headroom. Good RL mix.
+Pending: rebuild the catalog bitstream (now 13 DUTs + canary) → silicon-sweep.
+Matmul / sorting nets need PARALLEL inputs → a multi-input harness variant
+(deferred, not yet built).
 
 ### Phase 2 — Silicon Fmax Harness at Scale (only if Phase 0 said GO)
 

@@ -20,13 +20,29 @@ module dut_top (
     wire [15:0] y3;
     wire [15:0] y4;
     wire [15:0] y5;
+    wire [15:0] y6;
+    wire [15:0] y7;
+    wire [15:0] y8;
+    wire [15:0] y9;
+    wire [15:0] y10;
+    wire [15:0] y11;
+    wire [15:0] y12;
+    wire [15:0] y13;
 
     fir8_8b u0 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y0) );
-    fir16_8b u1 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y1) );
-    fir32_8b u2 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y2) );
-    poly4_8b u3 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y3) );
-    poly6_8b u4 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y4) );
-    echo8b u5 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y5) );
+    fir12_8b u1 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y1) );
+    fir16_8b u2 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y2) );
+    fir24_8b u3 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y3) );
+    fir32_8b u4 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y4) );
+    poly3_8b u5 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y5) );
+    poly4_8b u6 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y6) );
+    poly5_8b u7 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y7) );
+    poly6_8b u8 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y8) );
+    poly8_8b u9 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y9) );
+    cordic8 u10 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y10) );
+    cordic12 u11 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y11) );
+    cordic16 u12 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y12) );
+    echo8b u13 ( .clk(clk), .rst_n(dut_rst_n), .x(cnt[7:0]), .y(y13) );
 
     always @(*) begin
         case (sel)
@@ -36,6 +52,14 @@ module dut_top (
             6'd3: probe = y3;
             6'd4: probe = y4;
             6'd5: probe = y5;
+            6'd6: probe = y6;
+            6'd7: probe = y7;
+            6'd8: probe = y8;
+            6'd9: probe = y9;
+            6'd10: probe = y10;
+            6'd11: probe = y11;
+            6'd12: probe = y12;
+            6'd13: probe = y13;
             default: probe = 16'b0;
         endcase
     end

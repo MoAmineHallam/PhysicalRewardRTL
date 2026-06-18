@@ -10,10 +10,18 @@ add_files [list \
     [file join $ROOT rtl la_axi_fast.v] \
     [file join $ROOT rtl catalog dut_top_catalog.v] \
     [file join $ROOT rtl_library fir8_8b design.v] \
+    [file join $ROOT rtl_library fir12_8b design.v] \
     [file join $ROOT rtl_library fir16_8b design.v] \
+    [file join $ROOT rtl_library fir24_8b design.v] \
     [file join $ROOT rtl_library fir32_8b design.v] \
+    [file join $ROOT rtl_library poly3_8b design.v] \
     [file join $ROOT rtl_library poly4_8b design.v] \
+    [file join $ROOT rtl_library poly5_8b design.v] \
     [file join $ROOT rtl_library poly6_8b design.v] \
+    [file join $ROOT rtl_library poly8_8b design.v] \
+    [file join $ROOT rtl_library cordic8 design.v] \
+    [file join $ROOT rtl_library cordic12 design.v] \
+    [file join $ROOT rtl_library cordic16 design.v] \
     [file join $ROOT rtl_library echo8b design.v] ]
 update_compile_order -fileset sources_1
 
