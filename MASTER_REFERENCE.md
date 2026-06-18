@@ -676,6 +676,24 @@ design (skip this phase entirely if Phase 0 was no-go; PPA stays Vivado-estimate
 
 ### Phase 3 — Correctness-Gated PPA / Silicon-Fmax RL
 
+**STATUS (2026-06-18): Phase-3 entered via a DE-RISKING PROBE first (decided by
+the user: "tell me the best next step").** Before building the full RL, confirm
+the base model actually *generates* Fmax-diverse correct implementations — else
+RL-for-Fmax has no signal (the Phase-0 lesson: prove the signal before the
+machinery). Scripts written + locally validated:
+- `score_accel.py` — correctness scorer vs `golden.py` (iverilog, two-sided
+  shift). Verified: correct/pipelined-correct → 1.0, wrong logic/misnamed → ~0.
+- `gen_accel_candidates.py` (server) — sample base RTLCoder N×/spec, keep correct
+  (≥0.999), rename each `<design>__g<k>`, write to `rtl/accel_probe/`. Same
+  outputs become the RL dataset.
+- `analyze_accel_spread.py` — per-design Fmax spread among correct gens; verdict
+  GO (median Vivado spread ≥15 MHz) vs WEAK (→ best-of-N instead of RL).
+Decision rule: GO → expand specs + train correctness-gated grpo_v5 on Vivado
+Fmax (faithful within-spec proxy, Finding A); board-validate winners in a fixed
+harness (Finding B). WEAK → pivot to best-of-N reranking. Multi-input families
+(matmul/sorting) deferred. Run: server `gen_accel_candidates.py --n 24` →
+laptop `run_ppa --dir fpga/rtl/accel_probe` → `analyze_accel_spread.py`.
+
 **Goal:** train GRPO where PPA reward is ONLY given to functionally-correct candidates.
 This is the correct formulation that grpo_v4 skipped.
 
