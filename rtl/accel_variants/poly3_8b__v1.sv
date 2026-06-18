@@ -1,0 +1,30 @@
+// Degree-3 Horner polynomial, mod 2^16, FULLY PIPELINED (one register per
+// stage, with the input delayed alongside) -> short per-stage path, higher Fmax.
+// Functionally identical to the reference up to a fixed extra latency.
+module poly3_8b__v1 (
+    input  wire        clk,
+    input  wire        rst_n,
+    input  wire [7:0]  x,
+    output reg  [15:0] y
+);
+    reg [15:0] r0;
+    reg [15:0] r1;
+    reg [15:0] r2;
+    reg [15:0] r3;
+    reg [7:0] xd1;
+    reg [7:0] xd2;
+    reg [7:0] xd3;
+    always @(posedge clk) begin
+        if (!rst_n) begin r0 <= 16'd0; r1 <= 16'd0; r2 <= 16'd0; r3 <= 16'd0; xd1 <= 8'd0; xd2 <= 8'd0; xd3 <= 8'd0; y <= 16'd0; end
+        else begin
+            r0 <= 16'd1;
+            xd1 <= x;
+            r1 <= r0 * xd1 + 16'd3;
+            xd2 <= xd1;
+            r2 <= r1 * xd2 + 16'd5;
+            xd3 <= xd2;
+            r3 <= r2 * xd3 + 16'd7;
+            y <= r3;
+        end
+    end
+endmodule

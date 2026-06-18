@@ -37,6 +37,7 @@ Then the Phase-1 gate (laptop, Vivado):
 
 import os
 import json
+import math
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RTL_LIB = os.path.join(HERE, "rtl_library")
@@ -233,6 +234,140 @@ endmodule
 '''
 
 
+# ---------------------------------------------------------------- CORDIC
+# Rotation-mode CORDIC (cos/sin) as a chain of integer shift-add iterations.
+# Angle unit: 90deg -> 256, so the streaming input x=cnt[7:0] is the angle.
+# Pure integer (signed >>> matches Python arithmetic >>), so the golden is exact.
+def cordic_tables(n):
+    kang = 256.0 / (math.pi / 2)
+    atan = [int(round(math.atan(2 ** -i) * kang)) for i in range(n)]
+    gain = 1.0
+    for i in range(n):
+        gain *= 1.0 / math.sqrt(1 + 2 ** (-2 * i))
+    x0 = int(round(gain * (1 << 14)))
+    return atan, x0
+
+
+def cordic_golden(n, atan, x0):
+    return f'''"""Golden for an {n}-iteration rotation-mode CORDIC (family=cordic).
+Angle x[c]=c&0xFF (unit: 90deg=256); pure integer shift-add, so exact. Output
+is the low 16 bits of the x (cos-scaled) result. Pipeline latency absorbed by
+the score shift."""
+import numpy as np
+
+ATAN = {atan}
+X0 = {x0}
+
+
+def compute_golden(n_cycles: int = 32768) -> np.ndarray:
+    out = []
+    for c in range(n_cycles):
+        x = X0; y = 0; z = c & 0xFF
+        for i in range({n}):
+            dx = x >> i
+            dy = y >> i
+            if z >= 0:
+                x = x - dy; y = y + dx; z = z - ATAN[i]
+            else:
+                x = x + dy; y = y - dx; z = z + ATAN[i]
+        out.append(x & 0xFFFF)
+    return np.array(out, dtype=np.uint16)
+
+
+if __name__ == "__main__":
+    g = compute_golden()
+    for i in range(min(20, len(g))):
+        print(f"{{i:4d}}  {{g[i]:#06x}}  {{g[i]}}")
+    np.save("golden_waveform.npy", g)
+'''
+
+
+def cordic_ref(mod, n, atan, x0):
+    lines = [f"    wire signed [23:0] x0w = 24'sd{x0};",
+             "    wire signed [23:0] y0w = 24'sd0;",
+             "    wire signed [23:0] z0w = $signed({16'b0, x});"]
+    px, py, pz = "x0w", "y0w", "z0w"
+    for i in range(n):
+        lines.append(f"    wire ge{i} = ({pz} >= 0);")
+        lines.append(f"    wire signed [23:0] x{i+1} = ge{i} ? "
+                     f"({px} - ({py} >>> {i})) : ({px} + ({py} >>> {i}));")
+        lines.append(f"    wire signed [23:0] y{i+1} = ge{i} ? "
+                     f"({py} + ({px} >>> {i})) : ({py} - ({px} >>> {i}));")
+        lines.append(f"    wire signed [23:0] z{i+1} = ge{i} ? "
+                     f"({pz} - 24'sd{atan[i]}) : ({pz} + 24'sd{atan[i]});")
+        px, py, pz = f"x{i+1}", f"y{i+1}", f"z{i+1}"
+    body = "\n".join(lines)
+    return f'''// {n}-iteration rotation-mode CORDIC, unrolled COMBINATIONAL shift-add chain
+// (the long path -> lower Fmax; pipeline the iterations to go faster).
+module {mod} (
+    input  wire        clk,
+    input  wire        rst_n,
+    input  wire [7:0]  x,
+    output reg  [15:0] y
+);
+{body}
+    always @(posedge clk) begin
+        if (!rst_n) y <= 16'd0;
+        else        y <= {px}[15:0];
+    end
+endmodule
+'''
+
+
+def cordic_pipe(mod, n, atan, x0):
+    decls = "\n    ".join(
+        f"reg signed [23:0] xr{i}, yr{i}, zr{i};" for i in range(1, n + 1))
+    rst = " ".join(
+        f"xr{i}<=0; yr{i}<=0; zr{i}<=0;" for i in range(1, n + 1))
+    steps = []
+    px, py, pz = "x0w", "y0w", "z0w"
+    for i in range(n):
+        j = i + 1
+        steps.append(
+            f"xr{j} <= ({pz} >= 0) ? ({px} - ({py} >>> {i})) "
+            f": ({px} + ({py} >>> {i}));")
+        steps.append(
+            f"yr{j} <= ({pz} >= 0) ? ({py} + ({px} >>> {i})) "
+            f": ({py} - ({px} >>> {i}));")
+        steps.append(
+            f"zr{j} <= ({pz} >= 0) ? ({pz} - 24'sd{atan[i]}) "
+            f": ({pz} + 24'sd{atan[i]});")
+        px, py, pz = f"xr{j}", f"yr{j}", f"zr{j}"
+    steps_s = "\n            ".join(steps)
+    return f'''// {n}-iteration rotation-mode CORDIC, FULLY PIPELINED (one register per
+// iteration) -> short per-stage path, higher Fmax. Same result, +{n} latency.
+module {mod} (
+    input  wire        clk,
+    input  wire        rst_n,
+    input  wire [7:0]  x,
+    output reg  [15:0] y
+);
+    wire signed [23:0] x0w = 24'sd{x0};
+    wire signed [23:0] y0w = 24'sd0;
+    wire signed [23:0] z0w = $signed({{16'b0, x}});
+    {decls}
+    integer k;
+    always @(posedge clk) begin
+        if (!rst_n) begin {rst} y <= 16'd0; end
+        else begin
+            {steps_s}
+            y <= xr{n}[15:0];
+        end
+    end
+endmodule
+'''
+
+
+def cordic_spec(name, n):
+    return (f"Write a Verilog module named `{name}`, an {n}-iteration rotation-"
+            f"mode CORDIC, with inputs `clk`, active-low `rst_n`, an 8-bit angle "
+            f"input `x` (units of 90 degrees = 256), and a 16-bit registered "
+            f"output `y`. Run {n} integer shift-add CORDIC iterations starting "
+            f"from x0={cordic_tables(n)[1]}, y0=0, z0=x, with the per-iteration "
+            f"arctan table {cordic_tables(n)[0]}, and register the low 16 bits "
+            f"of the final x into `y`. Clear `y` to 0 on `!rst_n`.\n")
+
+
 def fir_spec(name, T):
     return (f"Write a Verilog module named `{name}`, a {T}-tap direct-form FIR "
             f"filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned "
@@ -254,16 +389,24 @@ def poly_spec(name, D, coeffs):
 def main():
     os.makedirs(VAR_DIR, exist_ok=True)
     designs = []
-    for T in (8, 16, 32):
+    for T in (8, 12, 16, 24, 32):
         c = fir_coeffs(T)
         designs.append((f"fir{T}_8b", "fir", fir_golden(c),
                         fir_ref(f"fir{T}_8b", c), fir_spec(f"fir{T}_8b", T),
                         fir_ref, fir_pipe, c))
-    for D in (4, 6):
+    for D in (3, 4, 5, 6, 8):
         c = poly_coeffs(D)
         designs.append((f"poly{D}_8b", "poly", poly_golden(c),
                         poly_ref(f"poly{D}_8b", c), poly_spec(f"poly{D}_8b", D, c),
                         poly_ref, poly_pipe, c))
+    for N in (8, 12, 16):
+        atan, x0 = cordic_tables(N)
+        designs.append((
+            f"cordic{N}", "cordic", cordic_golden(N, atan, x0),
+            cordic_ref(f"cordic{N}", N, atan, x0), cordic_spec(f"cordic{N}", N),
+            (lambda m, _c, _N=N, _a=atan, _x=x0: cordic_ref(m, _N, _a, _x)),
+            (lambda m, _c, _N=N, _a=atan, _x=x0: cordic_pipe(m, _N, _a, _x)),
+            None))
 
     mani = {}
     for name, fam, golden, ref_v, spec, ref_fn, pipe_fn, coeffs in designs:

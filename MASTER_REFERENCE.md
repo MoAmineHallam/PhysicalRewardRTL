@@ -27,7 +27,7 @@
 | PPA offline RL (grpo_v4) | done — **FAILED** | Vivado estimate (CAD) | KL explosion, correctness degraded |
 | Best-of-N PPA reranking | done | **Vivado estimate (CAD)** | +3.6% avg LUT, −48% on satadd12b |
 | Silicon Fmax measurement | **VALIDATED + catalog characterised (Phase 0–2)** | **silicon-measured** | 5 designs 45–125 MHz, ±0 repeatable; Vivado proxy ρ≈0.9, ratio 1.5–2.2× |
-| Accelerator-block catalog | **BUILT, gate PASSED (Phase 1)** | Vivado + iverilog | 5 designs (FIR 8/16/32, poly 4/6); poly pipelines 3–5×, in-window |
+| Accelerator-block catalog | **BUILT + broadened (Phase 1)** | Vivado + iverilog + silicon | 13 designs / 3 families (FIR×5, poly×5, CORDIC×3); correctness-verified |
 
 **Root problem with all PPA numbers:** the 966-design catalog consists of trivial primitives (counters, adders, comparators). These have no real architectural degrees of freedom, and their Fmax is ~400 MHz — above the Z2's programmable clock ceiling (~250 MHz). The PPA numbers above are Vivado CAD estimates on a catalog where silicon Fmax is unmeasurable. That is why the gains are modest. **This must be fixed before any more RL or PPA experiments.**
 
@@ -582,6 +582,18 @@ variants in `rtl/accel_variants/` (+ `accel_manifest.json`).
   exist and are demonstrated. **Phase-1 gate passed; proceed to Phase 2.**
 - Files: `gen_accelerator_catalog.py`, `rtl_library/{fir8,fir16,fir32}_8b/`,
   `rtl_library/poly{4,6}_8b/`, `rtl/accel_variants/` (+ `ppa.jsonl`, laptop).
+
+**BROADENED (2026-06-18, "more families before RL"):** catalog expanded to **13
+designs / 3 families** for RL diversity — FIR ×5 (8/12/16/24/32-tap), poly ×5
+(deg 3/4/5/6/8), **CORDIC ×3** (8/12/16 iterations; rotation-mode integer
+shift-add, a genuinely different archetype — iterative, not MAC). All single-
+input (x=cnt[7:0]) so they reuse the validated capture/sweep harness unchanged.
+CORDIC uses pure integer signed arithmetic (Verilog `>>>` ≡ Python `>>`), so the
+golden is exact. **Correctness re-verified: all 13 designs + both variants each
+match their golden at 100% (iverilog, two-sided shift).** Pending: Vivado Fmax
+(run_ppa on the 26 variants) → pick the in-window set → rebuild the catalog
+bitstream → silicon-sweep. Matmul / sorting nets need PARALLEL inputs → a
+multi-input harness variant (deferred, not yet built).
 
 ### Phase 2 — Silicon Fmax Harness at Scale (only if Phase 0 said GO)
 
