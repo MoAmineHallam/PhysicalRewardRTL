@@ -28,7 +28,7 @@ design = sys.argv[2] if len(sys.argv) > 2 else "fir16_8b"
 n = int(sys.argv[3]) if len(sys.argv) > 3 else 2
 
 spec = open(os.path.join(SA.RTL_LIB, design, "spec.txt")).read()
-prompt = make_prompt({"name": design}, spec)
+prompt = make_prompt({"name": design}, spec) + SA.V2001_SUFFIX
 
 tok = AutoTokenizer.from_pretrained(base)
 if tok.pad_token is None:

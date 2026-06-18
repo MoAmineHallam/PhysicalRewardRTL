@@ -86,7 +86,7 @@ def main():
     tot = 0
     for d in designs:
         spec = open(os.path.join(SA.RTL_LIB, d, "spec.txt")).read()
-        prompt = make_prompt({"name": d}, spec)
+        prompt = make_prompt({"name": d}, spec) + SA.V2001_SUFFIX
         chat = tok.apply_chat_template(
             [{"role": "user", "content": prompt}],
             tokenize=False, add_generation_prompt=True)

@@ -30,6 +30,20 @@ RTL_LIB = os.path.join(HERE, "rtl_library")
 N_CYCLES_DEFAULT = 400
 MAX_SHIFT_DEFAULT = 24
 
+# Instruct models (qwen-coder etc.) default to SystemVerilog -- '{...} assignment
+# patterns, foreach, inline `for (integer i...)`, logic -- which the fast
+# correctness gate (iverilog -g2012) cannot compile (Vivado would). Steer to the
+# Verilog-2001 subset iverilog accepts so the gate measures the model's LOGIC,
+# not its dialect. (All synthesizable; nothing here changes the design's behaviour.)
+V2001_SUFFIX = (
+    "\n\nWrite standard synthesizable Verilog-2001 ONLY -- it must compile under "
+    "Icarus Verilog (iverilog -g2012). Do NOT use SystemVerilog constructs: no "
+    "'{...} assignment patterns, no `foreach`, no `logic`, no inline "
+    "`for (integer i = ...)`. Declare any loop variable as `integer i;` before the "
+    "always block and write `for (i = 0; i < N; i = i + 1)`. Initialise arrays "
+    "element by element. Output only the module (no testbench, no comments needed)."
+)
+
 
 def load_golden(design, n):
     path = os.path.join(RTL_LIB, design, "golden.py")
