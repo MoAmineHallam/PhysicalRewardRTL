@@ -26,7 +26,7 @@
 | PPA spread characterisation | done | **Vivado estimate (CAD)** | headroom concentrated; mean spread small on trivial catalog |
 | PPA offline RL (grpo_v4) | done — **FAILED** | Vivado estimate (CAD) | KL explosion, correctness degraded |
 | Best-of-N PPA reranking | done | **Vivado estimate (CAD)** | +3.6% avg LUT, −48% on satadd12b |
-| Silicon Fmax measurement | **VALIDATED (Phase 0)** | **silicon-measured** | fir16_8b = 90.9 MHz, repeatable ±0; harness good >200 MHz |
+| Silicon Fmax measurement | **VALIDATED + catalog characterised (Phase 0–2)** | **silicon-measured** | 5 designs 45–125 MHz, ±0 repeatable; Vivado proxy ρ≈0.9, ratio 1.5–2.2× |
 | Accelerator-block catalog | **BUILT, gate PASSED (Phase 1)** | Vivado + iverilog | 5 designs (FIR 8/16/32, poly 4/6); poly pipelines 3–5×, in-window |
 
 **Root problem with all PPA numbers:** the 966-design catalog consists of trivial primitives (counters, adders, comparators). These have no real architectural degrees of freedom, and their Fmax is ~400 MHz — above the Z2's programmable clock ceiling (~250 MHz). The PPA numbers above are Vivado CAD estimates on a catalog where silicon Fmax is unmeasurable. That is why the gains are modest. **This must be fixed before any more RL or PPA experiments.**
@@ -603,7 +603,38 @@ design (skip this phase entirely if Phase 0 was no-go; PPA stays Vivado-estimate
 
 **Estimated effort:** 1–2 days (board time + validation runs).
 
----
+**STATUS (2026-06-18): Phase-2 DONE — whole catalog silicon-characterised.**
+`gen_catalog_bitstream.py` (5 DUTs + echo canary, la_axi_fast, 200 MHz build) +
+`sweep_catalog.py`. One board session, `--lo 30 --hi 200 --step 5 --runs 3`:
+
+| design | silicon Fmax | Vivado v0 | ratio | gate |
+|---|---|---|---|---|
+| fir8_8b  | 125.0 MHz | 81.5 | 1.53 | OK |
+| poly4_8b | 111.1 MHz | 60.6 | 1.83 | OK |
+| poly6_8b | 83.3 MHz  | 38.7 | 2.15 | OK |
+| fir16_8b | 76.9 MHz  | 47.6 | 1.62 | OK |
+| fir32_8b | 45.5 MHz  | 25.4 | 1.79 | OK |
+| echo8b   | 200 MHz (canary, never failed) | — | harness ref |
+
+- **All SILICON-measured, 0 MHz spread across 3 runs, every gate OK** (each below
+  the 200 MHz canary → the number is the DUT's, not the harness). Catalog spans
+  45–125 MHz: good diversity, all measurable.
+- **Finding 1 — Vivado is a good DIRECTIONAL but not faithful proxy.** Silicon/
+  Vivado ratio is NOT constant (1.53–2.15×; poly6 +21% off the ~1.78 mean, so the
+  ±15% sub-gate is marginally EXCEEDED, reported honestly). Deepest-logic designs
+  (poly6, fir32) show the largest Vivado pessimism. Vivado mis-ranks one near-tie:
+  silicon poly6(83.3)>fir16(76.9) but Vivado fir16(47.6)>poly6(38.7). Rank
+  correlation ρ≈0.9 (4/5 pairs correct, one adjacent swap).
+- **Finding 2 — silicon Fmax is build-context-dependent.** fir16 = 76.9 MHz here
+  vs 90.9 MHz standalone in Phase 0 (~15% lower when packed with 4 other DUTs;
+  placement/congestion). → compare RL candidates within ONE consistent harness.
+- **Implication for Phase 3:** use Vivado Fmax as the RL TRAINING signal (cheap,
+  directionally right, ρ≈0.9), but board-measure the headline numbers and final
+  winner selection (Phase 3b), in a consistent harness. This empirically IS the
+  project's thesis — CAD ≠ silicon — now quantified.
+- Files: `gen_catalog_bitstream.py`, `sweep_catalog.py`, `rtl/catalog/` (bitstream
+  + `catalog_sels.json` + board `catalog_fmax.json`).
+**Phase-2 objective achieved; proceed to Phase 3 (correctness-gated Fmax RL).**
 
 ### Phase 3 — Correctness-Gated PPA / Silicon-Fmax RL
 
