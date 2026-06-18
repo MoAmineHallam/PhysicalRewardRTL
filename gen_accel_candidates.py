@@ -96,8 +96,10 @@ def main():
             out = model.generate(
                 **inp, max_new_tokens=args.max_tokens, do_sample=True,
                 temperature=args.temp, num_return_sequences=args.n,
-                stop_strings=["endmodule"], tokenizer=tok,
                 pad_token_id=tok.eos_token_id)
+        # NOTE: no stop_strings -- it detokenises every sequence on the CPU each
+        # step (GPU idles at 0%, crawls for num_return_sequences>>1). We generate
+        # the full length at full GPU util; extract_verilog truncates at endmodule.
         plen = inp["input_ids"].shape[1]
         kept = 0
         rewards = []
