@@ -601,9 +601,25 @@ nothing dropped. Key per-family headroom (v0 unpipelined → v1 pipelined, Vivad
 - **FIR pipelining still backfires** (DSP-cascade, every v1<v0) — the "hard"
   family where naive register-adding fails and a smart restructuring is needed.
 So poly + CORDIC give clean large headroom; FIR gives hard headroom. Good RL mix.
-Pending: rebuild the catalog bitstream (now 13 DUTs + canary) → silicon-sweep.
-Matmul / sorting nets need PARALLEL inputs → a multi-input harness variant
-(deferred, not yet built).
+
+**SILICON (broadened catalog, 14-DUT bitstream, 3 runs):** all 13 designs gate-OK,
+repeatable (only poly5 ±9 MHz one-run jitter). silicon Fmax | Vivado-OOC v0 | ratio:
+poly3 167|83.5|2.00 · fir8 125|81.5|1.53 · poly4 125|60.6|2.06 · cordic8 111|66.1|1.68 ·
+fir12 91|61.7|1.47 · poly5 91|47.6|1.91 · poly6 77|38.7|1.99 · cordic12 71|43.2|1.65 ·
+fir16 67|47.6|1.40 · poly8 59|28.5|2.07 · fir24 56|33.9|1.64 · cordic16 56|31.5|1.76 ·
+fir32 45|25.4|1.79 (canary 200, never failed). Catalog spans 45–167 MHz.
+- **Finding A — Vivado OOC is a faithful WITHIN-family proxy, poor CROSS-family.**
+  Within FIR / poly / CORDIC, silicon and Vivado rankings agree perfectly
+  (monotonic). But the ratio is family-specific (poly ≈2.0, CORDIC ≈1.7, FIR
+  ≈1.4–1.5), so cross-family ranking scrambles. → **Good for the RL**: per-spec
+  group-normalised Vivado reward operates within-family, where Vivado is faithful;
+  headline numbers still need silicon.
+- **Finding B — silicon Fmax is strongly build-context-dependent.** fir16:
+  91 MHz standalone (Phase 0) → 77 (5-DUT) → 67 (14-DUT), ~27% compression with
+  congestion. → RL candidates must be silicon-compared in a FIXED harness context.
+- Board data: `rtl/catalog/catalog_fmax.json`.
+**Broadening + silicon characterisation COMPLETE. Catalog ready for Phase 3.**
+Pending optional: multi-input harness for matmul / sorting families.
 
 ### Phase 2 — Silicon Fmax Harness at Scale (only if Phase 0 said GO)
 
