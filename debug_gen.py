@@ -33,8 +33,10 @@ prompt = make_prompt({"name": design}, spec) + SA.V2001_SUFFIX
 tok = AutoTokenizer.from_pretrained(base)
 if tok.pad_token is None:
     tok.pad_token = tok.eos_token
+_big = any(s in base.lower() for s in ("30b", "32b", "34b", "35b", "70b"))
 model = AutoModelForCausalLM.from_pretrained(
-    base, torch_dtype=torch.float16, device_map={"": 0}).eval()
+    base, torch_dtype=torch.float16,
+    device_map=("auto" if _big else {"": 0})).eval()
 
 chat = tok.apply_chat_template([{"role": "user", "content": prompt}],
                                tokenize=False, add_generation_prompt=True)

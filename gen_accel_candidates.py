@@ -76,8 +76,12 @@ def main():
     tok = AutoTokenizer.from_pretrained(args.base_model)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
+    # Large models (30B+) don't fit on one 32GB V100 -> shard across both GPUs.
+    big = any(s in args.base_model.lower()
+              for s in ("30b", "32b", "34b", "35b", "70b"))
     model = AutoModelForCausalLM.from_pretrained(
-        args.base_model, torch_dtype=torch.float16, device_map={"": 0})
+        args.base_model, torch_dtype=torch.float16,
+        device_map=("auto" if big else {"": 0}))
     if args.adapter:
         from peft import PeftModel
         model = PeftModel.from_pretrained(model, args.adapter, is_trainable=False)
