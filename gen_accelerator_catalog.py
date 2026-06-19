@@ -386,6 +386,19 @@ def poly_spec(name, D, coeffs):
             f"on `!rst_n`.\n")
 
 
+def firr_spec(name, T):
+    # ramp coefficients DERIVED from the tap index (no constant table to copy):
+    # coefficient for tap k is (k+1). The model can write acc += (i+1)*tap[i].
+    return (f"Write a Verilog module named `{name}`, a {T}-tap direct-form FIR "
+            f"filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned "
+            f"sample input `x`, and a 16-bit registered output `y`. Maintain a "
+            f"{T}-element delay line of past samples (tap 0 = newest = current "
+            f"`x`). The coefficient for tap k is simply (k+1) -- there is no "
+            f"coefficient table; compute it from the index. Each cycle set `y` "
+            f"to the low 16 bits of the sum over k=0..{T-1} of (k+1)*tap[k]. "
+            f"Clear all state to 0 on `!rst_n`.\n")
+
+
 def main():
     os.makedirs(VAR_DIR, exist_ok=True)
     designs = []
@@ -407,6 +420,14 @@ def main():
             (lambda m, _c, _N=N, _a=atan, _x=x0: cordic_ref(m, _N, _a, _x)),
             (lambda m, _c, _N=N, _a=atan, _x=x0: cordic_pipe(m, _N, _a, _x)),
             None))
+    # ramp-coefficient FIRs (coefficient = k+1, DERIVED from the index, no table)
+    # -- the LLM-tractability test: removes the constant-table blocker both
+    # RTLCoder and qwen choke on, while leaving MAC structure/pipelining free.
+    for T in (8, 12, 16, 24, 32):
+        c = [k + 1 for k in range(T)]
+        designs.append((f"firr{T}", "firr", fir_golden(c),
+                        fir_ref(f"firr{T}", c), firr_spec(f"firr{T}", T),
+                        fir_ref, fir_pipe, c))
 
     mani = {}
     for name, fam, golden, ref_v, spec, ref_fn, pipe_fn, coeffs in designs:
