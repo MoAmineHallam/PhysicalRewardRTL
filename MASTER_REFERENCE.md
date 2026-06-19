@@ -694,7 +694,42 @@ harness (Finding B). WEAK → pivot to best-of-N reranking. Multi-input families
 (matmul/sorting) deferred. Run: server `gen_accel_candidates.py --n 24` →
 laptop `run_ppa --dir fpga/rtl/accel_probe` → `analyze_accel_spread.py`.
 
-**Goal:** train GRPO where PPA reward is ONLY given to functionally-correct candidates.
+**RESULT (2026-06-19) — MODEL-GENERATION PROBE: NEGATIVE, cross-model.** The
+probe answered a more fundamental question than Fmax-diversity: can the base
+models generate CORRECT accelerators at all? They cannot, densely:
+
+| model | scale / type | correct generations |
+|---|---|---|
+| RTLCoder | 7B, RTL-specialized | ~2% (best) |
+| qwen2.5-coder-instruct | 7B, modern general code | ~2% |
+| VeriGen (matthewdelorenzo r16) | 16B, RTL-specialized, CodeGen base | ~0% (mostly prose/garbage) |
+| qwen3-coder-30B | 30B MoE | not loadable (needs transformers ≥4.51; env has 4.45) |
+
+- On the original table-coefficient FIR/poly/CORDIC: RTLCoder 14/312, qwen ~0,
+  CORDIC 0 for both (can't reproduce the arctan table).
+- After removing the constant table (**ramp FIRs `firr*`, coeff=k+1**): qwen 3/120,
+  RTLCoder 2/120 — still ~2%. Diagnosed failure modes (debug_gen): SystemVerilog
+  `'{...}` that iverilog rejects (qwen), the **non-blocking-accumulation bug**
+  (`sum <= sum + ...` in a loop — only the last term survives), coefficient-table
+  mangling, and (VeriGen) rambling/incoherent output from a weak old base.
+- **Conclusion:** silicon-Fmax RL/selection is NOT achievable with the available
+  models — not a measurement failure (the harness is validated) but a model-
+  competence wall: 7B–16B RTL/code models generate correct streaming accelerators
+  at ~0–2%, too sparse for an RL foothold, Fmax diversity, or best-of-N. This is
+  a rigorous, well-controlled NEGATIVE result (varied scale, specialization, base
+  modernity) and it SCOPES when silicon-grounded RL is feasible (it worked on the
+  primitive catalog where the model had competence: grpo_v3 +2.2pp).
+- Files: `score_accel.py`, `gen_accel_candidates.py`, `debug_gen.py`,
+  `rtl/accel_probe*/`, `rtl_library/firr{8,12,16,24,32}/`.
+
+**DECISION: CONSOLIDATE.** The real, defensible contributions are (1) the
+validated silicon-Fmax methodology, (2) the catalog silicon-characterisation +
+CAD-vs-silicon findings, (3) this cross-model negative result on RL feasibility,
+(4) the grpo_v3 functional gain on primitives. The "RL optimises silicon Fmax"
+headline is not reachable with these models; do not force it.
+
+**Goal (original Phase-3 plan, NOT pursued — model wall):** train GRPO where PPA
+reward is ONLY given to functionally-correct candidates.
 This is the correct formulation that grpo_v4 skipped.
 
 **Two sub-options — 3a is the PRIMARY deliverable, 3b is the bonus (see framing risk above):**
