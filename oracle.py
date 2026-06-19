@@ -108,6 +108,10 @@ def build_reference(design):
     if m:
         H = [k + 1 for k in range(int(m.group(1)))]
         return (lambda xs: fir_ref(xs, H)), 8
+    m = re.match(r"poly(\d+)_v(\d+)_8b$", design)
+    if m:
+        C = GAC.poly_coeffs_var(int(m.group(1)), int(m.group(2)))
+        return (lambda xs: poly_ref(xs, C)), 8
     m = re.match(r"poly(\d+)_8b$", design)
     if m:
         C = GAC.poly_coeffs(int(m.group(1)))

@@ -93,7 +93,7 @@ def main():
     ap.add_argument("--batch", type=int, default=1)
     ap.add_argument("--grad_accum", type=int, default=16)
     ap.add_argument("--lr", type=float, default=1e-4)
-    ap.add_argument("--max_length", type=int, default=1024)
+    ap.add_argument("--max_length", type=int, default=2048)
     ap.add_argument("--lora_r", type=int, default=16)
     args = ap.parse_args()
 

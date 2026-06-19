@@ -62,11 +62,14 @@ def designs():
         yield nm, "firr", GAC.firr_spec(nm, T), {
             "ref": GAC.fir_ref(nm, c), "pipe": GAC.fir_pipe(nm, c),
             "unrolled": GAC.fir_unrolled(nm, c)}
+    poly_variants = 6          # distinct coefficient sets per degree (incl. v0)
     for D in range(2, 11):
-        c = GAC.poly_coeffs(D); nm = f"poly{D}_8b"
-        yield nm, "poly", GAC.poly_spec(nm, D, c), {
-            "ref": GAC.poly_ref(nm, c), "pipe": GAC.poly_pipe(nm, c),
-            "inline": GAC.poly_inline(nm, c)}
+        for v in range(poly_variants):
+            c = GAC.poly_coeffs_var(D, v)
+            nm = f"poly{D}_8b" if v == 0 else f"poly{D}_v{v}_8b"
+            yield nm, "poly", GAC.poly_spec(nm, D, c), {
+                "ref": GAC.poly_ref(nm, c), "pipe": GAC.poly_pipe(nm, c),
+                "inline": GAC.poly_inline(nm, c)}
     for N in [6, 8, 10, 12, 14, 16, 18]:
         atan, x0 = GAC.cordic_tables(N); nm = f"cordic{N}"
         yield nm, "cordic", GAC.cordic_spec(nm, N), {

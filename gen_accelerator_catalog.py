@@ -55,6 +55,20 @@ def poly_coeffs(deg):
     return [2 * k + 1 for k in range(deg + 1)]
 
 
+def poly_coeffs_var(deg, v=0):
+    """Deterministic coefficient set for polyD variant v (v=0 == poly_coeffs).
+
+    Variants give the SFT corpus many DISTINCT Horner instances per degree so the
+    model must learn the `*x` recurrence instead of memorising a single constant
+    pattern. The oracle rebuilds the exact same coeffs from the design name, so
+    the reward stays well-defined."""
+    if v == 0:
+        return poly_coeffs(deg)
+    import random
+    rng = random.Random(1000 * deg + v)
+    return [rng.randint(1, 99) for _ in range(deg + 1)]
+
+
 # ---------------------------------------------------------------- goldens
 def fir_golden(coeffs):
     return f'''"""Golden for a {len(coeffs)}-tap direct-form FIR (family=fir), 8-bit samples
