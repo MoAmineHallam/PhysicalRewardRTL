@@ -31,6 +31,7 @@ import argparse
 
 os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 os.environ.setdefault("HF_HUB_OFFLINE", "1")
+os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -39,7 +40,7 @@ import score_accel as SA
 from build_dataset import make_prompt, extract_verilog, LLM_DIR
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ACCEL_RE = re.compile(r"^(fir\d+_8b|poly\d+_8b|cordic\d+)$")
+ACCEL_RE = re.compile(r"^(fir\d+_8b|firr\d+|poly\d+_8b|cordic\d+)$")
 
 
 def accel_designs():
@@ -121,7 +122,7 @@ def main():
                         "module " + mod, rtl, count=1)
             with open(os.path.join(args.out_dir, mod + ".sv"), "w") as f:
                 f.write(rr)
-            mani[mod] = {"design": d, "family": ACCEL_RE.match(d).group(1)[:3]}
+            mani[mod] = {"design": d, "family": re.match(r"[a-z]+", d).group(0)}
             kept += 1
         tot += kept
         print(f"{d:10s} kept {kept}/{args.n} correct  "
