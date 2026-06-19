@@ -76,9 +76,10 @@ def main():
     tok = AutoTokenizer.from_pretrained(args.base_model)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
-    # Large models (30B+) don't fit on one 32GB V100 -> shard across both GPUs.
+    # Large models (16B+/30B) don't fit on one 32GB V100 -> shard across both GPUs.
     big = any(s in args.base_model.lower()
-              for s in ("30b", "32b", "34b", "35b", "70b"))
+              for s in ("16b", "30b", "32b", "34b", "35b", "70b",
+                        "verigen", "codegen"))
     model = AutoModelForCausalLM.from_pretrained(
         args.base_model, torch_dtype=torch.float16,
         device_map=("auto" if big else {"": 0}))
@@ -92,9 +93,11 @@ def main():
     for d in designs:
         spec = open(os.path.join(SA.RTL_LIB, d, "spec.txt")).read()
         prompt = make_prompt({"name": d}, spec) + SA.V2001_SUFFIX
-        chat = tok.apply_chat_template(
-            [{"role": "user", "content": prompt}],
-            tokenize=False, add_generation_prompt=True)
+        # CodeGen / base completion models have no chat template -> raw prompt.
+        chat = (tok.apply_chat_template(
+                    [{"role": "user", "content": prompt}],
+                    tokenize=False, add_generation_prompt=True)
+                if tok.chat_template else prompt)
         inp = tok(chat, return_tensors="pt",
                   return_token_type_ids=False).to("cuda:0")
         with torch.inference_mode():
