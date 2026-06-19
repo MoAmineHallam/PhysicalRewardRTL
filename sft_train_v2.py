@@ -30,6 +30,12 @@ from collections import Counter
 os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 os.environ.setdefault("HF_HUB_OFFLINE", "1")
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+# Pin to ONE GPU by default: with 2 visible GPUs the HF Trainer auto-wraps the
+# model in nn.DataParallel, which replicates the 7B onto GPU0 and OOMs a 32GB
+# V100. A 7B LoRA + gradient checkpointing fits on one V100. Override by
+# exporting CUDA_VISIBLE_DEVICES before launching if you really want both.
+os.environ.setdefault("CUDA_VISIBLE_DEVICES", "0")
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
 
 import torch
 from torch.utils.data import Dataset
@@ -84,8 +90,8 @@ def main():
                     help="base model dir (HF) to warm-start")
     ap.add_argument("--out", default="sft_v2_out")
     ap.add_argument("--epochs", type=int, default=4)
-    ap.add_argument("--batch", type=int, default=2)
-    ap.add_argument("--grad_accum", type=int, default=8)
+    ap.add_argument("--batch", type=int, default=1)
+    ap.add_argument("--grad_accum", type=int, default=16)
     ap.add_argument("--lr", type=float, default=1e-4)
     ap.add_argument("--max_length", type=int, default=1024)
     ap.add_argument("--lora_r", type=int, default=16)
@@ -111,6 +117,7 @@ def main():
         lora_dropout=0.05, bias="none",
         target_modules=["q_proj", "k_proj", "v_proj", "o_proj"])
     model = get_peft_model(model, lora)
+    model.enable_input_require_grads()   # required for gradient checkpointing + PEFT
     model.print_trainable_parameters()
 
     ds = CorpusDataset(rows, tok, max_length=args.max_length)
@@ -123,6 +130,8 @@ def main():
         gradient_accumulation_steps=args.grad_accum,
         learning_rate=args.lr, lr_scheduler_type="cosine", warmup_ratio=0.05,
         bf16=True, logging_steps=10, save_strategy="epoch", report_to="none",
+        gradient_checkpointing=True,
+        gradient_checkpointing_kwargs={"use_reentrant": False},
         dataloader_num_workers=0, remove_unused_columns=False)
 
     trainer = Trainer(model=model, args=targs, train_dataset=ds,
