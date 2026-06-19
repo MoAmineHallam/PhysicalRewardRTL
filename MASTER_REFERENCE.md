@@ -877,3 +877,79 @@ def measure_fmax(overlay, dut_idx, golden, lo=50, hi=250, step=5):
 
 The existing `run_ppa.py`, `ppa_synth.tcl`, `gen_candidate_bitstream.py`,
 `score_hw_candidates.py`, `bestofn_ppa.py` all re-use without modification.
+
+---
+
+## 10. THE PROPER METHOD (V2) — board-grounded, coverage-driven, SFT-then-RL
+
+**Decided 2026-06-19 after auditing the reward code.** The whole V1 effort rests
+on a reward that is *not what we claimed*, and that is the root cause of the
+modest/negative results. This section is the corrected foundation; everything
+below supersedes the V1 reward/training design.
+
+### The foundational flaws (proven in the code, not guessed)
+1. **Silicon is NOT in the reward loop.** `grpo_train_v3 → score_candidate.score_rtl
+   → simulate()` runs the candidate in **iverilog** and compares to
+   `golden_from_body()` — a **Python reference model**. The PYNQ-Z2 capture
+   (`waveform.npy`) is used only by `capture_waveforms`/`validate_hw`/
+   `clock_sweep_fmax` — i.e., ONCE, offline, to certify the Python golden ==
+   silicon. `score_candidate.py` never imports the capture. ⇒ Training reward is
+   a **pure simulation reward**; "silicon-grounded" describes the reference's
+   provenance, not a measurement in the loop. This is why tier-2 gap ≈ null and
+   why the functional track collapses to a sim reward. **No board feedback ever
+   reaches the model.**
+2. **Stimulus = free-running counter** (`cnt<=cnt+1`, inputs are slices like
+   `cnt[1:0]`). Deterministic, counter-correlated; coverage = "whatever the
+   counter hits." No random/directed vectors, no corner cases ⇒ weak correctness
+   oracle (314 designs "saturated", 2 "dead").
+3. **Reward = masked Hamming similarity to ONE exact trajectory** (best of 3
+   shifts). (a) Bit-match-one-design ⇒ a COPY task, not write-correct-for-spec
+   (why pipelined variants don't count and accelerators became "reproduce these
+   constants"); (b) graded Hamming gives partial credit to wrong designs ⇒ not a
+   clean correct/incorrect signal.
+4. **No SFT warm-start.** Base models sit at ~2% on the target designs ⇒ RL has
+   no foothold (RL refines competence, can't create it). The supervisor's own
+   MBRL roadmap lists SFT as step 1; we skipped it.
+
+### The corrected architecture (ignore the 2×V100 limit; this is the right way)
+**Stage 0 — Fix the oracle (THE fix; build first).**
+- Functional reward = **I/O-equivalence to a reference model under broad
+  randomized + directed stimulus** (cover input space, reset, corners),
+  accepting ANY implementation (pipelined/retimed included) up to latency. Clean
+  correct/incorrect, not saturating Hamming. Restores implementation diversity
+  (revives the Fmax-headroom the PPA-RL needs).
+- Physical reward = **real board Fmax (clock_sweep_fmax harness) + real impl
+  area/power**. The genuinely-silicon signal.
+- Composite = correctness_gate × (Fmax/area among correct).
+**Stage 1 — SFT warm-start (missing prerequisite).** Curate a corpus of correct,
+DIVERSE RTL (templated + augmented + reference designs incl. pipelined+unpipelined),
+SFT base→competence, mixing general code to avoid forgetting (the earlier SFT
+failure was fixable, not a reason to skip the stage). Only then does RL have signal.
+**Stage 2 — Board-in-the-loop reward server.** candidate → fast iverilog functional
+gate → passing ones → real synth/impl + board Fmax sweep + area/power. Slow ⇒ Stage 3.
+**Stage 3 — MBRL surrogate (supervisor Architecture 1), anchored.** surrogate
+(token/AST → predicted compile/correctness/Fmax/area); bulk GRPO rollouts
+"imagined", a fixed fraction validated on real board/EDA, surrogate retrained on
+fresh real data (Dyna). GRPO uses RELATIVE advantage ⇒ surrogate only needs
+ranking consistency. This is the right answer to the EDA/board throughput
+bottleneck — but only pays off AFTER Stages 0–1 (else it accelerates a bad signal).
+**Stage 4 — GRPO** with composite correctness-gated reward, KL to the SFT model.
+**Stage 5 — Held-out BOARD validation:** on unseen specs, fine-tuned model writes
+more-correct and/or faster RTL than the SFT baseline, measured on the board. This
+headline is genuinely silicon-grounded (reward AND eval are board-measured).
+
+### Key ordering insight
+Fix the oracle (board + coverage + I/O-equivalence) → SFT to competence →
+surrogate-accelerated GRPO on the real signal. The supervisor's MBRL idea is
+correct but is **Stage 3**, not the starting point.
+
+### Build order (what we are doing now)
+1. **`oracle.py`** — Stage-0 functional oracle (rich stimulus + reference-model
+   I/O-equivalence + latency alignment), simulation-backed now, **board-replayable
+   by construction** (deterministic seeded stimulus). FIRST. ← building now
+2. Board "vector player" harness — stream the SAME stimulus vectors to the DUT on
+   the PYNQ-Z2 and capture outputs (replaces the free-running counter in dut_top),
+   so the functional reward becomes board-measured. (board work)
+3. SFT corpus + warm-start.
+4. Surrogate + surrogate-accelerated GRPO with the composite reward.
+5. Held-out board validation.
