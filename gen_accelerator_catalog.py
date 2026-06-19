@@ -174,6 +174,36 @@ endmodule
 '''
 
 
+def fir_unrolled(mod, coeffs):
+    T = len(coeffs)
+    regs = ", ".join(f"d{k}" for k in range(T))
+    rst = " ".join(f"d{k} <= 8'd0;" for k in range(T))
+    shifts = "\n            ".join(
+        ["d0 <= x;"] + [f"d{k} <= d{k-1};" for k in range(1, T)])
+    terms = " + ".join(f"8'd{coeffs[k]} * d{k}" for k in range(T))
+    return f'''// {T}-tap direct-form FIR, 8-bit samples, UNROLLED: explicitly named delay
+// registers and an inline sum-of-products (no arrays, no for-loops). Same
+// function as the reference, different surface form.
+module {mod} (
+    input  wire        clk,
+    input  wire        rst_n,
+    input  wire [7:0]  x,
+    output reg  [15:0] y
+);
+    reg  [7:0]  {regs};
+    wire [23:0] acc = {terms};
+    always @(posedge clk) begin
+        if (!rst_n) begin
+            {rst} y <= 16'd0;
+        end else begin
+            {shifts}
+            y <= acc[15:0];
+        end
+    end
+endmodule
+'''
+
+
 # ---------------------------------------------------------------- POLY verilog
 def poly_ref(mod, coeffs):
     D = len(coeffs) - 1
@@ -229,6 +259,27 @@ module {mod} (
             {body_s}
             y <= r{D};
         end
+    end
+endmodule
+'''
+
+
+def poly_inline(mod, coeffs):
+    D = len(coeffs) - 1
+    expr = f"16'd{coeffs[0]}"
+    for k in range(1, D + 1):
+        expr = f"({expr} * x + 16'd{coeffs[k]})"
+    return f'''// Degree-{D} Horner polynomial, mod 2^16, as a SINGLE inline nested Horner
+// expression (no intermediate named wires). Same function as the reference.
+module {mod} (
+    input  wire        clk,
+    input  wire        rst_n,
+    input  wire [7:0]  x,
+    output reg  [15:0] y
+);
+    always @(posedge clk) begin
+        if (!rst_n) y <= 16'd0;
+        else        y <= ({expr}) & 16'hFFFF;
     end
 endmodule
 '''

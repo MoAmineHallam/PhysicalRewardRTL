@@ -43,20 +43,30 @@ def make_prompt(spec, rtl):
 
 
 def designs():
-    """Yield (design_name, family, spec_text, {style: rtl_text}) over a grid."""
-    fir_taps = [4, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32]
+    """Yield (design_name, family, spec_text, {style: rtl_text}) over a grid.
+
+    Each design is emitted in MULTIPLE oracle-verified correct styles so SFT
+    learns implementation diversity (the headroom the silicon-Fmax RL exploits):
+      fir/firr : array+loop reference, pipelined, unrolled named-register form
+      poly     : combinational Horner chain, pipelined, inline nested form
+      cordic   : unrolled combinational chain, pipelined
+    """
+    fir_taps = list(range(4, 33))                  # 4..32, every tap count
     for T in fir_taps:
         c = GAC.fir_coeffs(T); nm = f"fir{T}_8b"
         yield nm, "fir", GAC.fir_spec(nm, T), {
-            "ref": GAC.fir_ref(nm, c), "pipe": GAC.fir_pipe(nm, c)}
+            "ref": GAC.fir_ref(nm, c), "pipe": GAC.fir_pipe(nm, c),
+            "unrolled": GAC.fir_unrolled(nm, c)}
     for T in fir_taps:
         c = [k + 1 for k in range(T)]; nm = f"firr{T}"
         yield nm, "firr", GAC.firr_spec(nm, T), {
-            "ref": GAC.fir_ref(nm, c), "pipe": GAC.fir_pipe(nm, c)}
+            "ref": GAC.fir_ref(nm, c), "pipe": GAC.fir_pipe(nm, c),
+            "unrolled": GAC.fir_unrolled(nm, c)}
     for D in range(2, 11):
         c = GAC.poly_coeffs(D); nm = f"poly{D}_8b"
         yield nm, "poly", GAC.poly_spec(nm, D, c), {
-            "ref": GAC.poly_ref(nm, c), "pipe": GAC.poly_pipe(nm, c)}
+            "ref": GAC.poly_ref(nm, c), "pipe": GAC.poly_pipe(nm, c),
+            "inline": GAC.poly_inline(nm, c)}
     for N in [6, 8, 10, 12, 14, 16, 18]:
         atan, x0 = GAC.cordic_tables(N); nm = f"cordic{N}"
         yield nm, "cordic", GAC.cordic_spec(nm, N), {
