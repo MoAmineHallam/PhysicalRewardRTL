@@ -218,6 +218,35 @@ endmodule
 '''
 
 
+def fir_transposed(mod, coeffs):
+    T = len(coeffs)
+    regs = ", ".join(f"a{k}" for k in range(T))
+    rst = " ".join(f"a{k} <= 24'd0;" for k in range(T))
+    body = [f"a{k} <= 8'd{coeffs[k]} * x + a{k+1};" for k in range(T - 1)]
+    body.append(f"a{T-1} <= 8'd{coeffs[T-1]} * x;")
+    body_s = "\n            ".join(body)
+    return f'''// {T}-tap FIR, TRANSPOSED direct form: one multiply + one add per stage, so the
+// register-to-register critical path is independent of tap count -> high Fmax.
+// Same transfer function as the direct form (equivalent up to a fixed latency).
+module {mod} (
+    input  wire        clk,
+    input  wire        rst_n,
+    input  wire [7:0]  x,
+    output reg  [15:0] y
+);
+    reg [23:0] {regs};
+    always @(posedge clk) begin
+        if (!rst_n) begin
+            {rst} y <= 16'd0;
+        end else begin
+            {body_s}
+            y <= a0[15:0];
+        end
+    end
+endmodule
+'''
+
+
 # ---------------------------------------------------------------- POLY verilog
 def poly_ref(mod, coeffs):
     D = len(coeffs) - 1

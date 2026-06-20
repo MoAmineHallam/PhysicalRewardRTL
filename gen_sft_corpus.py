@@ -56,12 +56,14 @@ def designs():
         c = GAC.fir_coeffs(T); nm = f"fir{T}_8b"
         yield nm, "fir", GAC.fir_spec(nm, T), {
             "ref": GAC.fir_ref(nm, c), "pipe": GAC.fir_pipe(nm, c),
-            "unrolled": GAC.fir_unrolled(nm, c)}
+            "unrolled": GAC.fir_unrolled(nm, c),
+            "transposed": GAC.fir_transposed(nm, c)}
     for T in fir_taps:
         c = [k + 1 for k in range(T)]; nm = f"firr{T}"
         yield nm, "firr", GAC.firr_spec(nm, T), {
             "ref": GAC.fir_ref(nm, c), "pipe": GAC.fir_pipe(nm, c),
-            "unrolled": GAC.fir_unrolled(nm, c)}
+            "unrolled": GAC.fir_unrolled(nm, c),
+            "transposed": GAC.fir_transposed(nm, c)}
     poly_variants = 6          # distinct coefficient sets per degree (incl. v0)
     for D in range(2, 11):
         for v in range(poly_variants):
