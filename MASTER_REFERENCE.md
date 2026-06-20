@@ -1001,3 +1001,55 @@ correct implementations (the RL headroom) and collect the first (RTL→Fmax) dat
 for the Stage-3 surrogate — generate oracle-verified correct candidates with
 `sft_v3_out`, dedup, synth (Vivado) for the Fmax spread per design.
 
+### Fmax-headroom gate RESULTS — GO ✅
+Generated oracle-verified distinct-correct candidates with the SFT policy
+(`gen_fmax_candidates.py`), synthesised on Vivado (`run_ppa.py`), analysed spread
+(`analyze_accel_spread.py`). Two rounds:
+
+- **v3 (sft_v3_out):** poly had huge headroom (61→191 MHz, ~3×) but fir/firr were
+  flat (~7–10 MHz). Diagnosis: every trained FIR style (ref/pipe/unrolled) reduces
+  taps through ONE big combinational adder, so even "pipe" doesn't break the
+  critical path (fir32 pinned at 25 MHz). The "pipe" style even synthesised SLOWER
+  than direct (38 vs 48 MHz) — registering products doesn't help when the adder is
+  the bottleneck.
+- **Fix:** added **transposed-form FIR** (one mult+add per stage, critical path
+  independent of tap count), oracle-verified equivalent. Deterministic Vivado check
+  confirmed fir16 48→**183 MHz**. Retrained (sft_v4_out, corpus 408 pairs).
+- **v4 (sft_v4_out):** ALL families now expose large headroom:
+
+| design | slowest | fastest | Vivado spread |
+|---|---|---|---|
+| fir8   | 80  | **302** | 222 MHz |
+| fir16  | 38  | **196** | 158 |
+| firr8  | 78  | **338** | 260 |
+| firr16 | 38  | **214** | 176 |
+| poly4  | 61  | **191** | 130 |
+| poly6  | 39  | **191** | 152 |
+| poly8_v3 | 27 | **133** | 106 |
+| fir32  | 25  | 25 | 0 (model didn't sample a transposed form in 40 draws) |
+
+**Median within-design Vivado Fmax spread 155 MHz (~295 MHz silicon-equiv at the
+~1.9× CAD→silicon ratio), 185% of mean. VERDICT: GO for RL.** All three pre-RL
+gates cleared: correctness, implementation diversity, Fmax headroom.
+
+### Surrogate viability (Stage 3 de-risk) ✅ promising
+The crux for affordable GRPO: predict Fmax from RTL TEXT alone (no Vivado per
+sample). Quick probe on the 45 v4 (RTL→Fmax) pairs, TEXT-ONLY features (longest
+multiply-chain per statement, accumulator-chain signature, posedge/nonblocking
+counts, registered-vs-combinational output), leave-one-design-out:
+- pooled Spearman(pred, actual) = **0.64** (trivial 7-feature linear model);
+- per-design **top-1 = 5/7** (picks the true fastest correct implementation).
+A real surrogate (more data + proper regressor / RTL embeddings) will improve this.
+The dominant signal: long combinational multiply chains → slow; staged/transposed
+accumulator chains → fast.
+
+### Remaining build order
+4. **Surrogate (Stage 3):** scale the (RTL→Fmax) dataset (more candidates ×
+   Vivado), train an Fmax predictor, validate rank consistency. Then
+5. **GRPO (Stage 4):** reward = oracle correctness-gate × normalised
+   surrogate-Fmax, KL to the SFT model, periodic Vivado re-anchoring.
+6. **Silicon validation (Stage 5):** measure the RL policy's designs on the
+   PYNQ-Z2 (and optionally put the board / silicon-anchored surrogate in the loop
+   for the strong "trained on silicon feedback" claim).
+
+
