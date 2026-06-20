@@ -946,10 +946,58 @@ correct but is **Stage 3**, not the starting point.
 ### Build order (what we are doing now)
 1. **`oracle.py`** — Stage-0 functional oracle (rich stimulus + reference-model
    I/O-equivalence + latency alignment), simulation-backed now, **board-replayable
-   by construction** (deterministic seeded stimulus). FIRST. ← building now
+   by construction** (deterministic seeded stimulus). FIRST. ✅ DONE
 2. Board "vector player" harness — stream the SAME stimulus vectors to the DUT on
    the PYNQ-Z2 and capture outputs (replaces the free-running counter in dut_top),
    so the functional reward becomes board-measured. (board work)
-3. SFT corpus + warm-start.
+3. SFT corpus + warm-start. ✅ DONE (see results below)
 4. Surrogate + surrogate-accelerated GRPO with the composite reward.
 5. Held-out board validation.
+
+### Stage 1 RESULTS — SFT warm-start (oracle-verified corpus) ✅
+**The V2 thesis is validated.** SFT on an oracle-verified, style- and
+coefficient-diverse corpus lifts RTLCoder-7B from "no RL foothold" to a reliable
+generator on three accelerator families. Measured by `probe_competence.py`
+(oracle verdict, corpus-format prompts, base-vs-SFT toggled on the SAME model via
+PeftModel.disable_adapter — so weights are the only variable).
+
+Corpus (`gen_sft_corpus.py` → `sft_corpus.jsonl`): **350 oracle-verified
+(spec→RTL) pairs, 0 rejected.** fir 87, firr 87, poly 162, cordic 14. Styles:
+fir/firr {array+loop ref, pipelined, unrolled named-reg}; poly {Horner-chain,
+pipelined, inline-nested} × 6 coefficient variants/degree; cordic {unrolled, pipe}.
+
+Trainer (`sft_train_v2.py`): LoRA r=16 on q/k/v/o, loss MASKED to completion,
+4 epochs, single V100 (CUDA_VISIBLE_DEVICES=0 to avoid DataParallel OOM),
+gradient checkpointing, batch1/grad-accum16, max_length 2048. ~98 min. Adapter
+`sft_v3_out`. Train loss 0.52→0.007.
+
+Competence (n=16/design, oracle correct-rate), base (adapter off) → SFT (on):
+
+| family | base | SFT | note |
+|---|---|---|---|
+| fir    | 9.4% | **100%**  | |
+| firr   | 6.2% | **100%**  | |
+| poly   | 0%   | **90.6%** | incl. UNSEEN coeff variants poly4_v2 (16/16), poly8_v3 (11/16) → genuine generalisation of the Horner `*x` recurrence, not memorisation |
+| cordic | 0%   | 0%        | documented 7B capability ceiling (see below) |
+| **overall** | **3.5%** | **84.7%** | **+81.2 pp** |
+
+**poly rescue:** first SFT (215-pair corpus, 9 near-identical poly designs) left
+poly at ~3% — diagnosis (`diagnose_competence.py`) showed a structural Horner bug
+(`*8'd1` instead of `*x`), the memorise-don't-generalise signature of too-few/too-
+similar data — the SAME failure firr had pre-fix. Fix: coefficient-randomized
+variants `polyD_vV_8b` (deterministic; oracle rebuilds coeffs from the name),
+poly 9→54 designs (27→162 pairs). Retrain → poly 90.6%. Confirms: SFT works where
+the family is learnable AND the corpus is diverse; the lever is **data diversity**.
+
+**cordic negative result (honest, citable):** from 14 examples of the hardest
+family the 7B produces nonsense (2-bit counters that can't reach iteration N,
+wrong tables) — compiles ~2/16, correct 0. A genuine model-capability ceiling for
+iterative shift-add CORDIC at this scale, not a data-quantity gap. Left out of the
+first GRPO scope; reportable as a limitation.
+
+**Implication:** GRPO now has an overwhelming foothold on fir/firr/poly (≈90–100%
+correct). Next gate (Stage 4 prep): confirm the SFT policy emits Fmax-DIVERSE
+correct implementations (the RL headroom) and collect the first (RTL→Fmax) data
+for the Stage-3 surrogate — generate oracle-verified correct candidates with
+`sft_v3_out`, dedup, synth (Vivado) for the Fmax spread per design.
+
