@@ -57,18 +57,26 @@ def probe_prompts(want):
     return out
 
 
-def generate(model, tok, prompt, n, temp, max_tokens):
+def generate(model, tok, prompt, n, temp, max_tokens, batch=8):
+    """Sample n completions, CHUNKED into sub-batches so only `batch` KV caches
+    are live at once (n*max_tokens parallel KV caches OOM a 32GB V100)."""
     chat = (tok.apply_chat_template([{"role": "user", "content": prompt}],
                                     tokenize=False, add_generation_prompt=True)
             if tok.chat_template else prompt + "\n")
     inp = tok(chat, return_tensors="pt",
               return_token_type_ids=False).to(model.device)
-    with torch.inference_mode():
-        out = model.generate(**inp, max_new_tokens=max_tokens, do_sample=True,
-                             temperature=temp, num_return_sequences=n,
-                             pad_token_id=tok.eos_token_id)
     plen = inp["input_ids"].shape[1]
-    return [tok.decode(s[plen:], skip_special_tokens=True) for s in out]
+    texts, remaining = [], n
+    while remaining > 0:
+        k = min(batch, remaining)
+        with torch.inference_mode():
+            out = model.generate(**inp, max_new_tokens=max_tokens, do_sample=True,
+                                 temperature=temp, num_return_sequences=k,
+                                 pad_token_id=tok.eos_token_id)
+        texts.extend(tok.decode(s[plen:], skip_special_tokens=True) for s in out)
+        remaining -= k
+        torch.cuda.empty_cache()
+    return texts
 
 
 def run_probe(label, model, tok, prompts, n, temp, max_tokens, n_stim):
