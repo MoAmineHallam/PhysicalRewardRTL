@@ -1,0 +1,150 @@
+#!/usr/bin/env python3
+"""
+surrogate_train.py  -  Stage 3: train an Fmax surrogate from RTL TEXT (no Vivado).
+
+Why: GRPO needs a reward per sampled candidate, but calling Vivado/the board on
+every sample is unaffordable. The surrogate predicts Fmax from the RTL text alone
+so GRPO runs at LLM speed; it only needs to RANK candidates of the same design
+(GRPO uses relative advantage), and is periodically re-anchored to real Vivado
+measurements (supervisor Architecture 1). A 45-pair probe already gave LODO
+Spearman 0.64 / top-1 5-of-7 with a trivial linear model; this trains a small MLP
+on the full (RTL->Fmax) dataset and reports leave-one-design-out rank metrics.
+
+Data: one or more run_ppa ppa.jsonl files (module, fmax_mhz, compiled) + the
+matching fmax_manifest.json (module -> design/family) + the RTL dir(s).
+
+    python surrogate_train.py --data rtl/fmax_probe_v4 rtl/fmax_data --out surrogate.pt
+"""
+
+import os
+import re
+import json
+import argparse
+
+import numpy as np
+
+
+# ---- TEXT-ONLY features (must be computable with NO synthesis) --------------
+def extract_features(txt):
+    stmts = txt.split(";")
+    max_stmt_mult = max((s.count("*") for s in stmts), default=0)
+    n_mult = txt.count("*")
+    n_posedge = txt.count("posedge")
+    n_nonblock = txt.count("<=")
+    accum = len(re.findall(r"<=[^;]*\*[^;]*\+[^;]*\b[a-z]+\d", txt))
+    y_comb = 1 if re.search(r"always\s*@\s*\(\s*\*\s*\)[^;]*\by\b", txt) else 0
+    n_lines = txt.count("\n")
+    n_regs = len(set(re.findall(r"\breg\s+(?:\[[^\]]*\]\s*)?(\w+)", txt)))
+    # ratio of multiply-add work that is registered vs lumped combinationally
+    pipe_ratio = accum / (n_mult + 1.0)
+    return [max_stmt_mult, n_mult, n_posedge, n_nonblock, accum, y_comb,
+            n_lines, n_regs, pipe_ratio]
+
+FEAT_NAMES = ["max_stmt_mult", "n_mult", "n_posedge", "n_nonblock", "accum",
+              "y_comb", "n_lines", "n_regs", "pipe_ratio"]
+
+
+def design_of(mod):
+    return mod.rsplit("__g", 1)[0]
+
+
+def load_dataset(dirs):
+    rows = []
+    for d in dirs:
+        ppa = os.path.join(d, "ppa.jsonl")
+        man = os.path.join(d, "fmax_manifest.json")
+        if not (os.path.exists(ppa) and os.path.exists(man)):
+            print(f"  [skip] {d}: needs ppa.jsonl + fmax_manifest.json")
+            continue
+        manifest = json.load(open(man))
+        for line in open(ppa):
+            try:
+                p = json.loads(line)
+            except ValueError:
+                continue
+            mod = p.get("module")
+            if not p.get("compiled") or mod not in manifest:
+                continue
+            f = os.path.join(d, mod + ".sv")
+            if not os.path.exists(f):
+                continue
+            rows.append({"mod": mod, "design": design_of(mod),
+                         "fmax": float(p.get("fmax_mhz", 0.0)),
+                         "feats": extract_features(open(f).read())})
+    return rows
+
+
+def spearman(a, b):
+    a, b = np.asarray(a, float), np.asarray(b, float)
+    ra = np.argsort(np.argsort(a)).astype(float)
+    rb = np.argsort(np.argsort(b)).astype(float)
+    ra -= ra.mean(); rb -= rb.mean()
+    den = np.sqrt((ra**2).sum() * (rb**2).sum())
+    return float((ra*rb).sum()/den) if den > 0 else 0.0
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--data", nargs="+", required=True,
+                    help="dirs each with ppa.jsonl + fmax_manifest.json + *.sv")
+    ap.add_argument("--out", default="surrogate.pt")
+    ap.add_argument("--epochs", type=int, default=300)
+    args = ap.parse_args()
+
+    rows = load_dataset(args.data)
+    if len(rows) < 20:
+        raise SystemExit(f"only {len(rows)} labelled pairs; generate more "
+                         f"(RTL->Fmax) data before training a surrogate.")
+    X = np.array([r["feats"] for r in rows], float)
+    y = np.log(np.array([r["fmax"] for r in rows], float))
+    dz = np.array([r["design"] for r in rows])
+    print(f"dataset: {len(rows)} pairs, {len(set(dz))} designs, "
+          f"{X.shape[1]} features")
+
+    import torch
+    import torch.nn as nn
+    mu, sd = X.mean(0), X.std(0) + 1e-6
+
+    def mlp():
+        return nn.Sequential(nn.Linear(X.shape[1], 32), nn.ReLU(),
+                             nn.Linear(32, 32), nn.ReLU(), nn.Linear(32, 1))
+
+    # leave-one-design-out evaluation (rank metrics are what GRPO needs)
+    preds = np.zeros(len(y))
+    for d in sorted(set(dz)):
+        tr, te = dz != d, dz == d
+        Xt = torch.tensor((X[tr]-mu)/sd, dtype=torch.float32)
+        yt = torch.tensor(y[tr], dtype=torch.float32).view(-1, 1)
+        net = mlp(); opt = torch.optim.Adam(net.parameters(), lr=1e-2)
+        for _ in range(args.epochs):
+            opt.zero_grad()
+            loss = ((net(Xt)-yt)**2).mean(); loss.backward(); opt.step()
+        with torch.no_grad():
+            preds[te] = net(torch.tensor((X[te]-mu)/sd,
+                            dtype=torch.float32)).numpy().ravel()
+
+    print(f"LODO pooled Spearman(pred, actual) = {spearman(preds, y):.3f}")
+    top1 = tot = 0
+    for d in set(dz):
+        te = np.where(dz == d)[0]
+        fm = np.exp(y[te])
+        if len(te) < 2 or fm.max()-fm.min() < 1:
+            continue
+        tot += 1
+        top1 += int(te[np.argmax(preds[te])] == te[np.argmax(y[te])])
+    print(f"LODO per-design top-1 (picks true fastest): {top1}/{tot}")
+
+    # train final surrogate on ALL data, save with normalisation + feature spec
+    Xall = torch.tensor((X-mu)/sd, dtype=torch.float32)
+    yall = torch.tensor(y, dtype=torch.float32).view(-1, 1)
+    net = mlp(); opt = torch.optim.Adam(net.parameters(), lr=1e-2)
+    for _ in range(args.epochs):
+        opt.zero_grad(); loss = ((net(Xall)-yall)**2).mean()
+        loss.backward(); opt.step()
+    torch.save({"state": net.state_dict(), "mu": mu, "sd": sd,
+                "feat_names": FEAT_NAMES, "log_target": True}, args.out)
+    print(f"surrogate -> {args.out} (predicts log Fmax from RTL text)")
+
+
+if __name__ == "__main__":
+    main()
