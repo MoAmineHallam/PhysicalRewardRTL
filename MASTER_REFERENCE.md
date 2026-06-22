@@ -1039,9 +1039,17 @@ multiply-chain per statement, accumulator-chain signature, posedge/nonblocking
 counts, registered-vs-combinational output), leave-one-design-out:
 - pooled Spearman(pred, actual) = **0.64** (trivial 7-feature linear model);
 - per-design **top-1 = 5/7** (picks the true fastest correct implementation).
-A real surrogate (more data + proper regressor / RTL embeddings) will improve this.
-The dominant signal: long combinational multiply chains → slow; staged/transposed
-accumulator chains → fast.
+
+**Scaled dataset (Stage 3 confirmed):** broadened to 151 (RTL→Fmax) pairs over 19
+designs (`rtl/fmax_data` 106 across fir/firr 4–32 + poly 3–10, plus `fmax_probe_v4`
+45), all Vivado-synthesised. Same text-only features, leave-one-design-out:
+- pooled Spearman = **0.90**, per-design **top-1 = 16/17**, mean within-design
+  Spearman = **0.73**.
+The surrogate reliably ranks Fmax and almost always identifies the fastest
+implementation → GRPO has a solid Vivado-free reward. Dominant signal: long
+combinational multiply chains → slow; staged/transposed accumulator chains → fast.
+Note fir32/firr32 stay flat (~25 MHz) — the model rarely emits a transposed form
+at T=32 (long output); headroom exists but isn't sampled (an RL/sampling target).
 
 ### Remaining build order
 4. **Surrogate (Stage 3):** scale the (RTL→Fmax) dataset (more candidates ×
