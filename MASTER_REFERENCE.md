@@ -1061,3 +1061,47 @@ at T=32 (long output); headroom exists but isn't sampled (an RL/sampling target)
    for the strong "trained on silicon feedback" claim).
 
 
+
+### Stage 4 GRPO pilot — REAL-Vivado verdict (Phase A) ✅
+
+Provenance: `rtl/policy_cmp` (sft_v4 vs grpo_v6, in-distribution designs),
+synthesized on the laptop with `run_ppa.py --period 5.0` (Vivado 2023.1,
+PYNQ-Z2 part), verdict from `compare_eval.py`. Data: `rtl/policy_cmp/ppa.jsonl`
+(52 designs), committed a5654e4.
+
+Per-design REAL Fmax (freq-weighted mean of distinct-correct candidates):
+
+| design      | SFT corr% / meanF / maxF | GRPO corr% / meanF / maxF | dMeanF |
+|-------------|--------------------------|---------------------------|--------|
+| fir16_8b    | 88 / 46.7 / 48           | 100 / 183.0 / 183         | +136.4 |
+| fir32_8b    | 29 / 25.4 / 26           | 75 / 25.4 / 25            |  -0.0  |
+| fir8_8b     | 96 / 100.2 / 302         | 100 / 301.8 / 302         | +201.7 |
+| firr16      | 88 / 61.8 / 214          | 96 / 213.6 / 214          | +151.8 |
+| firr8       | 96 / 106.6 / 338         | 100 / 338.4 / 338         | +231.8 |
+| poly4_8b    | 75 / 104.1 / 191         | 100 / 142.2 / 191         | +38.1  |
+| poly6_8b    | 100 / 64.2 / 191         | 100 / 127.6 / 191         | +63.4  |
+| poly8_v3_8b | 88 / 26.6 / 27           | 96 / 26.5 / 27            |  -0.1  |
+
+**Headline: mean real Fmax across designs SFT 66.9 → GRPO 169.8 (+102.9 MHz,
++154%), correctness held or ROSE on every design.**
+
+Interpretation:
+- The mechanism is a DISTRIBUTION SHIFT, not luck. SFT *can* emit the fast
+  style but rarely (fir8 fast in 1/6 samples, firr8 1/7, firr16 1/5); GRPO emits
+  it reliably (maxF == meanF on fir8/16, firr8/16 → nearly every GRPO sample is
+  the fast form). This is exactly the F6-honest framing: GRPO shifts probability
+  mass toward high-Fmax implementation styles.
+- **F2 gaming CONFIRMED on real silicon:** poly4 surrogate maxF = inf, real
+  maxF = 191. Surrogate was fooled; real Vivado caps it. Validates the clamp fix
+  and gives the paper a clean case study. Re-anchor: add poly4 real labels to
+  surrogate training in Phase B.
+- **F4 truncation CONFIRMED:** fir32 (25→25) and poly8_v3 (27→27) flat for both
+  policies — the fast transposed form is ~750 tokens, cut at the 768 cap, so it
+  never appears in either policy's candidates. Fix queued: --max-tokens 1536.
+- All Fmax are timing-closed Vivado numbers, not surrogate. Silicon (Stage 5)
+  still pending.
+
+**Phase A gate: PASSED.** Pilot verdict is a real-Vivado GRPO win on the
+families that fit the token budget; both failure modes are the pre-diagnosed
+F2/F4 flaws with fixes already queued for Phase B. Proceed to Phase B
+(held-out clean experiment).
