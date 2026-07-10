@@ -65,8 +65,26 @@ def design_of(mod):
     return mod.rsplit("__g", 1)[0]
 
 
-def load_dataset(dirs):
-    rows = []
+def base_design(mod, manifest_entry=None):
+    """Underlying catalog design name for a labelled module, for the §5 holdout
+    check. Prefers the manifest 'design' field (policy_cmp-style manifests tag
+    modules like grpo__poly4_8b__g1 with the true design); strips any
+    policy-prefix left in the name (a __-joined tag) as a fallback."""
+    d = None
+    if isinstance(manifest_entry, dict):
+        d = manifest_entry.get("design")
+    d = d or design_of(mod)
+    return d.split("__")[-1]
+
+
+def load_dataset(dirs, exclude_holdout=True):
+    """Labelled (RTL -> Fmax) rows from run_ppa output dirs.
+
+    exclude_holdout (default ON): drop rows whose underlying design is in the
+    frozen §5 held-out split -- invariant #3 says held-out designs must never
+    appear in the surrogate's training rows. Only disable for debugging."""
+    from gen_sft_corpus import is_holdout
+    rows, dropped = [], 0
     for d in dirs:
         ppa = os.path.join(d, "ppa.jsonl")
         man = os.path.join(d, "fmax_manifest.json")
@@ -82,12 +100,18 @@ def load_dataset(dirs):
             mod = p.get("module")
             if not p.get("compiled") or mod not in manifest:
                 continue
+            if exclude_holdout and is_holdout(base_design(mod, manifest.get(mod))):
+                dropped += 1
+                continue
             f = os.path.join(d, mod + ".sv")
             if not os.path.exists(f):
                 continue
             rows.append({"mod": mod, "design": design_of(mod),
                          "fmax": float(p.get("fmax_mhz", 0.0)),
                          "feats": extract_features(open(f).read())})
+    if dropped:
+        print(f"  [holdout] dropped {dropped} labelled rows on §5 held-out "
+              f"designs (surrogate training must never see them)")
     return rows
 
 
@@ -106,9 +130,14 @@ def main():
                     help="dirs each with ppa.jsonl + fmax_manifest.json + *.sv")
     ap.add_argument("--out", default="surrogate.pt")
     ap.add_argument("--epochs", type=int, default=300)
+    ap.add_argument("--include-holdout", action="store_true",
+                    help="DEBUG ONLY: keep §5 held-out rows (violates the frozen "
+                         "isolation protocol; never use for surrogate_v2)")
     args = ap.parse_args()
 
-    rows = load_dataset(args.data)
+    if args.include_holdout:
+        print("[WARNING] --include-holdout: §5 isolation OFF (debug only)")
+    rows = load_dataset(args.data, exclude_holdout=not args.include_holdout)
     if len(rows) < 20:
         raise SystemExit(f"only {len(rows)} labelled pairs; generate more "
                          f"(RTL->Fmax) data before training a surrogate.")

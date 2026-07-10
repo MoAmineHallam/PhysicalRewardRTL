@@ -66,8 +66,11 @@ def train_split_designs():
     """F10: GRPO trains on ALL train-split designs (dozens of prompts), not the
     8-design pilot list -- more prompts reduce per-prompt overfitting and cover
     the grid. The train split is exactly gen_sft_corpus.designs(exclude_holdout=
-    True), so the frozen §5 held-out designs can NEVER leak into RL."""
-    return [name for name, _, _, _ in GSC.designs(exclude_holdout=True)]
+    True), so the frozen §5 held-out designs can NEVER leak into RL. cordic is
+    excluded too (invariant #5: documented 7B negative result, stays out of RL --
+    its groups are always all-wrong, pure wasted compute)."""
+    return [name for name, fam, _, _ in GSC.designs(exclude_holdout=True)
+            if fam != "cordic"]
 
 
 def load_surrogate(path, device):
@@ -93,6 +96,17 @@ def load_surrogate(path, device):
             return clamp_fmax(float(np.exp(out)))
         return clamp_fmax(float(out))
     return predict_fmax
+
+
+def save_policy(model, path):
+    """Save ONLY the trainable policy adapter ('default'); the frozen 'ref' is a
+    copy of the SFT adapter we never need to reload. Older peft versions have no
+    selected_adapters kwarg -- fall back to saving everything ('ref' lands in a
+    subdir; harmless) rather than crashing away a training run at checkpoint time."""
+    try:
+        model.save_pretrained(path, selected_adapters=["default"])
+    except TypeError:
+        model.save_pretrained(path)
 
 
 def seq_logprob_adapter(model, prompt_ids, gen_ids, adapter, grad):
@@ -292,13 +306,10 @@ def main():
               f"surrFmax[max={rec['max_fmax']:.0f}] loss={loss_val:.4f} "
               f"kl={kl_val:.4f} {time.time()-t0:.0f}s", flush=True)
         if (step + 1) % args.save_every == 0:
-            # save ONLY the trainable policy (default); 'ref' is a frozen copy of
-            # the SFT adapter we never need to reload.
-            model.save_pretrained(os.path.join(args.out, f"step_{step+1}"),
-                                  selected_adapters=["default"])
+            save_policy(model, os.path.join(args.out, f"step_{step+1}"))
             print(f"  -> checkpoint {args.out}/step_{step+1}", flush=True)
 
-    model.save_pretrained(args.out, selected_adapters=["default"])
+    save_policy(model, args.out)
     tok.save_pretrained(args.out)
     log.close()
     print(f"\nGRPO-oracle done. Adapter -> {args.out}/\n"
