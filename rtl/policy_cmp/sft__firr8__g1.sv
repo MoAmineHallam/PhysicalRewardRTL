@@ -1,0 +1,28 @@
+module sft__firr8__g1 (
+    input  wire        clk,
+    input  wire        rst_n,
+    input  wire [7:0]  x,
+    output reg  [15:0] y
+);
+    reg  [7:0]  xs [0:7];
+    reg  [15:0] p  [0:7];
+    integer     i;
+    always @(posedge clk) begin
+        if (!rst_n) begin
+            for (i = 0; i < 8; i = i + 1) begin xs[i] <= 8'd0; p[i] <= 16'd0; end
+            y <= 16'd0;
+        end else begin
+            xs[0] <= x;
+            for (i = 1; i < 8; i = i + 1) xs[i] <= xs[i-1];
+            p[0] <= 8'd1 * xs[0];
+            p[1] <= 8'd2 * xs[1];
+            p[2] <= 8'd3 * xs[2];
+            p[3] <= 8'd4 * xs[3];
+            p[4] <= 8'd5 * xs[4];
+            p[5] <= 8'd6 * xs[5];
+            p[6] <= 8'd7 * xs[6];
+            p[7] <= 8'd8 * xs[7];
+            y <= p[0] + p[1] + p[2] + p[3] + p[4] + p[5] + p[6] + p[7];
+        end
+    end
+endmodule
