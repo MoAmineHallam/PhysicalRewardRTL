@@ -1,0 +1,189 @@
+# CLAUDE.md — Project handoff: silicon-grounded RL for RTL generation
+
+**Read this before doing anything. Do not deviate from the plan in §6 without the
+user's explicit approval.** The detailed research log is `MASTER_REFERENCE.md`
+(§10 = the V2 method); this file is the operational handoff: current state,
+known flaws, frozen decisions, and the exact next steps.
+
+## 1. What this project is
+
+Fine-tune RTLCoder-7B (at `/zeng_gk/Amine/mas/rtlcoder` on the GPU server) so it
+generates FPGA accelerator RTL (fir/firr/poly families) that is functionally
+CORRECT (V2 oracle, I/O-equivalence) and FAST (high Fmax), with final claims
+validated on real Vivado and real silicon (PYNQ-Z2). Pipeline:
+oracle (Stage 0, done) → SFT warm-start (Stage 1, done) → Fmax surrogate
+(Stage 3, done) → correctness-gated online GRPO (Stage 4, pilot done) →
+held-out + silicon validation (pending — the paper's core).
+
+## 2. Machines and workflow (three-box setup, git is the transfer bus)
+
+- **Sandbox** (this environment, `/home/user/FPGA`): code authoring, numpy-only
+  analysis, iverilog available. No GPU, no torch, no Vivado, no board.
+- **GPU server** (`/zeng_gk/Amine/mas/fpga`, conda env `mas`): training,
+  generation, oracle scoring. Its GitHub link is FLAKY (443 timeouts /
+  GnuTLS -110). Recipes that work:
+  `git config --global http.version HTTP/1.1`, and
+  `until git fetch origin; do sleep 30; done && git reset --hard origin/claude/amazing-hopper-ytsbvr`.
+  Server is a pure consumer: always `fetch + reset --hard`, never merge.
+  Pushes from the server use a fine-grained PAT in the URL form.
+- **Laptop** (Windows, `C:\Users\Amine\mas\fpga-repo`): Vivado 2023.1
+  (`run_ppa.py --vivado "C:\Xilinx\Vivado\2023.1\bin\vivado.bat"`), board access.
+- Branch: `claude/amazing-hopper-ytsbvr`. Commit as
+  `user.email noreply@anthropic.com`, `user.name Claude` (a stop-hook enforces this).
+- **NEVER let the user paste tokens into chat** — if it happens, tell them to
+  revoke immediately (it has happened twice).
+
+## 3. Non-negotiable invariants
+
+1. **Only the oracle decides correctness** (`oracle.score(...)['correct']`);
+   never Hamming/trace similarity (that was the V1 flaw).
+2. **Surrogate numbers are never results.** The surrogate is a training-time
+   reward only; every reported Fmax must come from real Vivado (`run_ppa.py`)
+   or the board. The surrogate has been gamed once already (poly4 → ∞).
+3. **Held-out isolation** (§5): held-out designs must never appear in the SFT
+   corpus, the GRPO design list, or the surrogate's training rows. Check before
+   every training run.
+4. **Update `MASTER_REFERENCE.md` after every result** (positive or negative),
+   with honest provenance.
+5. cordic is a documented negative result (7B ceiling) — do not spend compute
+   trying to rescue it; it stays out of RL.
+
+## 4. Known flaws found in review (fix status; fix in Phase B unless noted)
+
+- **F1 — Contamination (CRITICAL).** All results so far are in-distribution
+  (training designs). Nothing yet proves generalization. Fix: the frozen
+  held-out protocol in §5/§6-B. Note: an earlier claim that poly4_v2/poly8_v3
+  were "unseen" was WRONG — they were in the corpus.
+- **F2 — Surrogate gaming (CONFIRMED).** GRPO produced poly4 RTL the surrogate
+  scores as ∞ (exp overflow), and firr8 at 441–566 "MHz" (above any real value).
+  Fix: clamp predicted log-Fmax to [ln 5, ln 500] in surrogate load AND in the
+  GRPO reward; after Phase A synthesis, add the gamed designs with their real
+  Vivado labels to surrogate training (re-anchor) and retrain.
+- **F3 — GRPO KL anchors to the BASE model, not the SFT policy.**
+  `grpo_oracle.py` uses `use_adapter=False` (= base) as the KL reference while
+  the policy starts from the SFT adapter — so the KL mildly pulls the policy
+  AWAY from SFT competence. Damage was small (kl≈0.05) but fix for v7: keep a
+  frozen copy of the SFT adapter as reference (peft multi-adapter: load SFT
+  twice, one frozen "ref" + one trainable "policy"; compute ref logprob under
+  the frozen adapter).
+- **F4 — Generation budget truncates large designs (explains fir32).**
+  fir32/firr32 transposed ≈ 750+ tokens; GRPO/probe caps were 768 → truncated
+  mid-module → extraction fails → zero reward → policy learns to avoid the fast
+  form. Fix: `--max-tokens 1536` everywhere (GRPO, probes, eval). SFT-side:
+  the >2048 warnings were cordic-only (harmless to RL), but train v5 with
+  `--max_length 4096` after confirming `config.max_position_embeddings ≥ 4096`
+  (RTLCoder is deepseek-coder-based, 16k context; tokenizer's 2048 is a
+  misconfigured default).
+- **F5 — Same-stimulus overfitting risk.** Training reward and all evals used
+  oracle seed=0, n=512. A policy could in principle overfit the exact vectors.
+  Fix: final evals score with seed=1 AND seed=2, n=1024; training keeps seed=0.
+- **F6 — Template-bounded diversity (framing risk).** SFT completions are
+  template-generated; GRPO shifts probability among learned styles rather than
+  inventing novel ones. The paper must claim "shifts the generation
+  distribution toward high-Fmax implementation styles and generalizes across
+  parameters", not "invents fast designs". The extrapolation held-outs
+  (taps 36/40) are the honest test of style generalization.
+- **F7 — Area numbers ignore DSPs.** Vivado maps multiplies to DSP blocks
+  (that's why some rows show lut=1). Either report DSP counts too or drop area
+  claims; Fmax claims are unaffected.
+- **F8 — GRPO gradient includes post-endmodule junk.** Reward is computed on
+  the extracted module but logprob on the whole sampled sequence. Minor noise;
+  for v7 truncate `gen_ids` at the first "endmodule" token span.
+- **F9 — Single-seed, n=24 evals.** For the money tables use n=48/design and,
+  if time allows, 2 sampling seeds; report means (CIs if feasible).
+- **F10 — GRPO trained on only 8 prompts.** v7 must train on ALL train-split
+  designs (dozens of prompts), which also reduces per-prompt overfitting.
+
+## 5. FROZEN held-out split (decided — do not change)
+
+Held-out = excluded from SFT corpus, GRPO design list, and surrogate training
+rows. Evaluation happens ONLY here (plus VerilogEval for regression).
+
+- **Interpolation:** fir taps {6, 10, 18, 26} (`fir6_8b`, `fir10_8b`,
+  `fir18_8b`, `fir26_8b`); firr taps {6, 10, 18, 26}; poly degree 7 (all
+  variants: `poly7_8b`, `poly7_v1..v5_8b`).
+- **Extrapolation (outside trained range):** fir taps {36, 40}; firr {36, 40};
+  poly NEW variants v6, v7 of degrees {4, 8} (`poly4_v6_8b`, `poly4_v7_8b`,
+  `poly8_v6_8b`, `poly8_v7_8b`) — `GAC.poly_coeffs_var` and the oracle already
+  handle any (deg, v) by name, and `GAC.fir_coeffs(T)` any T.
+- Train split = everything else: fir/firr taps 4..32 minus {6,10,18,26}, poly
+  degrees {2..10}\{7} × v0..v5. Cordic stays in the corpus (14 pairs) but out
+  of RL.
+- Eval prompts for held-out designs cannot come from `gen_sft_corpus.designs()`
+  after the regen (they won't be yielded) — build them directly:
+  `GSC.make_prompt(GAC.fir_spec(nm,T), GAC.fir_ref(nm,c))` etc. (the interface
+  header is part of the problem statement, not leakage).
+
+## 6. Execution plan (follow in order; each phase has a gate)
+
+### Phase A — Close out the pilot (immediate)
+1. **Server**: commit + push `rtl/policy_cmp` (52 .sv + manifest + surrogate_summary.json).
+2. **Laptop**: `run_ppa.py --dir rtl/policy_cmp --out rtl/policy_cmp/ppa.jsonl
+   --clk clk --period 5.0 --vivado ...` then `python compare_eval.py --dir rtl/policy_cmp`.
+   → the in-distribution SFT-vs-GRPO verdict on REAL Fmax + the gaming check.
+   Record in MASTER_REFERENCE. Push ppa.jsonl.
+3. **Sandbox**: apply fixes F2 (clamp), F3 (frozen-SFT KL ref), F4 (1536
+   tokens), F8, F10 to `surrogate_train.py` / `grpo_oracle.py`; add the
+   held-out split to `gen_sft_corpus.py` (a `--holdout` flag emitting the §5
+   split) and an `eval_holdout.py` (prompts per §5, n=48, oracle seed 1&2
+   n=1024, best-of-8 baseline, emits .sv for run_ppa like compare_policies).
+   GATE: pilot verdict understood; code fixes pushed.
+
+### Phase B — Clean experiment (the paper's core)
+1. **Sandbox/server**: regenerate corpus without held-out; retrain
+   `sft_v5` (`--max_length 4096` after checking max_position_embeddings).
+2. Retrain surrogate on train-split rows only → `surrogate_v2.pt`
+   (clamped). Re-anchor with Phase-A gamed designs + real labels.
+3. GRPO `grpo_v7`: all train-split designs, frozen-SFT KL, clamp, 1536 tokens,
+   group 8, kl 0.1, ~300–400 steps.
+4. **Held-out eval** (`eval_holdout.py` on server → run_ppa on laptop):
+   base vs sft_v5 vs grpo_v7 vs best-of-8(sft_v5), held-out designs only,
+   correctness (oracle seeds 1,2; n=1024) + real Vivado Fmax. Report
+   interpolation and extrapolation separately.
+5. VerilogEval pass@k: base vs sft_v5 vs grpo_v7 (anti-forgetting control).
+   GATE: held-out table complete. If GRPO gains are weak there, the fallback
+   headline is SFT + best-of-N (still silicon-validated) — decided in advance.
+
+### Phase C — Silicon (the headline)
+1. Board smoke test FIRST (PYNQ boots; canary-gated `clock_sweep_fmax.py` passes).
+2. For 3–5 held-out designs: SFT-policy median design + GRPO-policy top design
+   → bitstreams (existing `gen_catalog_bitstream.py` flow) → clock sweep →
+   measured silicon Fmax table (SFT vs GRPO, unseen designs).
+3. Stretch: Stage-2 vector player (replay oracle stimulus from BRAM, capture
+   via the LA, score with the same align logic) — if time is short this moves
+   to future work; do not let it block the paper.
+
+### Phase D — Analysis + writing
+Figures: competence table; v3→v4 headroom (built-in transposed ablation);
+surrogate pred-vs-real scatter; GRPO distribution shift per design (CDF);
+held-out money table (correctness + Vivado + silicon, interp/extrap split);
+poly4 gaming case study (RTL + ∞ prediction + clamp fix); best-of-N cost
+comparison; VerilogEval regression. Limitations: cordic ceiling, template-
+bounded diversity (F6 framing), one board/family scope, seq-level KL estimator.
+Venue fit: MLCAD / ICCAD ML track / FPGA.
+
+## 7. Key files
+
+`oracle.py` (V2 reward), `gen_accelerator_catalog.py` (design/style emitters:
+fir_ref/fir_pipe/fir_unrolled/fir_transposed, poly_*, cordic_*),
+`gen_sft_corpus.py` (corpus), `sft_train_v2.py` (SFT trainer, loss masked to
+completion), `surrogate_train.py` (text-feature Fmax MLP + LODO eval),
+`grpo_oracle.py` (online GRPO), `probe_competence.py` (base-vs-adapter
+correctness probe; also exports `probe_prompts`/`generate`),
+`gen_fmax_candidates.py` (distinct-correct candidates for Vivado),
+`compare_policies.py`/`compare_eval.py` (SFT-vs-GRPO on surrogate/real Fmax),
+`run_ppa.py` (laptop Vivado batch), `analyze_accel_spread.py` (headroom),
+`clock_sweep_fmax.py`/`sweep_catalog.py` (board silicon Fmax),
+`run_verilogeval_passk.py` (regression benchmark).
+Adapters on server: `sft_v3_out`, `sft_v4_out` (current), `grpo_v6` (pilot).
+Data: `sft_corpus.jsonl` (408 pairs), `rtl/fmax_data` + `rtl/fmax_probe_v4`
+(151 labeled RTL→Fmax pairs), `surrogate.pt`, `rtl/policy_cmp` (pilot eval).
+
+## 8. Current numbers (for orientation; details in MASTER_REFERENCE)
+
+Base → SFT correctness 3.5% → 84.7% (fir/firr 100%, poly 90.6%, cordic 0%).
+Fmax headroom (Vivado): median within-design spread 155 MHz. Surrogate LODO
+Spearman 0.959, top-1 15/17. GRPO pilot (surrogate, in-distribution):
+fir8 105→323, fir16 46→198, firr8 103→322, firr16 59→198, poly6 67→124,
+correctness held/rose; poly4 gamed to ∞; fir32/poly8_v3 unimproved (F4/F10).
+Real-Vivado pilot verdict: PENDING (Phase A).
