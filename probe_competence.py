@@ -120,7 +120,7 @@ def main():
     ap.add_argument("--designs", nargs="*", default=DEFAULT_DESIGNS)
     ap.add_argument("--n", type=int, default=16, help="generations per design")
     ap.add_argument("--temp", type=float, default=0.8)
-    ap.add_argument("--max-tokens", type=int, default=768)
+    ap.add_argument("--max-tokens", type=int, default=1536)   # F4: don't truncate fir32/firr32
     ap.add_argument("--n-stim", type=int, default=512, help="oracle stimulus len")
     args = ap.parse_args()
 

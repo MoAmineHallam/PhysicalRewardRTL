@@ -93,7 +93,7 @@ def main():
     ap.add_argument("--batch", type=int, default=1)
     ap.add_argument("--grad_accum", type=int, default=16)
     ap.add_argument("--lr", type=float, default=1e-4)
-    ap.add_argument("--max_length", type=int, default=2048)
+    ap.add_argument("--max_length", type=int, default=4096)
     ap.add_argument("--lora_r", type=int, default=16)
     args = ap.parse_args()
 
@@ -111,6 +111,21 @@ def main():
     model = AutoModelForCausalLM.from_pretrained(
         args.base, torch_dtype=torch.bfloat16, device_map={"": 0})
     model.config.use_cache = False
+
+    # F4: train at 4096 so the largest transposed FIRs (fir32/firr32 ~750+ tokens
+    # of completion, plus the interface prompt) are never truncated mid-module.
+    # RTLCoder is deepseek-coder-based (16k context); the tokenizer's 2048 is a
+    # misconfigured default. Verify the MODEL actually supports the requested
+    # length and clamp with a loud warning rather than silently training on
+    # truncated RTL.
+    max_pos = getattr(model.config, "max_position_embeddings", None)
+    if max_pos and args.max_length > max_pos:
+        print(f"[F4][warn] --max_length {args.max_length} > model "
+              f"max_position_embeddings {max_pos}; clamping to {max_pos}")
+        args.max_length = max_pos
+    else:
+        print(f"[F4] training at max_length={args.max_length} "
+              f"(model supports {max_pos})")
 
     lora = LoraConfig(
         task_type=TaskType.CAUSAL_LM, r=args.lora_r, lora_alpha=2 * args.lora_r,

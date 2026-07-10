@@ -39,7 +39,7 @@ from peft import PeftModel
 import oracle
 from build_dataset import extract_verilog
 from probe_competence import probe_prompts, generate
-from surrogate_train import extract_features
+from surrogate_train import extract_features, LOGF_MIN, LOGF_MAX, clamp_fmax
 
 DEFAULT_DESIGNS = ["fir8_8b", "fir16_8b", "fir32_8b", "firr8", "firr16",
                    "poly4_8b", "poly6_8b", "poly8_v3_8b"]
@@ -57,7 +57,8 @@ def load_surrogate(path, device):
     @torch.no_grad()
     def pred(rtl):
         x = torch.tensor(extract_features(rtl), dtype=torch.float32, device=device)
-        return float(np.exp(net(((x - mu) / sd).unsqueeze(0)).item()))
+        out = net(((x - mu) / sd).unsqueeze(0)).item()   # F2: clamp log then exp
+        return clamp_fmax(float(np.exp(min(max(out, LOGF_MIN), LOGF_MAX))))
     return pred
 
 
@@ -121,7 +122,7 @@ def main():
     ap.add_argument("--designs", nargs="*", default=DEFAULT_DESIGNS)
     ap.add_argument("--n", type=int, default=24)
     ap.add_argument("--temp", type=float, default=1.0)
-    ap.add_argument("--max-tokens", type=int, default=768)
+    ap.add_argument("--max-tokens", type=int, default=1536)   # F4: don't truncate fir32/firr32
     ap.add_argument("--gen-batch", type=int, default=8)
     ap.add_argument("--out-dir", default="rtl/policy_cmp")
     args = ap.parse_args()

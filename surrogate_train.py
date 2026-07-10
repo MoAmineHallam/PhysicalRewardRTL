@@ -23,6 +23,23 @@ import argparse
 
 import numpy as np
 
+# F2 (surrogate gaming, CONFIRMED): GRPO once drove poly4 to a surrogate Fmax of
+# +inf (exp overflow in the MLP head) and firr8 to 441-566 "MHz", far above any
+# real Vivado value. The surrogate is only a RANKING signal over a design's
+# candidates, and no real design in the training data is below 5 or above 500
+# MHz, so predictions outside that band are pure extrapolation artifacts. Clamp
+# predicted log-Fmax to [ln 5, ln 500] wherever the surrogate is CONSUMED (GRPO
+# reward, eval). This module is the single source of truth for the bound.
+FMAX_MIN, FMAX_MAX = 5.0, 500.0
+LOGF_MIN, LOGF_MAX = float(np.log(FMAX_MIN)), float(np.log(FMAX_MAX))
+
+
+def clamp_fmax(fmax):
+    """Clamp a predicted Fmax (MHz) to the real training range [5, 500]."""
+    if fmax != fmax:                 # NaN -> floor (treat as a non-signal)
+        return FMAX_MIN
+    return float(min(max(fmax, FMAX_MIN), FMAX_MAX))
+
 
 # ---- TEXT-ONLY features (must be computable with NO synthesis) --------------
 def extract_features(txt):
