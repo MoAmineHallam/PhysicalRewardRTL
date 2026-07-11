@@ -1105,3 +1105,48 @@ Interpretation:
 families that fit the token budget; both failure modes are the pre-diagnosed
 F2/F4 flaws with fixes already queued for Phase B. Proceed to Phase B
 (held-out clean experiment).
+
+### Phase B training milestones — clean corpus + sft_v5 + surrogate_v2 ✅
+
+Provenance: GPU server, conda env `mas`, one V100, code at 89121a6.
+
+**Corpus regen (held-out excluded).** `gen_sft_corpus.py --holdout` →
+`sft_corpus_v5.jsonl`: 358 oracle-verified pairs (0 rejected), families
+fir 100 / firr 100 / poly 144 / cordic 14. Exactly 50 pairs fewer than the
+408-pair full corpus = the 14 §5 held-out designs × their styles (fir/firr
+{6,10,18,26} @ 4 styles = 32; poly7 v0..v5 @ 3 styles = 18). Zero held-out leak
+(verified by is_holdout in the sandbox).
+
+**SFT v5** (`sft_train_v2.py --max_length 4096`, 4 epochs, LoRA r16, ~1.8h).
+Loss 0.471 → 0.009, final train_loss 0.125. F4 confirmed: log shows
+`training at max_length=4096 (model supports 16384)` — the 2964>2048 line is the
+harmless tokenizer-default warning, NOT truncation. Competence probe
+(`probe_competence.py --adapter sft_v5_out --n 16`, oracle verdict, 1536 tokens):
+
+| family | base | sft_v5 |
+|--------|-----:|-------:|
+| fir    | 9.4% | 87.5% (56/64) |
+| firr   | 12.5%| 100%  (32/32) |
+| poly   | 3.1% | 96.9% (31/32) |
+| cordic | 0%   | 0%    (documented ceiling, out of RL) |
+| OVERALL| 6.9% | 74.4% (119/160); non-cordic 93.0% (119/128) |
+
+GATE PASSED (base 6.9% → 74.4%, +67.5pp; non-cordic 93% ≈ sft_v4). fir32 is the
+soft spot (9/16 = 56%) but now PRODUCES correct candidates at all — in the
+Phase-A pilot the 768-token cap truncated fir32 to 0 correct, so this confirms
+the F4 fix gives GRPO a foothold on fir32 it never had. The ~10pp overall drop
+vs sft_v4 (84.7%) is expected: the corpus deliberately dropped the held-out
+designs, trading a little in-distribution competence for a clean held-out test.
+
+**Surrogate v2** (`surrogate_train.py --data rtl/fmax_probe_v4 rtl/fmax_data
+rtl/policy_cmp --out surrogate_v2.pt`). 203 labelled (RTL→Fmax) pairs, 35
+designs, 9 text features. LODO pooled Spearman 0.965 (v1 0.959), per-design
+top-1 23/25 (v1 15/17). The +52 pairs vs v1 are the Phase-A policy_cmp rows with
+REAL Vivado labels — the F2 re-anchor: the surrogate has now seen poly4's real
+ceiling (~191 MHz), not the +inf it once hallucinated. Held-out row filter ran
+clean (0 dropped; none of the label dirs contain §5 held-out designs). Clamp to
+[5,500] is applied at CONSUMPTION (grpo_oracle/eval_holdout), training stays on
+real finite log-Fmax.
+
+Next: GRPO grpo_v7 (sft_v5 + surrogate_v2, 98 train designs, frozen-SFT KL,
+1536 tokens, clamp) → held-out eval (eval_holdout.py) → run_ppa.
