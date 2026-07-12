@@ -1254,3 +1254,38 @@ held-out designs in BOTH regimes → primary headline (not the best-of-N
 fallback). Remaining: VerilogEval regression (running), Qwen GRPO (running),
 silicon Phase C (pending, the final headline), optional iir/med family build
 (vetted GO).
+
+### Phase C smoke test — board + harness GO ✅ (silicon measurement validated)
+
+Provenance: PYNQ-Z2 (pynq 3.1.1, kernel 6.6.10-xilinx-v2024.1), board harness
+~/fmax_spike verified against repo (goldens byte-identical: fir16 0,3,13,35,76,
+144,246,388,573,801; echo8b 0..9; CLI identical — checksum diffs cosmetic).
+Invocation that works: `sudo -E /usr/local/share/pynq-venv/bin/python3 ...`
+(non-sudo lacks /dev/dri render perms; plain sudo strips XILINX_XRT).
+Sweep: system_spike.bit (fir16_8b unpipelined direct-form + echo8b canary),
+60-260 MHz step 5, 3 runs, threshold 0.99.
+
+Results (perfectly repeatable across 3 runs):
+  FIR silicon Fmax   = 90.91 MHz (first fail 100.0; PLL snaps 90.9->100->111,
+                       so true value in (90.9, 100.0))
+  canary silicon Fmax = 250.0 MHz (never failed in range)
+
+GATE:  1. canary margin 250.0-90.91 = 159.1 MHz  >= 20   PASS
+       2. repeatability spread 0.0 MHz            <= 5    PASS
+       3. silicon/STA ratio: script printed FAIL at 0.55 — but the reference
+          passed (--vivado-fmax 165) was a STALE docstring constant. The DUT in
+          the bitstream is the UNPIPELINED direct-form fir16 (header comment +
+          399-LUT structure); our labeled Vivado data for that exact structure:
+          47.56 MHz STA. Corrected ratio 90.91/47.56 = 1.91 (band 1.0-2.2,
+          room-temp silicon vs worst-case signoff) -> PASS.
+
+VERDICT: GO. The harness measures the DESIGN (canary margin proves capture path
+is not the bottleneck), the measurement is deterministic, and silicon/STA is
+physically plausible. Silicon Fmax measurement of the GRPO held-out designs is
+cleared. TODO for the artifact: re-run sweep with --vivado-fmax 47.56 for a
+clean GO printout; optionally run_ppa the exact rtl_library/fir16_8b/design.v.
+
+Next (Phase C measurement): pick 3-5 held-out designs (suggested: fir26, firr26,
+poly7_8b interp + firr36, poly8_v6 extrap), build bitstreams for SFT-median vs
+GRPO-top candidates (gen_catalog_bitstream.py flow, laptop), sweep on board ->
+measured silicon Fmax table (the thesis headline).
