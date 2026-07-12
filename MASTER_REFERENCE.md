@@ -1178,3 +1178,36 @@ Findings:
   limit" (strengthens the documented negative result).
 Next (optional strengthener): grpo_qwen from sft_qwen_out with surrogate_v2
 (text-based, model-agnostic), then Qwen row in the held-out table.
+
+### New-family headroom vetting (IIR + median) — both GO ✅
+
+Provenance: vet_families.py (2 hand-written styles/design, all 10 oracle-verified
+I/O-equivalent at seed 3) -> laptop run_ppa (Vivado 2023.1, period 5.0) ->
+vet_families.py --report. GATE: fast/slow real-Fmax ratio >= 1.5x = has the
+style headroom the Fmax-RL needs.
+
+| design | slow (ref/comb) | fast (transposed/pipe) | ratio | verdict |
+|--------|----------------:|-----------------------:|------:|---------|
+| iir4   | 93  | 188 | 2.03x | GO |
+| iir8   | 62  | 184 | 2.99x | GO |
+| iir12  | 52  | 188 | 3.62x | GO |
+| med5   | 77  | 115 | 1.50x | marginal |
+| med9   | 43  | 110 | 2.56x | GO |
+
+Findings:
+- IIR (order-N, real feedback y[n] deps on y[n-1],y[n-2]) has strong headroom
+  that GROWS with order (2.0x@4 -> 3.6x@12), same signature as FIR: the naive
+  combinational sum's critical path worsens with size while the transposed
+  chain stays ~188 MHz. The style-headroom mechanism REPLICATES on a feedback
+  structure -> method is not FIR-specific.
+- Median (comparator sort network, ZERO multipliers) has headroom at useful
+  window sizes (med9 2.56x); med5 marginal (too small to restructure). Proves
+  the approach extends beyond arithmetic kernels.
+- Prospective 5-family story spanning 3 circuit classes: MAC kernels
+  (fir/firr/poly) + feedback filters (iir) + comparator logic (median).
+
+NOTE: this vets HEADROOM + template correctness only. FOOTHOLD (can the 7B
+LEARN these post-SFT) is UNPROVEN -- the GO verdict authorizes the catalog+SFT
+investment; median (no arithmetic) is the higher-risk foothold. Next: add
+iir_*/med_* generators to gen_accelerator_catalog.py + gen_sft_corpus.designs(),
+regen corpus, retrain, probe.
