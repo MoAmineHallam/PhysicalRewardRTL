@@ -1211,3 +1211,46 @@ LEARN these post-SFT) is UNPROVEN -- the GO verdict authorizes the catalog+SFT
 investment; median (no arithmetic) is the higher-risk foothold. Next: add
 iir_*/med_* generators to gen_accelerator_catalog.py + gen_sft_corpus.designs(),
 regen corpus, retrain, probe.
+
+### ★ PHASE B MONEY TABLE — held-out real-Vivado verdict (the paper's headline) ★
+
+Provenance: eval_holdout.py (n=48/design, oracle seeds 1&2 n=1024) on server →
+run_ppa (Vivado 2023.1, period 5.0, 284/285 synthesized, 1 base fir40 SYNTH
+FAIL) on laptop → eval_holdout.py --report. Data: rtl/holdout_eval/ppa.jsonl
+(ef2582c). All Fmax = REAL timing-closed Vivado, freq-weighted means over each
+policy's distinct-correct candidates. All designs FROZEN §5 held-out (never in
+SFT corpus, GRPO list, or surrogate rows).
+
+INTERPOLATION (14 designs, in-range unseen): mean real Fmax
+  base 35.1 → sft_v5 66.5 → bestof8 113.9 → grpo_v7 234.4 MHz
+  grpo vs sft: +167.9 MHz (+252%); grpo vs bestof8: 2.06x
+  correctness avg: sft 91.1% → grpo 94.6% (GRPO HOLDS+RISES on interp)
+
+EXTRAPOLATION (8 designs, beyond trained range): mean real Fmax
+  base 15.2 → sft_v5 52.0 → bestof8 112.2 → grpo_v7 190.1 MHz
+  grpo vs sft: +138.1 MHz (+265%); grpo vs bestof8: 1.69x
+  correctness avg: sft 89% → grpo 78.5% (cost concentrated in fir36 65%,
+  fir40 17%, firr40 58%; poly extrap holds 98-100%)
+
+Key rows/findings:
+- Mechanism on unseen designs: SFT emits the fast form ~1-in-5..13 samples
+  (fir10: one 272 in 11; firr10: ZERO fast in 13; poly7s: ~1-in-5 at 191);
+  GRPO emits it near-deterministically (meanF≈maxF on most designs).
+- GRPO > best-of-8 not just on cost: bestof8 (surrogate-picked from 8 sft
+  samples) MISSED the fast form on fir10/fir26/poly7_v3/v4/poly8_v6/v7 —
+  fast-tail sampling + surrogate ranking is strictly weaker than the shifted
+  policy.
+- poly verdict corrected vs the in-training read: surrogate's 460-500 claims
+  were inflation (real ceiling ≈ 191-193, the pipelined Horner), BUT GRPO poly
+  meanF ≈ 190 vs sft ≈ 45-60 -> the reliability win holds; only the claimed
+  MAGNITUDE was gamed. Clamp contained it; Vivado exposed it. Case study stands.
+- F5 honored: correctness gate = oracle seeds 1&2, n=1024 (training used seed 0).
+- Extrapolation limitation (paper text): at taps far beyond training (36/40)
+  the fast transposed form's correctness degrades (fir40 17%) — speed
+  generalizes further than reliability; report as stated limitation.
+
+PHASE B GATE: PASSED. Held-out table complete; GRPO gains are strong on
+held-out designs in BOTH regimes → primary headline (not the best-of-N
+fallback). Remaining: VerilogEval regression (running), Qwen GRPO (running),
+silicon Phase C (pending, the final headline), optional iir/med family build
+(vetted GO).
