@@ -1289,3 +1289,34 @@ Next (Phase C measurement): pick 3-5 held-out designs (suggested: fir26, firr26,
 poly7_8b interp + firr36, poly8_v6 extrap), build bitstreams for SFT-median vs
 GRPO-top candidates (gen_catalog_bitstream.py flow, laptop), sweep on board ->
 measured silicon Fmax table (the thesis headline).
+
+### Qwen GRPO (grpo_qwen) — trained ✅ + VerilogEval regression control ✅
+
+**grpo_qwen** (400 steps, sft_qwen_out + surrogate_v2, frozen-SFT KL, 1536 tok):
+converged with the same signature as grpo_v7 — correctness held (7-8/8 typical,
+fir32 6-8/8 at end), majority flat-skips by the final quarter (policy emits the
+fast style near-deterministically), kl <= 0.004, saturation at the 500 clamp on
+large fir (same surrogate ceiling as RTLCoder run). Adapter -> grpo_qwen/.
+Second base model completed the FULL pipeline (SFT -> GRPO) with zero code
+changes. Pending: Qwen held-out eval + Vivado for its money-table row.
+
+**VerilogEval pass@k** (run_verilogeval_passk.py, 156 problems, n=10, RTLCoder):
+
+| policy  | compile | pass@1 | pass@5 | pass@10 |
+|---------|--------:|-------:|-------:|--------:|
+| base    | 64.7%   | 32.2%  | 46.2%  | 51.9%   |
+| sft_v5  | 46.6%   | 16.0%  | 33.0%  | 40.4%   |
+| grpo_v7 | 46.7%   | 16.7%  | 34.2%  | 41.0%   |
+
+Findings (honest):
+- **GRPO adds ZERO regression beyond SFT** — marginally better on every metric
+  (16.0->16.7 pass@1). The frozen-SFT KL leash (F3) protected general ability
+  through RL. The core anti-forgetting claim for the RL stage: PASSED.
+- **SFT itself costs ~16pp pass@1** (specialization): 4 epochs on 358
+  fixed-interface pairs pulls generations toward the corpus format; compile
+  rate 65->47% indicates interface/format mismatch on foreign problems rather
+  than lost Verilog competence.
+- Paper framing: the policy is a DETACHABLE LoRA adapter — base model
+  untouched, general capability recoverable by unloading. Report the SFT
+  specialization cost + zero RL cost + adapter modularity. Mitigations
+  (fewer epochs, replay mix) = future work; do not spend compute now.
