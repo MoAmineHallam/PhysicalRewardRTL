@@ -1320,3 +1320,13 @@ Findings (honest):
   untouched, general capability recoverable by unloading. Report the SFT
   specialization cost + zero RL cost + adapter modularity. Mitigations
   (fewer epochs, replay mix) = future work; do not spend compute now.
+
+### Phase C smoke test — CLEAN GO artifact ✅ (re-run with corrected STA ref)
+
+Re-ran the spike sweep with --vivado-fmax 47.56 (the correct STA for the
+unpipelined direct-form fir16 actually in the bitstream). All three gates PASS
+as printed by the tool: canary margin 159.1 MHz, repeatability 0.0 MHz,
+silicon/STA 90.91/47.56 = 1.91. VERDICT: GO. Artifact:
+~/fmax_spike/rtl/spike/sweep_result_clean.json (board).
+Note: run_ppa on rtl_library/fir16_8b/design.v needs the file COPIED to
+fir16_8b.v first (run_ppa derives the top module from the filename).
