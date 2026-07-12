@@ -168,7 +168,19 @@ spread 0.0, silicon/STA 1.91).
 5. **Cheap fixes:** DSP counts in every area table (already in ppa.jsonl, F7);
    fir40 sample-cost analysis from existing artifacts ("GRPO + oracle-check
    ≈ 6 cheap sims to a correct 182 MHz design"); cordic stays as the
-   replicated-negative finding.
+   replicated-negative finding; best-of-{8,16,48} surrogate-selection curves
+   computed from the EXISTING eval artifacts (isolates policy shift vs better
+   sampling — zero GPU); one written paragraph on the GRPO↔DPO connection
+   (full DPO baseline = rebuttal contingency only, not planned); limitation
+   line: specs are template-generated NL.
+6. **Framing (from 3rd review, adopt):** position as "a gold standard for
+   EVALUATING LLM-generated hardware" — the narrow domain is what MAKES the
+   per-design oracle+silicon rigor possible (feature, not apology). Claim
+   "most rigorous/attributable silicon methodology", never "first silicon"
+   (a survey reportedly counts ~1/3 of LLM-RTL projects with some FPGA check).
+   Calibration note: the three external reviews scored DAC-as-is at 5%/<5%/65%
+   — the 65% is the flattering outlier; venue decision stays Path A, revisit
+   only after D1+D2 are complete.
 
 ### Phase E — write + submit
 Figures: money table (Vivado + silicon, interp/extrap); mechanism CDF (SFT
