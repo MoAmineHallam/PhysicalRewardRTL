@@ -1150,3 +1150,31 @@ real finite log-Fmax.
 
 Next: GRPO grpo_v7 (sft_v5 + surrogate_v2, 98 train designs, frozen-SFT KL,
 1536 tokens, clamp) → held-out eval (eval_holdout.py) → run_ppa.
+
+### Second-model transfer — Qwen2.5-Coder-7B-Instruct SFT ✅ (recipe transfers)
+
+Provenance: same clean corpus (sft_corpus_v5.jsonl, held-out excluded), same
+trainer (sft_train_v2.py --max_length 4096, model supports 32768), same probe
+(probe_competence --n 16, oracle verdict). Adapter: sft_qwen_out.
+
+| probe             | RTLCoder-7B | Qwen2.5-Coder-7B |
+|-------------------|------------:|-----------------:|
+| base overall      | 6.9%        | 1.9%             |
+| SFT overall       | 74.4%       | 68.1% (+66.2pp)  |
+| SFT fir           | 87.5%       | 100% (fir32 16/16) |
+| SFT firr          | 100%        | 96.9%            |
+| SFT poly          | 96.9%       | 43.8%            |
+| SFT cordic        | 0%          | 0%               |
+| SFT non-cordic    | 93.0%       | 85.2%            |
+
+Findings:
+- The SFT recipe TRANSFERS: a second, unrelated 7B goes ~2% -> ~68% (85%
+  non-cordic) with zero pipeline changes. "Method, not model."
+- Complementary strengths: Qwen aces fir (100%, incl. fir32), RTLCoder aces
+  poly (96.9 vs 43.8). Speculation: RTLCoder's RTL-specific pretraining helps
+  the Horner recurrence; not investigated further.
+- cordic = 0% on BOTH models -> the cordic ceiling replicates across
+  independent 7Bs; upgraded from "RTLCoder quirk" to "7B capability-class
+  limit" (strengthens the documented negative result).
+Next (optional strengthener): grpo_qwen from sft_qwen_out with surrogate_v2
+(text-based, model-agnostic), then Qwen row in the held-out table.
