@@ -114,53 +114,69 @@ rows. Evaluation happens ONLY here (plus VerilogEval for regression).
   `GSC.make_prompt(GAC.fir_spec(nm,T), GAC.fir_ref(nm,c))` etc. (the interface
   header is part of the problem statement, not leakage).
 
-## 6. Execution plan (follow in order; each phase has a gate)
+## 6. Execution plan — PATH A (revised 2026-07-13 with explicit user approval)
 
-### Phase A — Close out the pilot (immediate)
-1. **Server**: commit + push `rtl/policy_cmp` (52 .sv + manifest + surrogate_summary.json).
-2. **Laptop**: `run_ppa.py --dir rtl/policy_cmp --out rtl/policy_cmp/ppa.jsonl
-   --clk clk --period 5.0 --vivado ...` then `python compare_eval.py --dir rtl/policy_cmp`.
-   → the in-distribution SFT-vs-GRPO verdict on REAL Fmax + the gaming check.
-   Record in MASTER_REFERENCE. Push ppa.jsonl.
-3. **Sandbox**: apply fixes F2 (clamp), F3 (frozen-SFT KL ref), F4 (1536
-   tokens), F8, F10 to `surrogate_train.py` / `grpo_oracle.py`; add the
-   held-out split to `gen_sft_corpus.py` (a `--holdout` flag emitting the §5
-   split) and an `eval_holdout.py` (prompts per §5, n=48, oracle seed 1&2
-   n=1024, best-of-8 baseline, emits .sv for run_ppa like compare_policies).
-   GATE: pilot verdict understood; code fixes pushed.
+**Target venues: ACM FPGA / FCCM / MLCAD — NOT DAC.** Three independent harsh
+external reviews converged: the RL method is incremental vs the
+VeriReason/ChipSeek-class 2025 work by DAC standards, but the
+silicon-validated evaluation + honest held-out protocol is a strong fit
+(est. 50–70%) at FPGA/FCCM/MLCAD. Consequences, frozen:
+- Title/scope claims **"DSP accelerator RTL"**, never general RTL generation.
+- Phrase as **silicon-VALIDATED** (post-hoc measurement), never
+  silicon-in-the-loop — the board does not participate in training.
+  Stage-2 vector player stays future work.
 
-### Phase B — Clean experiment (the paper's core)
-1. **Sandbox/server**: regenerate corpus without held-out; retrain
-   `sft_v5` (`--max_length 4096` after checking max_position_embeddings).
-2. Retrain surrogate on train-split rows only → `surrogate_v2.pt`
-   (clamped). Re-anchor with Phase-A gamed designs + real labels.
-3. GRPO `grpo_v7`: all train-split designs, frozen-SFT KL, clamp, 1536 tokens,
-   group 8, kl 0.1, ~300–400 steps.
-4. **Held-out eval** (`eval_holdout.py` on server → run_ppa on laptop):
-   base vs sft_v5 vs grpo_v7 vs best-of-8(sft_v5), held-out designs only,
-   correctness (oracle seeds 1,2; n=1024) + real Vivado Fmax. Report
-   interpolation and extrapolation separately.
-5. VerilogEval pass@k: base vs sft_v5 vs grpo_v7 (anti-forgetting control).
-   GATE: held-out table complete. If GRPO gains are weak there, the fallback
-   headline is SFT + best-of-N (still silicon-validated) — decided in advance.
+### DONE (numbers: RESULTS.md; provenance: MASTER_REFERENCE.md)
+Phase A pilot ✅ (in-distribution real Vivado, +154%). Phase B ✅ (held-out
+money table: interp +252% w/ corr 91.1→94.6%, extrap +265%; > best-of-8;
+VerilogEval control: GRPO adds zero regression beyond SFT). Qwen SFT+GRPO ✅.
+IIR+median vetted GO ✅. Board smoke test clean GO ✅ (canary margin 159 MHz,
+spread 0.0, silicon/STA 1.91).
 
-### Phase C — Silicon (the headline)
-1. Board smoke test FIRST (PYNQ boots; canary-gated `clock_sweep_fmax.py` passes).
-2. For 3–5 held-out designs: SFT-policy median design + GRPO-policy top design
-   → bitstreams (existing `gen_catalog_bitstream.py` flow) → clock sweep →
-   measured silicon Fmax table (SFT vs GRPO, unseen designs).
-3. Stretch: Stage-2 vector player (replay oracle stimulus from BRAM, capture
-   via the LA, score with the same align logic) — if time is short this moves
-   to future work; do not let it block the paper.
+### Phase C — finish silicon + Qwen row (IN FLIGHT)
+1. Holdout shootout bitstream (`rtl/holdout_silicon`, self-checked 11/11
+   match=1.0000): laptop `build_holdout.tcl` → scp kit to board →
+   `sweep_catalog.py --bit system_holdout.bit --sels holdout_sels.json
+   --lo 30 --hi 340 --step 5 --runs 3` → **silicon money table** (5 held-out
+   designs × sft-median vs grpo-top + canary). GRPO entries may exceed the
+   attributable ceiling → report "≥ canary−margin", that is honest and fine.
+   Record; scp the sweep JSONs back into the repo.
+2. Qwen held-out eval (running) → laptop run_ppa on `rtl/holdout_eval_qwen`
+   → `eval_holdout.py --report --out-dir rtl/holdout_eval_qwen` → Qwen row.
 
-### Phase D — Analysis + writing
-Figures: competence table; v3→v4 headroom (built-in transposed ablation);
-surrogate pred-vs-real scatter; GRPO distribution shift per design (CDF);
-held-out money table (correctness + Vivado + silicon, interp/extrap split);
-poly4 gaming case study (RTL + ∞ prediction + clamp fix); best-of-N cost
-comparison; VerilogEval regression. Limitations: cordic ceiling, template-
-bounded diversity (F6 framing), one board/family scope, seq-level KL estimator.
-Venue fit: MLCAD / ICCAD ML track / FPGA.
+### Phase D — reviewer-hardening (order = impact per effort)
+1. **HLS baseline (BLOCKER at every venue):** C++ kernels for the 22 held-out
+   designs + Vitis HLS batch script (with/without pipeline/unroll pragmas);
+   compare Fmax + correctness vs GRPO. Framing: our input is an NL spec, not
+   C++ — but the comparison must exist. Sandbox authors kernels+script;
+   laptop runs them.
+2. **Family expansion to 5 (scope BLOCKER):** promote iir/med (templates in
+   vet_families.py, both vetted GO) into gen_accelerator_catalog +
+   gen_sft_corpus + oracle, WITH their own frozen held-out split; regen
+   corpus → sft_v6 → surrogate_v3 → grpo_v8 (5 families jointly) → extended
+   held-out eval + Vivado. One model, 5 families, 3 circuit classes.
+3. **Surrogate-vs-real-EDA ablation (STRONG):** partial GRPO (~50–100 steps,
+   design subset) with real Vivado OOC reward vs surrogate reward + wall-clock
+   cost table; fold in one surrogate re-anchor cycle (add new fast TRAIN-split
+   real labels → surrogate_v3 → show top-range discrimination restored).
+4. **Positioning (mandatory writing):** verify then cite VeriReason,
+   ChipSeek-R1, VeriSeek, SymRTLO, RTLRewriter, CraftRTL, CodeV; delta table
+   (our delta: correctness-gated Fmax objective; clamped + re-anchored
+   surrogate; frozen interp/extrap protocol; canary-attributed silicon).
+   Treat unverifiable "2026" citations from AI reviews as hallucinations
+   until a real link exists.
+5. **Cheap fixes:** DSP counts in every area table (already in ppa.jsonl, F7);
+   fir40 sample-cost analysis from existing artifacts ("GRPO + oracle-check
+   ≈ 6 cheap sims to a correct 182 MHz design"); cordic stays as the
+   replicated-negative finding.
+
+### Phase E — write + submit
+Figures: money table (Vivado + silicon, interp/extrap); mechanism CDF (SFT
+fast-tail vs GRPO default); gaming case study (∞ → clamp → real 191); HLS +
+best-of-N cost comparison; VerilogEval; 5-family competence. Limitations =
+RESULTS.md §9 verbatim. Check real deadlines (FPGA ~Oct, FCCM ~Jan, MLCAD
+~spring) and take the first reachable; a hardened DAC/journal version can
+follow with Phase-D leftovers.
 
 ## 7. Key files
 
