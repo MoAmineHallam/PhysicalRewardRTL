@@ -67,16 +67,36 @@ Hand-written slow/fast styles, oracle-verified, real Vivado:
 Headroom grows with size, same signature as FIR → method not FIR-specific.
 (Foothold post-SFT not yet trained — GO authorizes the catalog investment.)
 
-## 7. Silicon (Phase C) — smoke test ✅, money table 🔄
+## 7. SILICON MONEY TABLE (PYNQ-Z2, measured) ✅ — the headline
 
-- Board+harness validated (clean GO artifact): canary margin **159.1 MHz**,
-  repeatability **0.0 MHz**, silicon/STA **1.91** (90.91 measured / 47.56 STA;
-  STA re-confirmed 48 MHz on the exact file). First silicon datapoint:
-  unpipelined fir16 = 90.9 MHz measured.
-- 🔄 Holdout shootout bitstream (5 held-out designs × sft-median/grpo-top +
-  canary, self-checked 11/11 match=1.0000) building on laptop → board sweep
-  next. Vivado pairs going in (sft/grpo MHz): fir26 32/193, firr26 32/228,
-  poly7 33/191, firr36 23/194, poly8v6 26/192.
+Board+harness validated first (clean GO: canary margin 159.1 MHz,
+repeatability 0.0, silicon/STA 1.91). Then the held-out shootout — one
+bitstream, 5 held-out design pairs (sft-median vs grpo-top) + canary,
+3 sweep runs, **spread 0.0 MHz on every entry**:
+
+| held-out design | SFT silicon | **GRPO silicon** | speedup |
+|---|--:|--:|--:|
+| fir26 (interp) | 50.0 | **125.0** | 2.50× |
+| firr26 (interp) | 55.6 | **125.0** | 2.25× |
+| poly7 (interp) | 76.9 | **≥200 (harness-limited)** | ≥2.60× |
+| firr36 (extrap) | 40.0 | **125.0** | 3.13× |
+| poly8v6 (extrap) | 58.8 | **≥200 (harness-limited)** | ≥3.40× |
+
+**On real silicon, on never-seen designs, GRPO RTL sustains 2.3–3.4× the
+measured clock of SFT RTL — in both regimes, canary-attributed.** Canary
+ceiling in this bitstream = 200 MHz; two GRPO entries reach it (reported
+"≥200", honest). Methodology note: same-bitstream SFT-vs-GRPO comparison =
+identical conditions (fair); standalone Vivado STA is a separate table —
+in-context builds differ from solo compiles (grpo fir/firr: 125 in-context
+vs 193–228 standalone). Harness itself characterized: valid ≤250 MHz,
+breaks at 333 (sweeps capped at 260).
+
+## 7b. Qwen held-out (correctness done ✅, Fmax needs Vivado 🔄)
+
+GRPO **repairs** Qwen's weak family: poly7 correctness 29–54% (SFT) →
+**85–100%** (GRPO) on held-out designs, while fir/firr hold 93–100%
+(dips: firr10 52%, fir36 50%). Surrogate Fmax saturated at 460–500 →
+real numbers need the laptop run_ppa pass on rtl/holdout_eval_qwen.
 
 ## 8. Qwen second-model pipeline 🔄
 
