@@ -1371,3 +1371,34 @@ Notes:
   columns surrogate-saturated -> laptop run_ppa on rtl/holdout_eval_qwen next.
 
 PHASE C GATE: PASSED. The thesis has its silicon-measured headline.
+
+## 2026-07-13 — Phase D5 zero-GPU analyses: best-of-N curves, fir40 sample-cost, F7 area columns
+
+`analyze_bestofn.py` (new) computes, purely from the existing
+rtl/holdout_eval artifacts (fmax_manifest counts + ppa.jsonl real Fmax):
+
+1) EXACT expected best-of-N under a PERFECT selector (closed-form order
+   statistic on the empirical 48-sample distribution; incorrect samples = 0).
+   This upper-bounds best-of-N + ANY reranker (surrogate top-1 included), so
+   it isolates policy shift vs better sampling with zero GPU/Vivado time.
+
+   Mean real MHz | bo1 | bo8 | bo16 | bo32 | bo48 | GRPO-bo1
+   interp        | 60.7| 135.2| 171.5| 198.6| 207.8| 222.6  <- GRPO bo1 > perfect bo48
+   extrap        | 47.3| 109.2| 133.8| 152.3| 159.5| 150.0  <- GRPO bo1 ~ perfect bo32
+
+   Existence failures sampling cannot fix: firr10 SFT bo48=68.9 vs GRPO 306.8;
+   fir40 SFT bo48=20.9 vs GRPO 181.8 (fast form absent from all 48 SFT samples).
+   -> "RL shifts the distribution; selection cannot reach what SFT never emits."
+
+2) fir40 sample-cost: GRPO p(correct)=8/48=0.167 -> expected 6.0 oracle-checked
+   ~1s sims to first correct design at 181.8 MHz real. SFT there: p=0.75 but
+   best-of-ALL-48 = 20.9 MHz. Reframes limitation #1 as a favorable trade.
+
+3) F7 resolved: DSP/LUT/FF columns for every money-table entry
+   (rtl/holdout_eval/bestofn.json). GRPO fir/firr designs use FEWER LUTs than
+   SFT (fir40 1079->788) + pipeline FFs; poly maps to DSPs (5-7 -> +1 in grpo).
+   No area-for-speed explosion. lut=0/1 rows = DSP-mapped multiplies.
+
+Provenance: sandbox numpy-only, no new synthesis; all Fmax values are the
+existing real-Vivado labels. Artifacts: analyze_bestofn.py,
+rtl/holdout_eval/bestofn.json.

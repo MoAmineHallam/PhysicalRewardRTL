@@ -32,6 +32,29 @@ Mechanism (per-candidate data): SFT emits the fast form ~1-in-5..13 samples
 (firr10: 0-in-13); GRPO emits it near-deterministically. Best-of-8 MISSED the
 fast form on 6 designs → RL beats fast-tail sampling, not just cheaper.
 
+## 2b. Best-of-N curves: one GRPO sample ≈ 48 perfectly-selected SFT samples ✅
+
+Exact expected best-of-N (i.i.d., closed form) from the existing eval
+artifacts, assuming a PERFECT selector (upper-bounds surrogate top-1 or any
+reranker). `analyze_bestofn.py` → rtl/holdout_eval/bestofn.json:
+
+| regime (mean, real MHz) | bo1 | bo8 | bo16 | bo32 | bo48 | **GRPO bo1** |
+|---|--:|--:|--:|--:|--:|--:|
+| Interpolation | 60.7 | 135.2 | 171.5 | 198.6 | 207.8 | **222.6** |
+| Extrapolation | 47.3 | 109.2 | 133.8 | 152.3 | 159.5 | **150.0** |
+
+- Interp: **a single GRPO sample beats a perfect selector over 48 SFT
+  samples.** Extrap: one GRPO sample ≈ perfect best-of-32.
+- Existence failures sampling can't fix: SFT never emits the fast form in 48
+  samples for firr10 (bo48 = 68.9 vs GRPO 306.8) or fir40 (bo48 = 20.9 vs
+  GRPO 181.8) — distribution shift, not selection.
+- fir40 sample-cost: GRPO p(correct)=0.167 → expected **6.0 one-second oracle
+  sims** to a correct 181.8 MHz design; SFT is 75% correct there but its best
+  of all 48 samples is 20.9 MHz.
+- Area (F7 resolved): GRPO is *smaller* in LUTs on fir (e.g. fir40 1079→788)
+  paying only pipeline FFs; poly maps to DSPs (sft 5–7 → grpo +1); DSP column
+  now in every table.
+
 ## 3. Surrogate + gaming case study ✅
 
 - surrogate_v2: 203 labelled pairs, LODO Spearman **0.965**, top-1 **23/25**.
