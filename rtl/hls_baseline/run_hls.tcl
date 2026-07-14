@@ -1,6 +1,11 @@
 # Auto-generated - Phase D1 HLS baseline batch (Vitis HLS).
-# Run:  vitis_hls -f run_hls.tcl     (from rtl/hls_baseline/)
-# Resumable: solutions that already have an export report are skipped.
+# Run from a SHORT path (Windows 260-char/8191-char-cmdline limit trips
+# export_design on the larger designs). Recommended on the laptop:
+#   subst X: C:\Users\Amine\mas\fpga-repo\rtl\hls_baseline
+#   cd /d X:\
+#   vitis_hls -f run_hls.tcl
+# Resumable: solutions that already have an export report are skipped, and a
+# failed export is caught so ONE failure never aborts the whole batch.
 set PART   "xc7z020clg400-1"
 set PERIOD 5.0
 set DESIGNS [list]
@@ -27,6 +32,7 @@ lappend DESIGNS "poly4_v7_8b"
 lappend DESIGNS "poly8_v6_8b"
 lappend DESIGNS "poly8_v7_8b"
 
+set FAILED [list]
 foreach d $DESIGNS {
     foreach variant {pragma nopragma} {
         set proj "proj_${d}_${variant}"
@@ -49,9 +55,17 @@ foreach d $DESIGNS {
         create_clock -period $PERIOD
         csim_design
         csynth_design
-        export_design -flow impl -rtl verilog
+        # catch so a single Windows cmdline-length export failure logs and the
+        # batch keeps going instead of aborting mid-sweep
+        if {[catch {export_design -flow impl -rtl verilog} emsg]} {
+            puts "EXPORT-FAIL $d/$variant : $emsg"
+            lappend FAILED "$d/$variant"
+        }
         close_project
     }
 }
 puts "HLS BASELINE BATCH DONE"
+if {[llength $FAILED]} {
+    puts "EXPORTS THAT FAILED (rerun after `subst` to a short path): $FAILED"
+}
 exit
