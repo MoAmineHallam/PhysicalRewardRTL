@@ -91,6 +91,23 @@ def holdout_designs():
             nm = f"poly{D}_v{v}_8b"; c = GAC.poly_coeffs_var(D, v)
             out.append((nm, "poly", "extrap", GAC.poly_spec(nm, D, c),
                         GAC.poly_ref(nm, c)))
+    # D2 families (sft_v6/grpo_v8 runs only -- earlier adapters never saw them)
+    for N in sorted(GSC.HOLDOUT_IIR_ORDERS):   # iir interp: orders 5,9 x v0,v1
+        for v in (0, 1):
+            nm = f"iir{N}" if v == 0 else f"iir{N}_v{v}"
+            B = GAC.iir_coeffs_var(N, v)
+            out.append((nm, "iir", "interp", GAC.iir_spec(nm, N, B),
+                        GAC.iir_ref(nm, B)))
+    for N in sorted(GSC.HOLDOUT_EXTRAP_IIR_ORDERS):   # iir extrap: 16,20 (v0)
+        B = GAC.iir_coeffs_var(N, 0)
+        out.append((f"iir{N}", "iir", "extrap", GAC.iir_spec(f"iir{N}", N, B),
+                    GAC.iir_ref(f"iir{N}", B)))
+    for W in sorted(GSC.HOLDOUT_MED_W):               # med interp: W=7
+        out.append((f"med{W}", "med", "interp", GAC.med_spec(f"med{W}", W),
+                    GAC.med_comb(f"med{W}", W)))
+    for W in sorted(GSC.HOLDOUT_EXTRAP_MED_W):        # med extrap: W=11
+        out.append((f"med{W}", "med", "extrap", GAC.med_spec(f"med{W}", W),
+                    GAC.med_comb(f"med{W}", W)))
     # invariant: every eval design MUST be in the frozen held-out split
     leak = [nm for nm, *_ in out if not GSC.is_holdout(nm)]
     assert not leak, f"eval design(s) not in held-out split: {leak}"
@@ -133,7 +150,8 @@ def load_surrogate(path, device):
 
     @torch.no_grad()
     def pred(rtl):
-        x = torch.tensor(extract_features(rtl), dtype=torch.float32, device=device)
+        x = torch.tensor(extract_features(rtl, ck["feat_names"]),
+                         dtype=torch.float32, device=device)
         out = net(((x - mu) / sd).unsqueeze(0)).item()
         if log_target:
             out = min(max(out, LOGF_MIN), LOGF_MAX)      # F2: clamp then exp
@@ -194,6 +212,9 @@ def run_generation(args):
 
     os.makedirs(args.out_dir, exist_ok=True)
     hd = holdout_designs()
+    if args.families:
+        keep = set(args.families.split(","))
+        hd = [row for row in hd if row[1] in keep]
     print(f"held-out eval: {len(hd)} designs "
           f"({sum(r=='interp' for _,_,r,_,_ in hd)} interp, "
           f"{sum(r=='extrap' for _,_,r,_,_ in hd)} extrap), "
@@ -218,8 +239,11 @@ def run_generation(args):
         print(f"\n=== {tag} ===  {'design':12s} {'corr%':>6s} "
               f"{'meanF':>7s} {'maxF':>6s}", flush=True)
         for nm, fam, reg, prompt in prompts:
+            # med11's pipelined form is ~2000 tokens -- the ONE design where the
+            # default 1536 cap would truncate the honest answer (F4 lesson)
+            mt = 3072 if nm == "med11" else args.max_tokens
             texts = generate(model, tok, prompt, args.n, args.temp,
-                             args.max_tokens, batch=args.gen_batch)
+                             mt, batch=args.gen_batch)
             distinct, order = gate_design(texts, nm, predict, args.n_stim)
             corr, mF, xF = summarise(distinct, args.n)
             summary[tag][nm] = {"corr_pct": corr, "mean_surr_fmax": mF,
@@ -372,6 +396,9 @@ def main():
                     help="oracle stimulus length for the correctness gate (F5)")
     ap.add_argument("--temp", type=float, default=1.0)
     ap.add_argument("--max-tokens", type=int, default=1536)   # F4
+    ap.add_argument("--families", default="",
+                    help="comma list to restrict eval (e.g. 'iir,med' for the "
+                         "D2 extension run); empty = all held-out designs")
     ap.add_argument("--gen-batch", type=int, default=8)
     ap.add_argument("--report", action="store_true",
                     help="read ppa.jsonl + summary and print the money table")

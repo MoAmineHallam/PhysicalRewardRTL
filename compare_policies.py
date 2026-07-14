@@ -56,7 +56,8 @@ def load_surrogate(path, device):
 
     @torch.no_grad()
     def pred(rtl):
-        x = torch.tensor(extract_features(rtl), dtype=torch.float32, device=device)
+        x = torch.tensor(extract_features(rtl, ck["feat_names"]),
+                         dtype=torch.float32, device=device)
         out = net(((x - mu) / sd).unsqueeze(0)).item()   # F2: clamp log then exp
         return clamp_fmax(float(np.exp(min(max(out, LOGF_MIN), LOGF_MAX))))
     return pred

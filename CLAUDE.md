@@ -113,6 +113,14 @@ rows. Evaluation happens ONLY here (plus VerilogEval for regression).
   after the regen (they won't be yielded) — build them directly:
   `GSC.make_prompt(GAC.fir_spec(nm,T), GAC.fir_ref(nm,c))` etc. (the interface
   header is part of the problem statement, not leakage).
+- **D2 families (frozen 2026-07-13, BEFORE sft_v6/grpo_v8 ever trained):**
+  iir train grid = orders 2..14 × variants v0..v3 (styles ref/transposed);
+  med train grid = W {3,5,9} (styles comb/pipe/pipe2; med11+ exceeds the
+  1536-token gen budget, F4, so it is the extrap point, eval'd at 3072 tokens).
+  - Interpolation: iir orders {5, 9} (all variants); med W {7}.
+  - Extrapolation: iir orders {16, 20}; med W {11}.
+  `GSC.is_holdout()` covers them; eval adds iir5/iir5_v1/iir9/iir9_v1/med7
+  (interp) + iir16/iir20/med11 (extrap) → 30 eval designs total.
 
 ## 6. Execution plan — PATH A (revised 2026-07-13 with explicit user approval)
 

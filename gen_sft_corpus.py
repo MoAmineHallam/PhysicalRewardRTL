@@ -43,6 +43,14 @@ HOLDOUT_FIR_TAPS = {6, 10, 18, 26}      # interpolation (fir and firr)
 HOLDOUT_POLY_DEG = {7}                   # interpolation (all poly7 variants)
 HOLDOUT_EXTRAP_TAPS = {36, 40}           # extrapolation (fir and firr)
 HOLDOUT_EXTRAP_POLY_VARS = {6, 7}        # extrapolation poly variants (deg 4,8)
+# D2 families (frozen 2026-07-13, decided BEFORE sft_v6/grpo_v8 ever trained):
+#   iir train grid = orders 2..14 x variants v0..v3
+#   med train grid = W {3,5,7,9} (med11+ exceed the 1536-token gen budget, F4,
+#                    so W=11 is the extrapolation point, evaluated at 3072)
+HOLDOUT_IIR_ORDERS = {5, 9}              # interpolation (all iir variants)
+HOLDOUT_EXTRAP_IIR_ORDERS = {16, 20}     # extrapolation (outside the grid)
+HOLDOUT_MED_W = {7}                      # interpolation
+HOLDOUT_EXTRAP_MED_W = {11}              # extrapolation (outside the grid)
 
 
 def is_holdout(name):
@@ -62,6 +70,14 @@ def is_holdout(name):
     m = re.match(r"poly(\d+)_8b$", name)          # v0 form (poly{D}_8b)
     if m:
         return int(m.group(1)) in HOLDOUT_POLY_DEG
+    m = re.match(r"iir(\d+)(?:_v\d+)?$", name)    # all variants of an order
+    if m:
+        N = int(m.group(1))
+        return N in HOLDOUT_IIR_ORDERS or N in HOLDOUT_EXTRAP_IIR_ORDERS
+    m = re.match(r"med(\d+)$", name)
+    if m:
+        W = int(m.group(1))
+        return W in HOLDOUT_MED_W or W in HOLDOUT_EXTRAP_MED_W
     return False
 
 
@@ -126,6 +142,29 @@ def designs(exclude_holdout=False):
         yield nm, "cordic", GAC.cordic_spec(nm, N), {
             "ref": GAC.cordic_ref(nm, N, atan, x0),
             "pipe": GAC.cordic_pipe(nm, N, atan, x0)}
+    # D2: IIR (real feedback), orders 2..14 x coefficient variants v0..v3
+    for N in range(2, 15):
+        for v in range(4):
+            nm = f"iir{N}" if v == 0 else f"iir{N}_v{v}"
+            if exclude_holdout and is_holdout(nm):
+                continue
+            B = GAC.iir_coeffs_var(N, v)
+            yield nm, "iir", GAC.iir_spec(nm, N, B), {
+                "ref": GAC.iir_ref(nm, B),
+                "transposed": GAC.iir_transposed(nm, B)}
+    # D2: median (comparator networks, no multipliers), W {3,5,7,9}
+    for W in (3, 5, 7, 9):
+        nm = f"med{W}"
+        if exclude_holdout and is_holdout(nm):
+            continue
+        styles, seen = {}, set()
+        for s, rtl in (("comb", GAC.med_comb(nm, W)),
+                       ("pipe", GAC.med_pipe(nm, W)),
+                       ("pipe2", GAC.med_pipe2(nm, W))):
+            if rtl not in seen:            # med3's 3-pass net: pipe == comb
+                styles[s] = rtl
+                seen.add(rtl)
+        yield nm, "med", GAC.med_spec(nm, W), styles
 
 
 def main():

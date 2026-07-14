@@ -328,6 +328,238 @@ endmodule
 '''
 
 
+# ---------------------------------------------------------------- IIR (D2)
+# Order-N IIR with feedback: y[n] = (sum_k B_k*x[n-k] + ((9*y[n-1])>>4)
+# + ((5*y[n-2])>>4)) mod 2^16. Feedback coeffs FIXED (9/16 + 5/16 < 1);
+# feedforward B varies per design/variant. Vetted GO in vet_families.py
+# (iir4/8/12 ratio 2.0-3.6x real Vivado); these emitters are that template.
+IIR_A1, IIR_A2 = 9, 5
+
+
+def iir_coeffs_var(order, v=0):
+    """Feedforward coefficients B0..B_order for iir{order}[_v{v}].
+    v=0 is the vetted default [2k+3]; v>=1 are deterministic variants (same
+    role as poly_coeffs_var: many distinct instances so the model learns the
+    recurrence, not one constant table)."""
+    if v == 0:
+        return [2 * k + 3 for k in range(order + 1)]
+    import random
+    rng = random.Random(2000 * order + v)
+    return [rng.randint(1, 63) for _ in range(order + 1)]
+
+
+def iir_ref(mod, B):
+    order = len(B) - 1
+    taps = " + ".join([f"{B[0]}*x"] +
+                      [f"{B[k]}*xd{k}" for k in range(1, order + 1)])
+    decl = "\n".join(f"  reg [7:0] xd{k};" for k in range(1, order + 1))
+    clr = " ".join(f"xd{k}<=0;" for k in range(1, order + 1))
+    shift = " ".join(f"xd{k}<=xd{k-1};" for k in range(order, 1, -1))
+    return f"""// Order-{order} IIR, ONE combinational sum over all taps + feedback (the long
+// path grows with the order -> lower Fmax; restructure to go faster).
+module {mod} (
+  input clk, input rst_n, input [7:0] x, output reg [15:0] y
+);
+{decl}
+  reg [15:0] y2;
+  wire [31:0] acc = {taps} + (({IIR_A1}*y)>>4) + (({IIR_A2}*y2)>>4);
+  always @(posedge clk) begin
+    if (!rst_n) begin y<=0; y2<=0; {clr} end
+    else begin
+      y <= acc[15:0];
+      y2 <= y;
+      {shift} xd1 <= x;
+    end
+  end
+endmodule
+"""
+
+
+def iir_transposed(mod, B):
+    """Transposed feedforward chain (registered partial sums), so the output
+    stage is one mult+add plus the small feedback adds -- path ~const in N."""
+    order = len(B) - 1
+    decl = "\n".join(f"  reg [15:0] r{k};" for k in range(1, order + 1))
+    clr = " ".join(f"r{k}<=0;" for k in range(1, order + 1))
+    upd = "\n      ".join(
+        [f"r{k} <= ({B[k]}*x + r{k+1}) & 16'hFFFF;" for k in range(1, order)] +
+        [f"r{order} <= ({B[order]}*x) & 16'hFFFF;"])
+    return f"""// Order-{order} IIR, TRANSPOSED feedforward chain: one multiply+add per stage
+// (registered partial sums) + a tiny feedback stage -> critical path roughly
+// independent of the order -> high Fmax. Same function as the direct form.
+module {mod} (
+  input clk, input rst_n, input [7:0] x, output reg [15:0] y
+);
+{decl}
+  reg [15:0] y2;
+  wire [31:0] acc = {B[0]}*x + r1 + (({IIR_A1}*y)>>4) + (({IIR_A2}*y2)>>4);
+  always @(posedge clk) begin
+    if (!rst_n) begin y<=0; y2<=0; {clr} end
+    else begin
+      y <= acc[15:0];
+      y2 <= y;
+      {upd}
+    end
+  end
+endmodule
+"""
+
+
+def iir_spec(name, order, B):
+    return (f"Write a Verilog module named `{name}`, an order-{order} IIR filter "
+            f"with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample "
+            f"input `x`, and a 16-bit registered output `y`. Each cycle compute "
+            f"y[n] = (sum over k=0..{order} of B[k]*x[n-k]) + ((9*y[n-1])>>4) + "
+            f"((5*y[n-2])>>4), keeping only the low 16 bits (mod 2^16), where "
+            f"the feedforward coefficients are B = {B} (B[0] applies to the "
+            f"current sample) and y[n-1], y[n-2] are the previous two outputs. "
+            f"Clear all state to 0 on `!rst_n`.\n")
+
+
+def iir_golden(B):
+    order = len(B) - 1
+    return f'''"""Golden for an order-{order} IIR (family=iir), 8-bit samples x[c]=c&0xFF,
+feedforward B={B}, feedback ((9*y1)>>4)+((5*y2)>>4), mod 2^16. Output
+{{y[15:0]}} mask=0xFFFF. Pipeline latency absorbed by the score shift."""
+import numpy as np
+
+B = {B}
+
+
+def compute_golden(n_cycles: int = 32768) -> np.ndarray:
+    out = []
+    xd = [0] * {order}
+    y1 = y2 = 0
+    for c in range(n_cycles):
+        x = c & 0xFF
+        acc = B[0] * x + sum(B[k] * xd[k - 1] for k in range(1, {order + 1}))
+        acc += (9 * y1) >> 4
+        acc += (5 * y2) >> 4
+        ynew = acc & 0xFFFF
+        y2, y1 = y1, ynew
+        xd = [x] + xd[:-1]
+        out.append(ynew)
+    return np.array(out, dtype=np.uint16)
+
+
+if __name__ == "__main__":
+    g = compute_golden()
+    for i in range(min(20, len(g))):
+        print(f"{{i:4d}}  {{g[i]:#06x}}  {{g[i]}}")
+    np.save("golden_waveform.npy", g)
+'''
+
+
+# ---------------------------------------------------------------- median (D2)
+# Streaming median-of-W (odd W): y[n] = median(x[n..n-W+1]). NO multipliers --
+# pure comparator networks (third circuit class). Vetted GO (med9 2.6x).
+def _sort_passes(W):
+    """Odd-even transposition sort: W passes of adjacent compare-swaps."""
+    return [[(i, i + 1) for i in range(p % 2, W - 1, 2)] for p in range(W)]
+
+
+def _emit_pass(lines, prev, nxt, pairs, W):
+    swapped = set()
+    for i, j in pairs:
+        lines.append(f"  wire [7:0] {nxt}_{i} = ({prev}_{i} <= {prev}_{j}) ? "
+                     f"{prev}_{i} : {prev}_{j};")
+        lines.append(f"  wire [7:0] {nxt}_{j} = ({prev}_{i} <= {prev}_{j}) ? "
+                     f"{prev}_{j} : {prev}_{i};")
+        swapped |= {i, j}
+    for k in range(W):
+        if k not in swapped:
+            lines.append(f"  wire [7:0] {nxt}_{k} = {prev}_{k};")
+
+
+def med_rtl(mod, W, pipe, cut=3):
+    """Median-of-W. Window = (x, w0..w{W-2}); comb = whole sort network in one
+    cycle (deep path), pipe = the same network cut every `cut` passes."""
+    passes = _sort_passes(W)
+    lines = [f"module {mod} (",
+             "  input clk, input rst_n, input [7:0] x, output reg [15:0] y",
+             ");"]
+    for k in range(W - 1):
+        lines.append(f"  reg [7:0] w{k};")
+    lines.append("  wire [7:0] l0_0 = x;")
+    for k in range(W - 1):
+        lines.append(f"  wire [7:0] l0_{k+1} = w{k};")
+
+    stage_regs, prev, li = [], "l0", 0
+    for p, pairs in enumerate(passes):
+        li += 1
+        _emit_pass(lines, prev, f"l{li}", pairs, W)
+        prev = f"l{li}"
+        if pipe and (p + 1) % cut == 0 and p != len(passes) - 1:
+            sname = f"s{len(stage_regs)}"
+            for k in range(W):
+                lines.append(f"  reg [7:0] {sname}_{k};")
+            stage_regs.append((sname, prev))
+            prev = sname
+
+    lines.append("  always @(posedge clk) begin")
+    lines.append("    if (!rst_n) begin")
+    lines.append("      y<=0; " + " ".join(f"w{k}<=0;" for k in range(W - 1)))
+    for sname, _ in stage_regs:
+        lines.append("      " + " ".join(f"{sname}_{k}<=0;" for k in range(W)))
+    lines.append("    end else begin")
+    lines.append(f"      y <= {{8'b0, {prev}_{W//2}}};")
+    for sname, src in stage_regs:
+        lines.append("      " + " ".join(f"{sname}_{k}<={src}_{k};"
+                                         for k in range(W)))
+    lines.append("      " + " ".join(f"w{k}<=w{k-1};"
+                                     for k in range(W - 2, 0, -1)) + " w0<=x;")
+    lines.append("    end\n  end\nendmodule\n")
+    return "\n".join(lines)
+
+
+def med_comb(mod, W):
+    return med_rtl(mod, W, pipe=False)
+
+
+def med_pipe(mod, W):
+    return med_rtl(mod, W, pipe=True)
+
+
+def med_pipe2(mod, W):
+    """Deeper pipeline: register every 2 sort passes (third med style; the
+    family has no coefficient knob, so style diversity carries the corpus)."""
+    return med_rtl(mod, W, pipe=True, cut=2)
+
+
+def med_spec(name, W):
+    return (f"Write a Verilog module named `{name}`, a streaming median-of-{W} "
+            f"filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned "
+            f"sample input `x`, and a 16-bit registered output `y`. Each cycle "
+            f"output the median of a {W}-sample window consisting of the "
+            f"current sample `x` and the previous {W - 1} samples (window "
+            f"initialised to 0), zero-extended to 16 bits. Use only "
+            f"comparisons (no multiplies). Clear all state to 0 on `!rst_n`.\n")
+
+
+def med_golden(W):
+    return f'''"""Golden for a streaming median-of-{W} (family=med), 8-bit samples
+x[c]=c&0xFF, window = current + previous {W - 1} (init 0). Output {{y[15:0]}}
+mask=0xFFFF. Pipeline latency absorbed by the score shift."""
+import numpy as np
+
+
+def compute_golden(n_cycles: int = 32768) -> np.ndarray:
+    out = []
+    win = [0] * {W}
+    for c in range(n_cycles):
+        win = [c & 0xFF] + win[:-1]
+        out.append(sorted(win)[{W // 2}])
+    return np.array(out, dtype=np.uint16)
+
+
+if __name__ == "__main__":
+    g = compute_golden()
+    for i in range(min(20, len(g))):
+        print(f"{{i:4d}}  {{g[i]:#06x}}  {{g[i]}}")
+    np.save("golden_waveform.npy", g)
+'''
+
+
 # ---------------------------------------------------------------- CORDIC
 # Rotation-mode CORDIC (cos/sin) as a chain of integer shift-add iterations.
 # Angle unit: 90deg -> 256, so the streaming input x=cnt[7:0] is the angle.
@@ -522,6 +754,20 @@ def main():
         designs.append((f"firr{T}", "firr", fir_golden(c),
                         fir_ref(f"firr{T}", c), firr_spec(f"firr{T}", T),
                         fir_ref, fir_pipe, c))
+    # D2 families (both vetted GO in vet_families.py): IIR = real feedback,
+    # median = pure comparator network (no multipliers). v0 coefficients only
+    # in the board catalog; the corpus grid lives in gen_sft_corpus.
+    for N in (4, 8, 12):
+        B = iir_coeffs_var(N)
+        designs.append((f"iir{N}", "iir", iir_golden(B),
+                        iir_ref(f"iir{N}", B), iir_spec(f"iir{N}", N, B),
+                        iir_ref, iir_transposed, B))
+    for W in (5, 9):
+        designs.append((f"med{W}", "med", med_golden(W),
+                        med_comb(f"med{W}", W), med_spec(f"med{W}", W),
+                        (lambda m, _c, _W=W: med_comb(m, _W)),
+                        (lambda m, _c, _W=W: med_pipe(m, _W)),
+                        None))
 
     mani = {}
     for name, fam, golden, ref_v, spec, ref_fn, pipe_fn, coeffs in designs:

@@ -42,23 +42,44 @@ def clamp_fmax(fmax):
 
 
 # ---- TEXT-ONLY features (must be computable with NO synthesis) --------------
-def extract_features(txt):
+def feature_dict(txt):
     stmts = txt.split(";")
-    max_stmt_mult = max((s.count("*") for s in stmts), default=0)
-    n_mult = txt.count("*")
-    n_posedge = txt.count("posedge")
-    n_nonblock = txt.count("<=")
+    fd = {}
+    fd["max_stmt_mult"] = max((s.count("*") for s in stmts), default=0)
+    fd["n_mult"] = txt.count("*")
+    fd["n_posedge"] = txt.count("posedge")
+    # NOTE kept verbatim for old checkpoints: counts BOTH nonblocking assigns
+    # and <= comparisons (conflated; harmless for mult-based families, wrong
+    # for comparator networks -- that is what the v3 features below fix).
+    fd["n_nonblock"] = txt.count("<=")
     accum = len(re.findall(r"<=[^;]*\*[^;]*\+[^;]*\b[a-z]+\d", txt))
-    y_comb = 1 if re.search(r"always\s*@\s*\(\s*\*\s*\)[^;]*\by\b", txt) else 0
-    n_lines = txt.count("\n")
-    n_regs = len(set(re.findall(r"\breg\s+(?:\[[^\]]*\]\s*)?(\w+)", txt)))
+    fd["accum"] = accum
+    fd["y_comb"] = 1 if re.search(r"always\s*@\s*\(\s*\*\s*\)[^;]*\by\b",
+                                  txt) else 0
+    fd["n_lines"] = txt.count("\n")
+    fd["n_regs"] = len(set(re.findall(r"\breg\s+(?:\[[^\]]*\]\s*)?(\w+)",
+                                      txt)))
     # ratio of multiply-add work that is registered vs lumped combinationally
-    pipe_ratio = accum / (n_mult + 1.0)
-    return [max_stmt_mult, n_mult, n_posedge, n_nonblock, accum, y_comb,
-            n_lines, n_regs, pipe_ratio]
+    fd["pipe_ratio"] = accum / (fd["n_mult"] + 1.0)
+    # v3 features (D2): comparator-network families (med) have ZERO multiplies,
+    # so their critical path is invisible to the features above.
+    fd["n_ternary"] = txt.count("?")                       # mux/compare-swaps
+    fd["n_cmp"] = len(re.findall(r"\w\s*(?:<|>)=?\s*[\w(]", txt))  # compares
+    fd["nb_assign"] = len(re.findall(r"^\s*\w+(?:\[[^\]]*\])?\s*<=", txt,
+                                     re.M))                # TRUE nonblocking
+    return fd
+
+
+def extract_features(txt, feats=None):
+    """Feature vector for `txt`, in the order of `feats` (default: the current
+    FEAT_NAMES). Consumers scoring an EXISTING checkpoint must pass the
+    checkpoint's own feat_names so old nets keep seeing their 9 features."""
+    fd = feature_dict(txt)
+    return [fd[n] for n in (feats or FEAT_NAMES)]
 
 FEAT_NAMES = ["max_stmt_mult", "n_mult", "n_posedge", "n_nonblock", "accum",
-              "y_comb", "n_lines", "n_regs", "pipe_ratio"]
+              "y_comb", "n_lines", "n_regs", "pipe_ratio",
+              "n_ternary", "n_cmp", "nb_assign"]           # v3 (D2)
 
 
 def design_of(mod):

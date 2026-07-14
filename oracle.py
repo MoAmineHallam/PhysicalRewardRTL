@@ -84,6 +84,33 @@ def poly_ref(xs, C):
     return np.array(out, dtype=np.uint16)
 
 
+def iir_ref(xs, B):
+    """Order-N IIR: y[n] = (sum B_k x[n-k] + ((9*y1)>>4) + ((5*y2)>>4)) mod 2^16."""
+    order = len(B) - 1
+    xd = [0] * order
+    y1 = y2 = 0
+    out = []
+    for x in xs:
+        acc = B[0] * int(x) + sum(B[k] * xd[k - 1] for k in range(1, order + 1))
+        acc += (GAC.IIR_A1 * y1) >> 4
+        acc += (GAC.IIR_A2 * y2) >> 4
+        ynew = acc & OUT_MASK
+        y2, y1 = y1, ynew
+        xd = [int(x)] + xd[:-1]
+        out.append(ynew)
+    return np.array(out, dtype=np.uint16)
+
+
+def med_ref(xs, W):
+    """Streaming median-of-W: window = current sample + previous W-1 (init 0)."""
+    win = [0] * W
+    out = []
+    for x in xs:
+        win = [int(x)] + win[:-1]
+        out.append(sorted(win)[W // 2])
+    return np.array(out, dtype=np.uint16)
+
+
 def cordic_ref(xs, atan, x0, n):
     out = []
     for xin in xs:
@@ -120,8 +147,16 @@ def build_reference(design):
     if m:
         N = int(m.group(1)); atan, x0 = GAC.cordic_tables(N)
         return (lambda xs: cordic_ref(xs, atan, x0, N)), 8
-    raise ValueError(f"no reference for design '{design}' (oracle v1 = "
-                     f"fir/firr/poly/cordic single-input families)")
+    m = re.match(r"iir(\d+)(?:_v(\d+))?$", design)
+    if m:
+        B = GAC.iir_coeffs_var(int(m.group(1)), int(m.group(2) or 0))
+        return (lambda xs: iir_ref(xs, B)), 8
+    m = re.match(r"med(\d+)$", design)
+    if m:
+        W = int(m.group(1))
+        return (lambda xs: med_ref(xs, W)), 8
+    raise ValueError(f"no reference for design '{design}' (oracle = fir/firr/"
+                     f"poly/cordic/iir/med single-input families)")
 
 
 # ---------------------------------------------------------------- DUT sim

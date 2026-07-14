@@ -1402,3 +1402,45 @@ rtl/holdout_eval artifacts (fmax_manifest counts + ppa.jsonl real Fmax):
 Provenance: sandbox numpy-only, no new synthesis; all Fmax values are the
 existing real-Vivado labels. Artifacts: analyze_bestofn.py,
 rtl/holdout_eval/bestofn.json.
+
+## 2026-07-13/14 — Phase D2 CODE COMPLETE: 5-family expansion (iir + med promoted)
+
+Both vetted-GO families promoted from vet_families.py templates into the full
+pipeline, all sandbox-verified with iverilog before any GPU time:
+
+- gen_accelerator_catalog: iir_coeffs_var/iir_ref/iir_transposed/iir_spec/
+  iir_golden (feedback A1=9,A2=5 >>4 fixed; B varies per variant) and
+  _sort_passes/_emit_pass/med_rtl/med_comb/med_pipe/med_pipe2/med_spec/
+  med_golden. Catalog main() adds iir4/8/12 + med5/9 to rtl_library (goldens
+  board-ready) + 10 new accel_variants. EXISTING rtl_library entries verified
+  byte-identical after regen (0 git diffs).
+- oracle: iir_ref(xs,B) + med_ref(xs,W) references; build_reference handles
+  iir{N}[_v{V}] and med{W} by name.
+- gen_sft_corpus: FROZEN D2 split (see CLAUDE.md §5) — iir grid orders 2..14
+  x v0..v3 minus interp-holdout orders {5,9}, extrap {16,20}; med grid W
+  {3,5,9} (W=7 interp, W=11 extrap; med11 pipe ~2000 tok > 1536 budget is WHY
+  11 is the extrap point — F4 lesson applied at design time). med3 pipe==comb
+  (3-pass network) deduped. is_holdout() extended (single source of truth ->
+  grpo leak-guard + surrogate row filter inherit it automatically).
+- eval_holdout: +8 eval designs (30 total: 19 interp / 11 extrap); med11
+  generated at 3072 tokens; --families flag to run e.g. only 'iir,med'.
+- surrogate_train: v3 features n_ternary/n_cmp/nb_assign (comparator networks
+  have ZERO multiplies -> old features blind on med; old n_nonblock kept
+  verbatim since surrogate_v2 weights bake in its <=-conflation). extract_
+  features(txt, feats) is checkpoint-aware: grpo_oracle/compare_policies/
+  eval_holdout all pass ck["feat_names"], so surrogate_v2.pt (9 feats) keeps
+  working while surrogate_v3 trains on 12. Sanity: med9 comb n_mult=0,
+  n_ternary=72, n_cmp=89 vs fir16 ref n_mult=17, n_ternary=0.
+
+VERIFICATION (sandbox): corpus regen --holdout = 454 oracle-verified pairs,
+0 rejected (fir 100, firr 100, poly 144, cordic 14, iir 88, med 8); zero
+holdout leakage; is_holdout spot-checks all pass; GRPO train list 98 -> 145
+designs, no leak, no cordic; all 16 held-out new-family templates (iir5/5v1/
+9/9v1/16/20 x 2 styles, med7/11 x 2) oracle-correct; med pipe2 correct at
+every W.
+
+NEXT (GPU server): git pull; python gen_sft_corpus.py --holdout --out
+sft_corpus.jsonl (expect 454); sft_v6 via sft_train_v2 (same recipe as v5);
+probe; gen_fmax_candidates over iir/med train designs -> laptop run_ppa ->
+surrogate_v3 (12 feats) -> grpo_v8 on all 145 train designs -> extended
+eval_holdout (30 designs) -> laptop Vivado -> extended money table.

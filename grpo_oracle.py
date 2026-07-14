@@ -85,8 +85,10 @@ def load_surrogate(path, device):
 
     @torch.no_grad()
     def predict_fmax(rtl_text):
-        x = torch.tensor(extract_features(rtl_text), dtype=torch.float32,
-                         device=device)
+        # pass the CHECKPOINT's feature list: old 9-feature nets keep working,
+        # v3 (12-feature) nets get the comparator features (D2)
+        x = torch.tensor(extract_features(rtl_text, ck["feat_names"]),
+                         dtype=torch.float32, device=device)
         out = net(((x - mu) / sd).unsqueeze(0)).item()
         if log_target:
             # F2: clamp in LOG space BEFORE exp, so an out-of-range MLP head can
