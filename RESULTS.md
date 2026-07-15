@@ -55,6 +55,29 @@ reranker). `analyze_bestofn.py` → rtl/holdout_eval/bestofn.json:
   paying only pipeline FFs; poly maps to DSPs (sft 5–7 → grpo +1); DSP column
   now in every table.
 
+## 2c. HLS baseline (D1) — LLM ≈ expert HLS, ≫ naive HLS ✅
+
+Vitis HLS on the same held-out designs, C++ kernels with oracle-exact integer
+semantics, real post-P&R clock (`export_design -flow impl`), throughput =
+Fmax/II. 16/22 designs (6 poly variants dropped to a Windows export-path limit;
+redundant — 3 poly-degree structures already covered). `collect_hls.py`:
+
+| variant | II | throughput (Msample/s) |
+|---|--:|--:|
+| naive HLS (nopragma) | tap-count / degree (fir40=134, poly=31–35) | 1.7–10.5 |
+| **expert HLS** (pipeline II=1 + unroll + partition) | 1 | 195–258 |
+| **GRPO (our RTL, NL spec)** | 1 | 181–346 |
+
+- **geomean GRPO / expert-HLS throughput = 0.96×** — from a natural-language
+  spec, the policy matches hand-tuned-pragma HLS to within 4% (and *exceeds*
+  it on small designs: fir6 1.3×, firr6 1.4×).
+- **vs naive HLS: 20–150×.** Without pragmas HLS can't pipeline the MAC/Horner
+  recurrence (II = tap-count/degree), so a naive user gets single-digit
+  Msample/s. The harder the recurrence (poly Horner II=31–35), the worse naive
+  HLS does — the LLM emits the II=1 form directly.
+- Framing: HLS input is engineer-written C++ with hand-placed pragmas; ours is
+  an NL spec. The comparison bounds quality — it does not replace it.
+
 ## 3. Surrogate + gaming case study ✅
 
 - surrogate_v2: 203 labelled pairs, LODO Spearman **0.965**, top-1 **23/25**.

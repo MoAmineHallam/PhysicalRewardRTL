@@ -1444,3 +1444,32 @@ sft_corpus.jsonl (expect 454); sft_v6 via sft_train_v2 (same recipe as v5);
 probe; gen_fmax_candidates over iir/med train designs -> laptop run_ppa ->
 surrogate_v3 (12 feats) -> grpo_v8 on all 145 train designs -> extended
 eval_holdout (30 designs) -> laptop Vivado -> extended money table.
+
+## 2026-07-14 — Phase D1 HLS baseline COMPLETE (collect_hls.py, laptop Vivado)
+
+Vitis HLS 2023.1 on 16/22 held-out designs (6 poly variants poly7_v5/poly4_v6/
+poly4_v7 dropped to an intermittent Windows export cmdline-length limit even
+under subst X: — redundant, the 3 poly-degree structures are covered by
+poly7_v4/poly8_v6/poly8_v7). C++ kernels oracle-exact; real post-P&R clock
+(export_design -flow impl); throughput = Fmax/II.
+
+RESULT (geomean over 19 comparable designs):
+  GRPO-throughput / expert-HLS-throughput = 0.96x
+  -> from an NL spec the policy MATCHES hand-tuned-pragma HLS (II=1) within 4%,
+     and EXCEEDS it on small designs (fir6 1.3x, firr6 1.4x).
+
+  vs naive HLS (nopragma): 20-150x. Without pragmas HLS pipelines only the
+  outer loop, so II = tap-count (fir40 II=134) or degree (poly Horner II=31-35);
+  naive throughput 1.7-10.5 Msample/s. The recurrence-heavy poly is where naive
+  HLS collapses hardest and the LLM's direct II=1 emission wins biggest.
+
+  expert HLS II=1 throughput 195-258 Msample/s; GRPO II=1 181-346.
+
+Framing (frozen): HLS input = engineer C++ + hand-placed pragmas; ours = NL
+spec. "Match the HLS expert, crush the HLS novice, from natural language."
+NOT "beat HLS". Artifacts: rtl/hls_baseline/hls_results.json, *_export.rpt,
+collect_hls.py, gen_hls_baseline.py, analyze in RESULTS.md 2c.
+
+Also this session: sft_v6 trained (D2, 5 families) — loss 0.51->0.005 over 4
+epochs / 2h20m on the server, adapter sft_v6_out saved (33M). Held-out probe
+(incl. new iir/med families) running.
