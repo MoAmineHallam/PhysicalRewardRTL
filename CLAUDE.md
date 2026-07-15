@@ -139,7 +139,11 @@ Phase A pilot ✅ (in-distribution real Vivado, +154%). Phase B ✅ (held-out
 money table: interp +252% w/ corr 91.1→94.6%, extrap +265%; > best-of-8;
 VerilogEval control: GRPO adds zero regression beyond SFT). Qwen SFT+GRPO ✅.
 IIR+median vetted GO ✅. Board smoke test clean GO ✅ (canary margin 159 MHz,
-spread 0.0, silicon/STA 1.91).
+spread 0.0, silicon/STA 1.91). SILICON MONEY TABLE ✅ (2.3–3.4× measured,
+spread 0.0, canary-attributed). D1 HLS baseline ✅ (GRPO from NL spec = 0.96×
+expert-HLS throughput geomean, 20–150× naive HLS). D5 analyses ✅ (exact
+best-of-N: GRPO bo1 > perfect-selector bo48 interp; fir40 sample-cost; F7 DSP
+columns). D2 code ✅ + sft_v6 trained ✅ (loss 0.51→0.005; probe pending).
 
 ### Phase C — finish silicon + Qwen row (IN FLIGHT)
 1. Holdout shootout bitstream (`rtl/holdout_silicon`, self-checked 11/11
@@ -190,13 +194,43 @@ spread 0.0, silicon/STA 1.91).
    — the 65% is the flattering outlier; venue decision stays Path A, revisit
    only after D1+D2 are complete.
 
+### Phase D+ — distillation to a small fast model (supervisor request 2026-07-15)
+
+Goal: compress the GRPO capability into a 1–3B student ("detachable skill",
+fast + low-token inference for interactive chip design). Runs AFTER grpo_v8
+frees the GPUs; does NOT gate the start of Phase-E writing.
+1. **Distillation corpus (sandbox+server):** sample N per TRAIN-split design
+   from the grpo_v8 policy (fallback grpo_v7), keep ONLY oracle-verified
+   correct outputs (invariant #1 applies to distillation data too — the oracle
+   filter is what makes our distillation unusually clean), dedup by norm().
+   Held-out split stays frozen; the student must never see it (invariant #3).
+2. **Student SFT:** Qwen2.5-Coder-1.5B (or deepseek-coder-1.3b); download via
+   ModelScope mirror (China — hf.co is blocked; NEVER rely on hub downloads).
+   Same `sft_train_v2.py`, unchanged recipe. ~1 GPU-day.
+3. **Evaluate with the EXISTING harness, nothing new:** probe_competence →
+   eval_holdout (seeds 1&2, n=1024) → laptop run_ppa → a student row in the
+   money table. Report tokens/sec and tokens-per-correct-fast-design vs the
+   7B, chained with the existing ~48× best-of-N token reduction (1 GRPO sample
+   ≈ perfect-selector best-of-48 SFT samples).
+4. **Either outcome is publishable:** capability compresses to 1.5B (strong
+   practical claim: silicon-quality RTL from a laptop-size model) OR a
+   capability-size frontier finding (families die going down in size, the
+   cordic-at-7B pattern — honest negative, same as before).
+5. **Engineering alternative to mention to supervisor:** int4 quantization
+   (AWQ/GPTQ) + vLLM on the existing 7B gives 2–5× speedup with no research
+   risk — distillation is the research answer, quantization the deploy answer.
+
 ### Phase E — write + submit
 Figures: money table (Vivado + silicon, interp/extrap); mechanism CDF (SFT
 fast-tail vs GRPO default); gaming case study (∞ → clamp → real 191); HLS +
-best-of-N cost comparison; VerilogEval; 5-family competence. Limitations =
-RESULTS.md §9 verbatim. Check real deadlines (FPGA ~Oct, FCCM ~Jan, MLCAD
-~spring) and take the first reachable; a hardened DAC/journal version can
-follow with Phase-D leftovers.
+best-of-N cost comparison; VerilogEval; 5-family competence; distillation /
+efficiency row (7B vs student: correctness, real Fmax, tokens/s) if Phase D+
+lands in time — else future-work paragraph. Limitations = RESULTS.md §9
+verbatim. Venue: primary CCF-A shot = ICCAD 2027 (abstract ~early Apr 2027,
+paper ~1 wk later, HotCRP, NO abstract extensions — iccad.com/2027 when live);
+DAC 2027 (~Nov 2026) = earlier alternative; FPGA/FCCM/MLCAD remain the
+strong-fit fallbacks per Path A. A hardened journal version can follow with
+Phase-D leftovers.
 
 ## 7. Key files
 
