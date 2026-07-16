@@ -1473,3 +1473,27 @@ collect_hls.py, gen_hls_baseline.py, analyze in RESULTS.md 2c.
 Also this session: sft_v6 trained (D2, 5 families) — loss 0.51->0.005 over 4
 epochs / 2h20m on the server, adapter sft_v6_out saved (33M). Held-out probe
 (incl. new iir/med families) running.
+
+## 2026-07-15 — sft_v6 probe: iir SOLVED (96.2%), med data-starved (6.2%) -> oversample fix, sft_v6b
+
+Probe (n=16/design, corpus-format prompts, oracle verdict):
+- OLD families unchanged/improved vs sft_v5: fir 90.6 (v5 87.5), firr 93.8
+  (v5 100, -1 sample = noise), poly 100 (v5 96.9), cordic 0, overall 75.0
+  (v5 74.4). Corpus expansion caused NO regression.
+- iir (NEW): 96.2% correct (77/80; iir4 16/16, iir8 14/16, iir8_v2 16/16,
+  iir12 16/16, iir14_v1 15/16) vs base 0.0%. Real-feedback recurrence learned,
+  including coefficient variants. iir is DONE at the SFT stage.
+- med (NEW): 6.2% (3/48) vs base 2.1% — NOT learned; even compile-rate low
+  (med3 10/16). Diagnosis: data starvation, not capability — med had 8/454
+  corpus pairs (1.8% of signal; no coefficient knob to make variants) vs iir 88
+  and fir 100. med carries the "3 circuit classes" claim (comparator networks,
+  zero multipliers), so it gets one fix cycle BEFORE grpo_v8 (SFT rerun 2.5h
+  << rerunning multi-day GRPO twice).
+
+FIX: gen_sft_corpus --oversample fam=K (duplication only; rows stay
+oracle-verified verbatim). med=10 -> 80/526 rows (~15%). Sandbox-verified:
+454 distinct, 526 rows. Server: regen + sft_v6b (~2.7h) + med re-probe.
+GATE for grpo_v8 launch: med >= ~60% on med3/5/9. If oversampling fails,
+round 2 = extra hand-written med styles (compact min/max median idioms);
+if that fails, drop to 4 families / 2 classes + honest negative (the
+cordic-pattern applied to data-starved comparator networks).

@@ -174,7 +174,17 @@ def main():
     ap.add_argument("--holdout", action="store_true",
                     help="exclude the frozen §5 held-out designs (clean Phase-B "
                          "train corpus; Phase-B always uses this flag)")
+    ap.add_argument("--oversample", nargs="*", default=[],
+                    help="fam=K pairs, e.g. 'med=10': replicate that family's "
+                         "rows K times in the corpus. Fix for data-starved "
+                         "families (med = 8/454 pairs -> sft_v6 probe 6.2%%; "
+                         "iir with 88 pairs hit 96.2%%). Duplication only -- "
+                         "prompts/completions stay oracle-verified verbatim.")
     args = ap.parse_args()
+    over = {}
+    for spec_kv in args.oversample:
+        fam_k, _, k = spec_kv.partition("=")
+        over[fam_k] = max(1, int(k or 1))
 
     if args.holdout:
         print("[holdout] excluding frozen §5 held-out designs "
@@ -195,17 +205,19 @@ def main():
                       f"compiled={r['compiled']} (oracle gate)")
                 rejected += 1
                 continue
-            rows.append({"design": name, "family": fam, "style": style,
-                         "prompt": make_prompt(spec, rtl), "completion": rtl})
+            row = {"design": name, "family": fam, "style": style,
+                   "prompt": make_prompt(spec, rtl), "completion": rtl}
+            rows.extend([row] * over.get(fam, 1))
             kept += 1
-            by_fam[fam] = by_fam.get(fam, 0) + 1
+            by_fam[fam] = by_fam.get(fam, 0) + over.get(fam, 1)
 
     with open(args.out, "w") as f:
         for row in rows:
             f.write(json.dumps(row) + "\n")
-    print(f"\nSFT corpus: {kept} oracle-verified pairs ({rejected} rejected) "
-          f"-> {args.out}")
-    print("per family:", by_fam)
+    print(f"\nSFT corpus: {kept} distinct oracle-verified pairs "
+          f"({rejected} rejected), {len(rows)} rows after oversampling "
+          f"{over or '(none)'} -> {args.out}")
+    print("per family (rows):", by_fam)
     print("Every completion is I/O-equivalence-verified correct (no bad training "
           "data). Next: SFT the base model on this, then GRPO on the V2 oracle.")
 
