@@ -1497,3 +1497,24 @@ GATE for grpo_v8 launch: med >= ~60% on med3/5/9. If oversampling fails,
 round 2 = extra hand-written med styles (compact min/max median idioms);
 if that fails, drop to 4 families / 2 classes + honest negative (the
 cordic-pattern applied to data-starved comparator networks).
+
+## 2026-07-15 — sft_v6b probe (med 35.4%) -> med_sort compact style, sft_v6c
+
+sft_v6b (oversample med=10, 526 rows, loss 0.447->0.005, 3h03): canaries held
+(fir16 93.8, poly6 93.8, iir8 93.8 — oversampling harmless); med 6.2 -> 35.4%
+(med3 44%, med5 63%) BUT med9 0/16 correct, 2/16 COMPILED. Diagnosis: the
+odd-even wire-network template at W=9 is 1128-1491 tokens of repetitive
+boilerplate — repetition cannot teach a template too long to emit reliably.
+
+FIX (round 2): GAC.med_sort — behavioral bubble sort, static loop bounds
+(synthesis unrolls to the same comparator-network hardware class), source size
+~CONSTANT in W: 130/151/172/193/215 tokens for W=3/5/7/9/11 (vs 1128-2218 for
+the network forms). Oracle-verified correct at ALL five widths including
+held-out med7/med11 -> also makes the held-out med evals a fair generalization
+test (same source shape scales to any W). Corpus: med styles now
+comb/pipe/pipe2/sort (11 distinct pairs), --oversample med=8 -> 88 rows,
+457 distinct / 534 total. iir & med now equally weighted (88 each).
+
+Server: regen + sft_v6c (~2.8h GPU 1) + probe med3/5/9 + canaries.
+GATE unchanged: med >= ~60% -> grpo_v8. Failure fallback: 4 families /
+2 classes + honest negative.

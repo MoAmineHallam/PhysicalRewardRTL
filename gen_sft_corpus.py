@@ -160,7 +160,8 @@ def designs(exclude_holdout=False):
         styles, seen = {}, set()
         for s, rtl in (("comb", GAC.med_comb(nm, W)),
                        ("pipe", GAC.med_pipe(nm, W)),
-                       ("pipe2", GAC.med_pipe2(nm, W))):
+                       ("pipe2", GAC.med_pipe2(nm, W)),
+                       ("sort", GAC.med_sort(nm, W))):
             if rtl not in seen:            # med3's 3-pass net: pipe == comb
                 styles[s] = rtl
                 seen.add(rtl)

@@ -526,6 +526,44 @@ def med_pipe2(mod, W):
     return med_rtl(mod, W, pipe=True, cut=2)
 
 
+def med_sort(mod, W):
+    """Median-of-W via a behavioral bubble sort with static loop bounds —
+    synthesis unrolls it into a comparator network (same hardware class as
+    med_comb) but the SOURCE is ~constant-size in W (~350 tokens vs 1100+ for
+    the wire-network form at W=9). Added after sft_v6b: the model learned
+    med3/med5 but could not reproduce med9's giant wire-network template
+    (0/16 correct, 2/16 compiled) — a compact template it can actually emit
+    fixes med9 training AND makes held-out med7/med11 a fair generalization
+    test (the same source shape scales to any W)."""
+    wdecl = " ".join(f"w{k}<=0;" for k in range(W - 1))
+    load = " ".join([f"s[0] = x;"] +
+                    [f"s[{k + 1}] = w{k};" for k in range(W - 1)])
+    shift = " ".join(f"w{k}<=w{k-1};" for k in range(W - 2, 0, -1)) + \
+            (" w0<=x;" if W > 1 else "")
+    regs = "\n  ".join(f"reg [7:0] w{k};" for k in range(W - 1))
+    return f"""module {mod} (
+  input clk, input rst_n, input [7:0] x, output reg [15:0] y
+);
+  {regs}
+  reg [7:0] s [0:{W - 1}];
+  reg [7:0] t;
+  integer i, j;
+  always @(posedge clk) begin
+    if (!rst_n) begin
+      y<=0; {wdecl}
+    end else begin
+      {load}
+      for (i = 0; i < {W - 1}; i = i + 1)
+        for (j = 0; j < {W - 1} - i; j = j + 1)
+          if (s[j] > s[j+1]) begin t = s[j]; s[j] = s[j+1]; s[j+1] = t; end
+      y <= {{8'b0, s[{W // 2}]}};
+      {shift}
+    end
+  end
+endmodule
+"""
+
+
 def med_spec(name, W):
     return (f"Write a Verilog module named `{name}`, a streaming median-of-{W} "
             f"filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned "
