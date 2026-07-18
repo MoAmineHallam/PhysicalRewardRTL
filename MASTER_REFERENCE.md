@@ -1518,3 +1518,17 @@ comb/pipe/pipe2/sort (11 distinct pairs), --oversample med=8 -> 88 rows,
 Server: regen + sft_v6c (~2.8h GPU 1) + probe med3/5/9 + canaries.
 GATE unchanged: med >= ~60% -> grpo_v8. Failure fallback: 4 families /
 2 classes + honest negative.
+
+## 2026-07-17 — Frontier-API baseline harness (Phase D item 7, supervisor request)
+
+gen_frontier_baseline.py: OpenAI-compatible endpoint (default DeepSeek), two
+arms per held-out design — apiplain (verbatim our prompt) and apifast
+(+explicit maximize-Fmax instruction; mandatory-honesty arm). Same protocol as
+our models: temp 1.0, oracle seeds 1&2 n=1024, distinct-correct dedup by
+norm(), .sv + fmax_manifest for laptop run_ppa, --report joins grpo columns
+from rtl/holdout_eval. Resumable per design/arm; --dry-run verified (22
+designs x 8 x 2 = 352 calls for the fir/firr/poly set; ~$1-3 at DeepSeek
+prices). Covers all 30 held-out designs automatically once iir/med eval
+exists. Ordering decision: run NOW in parallel — frontier rows are
+measured-once/independent; the student-vs-frontier comparison (if D+
+succeeds) joins rows measured at different times. Key hygiene: env var only.

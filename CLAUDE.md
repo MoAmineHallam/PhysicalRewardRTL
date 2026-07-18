@@ -194,6 +194,19 @@ columns). D2 code ✅ + sft_v6 trained ✅ (loss 0.51→0.005; probe pending).
    — the 65% is the flattering outlier; venue decision stays Path A, revisit
    only after D1+D2 are complete.
 
+7. **Frontier-API baseline (supervisor request 2026-07-17):** send the SAME
+   held-out prompts to a frontier model (DeepSeek API — OpenAI-compatible;
+   env FRONTIER_API_KEY/BASE_URL/MODEL, key NEVER in chat/commits) in TWO
+   arms — `apiplain` (exact prompt our models get) and `apifast` (+explicit
+   "maximize Fmax, pipeline aggressively"); score with the SAME oracle
+   (seeds 1&2 n=1024) + laptop run_ppa → rows beside grpo in the money table.
+   `gen_frontier_baseline.py` (dry-run/resume/report). Runs anytime — no GPU,
+   no dependency on grpo_v8/distillation; frontier rows are measured once and
+   later joined with the student row for the "1.5B local ≈ frontier API"
+   claim if Phase D+ succeeds. Arm B is mandatory honesty: if the frontier
+   model CAN do fast RTL when asked, we report it and lean on
+   local/free/silicon-validated + method claims.
+
 ### Phase D+ — distillation to a small fast model (supervisor request 2026-07-15)
 
 Goal: compress the GRPO capability into a 1–3B student ("detachable skill",
