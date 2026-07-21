@@ -14,6 +14,7 @@ Oracle correctness (probe_competence, n=16/design, corpus-format prompts):
 
 - Same corpus (358 clean pairs), same trainer, zero code changes → the recipe transfers.
 - cordic = 0% on BOTH models: 7B capability-class ceiling (documented negative, kept out of RL).
+- **sft_v6c (5 families, D2):** train-competence probe overall **94.8%** (n=16/design); median W solved via compact `med_sort` (6.2→35.4→**89.6%**), IIR 96%+, FIR/poly canaries unchanged. Held-out evidence still pending (grpo_v8 → 30-design eval → Vivado).
 
 ## 2. THE MONEY TABLE — held-out real-Vivado verdict (Phase B core) ✅
 
@@ -143,6 +144,18 @@ GRPO **repairs** Qwen's weak family: poly7 correctness 29–54% (SFT) →
 **85–100%** (GRPO) on held-out designs, while fir/firr hold 93–100%
 (dips: firr10 52%, fir36 50%). Surrogate Fmax saturated at 460–500 →
 real numbers need the laptop run_ppa pass on rtl/holdout_eval_qwen.
+
+## 7c. Frontier-API baseline — DeepSeek-V4-Flash (correctness done, Fmax pending 🔄)
+
+30 held-out designs × 8 samples × 2 arms (apiplain / apifast), same oracle
+(seeds 1&2 n=1024). Flash (non-thinking) is strong on FIRR (62–100%), moderate
+on FIR (25–37%), near-zero on held-out poly/IIR/median. Explicit maximize-Fmax
+prompting did NOT improve correctness. 120 distinct-correct .sv emitted.
+**Caveats before any claim:** (1) fairness — Flash tier, non-thinking, prompt
+tuned to our local models; the Pro+thinking ladder (flash_nt/pro_nt/pro_think)
+is required before "a frontier model can't do this"; (2) no Fmax yet — needs
+laptop run_ppa on rtl/frontier_eval; (3) n=8 is noisy. No Fmax conclusion is
+valid until Vivado.
 
 ## 8. Qwen second-model pipeline 🔄
 

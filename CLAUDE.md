@@ -143,7 +143,12 @@ spread 0.0, silicon/STA 1.91). SILICON MONEY TABLE ✅ (2.3–3.4× measured,
 spread 0.0, canary-attributed). D1 HLS baseline ✅ (GRPO from NL spec = 0.96×
 expert-HLS throughput geomean, 20–150× naive HLS). D5 analyses ✅ (exact
 best-of-N: GRPO bo1 > perfect-selector bo48 interp; fir40 sample-cost; F7 DSP
-columns). D2 code ✅ + sft_v6 trained ✅ (loss 0.51→0.005; probe pending).
+columns). D2 code ✅ + sft_v6c trained ✅ (5-family gate PASS: med
+6.2→35.4→89.6% via compact med_sort; overall 94.8%, canaries clean; TRAIN
+competence, not held-out). Flash frontier run ✅ (120 held-out correct
+candidates; Fmax + Pro/thinking ladder pending). grpo_v8 gated on surrogate_v3
+(surrogate_v2 can't score iir/med — F2 risk): gen_fmax_candidates iir/med →
+Vivado → surrogate_v3 → grpo_v8.
 
 ### Phase C — finish silicon + Qwen row (IN FLIGHT)
 1. Holdout shootout bitstream (`rtl/holdout_silicon`, self-checked 11/11
@@ -265,6 +270,9 @@ Data: `sft_corpus.jsonl` (408 pairs), `rtl/fmax_data` + `rtl/fmax_probe_v4`
 ## 8. Current numbers (for orientation; details in MASTER_REFERENCE)
 
 Base → SFT correctness 3.5% → 84.7% (fir/firr 100%, poly 90.6%, cordic 0%).
+sft_v6c (5 families, TRAIN-competence probe n=16): overall 94.8%, median W
+89.6% (med3 14/16, med5 16/16, med9 13/16), iir8/fir16/poly6 16/16 — 5
+families / 3 classes retained; held-out evidence still pending grpo_v8.
 Fmax headroom (Vivado): median within-design spread 155 MHz. Surrogate LODO
 Spearman 0.959, top-1 15/17. GRPO pilot (surrogate, in-distribution):
 fir8 105→323, fir16 46→198, firr8 103→322, firr16 59→198, poly6 67→124,

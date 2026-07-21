@@ -1532,3 +1532,45 @@ prices). Covers all 30 held-out designs automatically once iir/med eval
 exists. Ordering decision: run NOW in parallel — frontier rows are
 measured-once/independent; the student-vs-frontier comparison (if D+
 succeeds) joins rows measured at different times. Key hygiene: env var only.
+
+## 2026-07-21 — sft_v6c 5-family gate PASS + Flash frontier run
+
+**sft_v6c probe (TRAIN-family competence, n=16/design):** median W solved.
+med3 14/16, med5 16/16, med9 13/16 (15/16 compiled); canaries fir16 16/16,
+poly6 16/16, iir8 16/16. Aggregate: median 43/48 = **89.6%**, overall SFT
+91/96 = **94.8%**, base 4/96 = 4.2%, compiled 95/96. Progression from the
+compact behavioral `med_sort` style: **6.2% (sft_v6) → 35.4% (sft_v6b) →
+89.6% (sft_v6c)** — confirming the earlier failure was template LENGTH, not a
+capability ceiling. No FIR/poly/IIR regression. Decision: keep all 5 families /
+3 circuit classes. NOTE: this is train-family competence only — NOT held-out
+evidence (that comes from grpo_v8 → the 30-design frozen eval → Vivado).
+
+**grpo_v8 sequencing (important):** grpo_v8 is NOT the immediate next step.
+grpo_oracle's reward is surrogate-predicted Fmax, and surrogate_v2 was trained
+on fir/firr/poly/cordic only — it has never seen IIR (feedback) or median
+(comparator-network) RTL, so its predictions there are out-of-distribution and
+would be gamed/mislearned (the F2 failure mode on new families, invariant #2).
+Critical path: `gen_fmax_candidates.py --adapter sft_v6c_out --designs iir4
+iir8 iir12 med3 med5 med9` → laptop Vivado (rtl/fmax_d2) → surrogate_v3
+(12 features incl. n_ternary/n_cmp/nb_assign) → grpo_v8 (--sft sft_v6c_out
+--surrogate surrogate_v3.pt, train-split design list auto-includes iir/med) →
+30-design held-out eval → Vivado. Matches Phase-D item 2 in CLAUDE.md §6.
+
+**Flash frontier run COMPLETE (correctness only):** 30 held-out designs × 8
+samples × 2 arms = 480 calls, 60/60 arms, 120 distinct oracle-correct .sv in
+rtl/frontier_eval. API alias deepseek-chat resolved to DeepSeek-V4-Flash
+(non-thinking) @ api.deepseek.com, 2026-07-20/21. Correctness: FIRR strong
+(62–100%), FIR moderate (25–37%), held-out poly/IIR/median near-zero
+(poly all ~0% except poly4_v7 plain 12.5%, poly7_v4 fast 12.5%; iir5 12.5%,
+med7 plain 25%). The apifast (explicit maximize-Fmax) arm did NOT improve
+correctness (e.g. firr10 87.5%→37.5%). CAVEATS — do not draw conclusions yet:
+(1) FAIRNESS — this is the Flash tier in non-thinking mode with a prompt tuned
+to our local code models; a reviewer will (correctly) call it a handicapped
+baseline. The Pro+thinking capability ladder (flash_nt / pro_nt / pro_think,
+separate labels+dirs, explicit thinking + reasoning-effort control, provenance
+logging — NOT a bare FRONTIER_MODEL swap) is REQUIRED before any "a frontier
+model can't do this" claim. (2) NO Fmax yet — needs laptop `run_ppa.py --dir
+rtl/frontier_eval`; correctness alone says nothing about the speed claim.
+(3) n=8 is noisy (25% = 2/8). The frontier .sv candidates live on the GPU
+server (the API run ran there) — must be git-committed from the server so the
+laptop can pull them for Vivado.
