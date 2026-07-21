@@ -1574,3 +1574,23 @@ rtl/frontier_eval`; correctness alone says nothing about the speed claim.
 (3) n=8 is noisy (25% = 2/8). The frontier .sv candidates live on the GPU
 server (the API run ran there) — must be git-committed from the server so the
 laptop can pull them for Vivado.
+
+## 2026-07-21 — D4 related-work verification (real links, per §6-D4 rule)
+
+Verified on arXiv (all REAL, cite in the delta table): RTL-OPT
+(arxiv 2601.01765, HKUST Jan-2026 — 36-design RTL-optimization benchmark:
+combinational/pipelined/FSM/memory-interface pairs + automated
+correctness/PPA eval); REvolution (2510.21407, POSTECH Oct-2025 —
+evolutionary LLM RTL generation with dual fail/success populations for
+bugfix vs PPA). Additional found in the same sweep: POET (2603.19333,
+power-oriented evolutionary tuning), EvolVE (2601.18067), Dr. RTL
+(2604.14989, agentic tool-grounded RTL optimization), COEVO (2604.15001,
+joint correctness+PPA evolution). Our delta vs ALL of these: none report
+measured silicon; none use a frozen interp/extrap held-out protocol; none
+gate an RL *training* reward with an I/O-equivalence oracle (they select or
+evolve at inference time / benchmark existing models). The space is crowded
+and accelerating — argues for FINISHING the current rigor paper fast, not
+broadening scope mid-flight. "SiliconForge"-class ideas (model-agnostic
+RTL-to-RTL optimizer, formal equivalence contracts, structural surrogate,
+composition holdout) recorded as the NEXT-project/thesis-chapter direction,
+NOT merged into this paper's plan.
