@@ -179,6 +179,21 @@ endmodule
 """
 
 
+try:
+    import resource
+
+    def _cap_mem():
+        """preexec_fn: cap a sim child's address space (RLIMIT_AS) so a
+        pathological candidate (e.g. a huge memory decl that makes iverilog/vvp
+        balloon to tens of GB) dies as an INDIVIDUAL failed sim -> scored
+        incorrect, instead of tripping the cgroup OOM killer and taking down the
+        whole run (observed: vvp at 65 GB OOM-killed grpo_v8 at step 107)."""
+        lim = 4 * 1024 ** 3          # 4 GB; normal sims here use < 200 MB
+        resource.setrlimit(resource.RLIMIT_AS, (lim, lim))
+except ImportError:                  # non-POSIX (Windows laptop never sims)
+    _cap_mem = None
+
+
 def run_dut(rtl_text, design, stim, in_w):
     """Compile candidate + vector-player TB, drive `stim`, return y stream.
     Returns None on compile/sim failure or wrong/missing module name."""
@@ -192,12 +207,18 @@ def run_dut(rtl_text, design, stim, in_w):
         open(cand, "w").write(rtl_text)
         open(tb, "w").write(_tb(design, len(stim), in_w))
         open(hexf, "w").write("\n".join(f"{int(v):x}" for v in stim) + "\n")
-        c = subprocess.run(["iverilog", "-g2012", "-o", vvp, cand, tb],
-                           capture_output=True, text=True)
-        if c.returncode != 0:
+        try:
+            c = subprocess.run(["iverilog", "-g2012", "-o", vvp, cand, tb],
+                               capture_output=True, text=True, timeout=60,
+                               preexec_fn=_cap_mem)
+            if c.returncode != 0:
+                return None
+            r = subprocess.run(["vvp", vvp], capture_output=True, text=True,
+                               cwd=wd, timeout=60, preexec_fn=_cap_mem)
+        except (subprocess.TimeoutExpired, OSError, MemoryError):
+            # pathological candidate (runaway elaboration/sim or memory bomb):
+            # score it INCORRECT, never let it OOM/hang the whole GRPO run.
             return None
-        r = subprocess.run(["vvp", vvp], capture_output=True, text=True,
-                          cwd=wd, timeout=60)
         vals = [int(t) for t in r.stdout.split()
                 if t.strip().isdigit() and 0 <= int(t) < 65536]
     return np.array(vals, dtype=np.uint16) if len(vals) >= 32 else None
