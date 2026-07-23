@@ -9,11 +9,15 @@ mkdir -p logs
 run_mode() {
   local label="$1" model="$2" thinking="$3" effort="$4" max_tokens="$5" out_dir="$6"
   local log="logs/frontier_${label}.log"
-  echo "[$(date -Is)] START ${label}: model=${model} thinking=${thinking} effort=${effort}"
+  local timeout_s="${FRONTIER_API_TIMEOUT_S:-120}"
+  local tries="${FRONTIER_API_TRIES:-3}"
+  echo "[$(date -Is)] START ${label}: model=${model} thinking=${thinking} effort=${effort} timeout=${timeout_s}s tries=${tries}"
   FRONTIER_MODEL="$model" \
   FRONTIER_RUN_LABEL="$label" \
   FRONTIER_THINKING="$thinking" \
   FRONTIER_REASONING_EFFORT="$effort" \
+  FRONTIER_API_TIMEOUT_S="$timeout_s" \
+  FRONTIER_API_TRIES="$tries" \
   FRONTIER_OUT_DIR="$out_dir" \
     /opt/conda/envs/mas/bin/python3.10 -u gen_frontier_baseline.py --n 8 --temp 1.0 --max-tokens "$max_tokens" \
       >"$log" 2>&1

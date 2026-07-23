@@ -56,6 +56,8 @@ FAST_SUFFIX = (
 
 
 def api_call(prompt, model, base, key, temp, max_tokens, tries=4):
+    tries = int(os.environ.get("FRONTIER_API_TRIES", tries))
+    timeout_s = float(os.environ.get("FRONTIER_API_TIMEOUT_S", "300"))
     url = base.rstrip("/")
     if not url.endswith("/chat/completions"):
         url += "/chat/completions"
@@ -69,14 +71,19 @@ def api_call(prompt, model, base, key, temp, max_tokens, tries=4):
             body["reasoning_effort"] = reasoning_effort
     hdr = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
     for t in range(tries):
+        print(f"    [api attempt {t + 1}/{tries}; timeout={timeout_s:g}s]",
+              flush=True)
         try:
-            r = requests.post(url, json=body, headers=hdr, timeout=300)
+            r = requests.post(url, json=body, headers=hdr, timeout=timeout_s)
             r.raise_for_status()
             return r.json()["choices"][0]["message"]["content"]
         except Exception as e:
             if t == tries - 1:
-                print(f"    [api-fail after {tries} tries] {e}")
+                print(f"    [api-fail after {tries} tries: {type(e).__name__}]",
+                      flush=True)
                 return ""
+            print(f"    [api attempt {t + 1}/{tries} failed: "
+                  f"{type(e).__name__}; retrying]", flush=True)
             time.sleep(2 ** (t + 1))
     return ""
 
