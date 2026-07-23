@@ -44,7 +44,7 @@ import gen_sft_corpus as GSC
 import eval_holdout as EH
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(HERE, "rtl", "frontier_eval")
+OUT = os.path.join(HERE, os.environ.get("FRONTIER_OUT_DIR", "rtl/frontier_eval"))
 EVAL = os.path.join(HERE, "rtl", "holdout_eval")
 SUMMARY = os.path.join(OUT, "frontier_summary.json")
 
@@ -61,6 +61,12 @@ def api_call(prompt, model, base, key, temp, max_tokens, tries=4):
         url += "/chat/completions"
     body = {"model": model, "temperature": temp, "max_tokens": max_tokens,
             "messages": [{"role": "user", "content": prompt}]}
+    thinking = os.environ.get("FRONTIER_THINKING", "")
+    reasoning_effort = os.environ.get("FRONTIER_REASONING_EFFORT", "high")
+    if thinking:
+        body["thinking"] = {"type": thinking}
+        if thinking == "enabled":
+            body["reasoning_effort"] = reasoning_effort
     hdr = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
     for t in range(tries):
         try:
@@ -118,7 +124,7 @@ def run_generation(args):
                       f"{summary[tag][nm]['corr_pct']:.0f}% correct)")
                 continue
             print(f">>> {tag} / {nm}", flush=True)
-            mt = 3072 if nm == "med11" else args.max_tokens
+            mt = max(3072, args.max_tokens) if nm == "med11" else args.max_tokens
             distinct = {}          # norm -> {"rtl", "count"}
             n_correct = 0
             for i in range(args.n):
@@ -139,10 +145,18 @@ def run_generation(args):
                 open(os.path.join(OUT, mod + ".sv"), "w").write(
                     EH.rename(d["rtl"], nm, mod))
                 mani[mod] = {"policy": tag, "design": nm, "count": d["count"],
-                             "n": args.n, "regime": reg}
+                             "n": args.n, "regime": reg, "model": model,
+                             "run_label": os.environ.get("FRONTIER_RUN_LABEL", ""),
+                             "thinking": os.environ.get("FRONTIER_THINKING", ""),
+                             "reasoning_effort": os.environ.get(
+                                 "FRONTIER_REASONING_EFFORT", "")}
             summary.setdefault(tag, {})[nm] = {
                 "corr_pct": 100.0 * n_correct / args.n, "n": args.n,
-                "regime": reg, "model": model}
+                "regime": reg, "model": model,
+                "run_label": os.environ.get("FRONTIER_RUN_LABEL", ""),
+                "thinking": os.environ.get("FRONTIER_THINKING", ""),
+                "reasoning_effort": os.environ.get(
+                    "FRONTIER_REASONING_EFFORT", "")}
             json.dump(mani, open(mani_p, "w"), indent=1)
             json.dump(summary, open(SUMMARY, "w"), indent=1)
             print(f"    correct {n_correct}/{args.n}, "
