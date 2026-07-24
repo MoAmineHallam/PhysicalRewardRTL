@@ -1575,6 +1575,21 @@ rtl/frontier_eval`; correctness alone says nothing about the speed claim.
 server (the API run ran there) — must be git-committed from the server so the
 laptop can pull them for Vivado.
 
+## 2026-07-24 — Qwen held-out MONEY TABLE (real Vivado) — method transfers
+
+rtl/holdout_eval_qwen, real timing-closed Vivado, n=48/design, seeds 1&2
+n=1024. Interp (14): base 26.0 / sft 97.6 / bestof8 153.0 / grpo **232.9**
+(+139% vs sft). Extrap (8): base 20.9 / sft 62.7 / bestof8 136.5 / grpo
+**190.1** (+203%). grpo > bestof8 in BOTH regimes. KEY: absolute grpo Fmax
+(232.9 / 190.1) ≈ RTLCoder grpo (234.4 / 190.1) — both base models converge
+to the same real-Vivado ceiling; the final speed is base-model-independent.
+GRPO REPAIRS Qwen's weak poly family (poly7 corr 29–54% sft → 85–100% grpo,
+and 191 MHz) — competence repair, not just speed. firr18 sft 44.6 → grpo
+243.9. Honest correctness cost: firr10 92→52%, fir36 94→50% (two designs
+traded correctness for speed; all others ≥94%). Provenance: laptop run_ppa
+2026-07-24, ppa.jsonl committed. This is the second-model transfer evidence
+(RTLCoder was model #1). Task #8 DONE.
+
 ## 2026-07-21 — D4 related-work verification (real links, per §6-D4 rule)
 
 Verified on arXiv (all REAL, cite in the delta table): RTL-OPT

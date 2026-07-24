@@ -138,12 +138,26 @@ in-context builds differ from solo compiles (grpo fir/firr: 125 in-context
 vs 193–228 standalone). Harness itself characterized: valid ≤250 MHz,
 breaks at 333 (sweeps capped at 260).
 
-## 7b. Qwen held-out (correctness done ✅, Fmax needs Vivado 🔄)
+## 7b. Qwen held-out MONEY TABLE (real Vivado) ✅ — the method transfers
 
-GRPO **repairs** Qwen's weak family: poly7 correctness 29–54% (SFT) →
-**85–100%** (GRPO) on held-out designs, while fir/firr hold 93–100%
-(dips: firr10 52%, fir36 50%). Surrogate Fmax saturated at 460–500 →
-real numbers need the laptop run_ppa pass on rtl/holdout_eval_qwen.
+Second base model (Qwen2.5-Coder-7B), same corpus/trainer/oracle, real
+timing-closed Vivado Fmax, n=48/design, oracle seeds 1&2 n=1024:
+
+| regime | base | sft | best-of-8 | **grpo** | grpo vs sft |
+|---|--:|--:|--:|--:|--:|
+| Interpolation (14) | 26.0 | 97.6 | 153.0 | **232.9 MHz** | **+139%** |
+| Extrapolation (8) | 20.9 | 62.7 | 136.5 | **190.1 MHz** | **+203%** |
+
+- grpo **beats best-of-8 in BOTH regimes** (232.9 > 153.0; 190.1 > 136.5) —
+  distribution shift beats sampling on a second model.
+- **Both base models converge to the SAME real-Vivado ceiling**: Qwen grpo
+  232.9 / 190.1 vs RTLCoder grpo 234.4 / 190.1 (interp / extrap). The final
+  Fmax is base-model-independent.
+- **GRPO repairs Qwen's weak poly family**: poly7 correctness 29–54% (sft) →
+  **85–100%** (grpo), and fast (32–98 → 191 MHz) — competence repair, not just
+  speed. firr18 standout: sft 44.6 → grpo 243.9 MHz.
+- Honest correctness cost: **firr10 92→52%, fir36 94→50%** (two designs traded
+  correctness for speed; all other fir/firr/poly held ≥94%).
 
 ## 7c. Frontier-API baseline — DeepSeek-V4-Flash (correctness done, Fmax pending 🔄)
 
@@ -157,10 +171,12 @@ is required before "a frontier model can't do this"; (2) no Fmax yet — needs
 laptop run_ppa on rtl/frontier_eval; (3) n=8 is noisy. No Fmax conclusion is
 valid until Vivado.
 
-## 8. Qwen second-model pipeline 🔄
+## 8. Qwen second-model pipeline ✅ (complete)
 
-sft_qwen ✅ (68.1%) → grpo_qwen ✅ (converged, same signature as v7) →
-held-out eval 🔄 (running) → laptop Vivado → Qwen money-table row.
+sft_qwen ✅ (68.1%) → grpo_qwen ✅ → held-out eval ✅ → real Vivado ✅ →
+Qwen money table (§7b): interp +139%, extrap +203%, grpo > best-of-8, same
+Fmax ceiling as RTLCoder. The correctness-gated Fmax method transfers across
+base models.
 
 ## 9. Honest limitations (for the paper)
 
