@@ -159,17 +159,45 @@ timing-closed Vivado Fmax, n=48/design, oracle seeds 1&2 n=1024:
 - Honest correctness cost: **firr10 92→52%, fir36 94→50%** (two designs traded
   correctness for speed; all other fir/firr/poly held ≥94%).
 
-## 7c. Frontier-API baseline — DeepSeek-V4-Flash (correctness done, Fmax pending 🔄)
+## 7c. Frontier-API baseline — DeepSeek-V4-Flash, real Vivado ✅ (honest, nuanced)
 
-30 held-out designs × 8 samples × 2 arms (apiplain / apifast), same oracle
-(seeds 1&2 n=1024). Flash (non-thinking) is strong on FIRR (62–100%), moderate
-on FIR (25–37%), near-zero on held-out poly/IIR/median. Explicit maximize-Fmax
-prompting did NOT improve correctness. 120 distinct-correct .sv emitted.
-**Caveats before any claim:** (1) fairness — Flash tier, non-thinking, prompt
-tuned to our local models; the Pro+thinking ladder (flash_nt/pro_nt/pro_think)
-is required before "a frontier model can't do this"; (2) no Fmax yet — needs
-laptop run_ppa on rtl/frontier_eval; (3) n=8 is noisy. No Fmax conclusion is
-valid until Vivado.
+30 held-out designs × 8 samples × 2 arms, same oracle (seeds 1&2 n=1024), real
+Vivado. Two arms give OPPOSITE answers, and the distinction is the result:
+
+**Arm A — `apiplain` (the EXACT prompt our models get) → we win 2–9×:**
+
+| design | Flash plain maxF | grpo maxF | ratio |
+|---|--:|--:|--:|
+| fir40 | 20.7 | 181.8 | **8.8×** |
+| fir26 | 32.1 | 193.2 | **6.0×** |
+| firr10 | 70.4 | 313.3 | **4.4×** |
+| fir6 | 155.8 | 317.6 | **2.0×** |
+
+→ **A frontier model does not emit fast RTL by default** (20–156 MHz, the same
+slow range as SFT). You have to know to ask.
+
+**Arm B — `apifast` (explicitly "maximize Fmax, pipeline aggressively") →
+Flash beats us on FIR/FIRR peak Fmax, 10 of 12 designs, by 5–30%** (fir26 251
+vs 193, fir6 376 vs 318, firr10 369 vs 313; grpo still wins firr40 189 vs 183
+and firr26 228 vs 217). Reported as-is — this is the mandatory-honesty arm.
+
+**Three bounds on that win (all measured):**
+1. **Coverage.** Flash fails outside FIR/FIRR: poly **0% correct on 9/10**
+   designs (grpo: 191–192 MHz at ~100%), iir 0–12.5%, med 0–25%. Our policy is
+   94–100% correct across all five families.
+2. **Correctness rate.** Even where fast, Flash is 25–87.5% correct — and which
+   samples are correct is knowable ONLY because our oracle says so. Without a
+   correctness oracle a user gets fast-looking RTL that is wrong ~1 in 3.
+3. **It pays in registers.** apifast fir6 = 106 LUT / **185 FF** vs our grpo 79
+   LUT / **96 FF** (~2× the flops for +18% Fmax); fir40 1410 FF vs our 640 for
+   +13%. Deeper pipeline = more latency and area (F7).
+
+**Honest framing for the paper:** same prompt → our small local policy is 2–9×
+faster; prompted-for-speed → a frontier API matches/exceeds us on the two
+easiest families while failing the other three. The contribution is reliable,
+correct, fast RTL across all five families from a local 7B, plus the oracle
+that makes any such comparison measurable at all. Caveat: n=8/arm is noisy
+(25% = 2/8); Pro + thinking rungs pending (API credit).
 
 ## 8. Qwen second-model pipeline ✅ (complete)
 

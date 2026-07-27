@@ -1575,6 +1575,36 @@ rtl/frontier_eval`; correctness alone says nothing about the speed claim.
 server (the API run ran there) — must be git-committed from the server so the
 laptop can pull them for Vivado.
 
+## 2026-07-27 — Frontier Flash baseline, real Vivado (the nuanced result)
+
+rtl/frontier_eval + ppa.jsonl, `gen_frontier_baseline.py --report`. 30 held-out
+designs x 8 samples x 2 arms, oracle seeds 1&2 n=1024, real Vivado.
+
+APIPLAIN (identical prompt to ours): Flash maxF 20.7–155.8 MHz — the SLOW
+range, same as SFT. vs grpo: fir40 8.8x, fir26 6.0x, firr10 4.4x, fir6 2.0x in
+OUR favour. Finding: a frontier model does not emit fast RTL unprompted.
+
+APIFAST (explicit maximize-Fmax): Flash BEATS grpo on peak Fmax on 10/12
+fir/firr designs by 5–30% (fir26 251.5 vs 193.2; fir6 376.2 vs 317.6; firr10
+369.0 vs 313.3; fir18 252.4 vs 224.2; firr36 220.2 vs 193.7; fir36 213.3 vs
+187.5; fir40 205.4 vs 181.8). grpo still wins firr40 (189.3 vs 182.9) and
+firr26 (227.8 vs 217.2). REPORT THIS — mandatory-honesty arm, do not bury it.
+
+BOUNDS (all measured, all real): (1) COVERAGE — Flash poly = 0% correct on
+9/10 held-out poly designs (only poly4_v7 plain 12.5% @60 MHz, poly7_v4 fast
+12.5% @163.9), iir 0–12.5%, med 0–25%; our policy 94–100% on all five
+families. (2) CORRECTNESS RATE — 25–87.5% even on the fast fir/firr designs,
+and correctness is knowable only via OUR oracle. (3) AREA/LATENCY — apifast
+buys Fmax with registers: fir6 106LUT/185FF vs our 79LUT/96FF (~2x FF for
++18%); fir40 1105LUT/1410FF vs our 788LUT/640FF (2.2x FF for +13%). Deeper
+pipeline = higher latency (F7 area caveat applies).
+
+Framing consequence: the claim is NOT "we beat the frontier on speed". It is
+"same prompt -> 2–9x faster; prompted-for-speed -> the frontier matches us on
+the 2 easiest families and fails the other 3; and our oracle is what makes the
+comparison measurable at all." n=8/arm is noisy. Pro/pro_think rungs pending
+API credit; flash_think dir exists but rung incomplete.
+
 ## 2026-07-24 — Qwen held-out MONEY TABLE (real Vivado) — method transfers
 
 rtl/holdout_eval_qwen, real timing-closed Vivado, n=48/design, seeds 1&2
