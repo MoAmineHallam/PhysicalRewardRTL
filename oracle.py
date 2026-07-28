@@ -215,6 +215,15 @@ def run_dut(rtl_text, design, stim, in_w):
                 return None
             r = subprocess.run(["vvp", vvp], capture_output=True, text=True,
                                cwd=wd, timeout=60, preexec_fn=_cap_mem)
+        except FileNotFoundError as e:
+            # The SIMULATOR ITSELF is missing -- an environment fault, NOT a
+            # wrong candidate. Never silently score this "incorrect": that
+            # produced a full eval of 0.0% on every policy (2026-07-27, after a
+            # container reset wiped iverilog from the ephemeral filesystem).
+            raise RuntimeError(
+                f"iverilog/vvp not found ({e}) -- the oracle cannot score "
+                "anything. Install iverilog (conda install -c conda-forge "
+                "iverilog) before running any eval/training.") from e
         except (subprocess.TimeoutExpired, OSError, MemoryError):
             # pathological candidate (runaway elaboration/sim or memory bomb):
             # score it INCORRECT, never let it OOM/hang the whole GRPO run.
