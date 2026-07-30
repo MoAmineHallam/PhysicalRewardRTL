@@ -1575,6 +1575,56 @@ rtl/frontier_eval`; correctness alone says nothing about the speed claim.
 server (the API run ran there) — must be git-committed from the server so the
 laptop can pull them for Vivado.
 
+## 2026-07-28 — grpo_v8 5-FAMILY HELD-OUT EVAL (correctness done, Fmax pending)
+
+sft_v6c vs grpo_v8_cont on the 30 frozen §5 held-out designs, n=48/design,
+oracle seeds 1&2 n=1024. Run in 3 chunks (iir,med / fir,firr / poly) across two
+boxes: rtl/holdout_eval_v8_{iirmed,firfirr,poly}, 85+156+105 = 346 candidates.
+
+CORRECTNESS (sft_v6c -> grpo_v8_cont):
+  MEDIAN (the doubted family) IMPROVED BOTH: med7 79.2 -> 85.4 (surrogate maxF
+    41.8 -> 188.6, i.e. GRPO found a pipelined median form); med11 (extrap,
+    hardest) 29.2 -> 39.6.
+  IIR split: iir5 89.6 -> 89.6, iir5_v1 89.6 -> 97.9, iir9 81.2 -> 93.8;
+    BUT iir9_v1 91.7 -> 58.3, iir16 41.7 -> 35.4, iir20 79.2 -> 62.5.
+  FIR/FIRR mostly up: firr26 93.8 -> 100, firr36 93.8 -> 97.9, firr18 95.8 ->
+    97.9, fir36 89.6 -> 91.7, fir18 100 -> 100, fir26 79.2 -> 95.8, fir6 -> 95.8,
+    fir10 -> 97.9; BUT fir40 79.2 -> 52.1 and firr40 93.8 -> 83.3.
+  POLY: poly7_v2/v3 100, poly7_v5 97.9, poly4_v7 97.9; dips poly7_v1 100 ->
+    77.1, poly7_v4 100 -> 91.7, poly4_v6 95.8 -> 89.6, poly8_v6 100 -> 93.8,
+    poly8_v7 95.8 -> 93.8.
+
+KEY DIAGNOSTIC FINDING (new, publishable): **surrogate saturation predicts
+correctness loss.** Every large correctness regression sits on a design whose
+grpo surrogate score pinned at the [5,500] clamp (iir9_v1, iir16, iir20,
+poly7_v1, fir40); every design where the surrogate still returned a realistic
+value (iir5 135, iir5_v1 133, iir9 250, med7 84) held or IMPROVED correctness.
+Saturation is therefore an observable early-warning signal for reward hacking
+-> direct empirical motivation for the D3 re-anchor cycle. Corollary: MORE GRPO
+steps against a saturated surrogate would degrade correctness further; the fix
+is surrogate_v4 (re-anchored on real Vivado labels of these grpo candidates),
+then a SHORT targeted continuation, not more blind training.
+
+NO Fmax NUMBER HERE IS REPORTABLE — all surrogate. Real Vivado pass on the
+three dirs is the next step (346 designs); recommend iirmed FIRST (new-family
+evidence incl. med7). Also produced: distill_corpus.jsonl = 407 oracle-verified
+correct rows from 3480 samples over 145 train-split designs (1-5 distinct per
+design -> grpo_v8_cont is near-deterministic, the distribution-shift signature;
+corpus size comparable to the 457-pair sft corpus). Phase D+ step 1 DONE.
+
+INFRA LESSON (cost: one full wasted eval cycle): a container reset wiped
+iverilog from the ephemeral filesystem; oracle.py's broad `except OSError`
+swallowed FileNotFoundError and scored ALL 5760 candidates "incorrect",
+producing a clean-looking 30-design table of 0.0% on every policy. Fixed
+(ab245bd): missing simulator now RAISES. New standing rule: after ANY container
+reset run `python -c "import oracle,gen_accelerator_catalog as G;
+print(oracle.score(G.fir_ref('fir8_8b',G.fir_coeffs(8)),'fir8_8b',n=64)
+['correct'])"` and require True BEFORE launching anything. Persistent-storage
+recipe: conda env at /zeng_gk/Amine/mas/env_mas (survives resets), torch
+2.4.1 + transformers 4.46.3 + peft 0.13.2 (newer transformers needs DTensor
+from a newer torch than driver 550.90.12/CUDA 12.4 allows), iverilog via apt
+with the Tsinghua mirror (ephemeral -> reinstall after each reset).
+
 ## 2026-07-27 — Frontier Flash baseline, real Vivado (the nuanced result)
 
 rtl/frontier_eval + ppa.jsonl, `gen_frontier_baseline.py --report`. 30 held-out
