@@ -33,6 +33,47 @@ Mechanism (per-candidate data): SFT emits the fast form ~1-in-5..13 samples
 (firr10: 0-in-13); GRPO emits it near-deterministically. Best-of-8 MISSED the
 fast form on 6 designs → RL beats fast-tail sampling, not just cheaper.
 
+## 2a. THE 5-FAMILY MONEY TABLE (grpo_v8, real Vivado) ✅ — the D2 headline
+
+30 frozen held-out designs across **5 families / 3 circuit classes**, never in
+corpus/GRPO/surrogate. n=48/design, oracle seeds 1&2 n=1024, real timing-closed
+Vivado (freq-weighted means, 346 synthesized candidates):
+
+| regime | base | sft_v6c | best-of-8 | **grpo_v8** | grpo vs sft | vs bo8 |
+|---|--:|--:|--:|--:|--:|--:|
+| Interpolation (19 designs) | 28.9 | 86.5 | 153.4 | **211.3 MHz** | **+144%** | 1.38× |
+| Extrapolation (11 designs) | 16.4 | 78.5 | 159.0 | **174.2 MHz** | **+122%** | 1.10× |
+
+**Per family (interp / extrap, sft → grpo MHz):**
+
+| family | class | interp | extrap | verdict |
+|---|---|---|---|---|
+| fir + firr | MAC | 97.8 → **265.9** (+172%) | 68.1 → **188.1** (+176%) | clean win |
+| poly | Horner | 44.9 → **191.3** (+326%) | 57.6 → **191.6** (+233%) | **biggest win** |
+| iir | recurrence | 118.3 → 148.1 (+25%) | 120.4 → 132.6 (+10%) | consistency only |
+| med | comparator net | (in iir/med rows) 34.3 → 36.2 | 22.1 → 22.8 | **no Fmax gain** |
+
+**Mechanism, now measured per candidate:** SFT emits the fast style ~1-in-4 to
+1-in-8 samples; GRPO emits it near-deterministically (e.g. fir36 sft
+{17,188,23,23} → grpo {188,188,188}; poly7 sft {33,33,33,33,33,191} → grpo
+{192,192,192}). GRPO **shifts probability toward the fastest style the policy
+already knows** — it does not invent faster hardware. Twice it slightly exceeded
+the SFT ceiling (firr10 334 vs 313; firr40 195 vs 189).
+
+**Where the win is smaller, and why (honest):**
+- **iir** already emits fast forms often post-SFT, so there is less tail to fix
+  (+25%/+10%); GRPO ≈ best-of-8 there rather than beating it.
+- **med** gained correctness (79→85%, 29→40%) but **no speed**: the compact
+  `med_sort` style that fixed median correctness is fully combinational by
+  construction, so there is no fast median style for GRPO to amplify. Its
+  surrogate score of 188.6 MHz was **reward hacking** — real Vivado is 36–40
+  MHz (see §3b). Reported as a correctness-only win.
+- **Correctness costs**: iir9_v1 92→58%, fir40 79→52%, poly7_v1 94→77%,
+  iir20 79→62%, iir16 42→35%. Gains elsewhere: fir26 79→96%, iir9 81→94%,
+  med7 79→85%, med11 29→40%.
+- **Best-of-8 still misses the fast form entirely** on firr40 (20.7 MHz) and
+  firr10 (66.6) — existence failures sampling cannot fix.
+
 ## 2b. Best-of-N curves: one GRPO sample ≈ 48 perfectly-selected SFT samples ✅
 
 Exact expected best-of-N (i.i.d., closed form) from the existing eval
@@ -78,6 +119,23 @@ redundant — 3 poly-degree structures already covered). `collect_hls.py`:
   HLS does — the LLM emits the II=1 form directly.
 - Framing: HLS input is engineer-written C++ with hand-placed pragmas; ours is
   an NL spec. The comparison bounds quality — it does not replace it.
+
+## 3b. Reward hacking: a detectable signal, and one caught case ✅ (new)
+
+Across the 5-family held-out eval, **surrogate saturation at the [5,500] clamp
+predicted correctness loss**: every large regression (iir9_v1, iir16, iir20,
+poly7_v1, fir40) sat on a design whose grpo surrogate score pinned at 500, while
+every design where the surrogate returned a realistic value (iir5 135, iir9 250,
+med7 84) held or improved. Saturation is therefore an **observable early-warning
+signal for reward hacking**.
+
+The clearest single case: **med7 surrogate 188.6 MHz vs real Vivado 36–40 MHz.**
+The surrogate (LODO Spearman 0.75 after the 5-family retrain, down from 0.965 on
+3 families) had no discrimination on comparator networks and was gamed. Poly's
+500-pins, by contrast, were **not** hacking — real Fmax is 191–193 MHz, i.e. the
+surrogate was wrong in *magnitude* but right in *ranking*. This is the empirical
+case for re-anchoring (D3) and for invariant #2: surrogate numbers are never
+results.
 
 ## 3. Surrogate + gaming case study ✅
 
@@ -205,6 +263,28 @@ sft_qwen ✅ (68.1%) → grpo_qwen ✅ → held-out eval ✅ → real Vivado ✅
 Qwen money table (§7b): interp +139%, extrap +203%, grpo > best-of-8, same
 Fmax ceiling as RTLCoder. The correctness-gated Fmax method transfers across
 base models.
+
+## 8b. Distillation: 4 of 5 families compress to 1.5B ✅ (Phase D+)
+
+`gen_distill_corpus.py` sampled grpo_v8 over all 145 train-split designs, keeping
+only oracle-verified-correct outputs → **407 rows from 3480 samples** (1–5
+distinct per design: the policy is near-deterministic, the distribution-shift
+signature). Student = Qwen2.5-Coder-**1.5B**, same trainer, **25 minutes**
+(vs ~3 h for the 7B), final loss 0.0395.
+
+| probe (n=16, train designs) | base 1.5B | **student** |
+|---|--:|--:|
+| firr16 | 0% | **93.8%** |
+| poly6 | 0% | **93.8%** |
+| iir8 | 0% | **87.5%** |
+| fir16 | 0% | **68.8%** |
+| med3 / med5 / med9 | 0% | **0%** (compiled 10/4/5 of 16) |
+| overall | 0.0% | 49.1% — **85.9% excluding median** |
+
+**Capability-size frontier:** median works at 7B and dies at 1.5B — the
+cordic-at-7B pattern one size class down. Both halves are results: silicon-grade
+RTL for 4 of 5 families from a laptop-size model trained in 25 minutes, plus an
+honest size limit.
 
 ## 9. Honest limitations (for the paper)
 
