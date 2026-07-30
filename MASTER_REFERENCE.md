@@ -1575,6 +1575,52 @@ rtl/frontier_eval`; correctness alone says nothing about the speed claim.
 server (the API run ran there) — must be git-committed from the server so the
 laptop can pull them for Vivado.
 
+## 2026-07-30 — grpo_v8 REAL VIVADO (iir/med/poly) + 1.5B STUDENT: mixed, honest
+
+**POLY = CLEAN WIN.** SFT emits the fast ~191 MHz form only ~1-in-4..1-in-6
+samples; grpo_v8 emits it near-deterministically. Per-candidate real Vivado:
+poly7_8b sft {33,33,33,33,33,191} -> grpo {192,192,192}; poly7_v3 sft
+{30,30,191,30,30} -> grpo {191,192,191}; poly4_v6 sft {60,192,60,192,60,60} ->
+grpo {192 all}; poly8_v7 sft {28,28,192,28} -> grpo {191,191,191}. Freq-weighted
+mean ~35-90 -> ~191 MHz. IMPORTANT: the poly surrogate 500-pins were NOT
+gaming -- real ceiling is 191-193 MHz, so the surrogate was wrong in MAGNITUDE
+but correct in RANKING (as hypothesised).
+
+**IIR = CONSISTENCY WIN, NO CEILING CHANGE.** Both policies top out ~186-189
+MHz; grpo removes the slow tail. iir5_v1 sft {146,76,76,76,146} -> grpo
+{146,146,146,146}; iir9_v1 sft {61,188,185,61} -> grpo {188,188,188}; iir20 sft
+{186,35,35,186} -> grpo {186,186}; iir16 sft {188,188,188} -> grpo {188,188}
+(identical). So the MEAN rises, the MAX does not.
+
+**MEDIAN = CORRECTNESS WIN, NO Fmax GAIN. The surrogate's med7 188.6 MHz was
+REWARD HACKING.** Real: med7 sft max 40 -> grpo max 40 (no gain, both
+38-40 MHz); med11 sft max 22 -> grpo max 34 (marginal). Correctness did improve
+(med7 79.2->85.4, med11 29.2->39.6) but speed did not. This CONFIRMS the
+saturation-predicts-trouble diagnostic from the correctness pass: where the
+surrogate pinned at 500 on a family it had no discrimination for (median,
+Spearman 0.75 after the 5-family retrain), the "gain" was illusory. REPORT
+MEDIAN AS: correctness improved, Fmax unchanged, surrogate gamed -- do not
+bury it. The compact behavioural med_sort style that fixed med CORRECTNESS is
+fully combinational, so its critical path is long by construction; a real
+median speedup needs a pipelined median template in the corpus (future work).
+
+**MECHANISM (F6) NOW MEASURED PRECISELY on 3 families:** GRPO shifts
+probability mass toward the fast implementation style SFT already emits
+occasionally; it does NOT invent faster hardware. Max Fmax is set by the best
+style in the corpus; GRPO changes how OFTEN you get it. This is the honest
+framing for the paper and it is now backed by per-candidate real Vivado.
+
+**1.5B STUDENT (Phase D+ step 2-3): 4 of 5 families compress, median dies.**
+sft_train_v2.py on distill_corpus.jsonl (407 rows) x 4 epochs, Qwen2.5-Coder
+-1.5B, **25 minutes** (vs ~3 h for the 7B), final loss 0.0395. Probe (n=16,
+train-split designs): base 0/112 = 0.0%; student 55/112 = 49.1% overall, but
+**55/64 = 85.9% excluding median** -- firr16 93.8%, poly6 93.8%, iir8 87.5%,
+fir16 68.8%, med3/med5/med9 all 0/16 (compiled 10/4/5). CAPABILITY-SIZE
+FRONTIER: median works at 7B and dies at 1.5B -- the cordic-at-7B pattern one
+size class down. Both halves publishable: "silicon-quality DSP RTL for 4 of 5
+families from a laptop-size model, trained in 25 min" + an honest size-limit
+finding. Student adapter: student_v1_out/.
+
 ## 2026-07-28 — grpo_v8 5-FAMILY HELD-OUT EVAL (correctness done, Fmax pending)
 
 sft_v6c vs grpo_v8_cont on the 30 frozen §5 held-out designs, n=48/design,
