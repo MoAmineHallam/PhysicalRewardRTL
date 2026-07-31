@@ -1,0 +1,66 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+This paper has argued that functional correctness is an insufficient objective
+for machine-generated register-transfer level design, and has proposed a
+correctness-gated reinforcement learning method that optimises a physical
+quantity---maximum operating frequency---while treating correctness as a
+precondition rather than a competing term. The reward of a generated module is
+its surrogate-predicted frequency if an input/output-equivalence oracle certifies
+it correct, and exactly zero otherwise, so that frequency can never be purchased
+with correctness.
+
+Evaluated on thirty held-out DSP accelerator designs spanning five families and
+three circuit classes, under a split frozen before training and enforced
+programmatically, the method raises mean timing-closed \fmax{} from $86.5$ to
+$211.3$~MHz under parameter interpolation and from $78.5$ to $174.2$~MHz under
+extrapolation, exceeding a perfect-selector best-of-eight baseline in both
+regimes. A single sample from the optimised policy exceeds the expected best of
+forty-eight perfectly selected supervised samples in the interpolation regime,
+and on two designs the supervised model never produces the fast implementation at
+all---an existence failure that no selection procedure can repair. Five held-out
+design pairs measured on a Zynq-7020 sustain $2.25$--$3.40\times$ the clock of
+the supervised baseline, with zero spread across repeated sweeps and with a
+co-resident canary bounding attribution. The recipe transfers unmodified to a
+second base model, and both models converge to the same measured frequency
+ceiling, indicating that the optimisation locates a property of the design space
+rather than of the generator.
+
+Per-candidate analysis identifies the mechanism precisely: the method reallocates
+probability mass onto the fastest implementation style the policy already
+possesses, rather than discovering faster hardware. This claim is falsifiable and
+predicts its own limits, correctly identifying the recursive-filter family (where
+the supervised distribution already emitted fast forms frequently, leaving little
+to reallocate) and the comparator-network family (where the style that made the
+family correct is combinational by construction, so no fast alternative exists to
+amplify) as the cases in which the method yields little or no frequency gain.
+
+We further report that saturation of the learned frequency surrogate is an
+observable early-warning signal of reward hacking, exhibit a fully worked case in
+which a surrogate reported $188.6$~MHz for designs measuring $36$--$40$~MHz in
+silicon-bound synthesis, and show that the same saturation on a different family
+accompanied a genuine improvement---so that saturation warrants verification
+rather than dismissal. This is the concrete justification for the invariant
+maintained throughout this work, that no surrogate-derived number is ever
+reported as a result.
+
+Finally, the learned capability compresses into a $1.5$~billion-parameter student
+for four of five families in twenty-five minutes of training, using a
+distillation corpus every row of which is oracle-verified; the fifth family fails
+entirely, marking a capability--size frontier that mirrors the capability-class
+ceiling observed for the CORDIC family at $7$~billion parameters on two
+independent base models.
+
+Three directions follow directly from the limits identified here. The first is to
+broaden implementation-style diversity in the supervised corpus, since the
+analysis indicates that the ceiling is set there rather than by the optimiser;
+the pipelined median template that would repair the comparator-network result is
+the immediate instance. The second is to replace text-derived surrogate features
+with structural features extracted from an early synthesis pass, which is the
+principled remedy for the cross-circuit-class degradation reported in
+Section~\ref{sec:hacking} and a prerequisite for extending the method beyond
+datapath-dominated designs. The third is to apply the correctness-gated
+formulation to design families with different admissibility contracts---latency
+insensitive or transaction-equivalent rather than cycle-comparable---which would
+test whether the structure of the method, rather than its present instantiation,
+is what generalises.

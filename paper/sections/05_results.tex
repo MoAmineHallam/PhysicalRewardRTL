@@ -1,0 +1,498 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{Supervised warm start}
+\label{sec:warmstart}
+
+Table~\ref{tab:sft} reports oracle correctness before and after supervised
+fine-tuning, measured over $16$ samples per design. The un-tuned base models
+produce correct accelerators in $1.9$--$6.9\%$ of samples, confirming that a
+correctness-gated reward would be silent without a warm start. After supervised
+fine-tuning the five-family model reaches $94.8\%$ overall. The recipe is
+unchanged between the two base models, and the resulting competence is
+comparable, which is the first indication that the method does not depend on a
+particular model.
+
+\begin{table}[t]
+\centering
+\caption{Oracle correctness before and after supervised fine-tuning
+($n=16$ per design). The five-family model is the starting point for all
+subsequent policy optimisation.}
+\label{tab:sft}
+\small
+\begin{tabular}{lcc}
+\toprule
+Model & Base & After SFT \\
+\midrule
+RTLCoder-6.7B (three families) & 6.9\% & 74.4\% \\
+Qwen2.5-Coder-7B (three families) & 1.9\% & 68.1\% \\
+RTLCoder-6.7B (five families) & 4.2\% & \best{94.8\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Main result: held-out frequency}
+\label{sec:main}
+
+Table~\ref{tab:money} and Figure~\ref{fig:money} report the principal result.
+Over thirty frozen held-out designs, the correctness-gated policy raises the
+mean timing-closed \fmax{} from $86.5$ to $211.3$~MHz under interpolation
+($+144\%$) and from $78.5$ to $174.2$~MHz under extrapolation ($+122\%$).
+
+\begin{table}[t]
+\centering
+\caption{Held-out mean \fmax{} (MHz), real timing-closed Vivado, five families,
+$n=48$ samples per design, frequency-weighted so that incorrect samples
+contribute zero. Best-of-8 selects among supervised samples using the surrogate.}
+\label{tab:money}
+\small
+\begin{tabular}{lccccc}
+\toprule
+Regime & Base & SFT & Best-of-8 & \textbf{GRPO} & vs.\ SFT \\
+\midrule
+Interpolation (19) & 28.9 & 86.5 & 153.4 & \best{211.3} & $+144\%$ \\
+Extrapolation (11) & 16.4 & 78.5 & 159.0 & \best{174.2} & $+122\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig_money}
+\caption{Mean held-out \fmax{} by regime and policy. All values are
+timing-closed Vivado results; no surrogate value appears.}
+\label{fig:money}
+\end{figure}
+
+Two aspects of this table deserve emphasis. First, the comparison against
+best-of-eight is the meaningful one for a practitioner, because it asks whether
+the same benefit could be had by sampling the supervised model repeatedly and
+choosing well. It could not: the policy exceeds it by $1.38\times$ under
+interpolation and $1.10\times$ under extrapolation, and
+Section~\ref{sec:bestofn} strengthens this comparison substantially. Second, the
+gain is not uniform across families, and the disaggregation in
+Table~\ref{tab:family} is where the mechanism becomes visible.
+
+\begin{table}[t]
+\centering
+\caption{Held-out mean \fmax{} (MHz) disaggregated by family. The magnitude of
+the gain tracks how often the supervised model already emits the fast style, not
+the family's absolute speed.}
+\label{tab:family}
+\small
+\begin{tabular}{llccc}
+\toprule
+Family & Regime & SFT & \textbf{GRPO} & Change \\
+\midrule
+\multirow{2}{*}{\texttt{fir}/\texttt{firr}}
+ & interp & 97.8 & \best{265.9} & $+172\%$ \\
+ & extrap & 68.1 & \best{188.1} & $+176\%$ \\
+\multirow{2}{*}{\texttt{poly}}
+ & interp & 44.9 & \best{191.3} & $+326\%$ \\
+ & extrap & 57.6 & \best{191.6} & $+233\%$ \\
+\multirow{2}{*}{\texttt{iir}/\texttt{med}}
+ & interp & 118.3 & 148.1 & $+25\%$ \\
+ & extrap & 120.4 & 132.6 & $+10\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Correctness is preserved rather than traded away in aggregate, but not uniformly.
+Several designs improve markedly (\texttt{fir26} $79 \rightarrow 96\%$,
+\texttt{iir9} $81 \rightarrow 94\%$, \texttt{med7} $79 \rightarrow 85\%$), while
+five regress (\texttt{iir9\_v1} $92 \rightarrow 58\%$, \texttt{fir40}
+$79 \rightarrow 52\%$, \texttt{poly7\_v1} $94 \rightarrow 77\%$, \texttt{iir20}
+$79 \rightarrow 62\%$, \texttt{iir16} $42 \rightarrow 35\%$). The regressions are
+not randomly distributed, and Section~\ref{sec:hacking} identifies what they have
+in common.
+
+\subsection{Mechanism: reallocation, not invention}
+\label{sec:mechanism}
+
+Figure~\ref{fig:mechanism} plots every distinct correct implementation produced
+by the supervised model and by the optimised policy, with marker area
+proportional to how many of the $48$ samples collapsed onto it. The pattern is
+consistent across all fifteen designs shown: the supervised model scatters,
+producing a cluster of slow implementations with an occasional fast outlier,
+while the optimised policy concentrates almost all of its mass on the fast
+implementation.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_mechanism}
+\caption{Per-candidate real \fmax{} for each held-out design. The supervised
+model (circles) produces a slow cluster with occasional fast outliers; the
+optimised policy (diamonds) concentrates on the fast style. Marker area is
+proportional to the number of samples producing that implementation.}
+\label{fig:mechanism}
+\end{figure*}
+
+Individual designs make the point concretely. For \texttt{fir36} the supervised
+samples measure $\{17, 188, 23, 23\}$~MHz while the optimised samples measure
+$\{188, 188, 188\}$; for \texttt{poly7} the supervised samples measure
+$\{33,33,33,33,33,191\}$ against $\{192,192,192\}$. In both cases the maximum
+is essentially unchanged---the supervised model \emph{can} write the fast
+design---but its frequency of doing so changes from roughly one sample in six to
+near-certainty.
+
+This supports a precise and deliberately limited claim: \textbf{the method
+reallocates probability mass onto the fastest implementation style the policy
+already possesses; it does not discover implementations faster than those in the
+corpus.} The ceiling is set by the supervised distribution, and the optimiser
+determines how reliably that ceiling is reached. Two designs marginally exceed
+the supervised maximum (\texttt{firr10} $334$ versus $313$~MHz, \texttt{firr40}
+$195$ versus $189$), which we attribute to minor structural variation rather
+than to a qualitatively new implementation.
+
+The same claim predicts where the method should fail, and it does so correctly.
+The \texttt{iir} family gains only $10$--$25\%$ because its supervised
+distribution already emits fast forms frequently, leaving little slow tail to
+remove; its ceiling is bounded by the loop-carried dependency and is unchanged.
+The \texttt{med} family gains nothing at all: the compact behavioural style that
+made this family \emph{correct} is fully combinational by construction, so the
+policy possesses no fast median implementation to amplify. Predicting one's own
+negative results is a stronger test of a mechanistic claim than confirming one's
+positive ones.
+
+\subsection{Comparison against idealised best-of-$N$}
+\label{sec:bestofn}
+
+The best-of-eight column of Table~\ref{tab:money} depends on the quality of the
+selector. To remove that dependence we compute the expected best-of-$N$ under a
+\emph{perfect} selector in closed form from the empirical per-design
+distribution, which upper-bounds any reranking scheme including an oracle-quality
+one. Figure~\ref{fig:bestofn} shows the resulting curves.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig_bestofn}
+\caption{Expected \fmax{} of the best of $N$ supervised samples under a
+\emph{perfect} selector, against a single sample from the optimised policy.
+Under interpolation one optimised sample exceeds a perfectly selected best of
+forty-eight supervised samples.}
+\label{fig:bestofn}
+\end{figure}
+
+Under interpolation, a single sample from the optimised policy ($222.6$~MHz)
+exceeds the expected best of \emph{forty-eight} perfectly selected supervised
+samples ($207.8$~MHz); under extrapolation it is equivalent to a perfectly
+selected best of thirty-two. The comparison is conservative in the policy's
+disfavour, since the perfect selector is unattainable in practice.
+
+More decisively, sampling cannot solve the problem at all on some designs. For
+\texttt{firr10} the supervised model does not produce the fast implementation in
+any of forty-eight samples ($68.9$~MHz at $N=48$, against $306.8$~MHz for the
+policy), and for \texttt{fir40} the corresponding figures are $20.9$ and
+$181.8$~MHz. These are existence failures rather than selection failures: no
+selector can choose an implementation that was never generated. This
+distinguishes distribution shift from improved sampling, and is the clearest
+evidence that the optimisation occurs in the policy rather than in the
+selection.
+
+\subsection{Silicon validation}
+\label{sec:silicon}
+
+Table~\ref{tab:silicon} and Figure~\ref{fig:silicon} report measured hardware
+frequencies. Five held-out design pairs and a canary were synthesised into a
+single bitstream on a PYNQ-Z2 and swept in $5$~MHz steps, three runs each.
+
+\begin{table}[t]
+\centering
+\caption{Measured silicon \fmax{} (MHz) on a Zynq-7020, held-out designs,
+same-bitstream pairs, three sweeps each. The spread across repeated sweeps was
+$0.0$~MHz for every entry. Entries marked $\ge$ reached the harness ceiling
+imposed by the canary in this bitstream and are reported as lower bounds.}
+\label{tab:silicon}
+\small
+\begin{tabular}{llccc}
+\toprule
+Design & Regime & SFT & \textbf{GRPO} & Speed-up \\
+\midrule
+\texttt{fir26} & interp & 50.0 & \best{125.0} & $2.50\times$ \\
+\texttt{firr26} & interp & 55.6 & \best{125.0} & $2.25\times$ \\
+\texttt{poly7} & interp & 76.9 & \best{$\ge$200} & $\ge 2.60\times$ \\
+\texttt{firr36} & extrap & 40.0 & \best{125.0} & $3.13\times$ \\
+\texttt{poly8v6} & extrap & 58.8 & \best{$\ge$200} & $\ge 3.40\times$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig_silicon}
+\caption{Measured on-board \fmax{} for five held-out design pairs. Both members
+of each pair occupy the same bitstream, so placement, routing and thermal
+conditions are identical.}
+\label{fig:silicon}
+\end{figure}
+
+Three methodological points govern how these numbers should be read. First, the
+comparison is \emph{within} a bitstream: both members of a pair are placed and
+routed together, so the difference cannot be attributed to build-to-build
+variation. Second, a canary of independently characterised frequency is
+co-resident, and its margin ($159.1$~MHz above the highest reported entry at
+harness validation) bounds what may be attributed to the designs; two optimised
+entries reach the harness ceiling of $200$~MHz and are therefore reported as
+lower bounds rather than extrapolated. Third, the measured frequencies are lower
+than standalone static timing analysis predicts (a ratio of $1.91$ between
+silicon and STA at harness validation, and $125$ versus $193$--$228$~MHz for the
+in-context versus standalone builds of the same filters), because an in-context
+build shares the fabric with the harness. We report the in-context numbers
+because they are what was measured, and note the discrepancy rather than
+selecting the more favourable figure.
+
+\subsection{Transfer to a second base model}
+\label{sec:transfer}
+
+Table~\ref{tab:qwen} repeats the full pipeline on Qwen2.5-Coder-7B with no
+change to the corpus, the trainer, the oracle or the hyper-parameters.
+
+\begin{table}[t]
+\centering
+\caption{Held-out mean \fmax{} (MHz) for the second base model, real Vivado.
+The absolute optimised frequencies coincide with those of the first model
+($234.4$ and $190.1$~MHz), despite different starting competence.}
+\label{tab:qwen}
+\small
+\begin{tabular}{lccccc}
+\toprule
+Regime & Base & SFT & Best-of-8 & \textbf{GRPO} & vs.\ SFT \\
+\midrule
+Interpolation & 26.0 & 97.6 & 153.0 & \best{232.9} & $+139\%$ \\
+Extrapolation & 20.9 & 62.7 & 136.5 & \best{190.1} & $+203\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The transfer succeeds, but the more informative observation is the coincidence of
+the absolute values. The two base models differ substantially in starting
+point---base correctness $6.9\%$ against $1.9\%$, post-supervision $74.4\%$
+against $68.1\%$, and different weak families---yet their optimised policies
+converge to $232.9$ and $190.1$~MHz against $234.4$ and $190.1$~MHz for the
+first model. Since the frequency ceiling is a property of the design and the
+device rather than of the generator, this is what one would expect if the method
+reliably locates that ceiling, and it corroborates the mechanism of
+Section~\ref{sec:mechanism} from an independent direction.
+
+A secondary observation is that policy optimisation \emph{repaired} this model's
+weakest family: held-out \texttt{poly7} correctness rose from $29$--$54\%$ under
+supervision to $85$--$100\%$ after optimisation, while simultaneously reaching
+$191$~MHz. Because reward is accessible only through correctness, pressure toward
+frequency also creates pressure toward correctness on designs where the policy
+was previously unreliable.
+
+\subsection{Reward hacking: detection and a caught case}
+\label{sec:hacking}
+
+Introducing two structurally new circuit classes degraded the surrogate. Trained
+on the three multiply--accumulate families it achieved a leave-one-design-out
+Spearman correlation of $0.965$ with top-1 selection accuracy $23/25$; retrained
+across five families the pooled correlation fell to $0.75$--$0.82$ (the range
+reflects seed-to-seed variation on identical data, which is itself worth
+reporting) with top-1 accuracy $17$--$18/22$. Text-derived features that capture
+what limits a multiply--accumulate chain do not capture what limits a feedback
+loop or a comparator network.
+
+The consequence is visible in Figure~\ref{fig:saturation}. Designs whose
+surrogate score saturated at the clamp boundary of $500$~MHz suffered
+correctness regressions, while designs with informative surrogate scores held or
+improved. Saturation is therefore an \emph{observable} early-warning signal for
+reward hacking, available during training without any synthesis.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig_saturation}
+\caption{Correctness change against the optimised policy's surrogate score.
+Designs whose surrogate saturated at the clamp (crosses) are those that lost
+correctness; designs with informative surrogate values held or improved.}
+\label{fig:saturation}
+\end{figure}
+
+The clearest case is the median family. The surrogate reported $188.6$~MHz for
+optimised \texttt{med7} designs; the same designs measure $36$--$40$~MHz in
+timing-closed synthesis. Had we reported surrogate values, this family would have
+appeared as the method's most dramatic success---a $4.5\times$ improvement---when
+in fact it achieved no frequency gain whatsoever. This is the concrete
+justification for the invariant of Section~\ref{sec:surrogate}.
+
+Saturation does not always indicate hacking, and distinguishing the two cases
+requires measurement. The polynomial family also saturated the surrogate, but
+its designs genuinely measure $191$--$193$~MHz: there the surrogate was wrong in
+magnitude while remaining correct in \emph{ranking}, which is sufficient for
+group-relative advantage estimation. Saturation is thus a signal to verify, not
+a verdict.
+
+\subsection{Comparison against high-level synthesis}
+\label{sec:hls}
+
+Table~\ref{tab:hls} compares against Vitis HLS on the same held-out designs,
+using C++ kernels with the oracle's exact integer semantics and real
+post-place-and-route frequencies. Throughput is reported as $F_{max}/\mathrm{II}$
+to account for initiation interval.
+
+\begin{table}[t]
+\centering
+\caption{Comparison against commercial high-level synthesis on the held-out
+designs. Throughput accounts for initiation interval (II).}
+\label{tab:hls}
+\small
+\begin{tabular}{lcc}
+\toprule
+Variant & II & Throughput (Msample/s) \\
+\midrule
+Naive HLS (no directives) & $31$--$134$ & $1.7$--$10.5$ \\
+Expert HLS (pipeline, unroll, partition) & 1 & $195$--$258$ \\
+\textbf{This work} (from an NL specification) & 1 & $181$--$346$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The geometric mean of our throughput against expert HLS is $0.96\times$: starting
+from a natural-language specification, the policy matches hand-tuned
+directive-annotated HLS to within four percent, and exceeds it on the smallest
+designs. Against naive HLS the margin is $20$--$150\times$, because without
+directives HLS cannot pipeline the multiply--accumulate or Horner recurrence and
+settles at an initiation interval equal to the tap count or degree. We state the
+comparison's limit plainly: HLS input is engineer-written C++ with hand-placed
+pragmas, ours is a natural-language specification, so this bounds quality rather
+than replacing the comparison.
+
+\subsection{Comparison against a frontier API model}
+\label{sec:frontier}
+
+We submitted the identical held-out prompts to a frontier commercial model in two
+configurations: \emph{plain}, the exact prompt our models receive, and
+\emph{fast}, the same prompt with an explicit instruction to maximise clock
+frequency and pipeline aggressively. Both were scored by the same oracle and
+synthesised by the same flow. The second configuration is included because
+omitting it would invite the assumption that a frontier model would succeed if
+only it were asked properly.
+
+Under the identical prompt, the frontier model produces slow RTL---$20.7$~MHz for
+\texttt{fir40}, $32.1$ for \texttt{fir26}, $70.4$ for \texttt{firr10} against
+$181.8$, $193.2$ and $313.3$~MHz for our policy, a factor of $2$ to $8.8$. A
+frontier model does not emit high-frequency hardware by default.
+
+When explicitly instructed to optimise for frequency, however, it matches or
+exceeds our policy's peak frequency on ten of twelve \texttt{fir}/\texttt{firr}
+designs by $5$--$30\%$. We report this without qualification. Three measured
+factors bound it. Coverage: the model fails almost entirely outside the
+multiply--accumulate families, scoring $0\%$ correct on nine of ten held-out
+polynomial designs, $0$--$12.5\%$ on recursive filters and $0$--$25\%$ on median
+filters, where our policy is $94$--$100\%$ correct across all five families.
+Reliability: even where it is fast, it is correct in only $25$--$87.5\%$ of
+samples, and which samples are correct is knowable only because our oracle
+determines it. Cost: its fast designs purchase frequency with registers---$185$
+flip-flops against our $96$ for \texttt{fir6}, and $1410$ against $640$ for
+\texttt{fir40}---which is additional latency and area.
+
+The defensible claim is therefore not that our model is faster than a frontier
+model, but that a small locally-deployable model is \emph{reliably} correct and
+fast across all five families where a much larger model prompted for speed is
+neither, and that the oracle that makes such a comparison measurable is itself
+part of the contribution.
+
+\subsection{Regression on general Verilog}
+\label{sec:regression}
+
+Table~\ref{tab:verilogeval} reports pass@$k$ on VerilogEval to quantify the cost
+of specialisation.
+
+\begin{table}[t]
+\centering
+\caption{VerilogEval pass@$k$ (156 problems). Policy optimisation adds no
+regression beyond that introduced by supervised specialisation.}
+\label{tab:verilogeval}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Policy & Compile & pass@1 & pass@5 & pass@10 \\
+\midrule
+Base & 64.7\% & 32.2\% & 46.2\% & 51.9\% \\
+SFT & 46.6\% & 16.0\% & 33.0\% & 40.4\% \\
+GRPO & 46.7\% & \best{16.7\%} & \best{34.2\%} & \best{41.0\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Supervised specialisation costs approximately sixteen percentage points of
+pass@1 on general Verilog, which is the expected price of narrowing a model to a
+domain. Policy optimisation adds no further regression---indeed a marginal
+improvement---indicating that the KL anchor to the frozen supervised policy is
+effective. Because all adaptation is low-rank and detachable, this cost is
+reversible by construction: the base model is recovered by removing the adapter.
+
+\subsection{Capability compression}
+\label{sec:distill}
+
+We sampled the optimised policy over all $145$ training designs, retained only
+oracle-verified correct outputs, and deduplicated, yielding $407$ rows from
+$3480$ samples. The low yield---one to five distinct implementations per
+design---is itself the distribution-shift signature of
+Section~\ref{sec:mechanism}. A Qwen2.5-Coder-1.5B student was trained on this
+corpus with the unchanged recipe in twenty-five minutes, against approximately
+three hours for the 6.7B model.
+
+\begin{table}[t]
+\centering
+\caption{Capability compression into a 1.5B student ($n=16$ per design, training
+designs). Four families transfer; the comparator network does not.}
+\label{tab:distill}
+\small
+\begin{tabular}{lcc}
+\toprule
+Family & Base 1.5B & \textbf{Student} \\
+\midrule
+\texttt{firr} & 0\% & \best{93.8\%} \\
+\texttt{poly} & 0\% & \best{93.8\%} \\
+\texttt{iir} & 0\% & \best{87.5\%} \\
+\texttt{fir} & 0\% & \best{68.8\%} \\
+\texttt{med} & 0\% & 0\% \\
+\midrule
+Overall (excluding \texttt{med}) & 0\% & \best{85.9\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:distill} and Figure~\ref{fig:distill} show that four of five
+families compress into a model roughly a quarter of the size, while the
+comparator network family fails completely. Because the distillation corpus is
+oracle-filtered, every training example is verified correct---an unusually clean
+condition for distillation, and a direct consequence of possessing an oracle.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig_distill}
+\caption{Oracle correctness by family for the 6.7B teacher and the 1.5B student.
+The comparator-network family marks a capability--size frontier.}
+\label{fig:distill}
+\end{figure}
+
+\subsection{Negative results}
+\label{sec:negative}
+
+We report three negative results in full, because each constrains the claims
+above.
+
+\paragraph{A capability ceiling at 7B} The \texttt{cordic} family was constructed,
+verified and included in the supervised corpus, and neither base model produced a
+single correct implementation in any sample after fine-tuning ($0\%$ on both).
+The failure replicates across two independent base models, indicating a
+capability-class limit rather than a training artefact. The family is excluded
+from policy optimisation for this reason.
+
+\paragraph{A capability--size frontier at 1.5B} The median family reaches $89.6\%$
+correctness at 6.7B and $0\%$ at 1.5B (Table~\ref{tab:distill}), with $4$--$10$ of
+$16$ samples compiling but none correct. The same pattern as \texttt{cordic},
+one size class lower.
+
+\paragraph{No frequency gain on comparator networks} The median family gained
+correctness ($79 \rightarrow 85\%$ interpolation, $29 \rightarrow 40\%$
+extrapolation) but no frequency ($36$--$40$~MHz before and after). The cause is
+structural and was diagnosed rather than merely observed: the compact behavioural
+sorting style that made this family correct in the first place is fully
+combinational, so its critical path is long by construction and the policy has no
+fast alternative to amplify. The remedy is a pipelined median template in the
+corpus, which is future work; the point here is that the mechanism of
+Section~\ref{sec:mechanism} predicts this outcome rather than being embarrassed
+by it.

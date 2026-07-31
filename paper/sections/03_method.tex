@@ -1,0 +1,199 @@
+\section{Method}
+\label{sec:method}
+
+This section presents the proposed method in the order in which its components
+constrain one another: the correctness oracle that defines admissibility
+(Section~\ref{sec:oracle}), the frequency surrogate that makes the physical
+objective affordable together with the safeguards that make it survivable
+(Section~\ref{sec:surrogate}), the correctness-gated reward and the policy
+optimisation procedure built on it (Section~\ref{sec:grpo}), and the supervised
+warm start without which the reinforcement learning stage has no foothold
+(Section~\ref{sec:sft}). Figure~\ref{fig:pipeline} shows the resulting pipeline
+and, equally importantly, the boundary between quantities that are used for
+training and quantities that are permitted to appear in results.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig_pipeline}
+\caption{The proposed pipeline. A natural-language specification and a fixed
+module interface are sampled by the policy; every candidate is admitted or
+rejected by the input/output-equivalence oracle; admitted candidates receive a
+surrogate-predicted \fmax{} as reward and rejected ones receive exactly zero.
+Surrogate values never leave the training loop: every frequency reported in
+Section~\ref{sec:results} originates from timing-closed Vivado synthesis or from
+a clock sweep on the physical device.}
+\label{fig:pipeline}
+\end{figure}
+
+\subsection{Correctness oracle}
+\label{sec:oracle}
+
+Let $\mathcal{D}$ denote a design, specified by a natural-language description of
+its function together with an exact module interface (port names, directions and
+widths). Let $r_{\mathcal{D}}: \mathbb{Z}^{T} \rightarrow \mathbb{Z}^{T}$ be the
+reference behaviour of $\mathcal{D}$, expressed as an executable integer function
+over an input stream of length $T$ with the same finite-precision semantics as
+the hardware (all arithmetic modulo $2^{16}$ in our families).
+
+A candidate module $m$ is admitted if and only if it is behaviourally
+indistinguishable from the reference on the observable interface. Concretely,
+$m$ is compiled with Icarus Verilog, driven by a vector player that applies a
+stimulus sequence $x_{1:T}$, and its output stream $y_{1:T}^{m}$ is compared
+against $r_{\mathcal{D}}(x_{1:T})$. Because a pipelined implementation and a
+combinational one differ in latency but not in function, the comparison is
+performed over an alignment offset:
+\begin{equation}
+\mathrm{match}(m) \;=\; \max_{0 \le \ell \le L}
+\; \frac{1}{T'} \sum_{t=1}^{T'}
+\mathbb{I}\!\left[\, y^{m}_{t+\ell+w} = r_{\mathcal{D}}(x)_{t+w} \,\right],
+\label{eq:align}
+\end{equation}
+where $\ell$ ranges over admissible pipeline latencies up to $L=40$ cycles, $w$
+discards a warm-up window, and $T'$ is the length of the overlapping region. The
+candidate is admitted if $\mathrm{match}(m) = 1$ exactly. Partial credit is
+never awarded: a design that matches on $99\%$ of samples is incorrect hardware,
+and an earlier version of this work that used trace similarity as a reward
+learned to produce plausible-looking but wrong filters. The stimulus combines
+directed patterns (impulses, steps, alternating extremes, saturating ramps) with
+pseudo-random sequences, and---as discussed in Section~\ref{sec:setup}---the
+seeds used at evaluation time differ from those used during training so that a
+policy cannot overfit to the specific vectors it was rewarded on.
+
+The oracle is the sole authority on correctness in this work. No syntactic
+similarity, embedding distance or compile-only check is used at any stage, for
+training or for evaluation.
+
+\subsection{Frequency surrogate and its safeguards}
+\label{sec:surrogate}
+
+Obtaining a true \fmax{} requires synthesis and place-and-route, which takes on
+the order of minutes per candidate. Policy optimisation consumes thousands of
+candidates, so a direct physical reward is infeasible; we therefore learn a
+surrogate $\hat{f}_{\theta}(m)$ that predicts $\log$ \fmax{} from the source text
+of $m$.
+
+The surrogate is a small multilayer perceptron over twelve interpretable
+text-derived features, chosen to reflect what limits the register-to-register
+critical path in this design space: the maximum number of multiplications
+appearing in a single statement, total multiplication count, the number of
+clocked always-blocks and non-blocking assignments, indicators for accumulator
+patterns and for chained arithmetic, and---added when the comparator-network
+family was introduced---counts of ternary operators, comparisons and blocking
+assignments. It is trained on $(m, \text{\fmax})$ pairs obtained from real
+Vivado runs and evaluated by leave-one-design-out (LODO) cross-validation, so
+that the reported correlation measures generalisation to a design the surrogate
+has not seen rather than interpolation within one.
+
+Two safeguards govern its use, and both are consequences of failures we
+observed rather than precautions imagined in advance.
+
+\paragraph{Clamping} An unconstrained surrogate is an unbounded optimisation
+target. In a pilot run a policy discovered inputs for which the exponentiated
+prediction overflowed, obtaining effectively infinite reward for a design whose
+true frequency is approximately $191$~MHz. We therefore clamp the predicted
+$\log$-frequency to $[\ln 5, \ln 500]$ both at surrogate load time and inside the
+reward computation, bounding the exploitable range to physically plausible
+values.
+
+\paragraph{Never reporting surrogate values} The clamp bounds the magnitude of an
+exploit but does not prevent one. We therefore adopt as an invariant that no
+surrogate-derived number is ever reported as a result. The surrogate is a
+training-time reward only; every frequency in Section~\ref{sec:results} comes
+from a timing-closed Vivado run or a hardware sweep. Section~\ref{sec:hacking}
+shows why this invariant is load-bearing rather than merely fastidious: on one
+family the surrogate reports $188.6$~MHz for designs that measure $36$--$40$~MHz.
+
+\subsection{Correctness-gated policy optimisation}
+\label{sec:grpo}
+
+Let $\pi_{\phi}$ denote the policy, initialised from the supervised model of
+Section~\ref{sec:sft}. For a design $\mathcal{D}$ we sample a group of $G$
+candidates $m_1, \dots, m_G \sim \pi_{\phi}(\cdot \mid p_{\mathcal{D}})$ from the
+prompt $p_{\mathcal{D}}$. The reward of a candidate is
+\begin{equation}
+R(m_i) \;=\;
+\begin{cases}
+\mathrm{clip}\!\big(\hat{f}_{\theta}(m_i),\, 5,\, 500\big)
+& \text{if } \mathrm{match}(m_i) = 1,\\[2pt]
+0 & \text{otherwise.}
+\end{cases}
+\label{eq:reward}
+\end{equation}
+
+Equation~(\ref{eq:reward}) is the central design decision of this work. The two
+objectives are composed multiplicatively rather than additively: frequency is
+not traded against correctness, it is only accessible \emph{through} correctness.
+A degenerate module that emits a constant would close timing at a very high
+frequency, but it fails the oracle and receives zero, so no gradient ever pushes
+the policy toward it. Conversely, a correct but slow module receives a small
+positive reward and is dominated by a correct fast one within the same group.
+
+Rewards are normalised within the group to form advantages,
+\begin{equation}
+A_i \;=\; \frac{R(m_i) - \mu_R}{\sigma_R + \epsilon},
+\qquad
+\mu_R = \frac{1}{G}\sum_j R(m_j),
+\label{eq:adv}
+\end{equation}
+with $\sigma_R$ the group standard deviation. Group-relative normalisation is
+appropriate here because the achievable frequency varies by an order of
+magnitude across designs---a six-tap filter and a forty-tap filter are not
+comparable in absolute terms---and it removes the need for a learned value
+function. When all $G$ rewards coincide the advantage vanishes and the step is
+skipped; this occurs on approximately $40\%$ of steps late in training, and is
+itself a signal that the policy has converged on those designs.
+
+The policy is updated by ascending
+\begin{equation}
+\mathcal{J}(\phi) \;=\;
+\mathbb{E}\Big[ A_i \log \pi_{\phi}(m_i \mid p_{\mathcal{D}}) \Big]
+\;-\; \beta\, \mathrm{KL}\!\left[\pi_{\phi} \,\|\, \pi_{\mathrm{ref}}\right],
+\label{eq:obj}
+\end{equation}
+where $\pi_{\mathrm{ref}}$ is a \emph{frozen copy of the supervised policy}, held
+as a second, non-trainable adapter loaded alongside the trainable one. This
+detail matters: an earlier version anchored the divergence to the un-tuned base
+model, which pulls the policy away from the very competence the supervised stage
+established. The log-probability in Equation~(\ref{eq:obj}) is computed over the
+extracted module only, truncated at the first \texttt{endmodule} token, so that
+text generated after the module boundary---which the reward does not
+see---contributes no gradient.
+
+Two practical constraints are worth recording because violating them silently
+degrades results. Generation must be allocated enough tokens for the largest
+design in the family: a transposed $32$-tap filter requires over $750$ tokens,
+and a budget of $768$ truncates it mid-module, causing extraction to fail, the
+reward to be zero, and the policy to learn to \emph{avoid} the fast form. We use
+$1536$ tokens throughout, raised to $3072$ for the largest evaluation design.
+Second, the policy is optimised over all $145$ training-split designs rather
+than a small subset, which both broadens coverage and reduces per-prompt
+overfitting.
+
+\subsection{Supervised warm start}
+\label{sec:sft}
+
+Reinforcement learning refines competence; it cannot create it. A cross-model
+probe found that un-tuned base models produce correct accelerators of the kind
+studied here in roughly $2$--$7\%$ of samples, which leaves the correctness gate
+of Equation~(\ref{eq:reward}) closed almost always and the policy with no signal.
+We therefore begin with a supervised stage.
+
+The corpus is constructed programmatically rather than scraped. For each design
+in the training split we emit the same functional specification in multiple
+\emph{implementation styles}---for the multiply--accumulate families a direct
+array-and-loop reference, a pipelined form, an unrolled named-register form and a
+transposed form; for the polynomial family a combinational Horner chain, a
+pipelined variant and an inlined nested form; and analogous alternatives for the
+recursive and comparator-network families. Every candidate pair is passed
+through the oracle of Section~\ref{sec:oracle} before entering the corpus, so no
+incorrect training example exists by construction. This yields $457$ distinct
+verified pairs.
+
+Style multiplicity is deliberate and is what later makes the reinforcement
+learning stage possible: it establishes a distribution over implementations of
+differing speed for the same specification, and the measured spread within that
+distribution---a median of $155$~MHz between the slowest and fastest correct
+implementation of the same design---is precisely the headroom the physical
+reward exploits. Section~\ref{sec:mechanism} shows that the optimiser operates
+within this headroom rather than beyond it, which explains both where the method
+succeeds and where it does not.

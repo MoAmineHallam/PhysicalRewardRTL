@@ -1,0 +1,122 @@
+\section{Experimental setup}
+\label{sec:setup}
+
+\subsection{Design families}
+
+We study five families of single-input streaming DSP accelerators, chosen to
+span three structurally distinct circuit classes rather than to maximise their
+number. All share a common interface (a clock, an active-low reset, an $8$-bit
+input sample and a $16$-bit registered output), which is what makes a uniform
+per-design oracle and a uniform hardware harness possible.
+
+\begin{itemize}
+\item \textbf{Multiply--accumulate datapaths.} \texttt{fir} ($T$-tap finite
+impulse response filters with fixed coefficients, $T \in [4,32]$) and
+\texttt{firr} (the same structure with a different coefficient family). The
+critical path is a chain of multiplications and additions, and the fast
+implementation is the transposed, pipelined form.
+
+\item \textbf{Polynomial evaluation.} \texttt{poly} (degree-$D$ polynomial
+evaluation modulo $2^{16}$, $D \in [2,10]$, with six coefficient variants per
+degree). The natural implementation is a Horner recurrence, which is
+sequentially dependent and therefore hard for automatic pipelining to break.
+
+\item \textbf{Recursive filters.} \texttt{iir} (order-$N$ infinite impulse
+response filters, $N \in [2,14]$, four coefficient variants each). Unlike the
+preceding families these contain genuine feedback, so the loop-carried
+dependency bounds the achievable frequency independently of pipelining depth.
+
+\item \textbf{Comparator networks.} \texttt{med} (running median over a window of
+width $W$). This family contains no multipliers at all; its cost is a sorting
+network of comparisons, making it structurally unlike the other four.
+\end{itemize}
+
+A sixth family (\texttt{cordic}) was constructed and is retained in the
+supervised corpus but excluded from reinforcement learning; the reason is
+reported as a negative result in Section~\ref{sec:negative}.
+
+\subsection{Frozen held-out protocol}
+\label{sec:holdout}
+
+The held-out split was fixed before any model reported in this paper was
+trained, and is enforced by a single predicate \texttt{is\_holdout()} that is
+imported by the corpus generator, the reinforcement learning design list and the
+surrogate's data loader. Each consumer refuses to proceed if a held-out design
+appears; during this work the surrogate loader in fact rejected $345$ labelled
+rows that would otherwise have leaked, which we regard as evidence that the
+guard is doing real work rather than decorating the method.
+
+The split distinguishes two regimes:
+
+\begin{itemize}
+\item \textbf{Interpolation} --- parameters inside the trained range, withheld:
+\texttt{fir} and \texttt{firr} with $T \in \{6,10,18,26\}$; all \texttt{poly}
+variants of degree $7$; \texttt{iir} of orders $\{5,9\}$; \texttt{med} with
+$W=7$. This regime asks whether the policy generalises across the parameter
+grid.
+
+\item \textbf{Extrapolation} --- parameters outside the trained range, so these
+designs are never produced by the training grid at all and are constructed
+directly at evaluation time: \texttt{fir} and \texttt{firr} with
+$T \in \{36,40\}$; two new \texttt{poly} coefficient variants of degrees
+$\{4,8\}$; \texttt{iir} of orders $\{16,20\}$; \texttt{med} with $W=11$. This
+regime asks whether the implementation \emph{style} transfers beyond the sizes
+seen in training.
+\end{itemize}
+
+This yields $145$ training designs and $30$ held-out designs ($19$ interpolation,
+$11$ extrapolation). Evaluation prompts for held-out designs are constructed
+directly from the specification and interface rather than drawn from the corpus
+generator; the interface header is part of the problem statement, not leakage.
+
+\subsection{Models and training configuration}
+
+The primary base model is RTLCoder-6.7B~\cite{liu2024rtlcoder}; transfer is
+verified on Qwen2.5-Coder-7B~\cite{hui2024qwen25coder} and capability
+compression on Qwen2.5-Coder-1.5B. All stages use low-rank adaptation
+(LoRA, $r=16$) so that the specialisation is detachable, which
+Section~\ref{sec:regression} shows to be a meaningful property.
+
+Supervised fine-tuning runs for four epochs over the $457$-pair corpus with the
+loss masked to completion tokens. Policy optimisation runs for $400$ steps with
+group size $G=8$, temperature $1.0$, learning rate $10^{-5}$, KL coefficient
+$\beta = 0.1$ against the frozen supervised adapter, and a generation budget of
+$1536$ tokens. Training uses oracle seed $0$ with stimulus length $512$.
+
+\subsection{Measurement}
+
+\paragraph{Synthesis} All reported frequencies are obtained from Vivado 2023.1
+targeting a Xilinx Zynq-7020 (\texttt{xc7z020clg400-1}) with a $5$~ns target
+period, taking \fmax{} from the post-implementation worst negative slack. A
+design that fails to close or fails synthesis is recorded as such rather than
+dropped.
+
+\paragraph{Evaluation protocol} Each policy is sampled $n=48$ times per held-out
+design. Correctness at evaluation time is assessed with oracle seeds $1$ and $2$
+and stimulus length $1024$---deliberately different from the training seed and
+four times longer---so that a policy that had overfitted to the exact training
+vectors would be exposed. Distinct implementations are deduplicated by
+normalised source, and each surviving implementation carries the number of
+samples that collapsed onto it. Per-design frequency is the frequency-weighted
+mean over distinct correct implementations, which is the expected quality of
+\emph{one} sample from that policy; incorrect samples contribute zero. This is a
+deliberately conservative statistic: it charges a policy for its failures rather
+than reporting only its best output.
+
+\paragraph{Baselines} We report the un-tuned base model, the supervised model,
+and a \emph{best-of-eight} baseline in which the surrogate selects the best of
+the first eight supervised samples. The last of these is the fair
+inference-cost comparison: it asks whether the gains of the proposed method could
+be obtained more cheaply by sampling the supervised model repeatedly and
+choosing well. Section~\ref{sec:bestofn} strengthens this baseline further by
+computing the expected best-of-$N$ under a \emph{perfect} selector in closed
+form, which upper-bounds any reranking scheme.
+
+\paragraph{Silicon} Held-out design pairs are placed into a single bitstream on a
+PYNQ-Z2 board together with a canary module of independently known frequency,
+and the fabric clock is swept from $30$~MHz upward in $5$~MHz steps, three runs
+per configuration, with on-chip comparison against a golden output stream. A
+design's measured \fmax{} is the highest frequency at which it matches the
+golden stream on every run. Placing the compared designs in the same bitstream
+ensures identical placement, routing and thermal conditions; the canary bounds
+what may be attributed to the design under test rather than to the harness.

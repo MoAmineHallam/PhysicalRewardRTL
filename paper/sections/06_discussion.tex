@@ -1,0 +1,103 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{What the results support, and what they do not}
+
+The results of Section~\ref{sec:results} support a narrower claim than a reader
+scanning only Table~\ref{tab:money} might infer, and we state the narrow version
+explicitly because it is the one that survives scrutiny.
+
+The method \emph{reliably converts a policy that occasionally writes fast
+hardware into one that almost always does}, for design families in which a fast
+implementation style exists within the supervised distribution. It does not
+synthesise implementation styles that were absent from that distribution, and its
+achievable ceiling is consequently bounded by the corpus rather than by the
+optimiser. Every result in this paper is consistent with that statement,
+including the two families where the gain is small or absent, and including the
+observation that two different base models converge to the same absolute
+frequencies.
+
+This has a practical corollary worth stating for anyone reproducing the method:
+effort spent broadening the \emph{style} diversity of the supervised corpus is
+likely to raise the ceiling more than effort spent on the reinforcement learning
+stage, which principally affects how reliably that ceiling is reached. The
+median family is the clean demonstration---no amount of policy optimisation can
+extract frequency from a family whose only reliably-emitted style is
+combinational.
+
+\subsection{Threats to validity}
+
+\paragraph{Domain scope} We evaluate single-input streaming DSP accelerators with
+a uniform interface. This is a deliberate restriction, and it is what makes the
+per-design oracle and the uniform hardware harness feasible; the rigour of the
+evaluation and the narrowness of the domain are not independent choices. We
+therefore make no claim about general RTL generation, and specifically no claim
+about control-dominated logic, memory interfaces or multi-clock designs. Whether
+the method transfers to those classes is open, and the surrogate would certainly
+require different features to do so.
+
+\paragraph{Template-generated specifications} Both the specifications and the
+supervised completions are generated programmatically from templates. This
+guarantees oracle-verifiable correctness and eliminates contamination from
+scraped code, but it means the natural-language inputs are more uniform than a
+practitioner's prose would be. The extrapolation regime (parameters outside the
+trained grid, and coefficient variants constructed only at evaluation time) is
+our attempt to test style transfer beyond memorisation, but it does not test
+robustness to linguistic variation in the specification.
+
+\paragraph{Single device family} All synthesis and all hardware measurements
+target one FPGA (Zynq-7020). Frequency ceilings are device-specific, and the
+absolute values reported here would differ on another part. The relative
+comparisons are internally consistent because every policy is measured under
+identical conditions, but we do not claim device independence.
+
+\paragraph{Sample sizes} Held-out evaluation uses $n=48$ samples per design with
+two oracle seeds at length $1024$; the frontier-model comparison of
+Section~\ref{sec:frontier} uses $n=8$ per arm, where a single sample shifts a
+reported percentage by $12.5$ points, and should be read as indicative. The
+surrogate's leave-one-design-out correlation varies by approximately $0.07$
+between random seeds on identical data, so small differences in that statistic
+carry little information.
+
+\paragraph{Area and latency} The optimised designs are generally smaller in
+look-up tables while consuming more flip-flops, since pipelining trades registers
+for frequency; deeper pipelines also increase latency, which is immaterial for
+streaming throughput but not for latency-sensitive use. Designs containing
+multipliers map to DSP blocks, so look-up-table counts alone understate resource
+use, and we report DSP counts alongside them.
+
+\subsection{On surrogate-guided physical optimisation}
+
+The reward hacking documented in Section~\ref{sec:hacking} is, in our view, the
+most transferable finding of this work, because any attempt to optimise a
+physical objective with a learned proxy will encounter it. Three observations
+generalise beyond our setting.
+
+First, hacking was detectable without synthesis: saturation at the clamp boundary
+separated the degraded designs from the healthy ones. A practitioner can monitor
+this during training at no cost.
+
+Second, the clamp was necessary but not sufficient. It converted an unbounded
+exploit (numerical overflow, effectively infinite reward) into a bounded one
+(a $500$~MHz ceiling), which preserved training stability but did not prevent the
+policy from optimising against a fiction on the family where the surrogate was
+blind.
+
+Third, saturation is a signal to verify rather than a verdict. The polynomial
+family saturated the surrogate and was genuinely fast; the median family
+saturated it and was not. Only measurement distinguishes them, which is why the
+invariant that surrogate values never appear in results is load-bearing rather
+than stylistic. A method that reported its own reward as its result would have
+claimed a $4.5\times$ improvement on a family that improved by nothing.
+
+\subsection{Cost}
+
+The complete pipeline for one base model comprises approximately three hours of
+supervised fine-tuning, roughly seven hours of policy optimisation on a single
+V100-class device, and a Vivado pass over the evaluation candidates. The
+surrogate is trained on $177$ labelled pairs, each requiring one synthesis run.
+Distillation into the 1.5B student adds twenty-five minutes. The dominant cost is
+not the reinforcement learning but the electronic design automation runs required
+to produce trustworthy labels---which is itself an argument for the surrogate,
+and for re-anchoring it periodically against real measurements rather than
+enlarging it.

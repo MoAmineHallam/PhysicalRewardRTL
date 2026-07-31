@@ -1,0 +1,129 @@
+\section{Introduction}
+\label{sec:intro}
+
+The design of digital hardware begins with a register-transfer level (RTL)
+description, and writing that description is still a slow, expert-intensive
+activity. It is therefore unsurprising that the rapid progress of large language
+models (LLMs) on software source code has been followed by a substantial body of
+work on generating Verilog and VHDL automatically. That body of work has, almost
+without exception, adopted \emph{functional correctness} as its objective: a
+generated module is scored by whether it compiles and whether it reproduces the
+outputs of a reference on a testbench, and progress is reported as a pass rate
+on a benchmark suite of small design problems.
+
+Functional correctness is a necessary target, but it is not a sufficient one.
+Hardware is not merely required to compute the right function; it is required to
+compute the right function fast enough, in a small enough area, on a specific
+device. A $40$-tap finite impulse response (FIR) filter written as a single
+combinational multiply--accumulate chain and the same filter written as a
+transposed, fully pipelined datapath are indistinguishable to a correctness
+oracle---they produce identical output streams---yet on a Xilinx Zynq-7020 the
+former closes timing at $21$~MHz and the latter at $182$~MHz. A generator that
+is evaluated only on correctness is therefore free to emit the $21$~MHz design
+indefinitely, and in our experiments a supervised model does exactly that: it
+emits the fast implementation style in roughly one sample out of four to eight,
+and the slow style the rest of the time. The engineering value of the tool
+collapses accordingly, because a designer who cannot tell which sample is fast
+must synthesise all of them.
+
+Optimising for the physical objective directly is difficult for three reasons,
+each of which has shaped the method proposed here. First, the objective is
+expensive: obtaining a true maximum operating frequency (\fmax) requires a full
+synthesis and place-and-route pass, which takes minutes per candidate and cannot
+be placed inside a reinforcement learning loop that consumes thousands of
+candidates. Second, the objective is dangerous to approximate, because any
+learned surrogate for \fmax{} becomes an optimisation target that the policy will
+exploit; we observed this failure twice, in one instance a policy driving a
+surrogate to numerical overflow and in another obtaining a surrogate score of
+$188.6$~MHz for a design whose measured frequency is $36$--$40$~MHz. Third, and
+most importantly, the objective is trivially satisfiable by an incorrect design.
+A module that emits a constant closes timing at an arbitrarily high frequency.
+Speed and correctness cannot be traded off against one another with a weighted
+sum, because any positive weight on speed makes degenerate designs attractive.
+
+This paper proposes a method that addresses all three difficulties with a single
+structural decision. We define a \emph{correctness-gated} reward: the reward of a
+generated module is its surrogate-predicted \fmax{} if an input/output
+equivalence oracle certifies the module correct, and exactly zero otherwise. The
+gate is not a penalty term and not a soft constraint; correctness is a
+precondition for receiving any reward at all, so a policy cannot purchase
+frequency with correctness. The surrogate makes the reward cheap enough for
+online policy optimisation, the oracle makes it safe, and---critically---no
+number produced by the surrogate is ever reported as a result. Every frequency
+in this paper is either a timing-closed Vivado result or a clock sweep measured
+on a physical device.
+
+We further argue that the evaluation protocol matters as much as the training
+method, and that the prevailing protocol in this literature is too weak to
+support its conclusions. Reporting a mean speed-up over designs that appeared in
+the training corpus measures memorisation, not capability. We therefore freeze a
+held-out split \emph{before} any model in this paper was trained, exclude those
+designs from the supervised corpus, from the reinforcement learning design list,
+and from the surrogate's training rows, and enforce the exclusion with a
+programmatic guard that refuses to run if a held-out design appears. The split
+distinguishes two regimes that are usually conflated: \emph{interpolation},
+where the held-out parameter lies inside the trained range, and
+\emph{extrapolation}, where it lies outside it. Results are reported separately
+for the two, because they answer different questions.
+
+Our contributions are as follows.
+
+\begin{enumerate}
+\item \textbf{A correctness-gated physical reward for RTL generation.} We
+formulate policy optimisation in which the reward is a physical quantity
+(predicted \fmax) gated by an input/output-equivalence oracle, so that
+correctness is a precondition rather than a competing objective
+(Section~\ref{sec:method}). Applied to five accelerator families spanning three
+circuit classes, the method raises mean timing-closed \fmax{} on thirty frozen
+held-out designs from $86.5$ to $211.3$~MHz ($+144\%$) under interpolation and
+from $78.5$ to $174.2$~MHz ($+122\%$) under extrapolation, exceeding a
+perfect-selector best-of-eight baseline in both regimes.
+
+\item \textbf{Silicon validation with explicit attribution.} Five held-out design
+pairs were synthesised into a single bitstream, deployed to a Xilinx Zynq-7020,
+and swept over clock frequency in hardware. The optimised designs sustain
+$2.25$--$3.40\times$ the measured clock of the supervised baseline, with zero
+spread over repeated sweeps, and a canary design of known frequency co-resident
+in the same bitstream bounds what may legitimately be attributed to the design
+under test (Section~\ref{sec:silicon}).
+
+\item \textbf{A mechanism, measured rather than asserted.} Per-candidate analysis
+shows that the method does not invent faster hardware; it reallocates
+probability mass onto the fastest implementation style the policy already
+possesses. The supervised model emits the fast style in one sample out of four
+to eight, the optimised policy emits it almost deterministically, and the
+achievable ceiling is set by the corpus rather than by the optimiser
+(Section~\ref{sec:mechanism}). This claim also predicts, correctly, the two
+families in which our method yields no frequency gain.
+
+\item \textbf{Reward hacking as a detectable phenomenon.} We show that saturation
+of the surrogate at its clamp boundary is an observable predictor of correctness
+degradation: every large correctness regression in our held-out evaluation
+occurred on a design whose surrogate score had saturated, while designs with
+informative surrogate scores held or improved their correctness. We present one
+fully worked case in which a saturated surrogate reported $188.6$~MHz for a
+median filter that measures $36$--$40$~MHz in silicon-bound synthesis
+(Section~\ref{sec:hacking}).
+
+\item \textbf{Transfer, compression, and honest negative results.} The recipe
+transfers unmodified to a second base model, and both models converge to
+the same measured frequency ceiling ($\approx 233$ and $\approx 190$~MHz in the
+two regimes), suggesting the optimisation recovers a property of the design
+space rather than of the model. The learned capability compresses into a
+$1.5$~billion-parameter student for four of five families in twenty-five minutes
+of training, while the fifth fails entirely---a capability--size frontier that we
+report rather than omit, alongside two further negative results
+(Sections~\ref{sec:transfer}--\ref{sec:negative}).
+\end{enumerate}
+
+The remainder of this paper is organised as follows.
+Section~\ref{sec:related} reviews LLM-based RTL generation, physical-objective
+optimisation, and the evaluation practices this work departs from.
+Section~\ref{sec:method} presents the oracle, the frequency surrogate and its
+safeguards, and the correctness-gated policy optimisation procedure.
+Section~\ref{sec:setup} describes the design families, the frozen held-out
+protocol, and the measurement infrastructure.
+Section~\ref{sec:results} reports the main results, the silicon measurements, the
+mechanism analysis, the baselines, and the negative results.
+Section~\ref{sec:discussion} discusses threats to validity and the limits of the
+claims, and Section~\ref{sec:conclusion} concludes.

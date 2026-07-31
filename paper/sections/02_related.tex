@@ -1,0 +1,118 @@
+\section{Related work}
+\label{sec:related}
+
+We organise related work into three strands: LLM-based generation of RTL,
+optimisation of RTL for physical objectives, and the evaluation practices that
+this work departs from. Table~\ref{tab:delta} summarises the position of the
+present paper with respect to the most closely related contributions.
+
+\subsection{Language models for RTL generation}
+
+The first strand treats hardware description as a code-generation problem.
+Benchmarks such as VerilogEval~\cite{liu2023verilogeval} and
+RTLLM~\cite{lu2024rtllm} established pass@$k$ on small, self-contained module
+specifications as the standard measure, and a series of models has advanced that
+measure through domain-specific pre-training and instruction tuning:
+VeriGen~\cite{thakur2024verigen} fine-tunes on a curated Verilog corpus,
+RTLCoder~\cite{liu2024rtlcoder} constructs an automated instruction dataset and
+trains a compact open model competitive with much larger general-purpose ones,
+CodeV~\cite{zhao2024codev} exploits multi-level summarisation to build training
+pairs, and CraftRTL~\cite{liu2024craftrtl} addresses non-textual representations
+and targeted repair of known failure modes. More recently, reinforcement
+learning has been applied to the same objective:
+VeriSeek~\cite{wang2024veriseek} uses reinforcement learning with a
+verification-derived signal, and VeriReason~\cite{wang2025verireason} combines
+testbench feedback with structured reasoning to improve functional pass rates.
+
+What unites this strand is the objective. In every case the reward or the metric
+is functional: does the module compile, and does it match a reference on a test
+suite? Physical quality is either unmeasured or reported as an
+afterthought. Our work adopts the same starting point---we begin from
+RTLCoder~\cite{liu2024rtlcoder} and additionally verify transfer to
+Qwen2.5-Coder~\cite{hui2024qwen25coder}---but replaces the objective with a
+physical one that is gated by, rather than equal to, functional correctness.
+
+\subsection{Optimising RTL for physical objectives}
+
+The second strand does target power, performance and area (PPA), and has become
+active very recently. REvolution~\cite{min2025revolution} couples an LLM with an
+evolutionary search that maintains separate populations for repairing failures
+and improving PPA. POET~\cite{poet2026} applies evolutionary tuning with an
+explicit power orientation, EvolVE~\cite{evolve2026} performs evolutionary search
+over Verilog generation and optimisation, COEVO~\cite{coevo2026} co-evolves
+functional correctness and PPA, and Dr.~RTL~\cite{drrtl2026} performs agentic,
+tool-grounded self-improvement of RTL. RTLRewriter~\cite{yao2024rtlrewriter}
+approaches the problem from the rewriting rather than the generation side.
+On the evaluation side, RTL-OPT~\cite{lu2026rtlopt} contributes a benchmark of
+$36$ hand-crafted designs paired with human-optimised references specifically to
+measure optimisation quality rather than syntactic correctness, covering
+combinational logic, pipelined datapaths, finite state machines and memory
+interfaces.
+
+Two differences separate these approaches from ours, and both are consequential.
+The first is \emph{where the optimisation lives}. Evolutionary and agentic
+methods search at inference time: they generate many candidates and select or
+mutate among them, so the cost of a good design is paid on every invocation. Our
+method moves the optimisation into the policy, so a single sample from the
+trained model is already the fast design; Section~\ref{sec:bestofn} quantifies
+this difference against an idealised best-of-$N$ selector and shows that one
+sample from our policy exceeds a \emph{perfectly selected} best of forty-eight
+supervised samples in the interpolation regime. The second difference is that
+these methods optimise PPA without a hard correctness precondition on the
+reward, which is precisely the configuration in which a physical objective is
+exploitable; Section~\ref{sec:hacking} documents what that exploitation looks
+like when it occurs.
+
+\subsection{High-level synthesis and learned PPA prediction}
+
+Commercial high-level synthesis (HLS) is the established route from an
+algorithmic description to RTL, and any claim about automatically generated
+accelerators must be positioned against it. We therefore compare directly
+against Vitis HLS in two configurations---without directives, as a non-expert
+would use it, and with hand-placed pipeline, unroll and array-partition
+pragmas---in Section~\ref{sec:hls}. Learned models for predicting post-synthesis
+quality from source-level features have been studied for HLS
+designs~\cite{ustun2020accurate,wu2022highlevel}, and our frequency surrogate is
+a deliberately simple member of this family; its role and its limitations are
+discussed in Section~\ref{sec:surrogate}.
+
+\subsection{Evaluation practice}
+
+The third strand is methodological. Contamination between training and
+evaluation data is a recognised hazard in code generation generally, and the RTL
+literature is particularly exposed to it because parameterised design families
+make it easy to train on a $16$-tap filter and evaluate on an $18$-tap one
+without noticing that the two share an implementation template. Reported
+results in this area are also predominantly based on synthesis or timing-analysis
+estimates rather than measurement on a device. We depart from prevailing
+practice in three specific ways: a held-out split frozen before training and
+enforced programmatically, an explicit separation of interpolation from
+extrapolation, and validation of the headline claim on a physical device with a
+co-resident canary that bounds attribution. We do not claim to be the first to
+place LLM-generated RTL on an FPGA; we claim that the attribution methodology
+described in Section~\ref{sec:silicon} is more explicit than what is currently
+reported.
+
+\begin{table*}[t]
+\centering
+\caption{Position of this work relative to the most closely related
+contributions. ``Physical reward'' indicates whether a physical quantity drives
+\emph{training} (as opposed to inference-time selection); ``correctness gate''
+indicates whether functional correctness is a precondition for that reward.}
+\label{tab:delta}
+\small
+\begin{tabular}{lccccc}
+\toprule
+ & Physical & Correctness & Interp./extrap. & Measured & Optimisation \\
+ & reward & gate & held-out split & silicon & located at \\
+\midrule
+RTLCoder~\cite{liu2024rtlcoder}, CodeV~\cite{zhao2024codev} & --- & --- & --- & --- & training (correctness) \\
+VeriReason~\cite{wang2025verireason}, VeriSeek~\cite{wang2024veriseek} & --- & --- & --- & --- & training (correctness) \\
+REvolution~\cite{min2025revolution}, EvolVE~\cite{evolve2026} & \checkmark & --- & --- & --- & inference (search) \\
+POET~\cite{poet2026}, COEVO~\cite{coevo2026} & \checkmark & --- & --- & --- & inference (search) \\
+Dr.~RTL~\cite{drrtl2026} & \checkmark & --- & --- & --- & inference (agentic) \\
+RTL-OPT~\cite{lu2026rtlopt} (benchmark) & n/a & n/a & --- & --- & n/a \\
+\textbf{This work} & \checkmark & \checkmark & \checkmark & \checkmark & \textbf{training (policy)} \\
+\bottomrule
+\end{tabular}
+\end{table*}
