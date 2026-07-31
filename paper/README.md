@@ -1,6 +1,32 @@
 # paper/
 
-LaTeX source for the paper, in Elsevier `elsarticle` format.
+LaTeX source, **IEEE conference format (`IEEEtran`, two-column)** for ICCAD.
+Prose register follows the journal reference the author supplied; only the
+format is IEEE.
+
+## Page budget
+
+ICCAD allows **8 pages + references**. Check after compiling:
+
+```bash
+pdfinfo main.pdf | grep Pages
+```
+
+If over, cut in this order (highest ratio of space saved to value lost):
+
+1. `05_results.tex` §\ref{sec:frontier} frontier comparison → compress to one
+   paragraph + keep the coverage/reliability/cost sentence.
+2. `06_discussion.tex` §Cost → fold into the conclusion as one sentence.
+3. `05_results.tex` §\ref{sec:regression} VerilogEval → keep the table, cut two
+   paragraphs of prose.
+4. `03_method.tex` §\ref{sec:sft} supervised warm start → the style-multiplicity
+   argument can lose a paragraph.
+5. `fig_area` and `fig_bestofn` can become a single two-panel figure.
+6. Last resort: move the three negative results (§\ref{sec:negative}) to a
+   single dense paragraph. Do **not** delete them — they are a contribution.
+
+Never cut: the money table, the silicon table, the mechanism figure, or the
+reward-hacking case study.
 
 ## Layout
 
