@@ -35,14 +35,17 @@ to reallocate) and the comparator-network family (where the style that made the
 family correct is combinational by construction, so no fast alternative exists to
 amplify) as the cases in which the method yields little or no frequency gain.
 
-We further report that saturation of the learned frequency surrogate is an
-observable early-warning signal of reward hacking, exhibit a fully worked case in
-which a surrogate reported $188.6$~MHz for designs measuring $36$--$40$~MHz in
-silicon-bound synthesis, and show that the same saturation on a different family
-accompanied a genuine improvement---so that saturation warrants verification
-rather than dismissal. This is the concrete justification for the invariant
-maintained throughout this work, that no surrogate-derived number is ever
-reported as a result.
+We further document a caught case of reward hacking: the learned surrogate,
+whose leave-one-design-out correlation falls from $0.965$ to $0.75$--$0.82$ once
+structurally dissimilar circuit classes are added, reported $188.6$~MHz for
+median filters measuring $36$--$40$~MHz in silicon-bound synthesis, while
+saturating identically on a polynomial family that genuinely reached
+$191$--$193$~MHz. Saturation therefore indicates that the reward has stopped
+carrying information and warrants verification, but---contrary to the more
+attractive hypothesis, which we tested and could not confirm---it does not by
+itself predict correctness degradation. This is the concrete justification for
+the invariant maintained throughout this work, that no surrogate-derived number
+is ever reported as a result.
 
 Finally, the learned capability compresses into a $1.5$~billion-parameter student
 for four of five families in twenty-five minutes of training, using a

@@ -99,11 +99,21 @@ def load_v8():
     return rows, summary
 
 
-def weighted_mean(cands, n=48):
-    """Freq-weighted mean real Fmax of one sample; non-correct samples score 0."""
+def weighted_mean(cands):
+    """Mean real Fmax over CORRECT candidates, weighted by sample multiplicity.
+
+    This must match eval_holdout.run_report():
+        real_mean = sum(count_i * fmax_i) / sum(count_i)
+    i.e. the expected Fmax GIVEN that a sample is correct. Incorrect samples are
+    excluded rather than scored zero (correctness is reported as its own
+    column); a design with no correct compiled candidate contributes 0.
+    Dividing by n instead of by sum(count) understates every policy and is
+    catastrophic for best-of-8, whose single candidate then reads fmax/48.
+    """
     if not cands:
         return 0.0
-    return sum(f * c for f, c in cands) / n
+    tot = sum(c for _, c in cands)
+    return sum(f * c for f, c in cands) / tot if tot else 0.0
 
 
 def regime_of(summary, design):
@@ -227,39 +237,58 @@ def fig_bestofn(png=False):
 
 # ------------------------------------------------------------------ figure 4
 def fig_saturation(png=False):
-    """Reward-hacking diagnostic: surrogate saturation vs correctness change."""
-    _, summary = load_v8()
-    if not summary:
+    """Surrogate predicted vs real Fmax for the optimised policy.
+
+    The honest statement this figure supports: over the range the optimised
+    policy occupies, the surrogate is largely UNINFORMATIVE -- most designs sit
+    on the clamp while their true frequencies span 36-193 MHz. It does NOT
+    support a claim that saturation predicts correctness loss; that was checked
+    and is not present in the data (see the printed group means).
+    """
+    rows, summary = load_v8()
+    if not summary or not rows:
         return
-    xs, ys, labs = [], [], []
-    for des, g in summary.get("grpo", {}).items():
-        s = summary.get("sft", {}).get(des)
-        if not s:
+    fam_col = {"fir": "#7fb3d5", "firr": "#5590c0", "poly": "#f0a860",
+               "iir": "#7fbf7f", "med": "#c0392b"}
+    fig, ax = plt.subplots(figsize=(3.4, 2.4))
+    seen = set()
+    for des, g in sorted(summary.get("grpo", {}).items()):
+        cands = rows.get("grpo", {}).get(des, [])
+        if not cands:
             continue
-        xs.append(g.get("max_surr_fmax", 0.0))
-        ys.append(g["corr_pct"] - s["corr_pct"])
-        labs.append(des)
-    fig, ax = plt.subplots(figsize=(3.4, 2.3))
-    pinned = [i for i, v in enumerate(xs) if v >= 499.0]
-    ok = [i for i in range(len(xs)) if i not in pinned]
-    ax.scatter([xs[i] for i in ok], [ys[i] for i in ok], s=18, marker="o",
-               facecolor=COLOR["sft"], edgecolor="black", linewidth=0.3,
-               label="surrogate informative", zorder=3)
-    ax.scatter([xs[i] for i in pinned], [ys[i] for i in pinned], s=22,
-               marker="X", facecolor="#c0392b", edgecolor="black",
-               linewidth=0.3, label="surrogate saturated (clamp)", zorder=3)
-    for i in pinned:
-        if ys[i] < -8:
-            ax.annotate(labs[i], (xs[i], ys[i]), fontsize=5.5,
-                        xytext=(-2, -7), textcoords="offset points", ha="right")
-    ax.axhline(0, color="black", lw=0.6)
-    ax.set_xlabel("GRPO surrogate $F_{max}$ (MHz), clamp at 500")
-    ax.set_ylabel("Correctness change,\nGRPO $-$ SFT (pp)")
-    ax.legend(frameon=False, fontsize=6, loc="lower left")
-    if pinned:
-        print(f"  saturated designs: {[labs[i] for i in pinned]}")
-        print(f"  mean corr change: saturated {np.mean([ys[i] for i in pinned]):+.1f} pp"
-              f" | informative {np.mean([ys[i] for i in ok]):+.1f} pp")
+        x = g.get("max_surr_fmax", 0.0)
+        y = max(f for f, _ in cands)
+        fam = family_of(des)
+        ax.scatter(x, y, s=20, marker="o", facecolor=fam_col.get(fam, "#999999"),
+                   edgecolor="black", linewidth=0.3, zorder=3,
+                   label=fam if fam not in seen else None)
+        seen.add(fam)
+    lim = 520
+    ax.plot([0, lim], [0, lim], ls=":", color="grey", lw=0.8, zorder=1)
+    ax.axvline(500, ls="--", color="#c0392b", lw=0.8, zorder=1)
+    ax.text(497, 30, "clamp", fontsize=6, color="#c0392b", rotation=90,
+            ha="right", va="bottom")
+    ax.set_xlim(0, lim); ax.set_ylim(0, 380)
+    ax.set_xlabel("Surrogate predicted $F_{max}$ (MHz)")
+    ax.set_ylabel("Real Vivado $F_{max}$ (MHz)")
+    ax.legend(frameon=False, fontsize=6, loc="upper left", ncol=2)
+
+    # report the check that did NOT hold, so it cannot be quietly forgotten
+    dl = [(g.get("max_surr_fmax", 0.0),
+           g["corr_pct"] - summary["sft"][des]["corr_pct"], des)
+          for des, g in summary.get("grpo", {}).items()
+          if des in summary.get("sft", {})]
+    sat = [d for d in dl if d[0] >= 499.0]
+    inf = [d for d in dl if d[0] < 499.0]
+    if sat and inf:
+        print(f"  saturated {len(sat)}/{len(dl)} designs; mean correctness change "
+              f"{np.mean([d[1] for d in sat]):+.1f} pp (saturated) vs "
+              f"{np.mean([d[1] for d in inf]):+.1f} pp (informative)")
+        print("  -> NOT a predictor of correctness loss; report as loss of "
+              "surrogate discrimination only")
+        worst = min(dl, key=lambda d: d[1])
+        print(f"  largest regression: {worst[2]} {worst[1]:+.1f} pp "
+              f"(surrogate {worst[0]:.0f} MHz)")
     save(fig, "fig_saturation", png)
 
 

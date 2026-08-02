@@ -97,11 +97,21 @@ and stimulus length $1024$---deliberately different from the training seed and
 four times longer---so that a policy that had overfitted to the exact training
 vectors would be exposed. Distinct implementations are deduplicated by
 normalised source, and each surviving implementation carries the number of
-samples that collapsed onto it. Per-design frequency is the frequency-weighted
-mean over distinct correct implementations, which is the expected quality of
-\emph{one} sample from that policy; incorrect samples contribute zero. This is a
-deliberately conservative statistic: it charges a policy for its failures rather
-than reporting only its best output.
+samples $c_i$ that collapsed onto it. The reported per-design frequency is
+\begin{equation}
+\overline{F}(\pi, \mathcal{D}) \;=\;
+\frac{\sum_i c_i \, F_{\mathit{max}}(m_i)}{\sum_i c_i},
+\label{eq:realmean}
+\end{equation}
+taken over the distinct \emph{correct} implementations $m_i$ produced by policy
+$\pi$ for design $\mathcal{D}$, and zero if the policy produced none. This is
+the expected frequency of a sample \emph{conditional on that sample being
+correct}: incorrect samples are excluded rather than scored zero, because
+correctness is reported as its own column and folding it into the frequency
+would conflate two effects. A policy is therefore never rewarded in this
+statistic for failing often, but neither is it penalised twice. Reporting the
+weighted mean rather than the maximum is the conservative choice, since it
+reflects what a single invocation returns rather than the best of many.
 
 \paragraph{Baselines} We report the un-tuned base model, the supervised model,
 and a \emph{best-of-eight} baseline in which the surrogate selects the best of

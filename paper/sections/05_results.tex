@@ -42,8 +42,8 @@ mean timing-closed \fmax{} from $86.5$ to $211.3$~MHz under interpolation
 \begin{table}[t]
 \centering
 \caption{Held-out mean \fmax{} (MHz), real timing-closed Vivado, five families,
-$n=48$ samples per design, frequency-weighted so that incorrect samples
-contribute zero. Best-of-8 selects among supervised samples using the surrogate.}
+$n=48$ samples per design, computed by Equation~(\ref{eq:realmean}). Best-of-8
+selects among the first eight supervised samples using the surrogate.}
 \label{tab:money}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -296,34 +296,48 @@ reporting) with top-1 accuracy $17$--$18/22$. Text-derived features that capture
 what limits a multiply--accumulate chain do not capture what limits a feedback
 loop or a comparator network.
 
-The consequence is visible in Figure~\ref{fig:saturation}. Designs whose
-surrogate score saturated at the clamp boundary of $500$~MHz suffered
-correctness regressions, while designs with informative surrogate scores held or
-improved. Saturation is therefore an \emph{observable} early-warning signal for
-reward hacking, available during training without any synthesis.
+Figure~\ref{fig:saturation} shows the operational consequence. On $25$ of the
+$30$ held-out designs the optimised policy's surrogate score sits at the clamp
+boundary of $500$~MHz, while the corresponding measured frequencies span
+$36$--$193$~MHz. Over the region of design space the optimised policy occupies,
+the surrogate has therefore lost essentially all discrimination: the reward is a
+constant, and the group-relative advantage of Equation~(\ref{eq:adv}) contains
+little information for those designs.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{fig_saturation}
-\caption{Correctness change against the optimised policy's surrogate score.
-Designs whose surrogate saturated at the clamp (crosses) are those that lost
-correctness; designs with informative surrogate values held or improved.}
+\caption{Surrogate-predicted against measured \fmax{} for the optimised policy.
+Most designs sit on the clamp while their true frequencies span
+$36$--$193$~MHz: over the range the policy now occupies, the surrogate is
+largely uninformative.}
 \label{fig:saturation}
 \end{figure}
 
-The clearest case is the median family. The surrogate reported $188.6$~MHz for
-optimised \texttt{med7} designs; the same designs measure $36$--$40$~MHz in
-timing-closed synthesis. Had we reported surrogate values, this family would have
-appeared as the method's most dramatic success---a $4.5\times$ improvement---when
-in fact it achieved no frequency gain whatsoever. This is the concrete
-justification for the invariant of Section~\ref{sec:surrogate}.
+The consequences of that blindness differ by family, and only measurement
+separates them. For the polynomial family the saturated designs genuinely
+measure $191$--$193$~MHz: the surrogate was wrong in magnitude while remaining
+correct in \emph{ranking}, which is sufficient for group-relative advantage
+estimation, and the outcome was a $+326\%$ improvement. For the median family
+the surrogate reported $188.6$~MHz for designs that measure $36$--$40$~MHz in
+timing-closed synthesis. Had we reported surrogate values, this family would
+have appeared as the method's most dramatic success---a $4.5\times$
+improvement---when in fact it achieved no frequency gain whatsoever. This is the
+concrete justification for the invariant of Section~\ref{sec:surrogate}: a
+method that reports its own reward as its result would have published a fiction
+here.
 
-Saturation does not always indicate hacking, and distinguishing the two cases
-requires measurement. The polynomial family also saturated the surrogate, but
-its designs genuinely measure $191$--$193$~MHz: there the surrogate was wrong in
-magnitude while remaining correct in \emph{ranking}, which is sufficient for
-group-relative advantage estimation. Saturation is thus a signal to verify, not
-a verdict.
+We tested, and could not confirm, the stronger hypothesis that saturation
+\emph{predicts} correctness degradation. Grouping the held-out designs by
+whether the surrogate saturated gives a mean correctness change of $-1.8$
+percentage points for saturated designs against $-1.2$ for informative ones---no
+meaningful separation---and the single largest regression (\texttt{iir9\_v1},
+$92 \rightarrow 58\%$) occurred on a design whose surrogate did \emph{not}
+saturate ($252.7$~MHz). Saturation is therefore evidence that the reward has
+stopped carrying information, and a trigger to verify against real synthesis; it
+is not by itself evidence that the policy has been harmed. We report the
+negative outcome of this test because the positive version would have been the
+more attractive claim.
 
 \subsection{Comparison against high-level synthesis}
 \label{sec:hls}
