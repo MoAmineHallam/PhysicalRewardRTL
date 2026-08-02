@@ -17,11 +17,13 @@ __pycache__/
 # Crash dumps (delete + never commit)
 core.*
 
-# Run logs / pids / waveforms / training logs (regenerable)
+# Run logs / pids / waveforms (regenerable)
 *.log
 *.pid
 *.vcd
-*_log.jsonl
+# NOTE: grpo_*_log.jsonl are NOT ignored -- they are the per-step training
+# record (design, correctness, surrogate reward) and are the ONLY evidence for
+# the training-dynamics figure both external reviewers asked for. Keep them.
 
 # Training output dirs & policy checkpoints are large — keep out of git
 *_out/

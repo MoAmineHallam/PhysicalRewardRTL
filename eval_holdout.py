@@ -220,7 +220,14 @@ def run_generation(args):
           f"{sum(r=='extrap' for _,_,r,_,_ in hd)} extrap), "
           f"n={args.n}/design, oracle seeds {EVAL_SEEDS} n={args.n_stim}", flush=True)
     # precompute prompts (spec + exact interface header), corpus format
-    prompts = [(nm, fam, reg, GSC.make_prompt(spec, ref))
+    # --fast-prompt appends the SAME instruction the frontier-API 'apifast' arm
+    # uses, so the reviewer question "could you get this by just ASKING the SFT
+    # model to be fast?" is answered on OUR model, not only on a frontier one.
+    suffix = FAST_SUFFIX if args.fast_prompt else ""
+    if suffix:
+        print("[fast-prompt] appending the explicit maximise-Fmax instruction "
+              "to every prompt (control for prompt engineering)", flush=True)
+    prompts = [(nm, fam, reg, GSC.make_prompt(spec, ref) + suffix)
                for nm, fam, reg, spec, ref in hd]
 
     tok = AutoTokenizer.from_pretrained(args.base)
@@ -301,6 +308,15 @@ def run_generation(args):
 
 
 # ----------------------------------------------------------------- report
+# Identical wording to gen_frontier_baseline.FAST_SUFFIX so the prompt-engineering
+# control is comparable across our model and the frontier-API arm.
+FAST_SUFFIX = (
+    "\n\nIMPORTANT: optimize the implementation for MAXIMUM clock frequency "
+    "(Fmax) on an FPGA. Pipeline aggressively; keep the register-to-register "
+    "critical path as short as possible (e.g. one multiply and one add per "
+    "stage); extra pipeline latency is acceptable and will not be penalized.")
+
+
 POLICIES = ["base", "sft", "bestof8", "grpo"]
 
 
@@ -396,6 +412,8 @@ def main():
                     help="oracle stimulus length for the correctness gate (F5)")
     ap.add_argument("--temp", type=float, default=1.0)
     ap.add_argument("--max-tokens", type=int, default=1536)   # F4
+    ap.add_argument("--fast-prompt", action="store_true",
+                    help="append an explicit maximise-Fmax instruction to every\n                         prompt; the prompt-engineering control baseline")
     ap.add_argument("--families", default="",
                     help="comma list to restrict eval (e.g. 'iir,med' for the "
                          "D2 extension run); empty = all held-out designs")
