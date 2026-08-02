@@ -1,0 +1,121 @@
+module grpo__fir36_8b__g10 (
+    input  wire        clk,
+    input  wire        rst_n,
+    input  wire [7:0]  x,
+    output reg  [15:0] y
+);
+    reg [23:0] acc0;
+    reg [23:0] acc1;
+    reg [23:0] acc2;
+    reg [23:0] acc3;
+    reg [23:0] acc4;
+    reg [23:0] acc5;
+    reg [23:0] acc6;
+    reg [23:0] acc7;
+    reg [23:0] acc8;
+    reg [23:0] acc9;
+    reg [23:0] acc10;
+    reg [23:0] acc11;
+    reg [23:0] acc12;
+    reg [23:0] acc13;
+    reg [23:0] acc14;
+    reg [23:0] acc15;
+    reg [23:0] acc16;
+    reg [23:0] acc17;
+    reg [23:0] acc18;
+    reg [23:0] acc19;
+    reg [23:0] acc20;
+    reg [23:0] acc21;
+    reg [23:0] acc22;
+    reg [23:0] acc23;
+    reg [23:0] acc24;
+    reg [23:0] acc25;
+    reg [23:0] acc26;
+    reg [23:0] acc27;
+    reg [23:0] acc28;
+    reg [23:0] acc29;
+    reg [23:0] acc30;
+    reg [23:0] acc31;
+    reg [23:0] acc32;
+    reg [23:0] acc33;
+    reg [23:0] acc34;
+    reg [23:0] acc35;
+    always @(posedge clk) begin
+        if (!rst_n) begin
+            acc0 <= 24'd0;
+            acc1 <= 24'd0;
+            acc2 <= 24'd0;
+            acc3 <= 24'd0;
+            acc4 <= 24'd0;
+            acc5 <= 24'd0;
+            acc6 <= 24'd0;
+            acc7 <= 24'd0;
+            acc8 <= 24'd0;
+            acc9 <= 24'd0;
+            acc10 <= 24'd0;
+            acc11 <= 24'd0;
+            acc12 <= 24'd0;
+            acc13 <= 24'd0;
+            acc14 <= 24'd0;
+            acc15 <= 24'd0;
+            acc16 <= 24'd0;
+            acc17 <= 24'd0;
+            acc18 <= 24'd0;
+            acc19 <= 24'd0;
+            acc20 <= 24'd0;
+            acc21 <= 24'd0;
+            acc22 <= 24'd0;
+            acc23 <= 24'd0;
+            acc24 <= 24'd0;
+            acc25 <= 24'd0;
+            acc26 <= 24'd0;
+            acc27 <= 24'd0;
+            acc28 <= 24'd0;
+            acc29 <= 24'd0;
+            acc30 <= 24'd0;
+            acc31 <= 24'd0;
+            acc32 <= 24'd0;
+            acc33 <= 24'd0;
+            acc34 <= 24'd0;
+            acc35 <= 24'd0;
+        end else begin
+            acc0 <= 8'd3 * x + acc1;
+            acc1 <= 8'd5 * x + acc2;
+            acc2 <= 8'd7 * x + acc3;
+            acc3 <= 8'd9 * x + acc4;
+            acc4 <= 8'd11 * x + acc5;
+            acc5 <= 8'd13 * x + acc6;
+            acc6 <= 8'd15 * x + acc7;
+            acc7 <= 8'd17 * x + acc8;
+            acc8 <= 8'd19 * x + acc9;
+            acc9 <= 8'd21 * x + acc10;
+            acc10 <= 8'd23 * x + acc11;
+            acc11 <= 8'd25 * x + acc12;
+            acc12 <= 8'd27 * x + acc13;
+            acc13 <= 8'd29 * x + acc14;
+            acc14 <= 8'd31 * x + acc15;
+            acc15 <= 8'd33 * x + acc16;
+            acc16 <= 8'd35 * x + acc17;
+            acc17 <= 8'd37 * x + acc18;
+            acc18 <= 8'd37 * x + acc19;
+            acc19 <= 8'd35 * x + acc20;
+            acc20 <= 8'd33 * x + acc21;
+            acc21 <= 8'd31 * x + acc22;
+            acc22 <= 8'd29 * x + acc23;
+            acc23 <= 8'd27 * x + acc24;
+            acc24 <= 8'd25 * x + acc25;
+            acc25 <= 8'd23 * x + acc26;
+            acc26 <= 8'd21 * x + acc27;
+            acc27 <= 8'd19 * x + acc28;
+            acc28 <= 8'd17 * x + acc29;
+            acc29 <= 8'd15 * x + acc30;
+            acc30 <= 8'd13 * x + acc31;
+            acc31 <= 8'd11 * x + acc32;
+            acc32 <= 8'd9 * x + acc33;
+            acc33 <= 8'd7 * x + acc34;
+            acc34 <= 8'd5 * x + acc35;
+            acc35 <= 8'd3 * x;
+            y <= acc0[15:0];
+        end
+    end
+endmodule
