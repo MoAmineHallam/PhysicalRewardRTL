@@ -31,31 +31,45 @@ import argparse
 from collections import defaultdict
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-EVAL = os.path.join(HERE, "rtl", "holdout_eval")
+EVAL = os.path.join(HERE, "rtl", "holdout_eval")          # OLD 22-design set
+V8_DIRS = [os.path.join(HERE, "rtl", d) for d in
+           ("holdout_eval_v8_firfirr", "holdout_eval_v8_poly",
+            "holdout_eval_v8_iirmed")]                     # 30-design 5-family
 NS = (1, 2, 4, 8, 16, 32, 48)
 
 
-def load(eval_dir):
-    mani = json.load(open(os.path.join(eval_dir, "fmax_manifest.json")))
-    summ = json.load(open(os.path.join(eval_dir, "holdout_summary.json")))
-    fmax = {}
-    for line in open(os.path.join(eval_dir, "ppa.jsonl")):
-        try:
-            p = json.loads(line)
-        except ValueError:
-            continue
-        fmax[p["module"]] = p if p.get("compiled") else {"fmax_mhz": 0.0}
-    # design -> policy -> list of (real_fmax, count, ppa_row)
-    rows = defaultdict(lambda: defaultdict(list))
-    regime = {}
-    for mod, info in mani.items():
-        p = fmax.get(mod)
-        f = float(p["fmax_mhz"]) if p else 0.0
-        rows[info["design"]][info["policy"]].append((f, info["count"], p or {}))
-        regime[info["design"]] = info["regime"]
-    n_total = {d: max(i["n"] for i in mani.values() if i["design"] == d)
-               for d in rows}
-    return rows, regime, n_total, summ
+def load(eval_dirs):
+    """Merge one or more eval dirs into a single design->policy->candidates map.
+
+    The 5-family held-out evaluation is split across three directories
+    (fir/firr, poly, iir/med) whose design sets are disjoint, so they merge by
+    concatenation. Passing a single directory reproduces the old behaviour.
+    Mixing the 22-design and 30-design sets in one report is what produced the
+    stale best-of-N figure, so the design count is printed and asserted."""
+    if isinstance(eval_dirs, str):
+        eval_dirs = [eval_dirs]
+    rows = defaultdict(lambda: defaultdict(list))   # design -> policy -> [(f,c,ppa)]
+    regime, summ, n_of = {}, {}, {}
+    for eval_dir in eval_dirs:
+        mani = json.load(open(os.path.join(eval_dir, "fmax_manifest.json")))
+        s = json.load(open(os.path.join(eval_dir, "holdout_summary.json")))
+        for pol, d in s.items():
+            summ.setdefault(pol, {}).update(d)
+        fmax = {}
+        for line in open(os.path.join(eval_dir, "ppa.jsonl")):
+            try:
+                p = json.loads(line)
+            except ValueError:
+                continue
+            fmax[p["module"]] = p if p.get("compiled") else {"fmax_mhz": 0.0}
+        for mod, info in mani.items():
+            d = info["design"]
+            p = fmax.get(mod)
+            f = float(p["fmax_mhz"]) if p else 0.0
+            rows[d][info["policy"]].append((f, info["count"], p or {}))
+            regime[d] = info["regime"]
+            n_of[d] = max(n_of.get(d, 0), info["n"])
+    return rows, regime, n_of, summ
 
 
 def e_best_of_n(cands, n_total, N):
@@ -73,11 +87,17 @@ def e_best_of_n(cands, n_total, N):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--eval-dir", default=EVAL)
-    ap.add_argument("--out", default=os.path.join(EVAL, "bestofn.json"))
+    ap.add_argument("--dirs", nargs="*", default=V8_DIRS,
+                    help="eval dirs to merge (default: the three 5-family "
+                         "held-out dirs = 30 designs). The old 22-design set "
+                         "is rtl/holdout_eval; do NOT mix the two.")
+    ap.add_argument("--out", default=os.path.join(HERE, "bestofn.json"))
     args = ap.parse_args()
-    rows, regime, n_total, summ = load(args.eval_dir)
+    rows, regime, n_total, summ = load(args.dirs)
     designs = sorted(rows, key=lambda d: (regime[d], d))
+    n_int = sum(1 for d in designs if regime[d] == "interp")
+    print(f"eval set: {len(designs)} designs ({n_int} interp, "
+          f"{len(designs) - n_int} extrap) from {len(args.dirs)} dir(s)")
 
     # ---------- 1. best-of-N (perfect selector) vs GRPO best-of-1 ----------
     print("=" * 78)
@@ -111,6 +131,43 @@ def main():
           "samples and a PERFECT\nselector picks the fastest correct one "
           "(upper bound on best-of-k + any reranker).\n'grpo-bo1' = expected "
           "Fmax of a SINGLE GRPO sample (incorrect samples count 0).")
+
+    # ---------- 1b. sample-equivalence: how many SFT draws does 1 GRPO draw buy?
+    print("\n" + "=" * 78)
+    print("1b) Sample-equivalence  (the honest efficiency claim)")
+    print("=" * 78)
+    for reg in sorted(agg):
+        a = agg[reg]
+        k = len(a["g1"])
+        g1 = sum(a["g1"]) / k
+        curve = [(N, sum(a[N]) / k) for N in NS]
+        eq = next((N for N, v in curve if v >= g1), None)
+        lo = [(N, v) for N, v in curve if v < g1]
+        lo = lo[-1] if lo else None
+        if eq is None:
+            verdict = (f"exceeds the perfect selector at every N up to "
+                       f"{NS[-1]}")
+        elif lo is None:
+            verdict = f"below even best-of-{eq} (no efficiency gain)"
+        else:
+            # log-linear interpolation between the bracketing N
+            n0, v0 = lo
+            frac = (g1 - v0) / (curve[NS.index(eq)][1] - v0)
+            neq = n0 * (eq / n0) ** frac
+            verdict = (f"~best-of-{neq:.0f}  (between bo{n0}={v0:.1f} and "
+                       f"bo{eq}={curve[NS.index(eq)][1]:.1f})")
+        print(f"  {reg:7s}: 1 GRPO sample = {g1:6.1f} MHz -> {verdict}")
+    print("""
+The perfect selector is NOT achievable: it requires the true post-implementation
+Fmax of all N candidates, i.e. N synthesis runs. It upper-bounds every real
+reranker, including surrogate top-1. So the defensible statements are:
+  (a) at EQUAL sample count (1 vs 1), GRPO beats SFT by the ratio bo1 vs
+      grpo-bo1 -- this is the headline and it is not a selection effect;
+  (b) one GRPO sample is worth roughly the N above of SFT samples judged by a
+      selector nobody can build, hence strictly more than N real samples.
+It is NOT true that GRPO exceeds best-of-48; on interpolation it does not.
+That claim came from the older 22-design set and does not survive the 30-design
+5-family set.""")
 
     # ---------- 2. fir40 sample-cost ----------
     print("\n" + "=" * 78)

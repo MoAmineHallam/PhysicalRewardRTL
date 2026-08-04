@@ -19,12 +19,27 @@ held-out + silicon validation (pending — the paper's core).
 
 - **Sandbox** (this environment, `/home/user/FPGA`): code authoring, numpy-only
   analysis, iverilog available. No GPU, no torch, no Vivado, no board.
-- **GPU server** (`/zeng_gk/Amine/mas/fpga`, conda env `mas`): training,
-  generation, oracle scoring. Its GitHub link is FLAKY (443 timeouts /
-  GnuTLS -110). Recipes that work:
+- **GPU server** (`/zeng_gk/Amine/mas/fpga`): training, generation, oracle
+  scoring. Env is a conda env created with `-p`, so it has no `activate` script
+  and does NOT appear in `conda env list`. Do not try to activate it — put it
+  on PATH, which also makes the simulator resolve:
+  `export PATH=/zeng_gk/Amine/mas/env_mas/bin:$PATH` (verify:
+  `which python iverilog vvp` + `python -c "import torch;print(torch.__version__)"`
+  → 2.4.1+cu121). If a shell shows torch 1.10, it is the base image — nothing
+  launched from it is valid.
+  `iverilog`/`vvp` currently live in `/usr/bin`, i.e. on the EPHEMERAL
+  filesystem: a container reset wipes them, and that caused the all-zeros eval.
+  Reinstall into the env (`conda install -p /zeng_gk/Amine/mas/env_mas -c
+  conda-forge iverilog`) so they live on `/zeng_gk`.
+  GitHub link is FLAKY (443 timeouts / GnuTLS -110). Recipes that work:
   `git config --global http.version HTTP/1.1`, and
   `until git fetch origin; do sleep 30; done && git reset --hard origin/claude/amazing-hopper-ytsbvr`.
-  Server is a pure consumer: always `fetch + reset --hard`, never merge.
+  Server is normally a pure consumer: `fetch + reset --hard`, never merge.
+  EXCEPTION — when the server holds artifacts that exist nowhere else (training
+  logs, generated candidates): commit them, then `git rebase
+  origin/<branch>` and push. NEVER `reset --hard` with local commits present;
+  always check `git log --oneline -3` first (a reset has already destroyed a
+  commit once).
   Pushes from the server use a fine-grained PAT in the URL form.
 - **Laptop** (Windows, `C:\Users\Amine\mas\fpga-repo`): Vivado 2023.1
   (`run_ppa.py --vivado "C:\Xilinx\Vivado\2023.1\bin\vivado.bat"`), board access.
