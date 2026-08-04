@@ -197,6 +197,13 @@ def main():
     ap.add_argument("--designs", nargs="*", default=None,
                     help="default = ALL train-split designs (F10); pass names to override")
     ap.add_argument("--steps", type=int, default=400)
+    ap.add_argument("--max-updates", type=int, default=0,
+                    help="stop after this many NON-FLAT groups (= actual "
+                         "optimizer updates), regardless of --steps. 0 = no "
+                         "limit. Needed to compare arms fairly: a group whose "
+                         "rewards are all equal is skipped, and under "
+                         "--constant-reward ~80%% of groups are unanimous, so "
+                         "step-matched arms are NOT update-matched.")
     ap.add_argument("--group", type=int, default=8, help="candidates per step")
     ap.add_argument("--gen-batch", type=int, default=4)
     ap.add_argument("--temp", type=float, default=1.0)
@@ -258,6 +265,7 @@ def main():
     print(f"\nGRPO-oracle: {args.steps} steps, group={args.group}, "
           f"kl={args.kl_coef}, temp={args.temp}\n", flush=True)
 
+    n_updates = n_flat = 0
     for step in range(args.steps):
         t0 = time.time()
         d = random.choice(designs)
@@ -285,6 +293,7 @@ def main():
             rewards.append(r)
         r = torch.tensor(rewards, dtype=torch.float32)
         if r.std() < 1e-6:                      # no gradient signal -> skip
+            n_flat += 1
             print(f"[{step:4d}] {d:10s} correct={n_correct}/{args.group} "
                   f"(flat reward, skip) {time.time()-t0:.0f}s", flush=True)
             continue
@@ -312,9 +321,11 @@ def main():
         torch.nn.utils.clip_grad_norm_(trainable, 1.0)
         scaler.step(opt); scaler.update()
 
+        n_updates += 1
         rec = {"step": step, "design": d, "correct": n_correct,
                "mean_fmax": float(np.mean([x for x in rewards if x > 0]) or 0),
-               "max_fmax": float(max(rewards)), "loss": loss_val, "kl": kl_val}
+               "max_fmax": float(max(rewards)), "loss": loss_val, "kl": kl_val,
+               "update": n_updates, "n_flat": n_flat}
         log.write(json.dumps(rec) + "\n"); log.flush()
         print(f"[{step:4d}] {d:10s} correct={n_correct}/{args.group} "
               f"surrFmax[max={rec['max_fmax']:.0f}] loss={loss_val:.4f} "
@@ -322,7 +333,14 @@ def main():
         if (step + 1) % args.save_every == 0:
             save_policy(model, os.path.join(args.out, f"step_{step+1}"))
             print(f"  -> checkpoint {args.out}/step_{step+1}", flush=True)
+        if args.max_updates and n_updates >= args.max_updates:
+            print(f"  -> reached --max-updates {args.max_updates} at step "
+                  f"{step}", flush=True)
+            break
 
+    print(f"\nbudget: {n_updates} optimizer updates, {n_flat} flat groups "
+          f"skipped ({100.0 * n_flat / max(1, n_updates + n_flat):.1f}% of "
+          f"attempted steps produced no gradient)", flush=True)
     save_policy(model, args.out)
     tok.save_pretrained(args.out)
     log.close()
