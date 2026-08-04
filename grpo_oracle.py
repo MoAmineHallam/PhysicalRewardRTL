@@ -204,6 +204,14 @@ def main():
     ap.add_argument("--lr", type=float, default=1e-5)
     ap.add_argument("--kl_coef", type=float, default=0.1)
     ap.add_argument("--incorrect-reward", type=float, default=0.0)
+    ap.add_argument("--constant-reward", action="store_true",
+                    help="ABLATION (reviewer control): give every ORACLE-CORRECT "
+                         "candidate reward 1.0 instead of the surrogate Fmax, so "
+                         "the physical signal is removed while correctness "
+                         "pressure and the KL anchor are unchanged. If this "
+                         "reproduces the Fmax gain, the surrogate contributed "
+                         "little and the gain is correctness-pressure + corpus "
+                         "style bias, not physical optimisation.")
     ap.add_argument("--dtype", choices=["auto", "fp16", "bf16"], default="auto")
     ap.add_argument("--save_every", type=int, default=100)
     ap.add_argument("--log", default="grpo_v7_log.jsonl")
@@ -269,7 +277,11 @@ def main():
                 except Exception:
                     ok = False
                 if ok:
-                    r = predict_fmax(rtl); n_correct += 1
+                    # --constant-reward removes the PHYSICAL signal while leaving
+                    # the correctness gate and the KL anchor untouched: the
+                    # causal control for "did the surrogate Fmax do anything?"
+                    r = 1.0 if args.constant_reward else predict_fmax(rtl)
+                    n_correct += 1
             rewards.append(r)
         r = torch.tensor(rewards, dtype=torch.float32)
         if r.std() < 1e-6:                      # no gradient signal -> skip
