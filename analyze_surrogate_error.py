@@ -53,7 +53,28 @@ def spearman(xs, ys):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dirs", nargs="*", default=V8_DIRS)
+    ap.add_argument("--pred", default="",
+                    help="rescore_surrogate.py output. When given, surrogate "
+                         "numbers come from re-scoring the stored candidates "
+                         "and are count-weighted exactly like the real ones "
+                         "(Eq. 5), removing the weighting mismatch that the "
+                         "summary-file path carries. Use this to compare two "
+                         "surrogate checkpoints on identical candidates.")
     args = ap.parse_args()
+
+    pred = None
+    if args.pred:
+        pred = defaultdict(lambda: {"wsum": 0.0, "cnt": 0, "max": 0.0})
+        for line in open(args.pred):
+            r = json.loads(line)
+            if not r.get("policy"):
+                continue
+            a = pred[(r["policy"], r["design"])]
+            a["wsum"] += r["pred_fmax"] * r["count"]
+            a["cnt"] += r["count"]
+            a["max"] = max(a["max"], r["pred_fmax"])
+        print(f"using re-scored predictions from {args.pred} "
+              f"({len(pred)} cells)\n")
 
     pairs = []          # (policy, design, surr_mean, surr_max, real_mean, real_max)
     for d in args.dirs:
@@ -78,8 +99,14 @@ def main():
                 a = agg.get((pol, des))
                 if not a or not a["cnt"] or not row["corr_pct"]:
                     continue
-                pairs.append((pol, des, row["mean_surr_fmax"],
-                              row["max_surr_fmax"], a["wsum"] / a["cnt"],
+                if pred is not None:
+                    q = pred.get((pol, des))
+                    if not q or not q["cnt"]:
+                        continue
+                    sm, sx = q["wsum"] / q["cnt"], q["max"]
+                else:
+                    sm, sx = row["mean_surr_fmax"], row["max_surr_fmax"]
+                pairs.append((pol, des, sm, sx, a["wsum"] / a["cnt"],
                               a["max"]))
 
     print(f"{len(pairs)} (policy, design) cells with both a surrogate "
