@@ -131,6 +131,43 @@ def main():
               f"MAE {sum(abs(e) for e in err)/len(err):5.1f}  "
               f"spearman {spearman(sm, rm):+.3f}  "
               f"clamped {sat}/{len(sub)}")
+    # ---- WITHIN-design ranking: the statistic the REWARD actually depends on.
+    # GRPO's group is G samples of ONE design, so the reward only has to order
+    # candidates for that design. A cross-design Spearman answers a different
+    # question (can the surrogate tell fir6 from med11?) and can move opposite
+    # to the one that matters.
+    if args.pred:
+        preds = {}
+        for line in open(args.pred):
+            r = json.loads(line)
+            if r.get("policy"):
+                preds[r["module"]] = r
+        real_mod = {}
+        for d in args.dirs:
+            for line in open(os.path.join(d, "ppa.jsonl")):
+                try:
+                    p = json.loads(line)
+                except ValueError:
+                    continue
+                real_mod[p["module"]] = (float(p["fmax_mhz"])
+                                         if p.get("compiled") else 0.0)
+        cells = defaultdict(lambda: ([], []))
+        for mod, r in preds.items():
+            if mod in real_mod:
+                a, b = cells[(r["policy"], r["design"])]
+                a.append(r["pred_fmax"])
+                b.append(real_mod[mod])
+        print("\nWITHIN-design candidate ranking (what the GRPO reward uses):")
+        for pol in sorted({k[0] for k in cells}):
+            rs = [spearman(a, b) for (p, _), (a, b) in cells.items()
+                  if p == pol and len(a) >= 3]
+            if rs:
+                print(f"  {pol:9s} mean within-design spearman "
+                      f"{sum(rs)/len(rs):+.3f}  over {len(rs)} designs with "
+                      f">=3 distinct candidates")
+            else:
+                print(f"  {pol:9s} no design has >=3 distinct candidates")
+
     allsm = [p[2] for p in pairs]
     allrm = [p[4] for p in pairs]
     print(f"\nOVERALL spearman(surrogate_mean, real_mean) = "
