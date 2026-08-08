@@ -1,0 +1,30 @@
+module sft__firr10__g4 (
+    input  wire        clk,
+    input  wire        rst_n,
+    input  wire [7:0]  x,
+    output reg  [15:0] y
+);
+    reg  [7:0]  xs [0:9];
+    reg  [15:0] prods [0:9];
+    integer     i;
+    always @(posedge clk) begin
+        if (!rst_n) begin
+            for (i = 0; i < 10; i = i + 1) begin xs[i] <= 8'd0; prods[i] <= 16'd0; end
+            y <= 16'd0;
+        end else begin
+            xs[0] <= x;
+            for (i = 1; i < 10; i = i + 1) xs[i] <= xs[i-1];
+            prods[0] <= 8'd1 * xs[0];
+            prods[1] <= 8'd2 * xs[1];
+            prods[2] <= 8'd3 * xs[2];
+            prods[3] <= 8'd4 * xs[3];
+            prods[4] <= 8'd5 * xs[4];
+            prods[5] <= 8'd6 * xs[5];
+            prods[6] <= 8'd7 * xs[6];
+            prods[7] <= 8'd8 * xs[7];
+            prods[8] <= 8'd9 * xs[8];
+            prods[9] <= 8'd10 * xs[9];
+            y <= prods[0] + prods[1] + prods[2] + prods[3] + prods[4] + prods[5] + prods[6] + prods[7] + prods[8] + prods[9];
+        end
+    end
+endmodule
