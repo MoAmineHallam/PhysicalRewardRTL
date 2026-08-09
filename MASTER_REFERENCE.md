@@ -1735,3 +1735,138 @@ broadening scope mid-flight. "SiliconForge"-class ideas (model-agnostic
 RTL-to-RTL optimizer, formal equivalence contracts, structural surrogate,
 composition holdout) recorded as the NEXT-project/thesis-chapter direction,
 NOT merged into this paper's plan.
+
+## 2026-08-09 — Proxy-validity finding, causal ablation, re-anchor, and the correction round
+
+Session outcome: the paper's centre of gravity moved from "correctness-gated
+GRPO makes fast RTL" (preempted by ChipSeek-R1 2507.04736 and PPA-RTL) to a
+measurement about the reward itself. Every number below is from committed
+artifacts and regenerates with the named script.
+
+### 1. Surrogate is accurate on the behaviour policy and invalid on the optimised one
+`analyze_surrogate_error.py` (held-out 30-design set, real Vivado ground truth):
+
+  policy    surr    real     bias    MAE   spearman  clamped@500
+  base     329.2    45.6   +283.6  283.6    -0.302    10/16
+  sft       88.3    83.6     +4.7   20.5    +0.958     1/30
+  bestof8  154.5   155.5     -1.0   35.1    +0.834     0/30
+  grpo     433.6   197.7   +235.9  240.1    +0.447    25/30
+
+Divergence between predicted and real improvement:
+(433.6-88.3) - (197.7-83.6) = +231.2 MHz of proxy inflation. The real gain is
+still real (83.6 -> 197.7); the proxy overstates it ~3x. Offline accuracy does
+not imply validity under optimisation, and no held-out fit detects this.
+Anchor in the RLHF literature: Gao, Schulman, Hilton, "Scaling Laws for Reward
+Model Overoptimization", arXiv:2210.10760 / ICML 2023 — VERIFIED. Their gold
+signal is a synthetic reward model; ours is Vivado and a board. That is the
+delta: first measurement of the phenomenon against PHYSICAL ground truth.
+
+Family-dependent too: on iir the surrogate is wrong even at SFT (iir16 +154.9,
+iir20 +182.2, iir5 -86.1). iir and med are exactly the families where GRPO
+delivered little or no Fmax gain — the method works where the proxy is valid.
+
+### 2. Causal control: the physical reward is load-bearing (`analyze_policy_fmax.py`)
+Same SFT start, same correctness gate, same KL anchor, physical term removed
+(`--constant-reward`). Real Vivado, equal-sample MHz (incorrect = 0) / correct%:
+
+  sft                     79.9 / 92.8%  61.2 / 81.6%  73.0 / 88.7%   (int/ext/all)
+  correctness-only RL     52.8 / 99.1%  31.1 / 96.7%  45.3 / 98.3%
+  physical-reward RL     198.7 / 93.2% 138.6 / 76.1% 176.7 / 86.9%
+
+Correctness-only reaches the HIGHEST correctness of any policy (98.3%) and cuts
+frequency 38% below SFT. Candidate level is sharper than the means: fir18 SFT
+emits 34/43/224/224/43 MHz, ablation emits 43/43/43; iir9 SFT 58/58/189/189/189,
+ablation 58/58/58/58. The fast style is ELIMINATED, not merely made rarer.
+Surrogate predicted this policy at 49.1 vs real 46.1 — accurate because the
+policy never left the SFT distribution, which is the finding predicting itself.
+
+Update accounting (grpo_oracle now logs `update`/`n_flat`; --max-updates added):
+  constant reward   159 updates / 1997 attempted (92.0% flat), KL/upd 9.2e-06
+  physical reward   284 updates /  408 attempted (30.4% flat), KL/upd 3.35e-04
+36x less drift per update (NOT 53x — an earlier figure compared against
+grpo_v8_cont alone). A binary reward extinguishes its own gradient: with SFT
+already ~94% correct, most groups come back unanimous.
+
+### 3. Re-anchor (surrogate_v4): calibration restored, gradient largely lost
+`rtl/fmax_d3/ppa.jsonl` = 43 real labels, 12 TRAIN-split designs, 22.0-338.4 MHz
+(legal under invariant #3; held-out labels could not be used).
+`rescore_surrogate.py` + `analyze_surrogate_error.py --pred`, identical candidates:
+
+  clamp saturation  36/106 -> 7/106 cells
+  grpo bias        +235.9 -> +30.7 MHz ; MAE 240.1 -> 71.5
+  held-out rho      0.575 -> 0.638
+  LODO (offline)    0.965 (v2, 203 pairs) -> 0.841 (v4, 272 pairs)
+
+Selecting the surrogate by its OFFLINE score would have chosen the broken one.
+(Not a controlled comparison — different pair sets; needs a matched-set recompute
+before it becomes a headline.)
+
+Within-design ranking (the statistic the reward actually uses — GRPO's group is
+G samples of ONE design, so cross-design Spearman answers a different question):
+sft 0.661 -> 0.663 (intact); grpo ~0.05 under BOTH checkpoints, but that number
+is meaningless: median within-design real-Fmax spread is 0.0 MHz for grpo
+(161 MHz for sft), so the ranking task on converged outputs is degenerate, not
+failed. Claim "calibration restored"; do NOT claim "discrimination restored".
+
+grpo_v9 (400 steps on surrogate_v4): 200 updates / 400 attempted (50.0% flat),
+sumKL 0.0028, KL/upd 1.42e-05 — 24x less total drift than v8. Many flat groups
+are `correct=8/8` with byte-identical surrogate scores: the 12 coarse text
+features collapse distinct RTL onto one feature vector. NOTE GRPO z-scores
+rewards per group, so reward SCALE cannot explain this; the flat rate and the
+advantage-distribution shape can. Held-out eval running; three predeclared
+readings: v9~v8 (remedy free), v9~SFT (proxy error was the engine — strongest
+and most novel), v9 between (cost-fidelity trade). v9 is NOT update-matched to
+v8 (200 vs 284) — state it or extend with --max-updates 284.
+
+### 4. Evaluation hardening
+`audit_oracle.py`, all 1529 accepted candidates, three stricter rules: 0 lost
+under exact equality, 0 under warmup=0 (post-reset window compared), 0 with
+latency inconsistent across seeds. The 0.999 threshold is near-exact by
+construction: k = n-L-warmup, so at n=512 it admits ZERO mismatches and at
+n=1024 at most ONE in 1016. Stop writing "threshold 0.999"; write the sample
+counts. DEFECT FOUND: oracle keeps only decimal tokens (oracle.py:231-233), so
+x/z cycles are silently dropped — 18/1529 candidates have short traces (<=7
+tokens). Must reject rather than discard, then re-audit.
+
+`analyze_bestofn.py` was hardcoded to the OLD 22-design dir. On the correct
+30-design set GRPO bo1 = best-of-~22 (interp) / ~8 (extrap), NOT above
+best-of-48. That claim is WITHDRAWN. What survives: 2.49x/2.27x at equal sample
+count, and the perfect selector is unbuildable (needs true Fmax of all N).
+
+`analyze_passk.py` (VerilogEval, unbiased pass@k): base 32.2 -> sft 16.0 ->
+grpo 16.7 pass@1; compile-fail 35.1% -> 53.3% -> 53.3%. RL adds NO regression
+beyond SFT (the control holds), but SPECIALISATION HALVES general capability.
+Report the second openly — it is the concrete reason a detachable LoRA adapter
+is a design property.
+
+### 5. Defects still open (verified against the files, not asserted)
+- Fmax is 1000/(period-WNS) from ONE 5 ns run (ppa_synth.tcl:78-79) — a
+  WNS-derived estimate, NOT timing closure. Relabel everywhere; close a subset
+  at per-family target periods (WNS >= 0) for a valid claim at the same cost.
+- Silicon selection asymmetric and undisclosed: SFT median vs GRPO top on
+  high-GRPO-correctness designs (gen_holdout_bitstream.py). Same flaw in the
+  HLS comparison (collect_hls.py:77-81). Re-measure symmetrically.
+- Silicon sweep data reaches 260 MHz, not 340 (that was the command's upper
+  bound); 2 GRPO entries censored "TOO CLOSE TO CANARY".
+- LODO leaks normalisation across folds (surrogate_train.py:173) — embarrassing
+  in a paper about surrogate validity.
+- Student has no med designs and a zero-byte ppa.jsonl: "4/5 families" is
+  functional-only. Qwen eval covers only the old 22 fir/firr/poly designs.
+- Correctness is NOT uniformly preserved (fir40 79->52%); 05_results.tex:101
+  and 07_conclusion.tex:8 say otherwise and are false as written.
+- MASTER_REFERENCE.md:376 and HANDOFF.md:277 still call ChipSeek-R1 fabricated.
+  It is REAL (2507.04736). Fix before anyone reads them.
+- paper/main.tex and 01/03 still say "timing-closed"; RESULTS.md:77-98 and
+  05_results.tex:158-180 still carry the withdrawn best-of-48 story.
+
+### 6. Plan (supervisor-endorsed 2026-08-09, venue TCAD primary / ICCAD 2027 backup)
+Hero claim = predictor validity, NOT "RL for RTL". Figure 1 = predicted vs
+measured frequency diverging over RL STEPS — requires a checkpoint trajectory
+(grpo_v8*/step_*) we have not run; ~10 designs x 4 checkpoints of Vivado.
+Do it: it mirrors Gao et al.'s gold-vs-proxy curves with physical ground truth.
+Keep "1 RL sample = 22 supervised" OUT of the abstract (does not differentiate
+against ChipSeek). PUSHED BACK on posting arXiv this week: the manuscript
+contains known-false claims and v1 is permanent and diffable. Compromise =
+short FOCUSED preprint on the predictor-validity finding only (clean today),
+full paper after the corrections. ChipSeek head-to-head: verify code/weights
+actually exist before committing; fallback is a differentiation table.
