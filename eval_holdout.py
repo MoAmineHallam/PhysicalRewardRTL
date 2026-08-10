@@ -260,6 +260,38 @@ def run_generation(args):
             print(f"  {nm:12s} {corr:6.1f} {mF:7.1f} {xF:6.1f}", flush=True)
         return results
 
+    if args.trajectory:
+        # Figure-1 data: proxy-vs-real divergence ALONG the optimisation path.
+        # Each point is a saved checkpoint, evaluated with the SAME prompts,
+        # oracle gate and emit path as the main table, so the trajectory and
+        # the headline numbers are directly comparable.
+        #
+        # Adapters are loaded into ONE PeftModel via load_adapter/set_adapter
+        # rather than re-wrapping the base model per checkpoint: wrapping an
+        # already-wrapped model nests LoRA layers, and with 5+ points that is
+        # both wrong and slow.
+        specs = [s for s in args.trajectory.split(",") if s.strip()]
+        model = PeftModel.from_pretrained(base, args.sft, adapter_name="step0",
+                                          is_trainable=False).eval()
+        model.set_adapter("step0")
+        eval_adapter("step0", model)
+        for spec in specs:
+            label, path = spec.split("=", 1)
+            label = label.strip()
+            model.load_adapter(path.strip(), adapter_name=label,
+                               is_trainable=False)
+            model.set_adapter(label)
+            eval_adapter(label, model)
+        json.dump(mani, open(os.path.join(args.out_dir,
+                                          "fmax_manifest.json"), "w"), indent=1)
+        json.dump(summary, open(os.path.join(args.out_dir,
+                                             "holdout_summary.json"), "w"),
+                  indent=1)
+        print(f"\ntrajectory candidates + manifest -> {args.out_dir}\n"
+              f"next (laptop): run_ppa.py --dir {args.out_dir} ... then plot "
+              f"predicted vs measured per checkpoint", flush=True)
+        return
+
     # base FIRST (clean base_model, before any adapter is injected)
     eval_adapter("base", base)
     # sft -- keep its per-design distinct/order to derive best-of-8
@@ -414,6 +446,13 @@ def main():
     ap.add_argument("--max-tokens", type=int, default=1536)   # F4
     ap.add_argument("--fast-prompt", action="store_true",
                     help="append an explicit maximise-Fmax instruction to every\n                         prompt; the prompt-engineering control baseline")
+    ap.add_argument("--trajectory", default="",
+                    help="comma list of label=adapter_path checkpoints. Skips "
+                         "base/bestof8 and evaluates the SFT start (as 'step0') "
+                         "followed by each checkpoint, producing the "
+                         "proxy-vs-real-over-training-steps data. Restrict the "
+                         "design set with --families and lower --n to keep the "
+                         "Vivado bill affordable.")
     ap.add_argument("--families", default="",
                     help="comma list to restrict eval (e.g. 'iir,med' for the "
                          "D2 extension run); empty = all held-out designs")
