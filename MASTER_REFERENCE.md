@@ -2363,3 +2363,43 @@ measurement is cheap and should be done before the mechanism is asserted.
     --b rtl/fmax_probe_v4 rtl/fmax_data rtl/policy_cmp rtl/fmax_d2 rtl/fmax_d3 \
     --label-a v3 --label-b v4 --epochs 300 --seeds 5 --seed-base $sb \
     --out /tmp/lodo_sb$sb.json; done
+
+### 2026-08-11 — MECHANISM HYPOTHESIS REFUTED (measured before it reached a paper)
+
+I proposed: saturation ties the group rewards -> zero variance -> no gradient.
+MEASURED from grpo_v8_log.jsonl + grpo_v8_cont_log.jsonl (284 steps), it is the
+OPPOSITE. Field semantics first (grpo_oracle.py:326-327): `mean_fmax` is the mean
+of rewards WHERE reward > 0, i.e. over CORRECT candidates only; `max_fmax` is the
+group max. So (max - mean) measures spread among CORRECT candidates -- the
+ranking question -- and is NOT the flat-group statistic (`r.std() < 1e-6` at
+:295, over the full group including zeros, so a mixed correct/incorrect group is
+essentially never flat; the 32-50% flat rates in v9 are all-correct-identical or
+all-incorrect groups).
+
+  step-range   mean   max    gap   %steps gap<1   %steps mean>=490
+    112- 140  203.7  204.7    1.0        92.9%          0.0%
+    140- 168  196.9  220.8   24.0        85.7%          0.0%
+    168- 196  211.4  216.1    4.7        82.1%          0.0%
+    196- 224  190.8  203.5   12.7        75.0%          0.0%
+    224- 252  273.5  313.6   40.1        57.1%          7.1%
+    252- 280  300.0  335.2   35.2        46.4%         17.9%
+
+Through mid-training the reward is near-SILENT among correct candidates (gap
+< 1 MHz on 75-93% of steps). During saturation the gap WIDENS (40, 35) and
+flatness FALLS (57% -> 46%).
+
+CORRECTED MECHANISM: saturation does not remove the gradient, it MANUFACTURES a
+large and confident one toward distinctions that do not exist in reality. The
+policy is pushed hard toward whatever lexical features trigger a ~500 MHz
+prediction; correctness degrades as the side effect (95.3 -> 88.0); measured
+Fmax conditional on correctness does not move (flat ~241). This is consistent
+with, and explains, the earlier finding that meanF(correct) is identical across
+v8/v9 while correctness differs.
+
+Do NOT write "the reward goes quiet" or "ties kill the gradient". Write: the
+reward becomes strongly opinionated about differences that are not real.
+
+Caveat for the paper: this uses (max - mean_over_correct) as the spread proxy
+because per-group reward variance was never logged. Logging r.std() per step in
+grpo_oracle.py would make the claim direct and costs one line; do that before
+the mechanism figure is drawn.
