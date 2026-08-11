@@ -154,8 +154,12 @@ med7 84) held or improved. Saturation is therefore an **observable early-warning
 signal for reward hacking**.
 
 The clearest single case: **med7 surrogate 188.6 MHz vs real Vivado 36–40 MHz.**
-The surrogate (LODO Spearman 0.75 after the 5-family retrain, down from 0.965 on
-3 families) had no discrimination on comparator networks and was gamed. Poly's
+The surrogate (LODO Spearman 0.915 after the 5-family retrain, down only from
+0.972 on 3 families -- both RECOMPUTED 2026-08-11 with fold-local normalisation;
+the old 0.965 / 0.75-0.82 figures used a leaky normalisation and a 9-feature
+extractor) had no discrimination on comparator networks and was gamed. Note how
+little the offline number moved: rho stayed above 0.9 while the predictor was
+wrong by 5x on med7. Poly's
 500-pins, by contrast, were **not** hacking — real Fmax is 191–193 MHz, i.e. the
 surrogate was wrong in *magnitude* but right in *ranking*. This is the empirical
 case for re-anchoring (D3) and for invariant #2: surrogate numbers are never
@@ -163,7 +167,12 @@ results.
 
 ## 3. Surrogate + gaming case study ✅
 
-- surrogate_v2: 203 labelled pairs, LODO Spearman **0.965**, top-1 **23/25**.
+- surrogate_v2: 203 labelled pairs, LODO Spearman **0.972**, top-1 **23/25**
+  (recomputed 2026-08-11, fold-local normalisation; was 0.965 when the
+  normalisation leaked across folds). v3 (229 pairs, 5 families) 0.915,
+  top-1 26/30; v4 (272 pairs, re-anchored) 0.913, top-1 22/30. The
+  CONTROLLED v3-vs-v4 comparison is the matched-set one: 0.930 vs 0.919,
+  indistinguishable (`compare_surrogate_lodo.py`).
 - Gaming: GRPO drove poly4 to surrogate **+inf** (pilot) / 460–500 claims (v7);
   clamp [5,500] contained it; real Vivado ceiling = 191–193 MHz. Direction was
   right (grpo poly mean ≈190 vs sft ≈45–60 real); only MAGNITUDE was gamed.

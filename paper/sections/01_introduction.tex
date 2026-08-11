@@ -97,12 +97,14 @@ achievable ceiling is set by the corpus rather than by the optimiser
 families in which our method yields no frequency gain.
 
 \item \textbf{A caught case of reward hacking, and the limits of detecting it.}
-We quantify how far a learned frequency surrogate degrades when structurally
-dissimilar circuit classes are added (leave-one-design-out Spearman $0.965
-\rightarrow 0.75$--$0.82$), show that on $25$ of $30$ held-out designs it
-saturates at its clamp while true frequencies span $36$--$193$~MHz, and present
-a fully worked case in which it reported $188.6$~MHz for a median filter
-measuring $36$--$40$~MHz. We also report a negative methodological result:
+Adding structurally dissimilar circuit classes costs the learned frequency
+surrogate remarkably little by the conventional offline measure
+(leave-one-design-out Spearman $0.972 \rightarrow 0.915$), and yet on $25$ of
+$30$ held-out designs it saturates at its clamp while true frequencies span
+$36$--$193$~MHz, and in a fully worked case it reports $188.6$~MHz for a median
+filter measuring $36$--$40$~MHz. A predictor can retain $\rho > 0.9$ while being
+wrong by a factor of five on the designs that matter; the offline number does
+not see the failure. We also report a negative methodological result:
 saturation does \emph{not} predict correctness degradation in our data, so it
 should be treated as a trigger to verify rather than as a diagnosis
 (Section~\ref{sec:hacking}).
