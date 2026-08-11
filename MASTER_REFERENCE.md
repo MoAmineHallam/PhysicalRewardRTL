@@ -2403,3 +2403,66 @@ Caveat for the paper: this uses (max - mean_over_correct) as the spread proxy
 because per-group reward variance was never logged. Logging r.std() per step in
 grpo_oracle.py would make the claim direct and costs one line; do that before
 the mechanism figure is drawn.
+
+### 2026-08-11 — ARCHITECTURE ABLATION: the reviewer's objection is CORRECT
+
+`surrogate_arch_ablation.py`. No GPU, no new policy run: the off-support
+distribution already exists as stored artifacts. Train each predictor on the
+SAME 229 v3 rows (pre-optimization distribution, held-out designs excluded by
+invariant #3); test on the 345 held-out candidates the OPTIMIZED policy produced,
+each carrying a real Vivado frequency. That is exactly the endpoint measurement,
+run per architecture.
+
+architecture      policy   bias MHz   saturated   rho
+mlp12 (paper's)   sft         +12.4      0/30    0.794
+                  grpo        +89.0      7/30    0.227
+gbm12             grpo        +27.6      0/30    0.330
+rf12              grpo        -13.0      0/30    0.489
+knn12             grpo        -11.1      0/30    0.543
+ngram_ridge       sft          +0.5      0/30    0.956
+                  grpo         -0.2      0/30    0.804   <-- calibrated
+ngram_gbm         grpo        -20.1      0/30    0.451
+
+**ngram_ridge (character 3-5 grams, TF-IDF, RidgeCV -- no deep learning at all)
+is essentially unbiased on the optimized policy: bias -0.2 MHz, MAE 22.5 MHz,
+0/30 saturated, predicted sd 61.4 vs real sd 62.9, range 40-313 against a real
+23-347.** It is NOT predicting the mean; it tracks.
+
+CONCLUSION, and it is bad for the framing we had: the collapse is a property of
+the TWELVE HAND-ENGINEERED FEATURES, not of learned physical rewards in general.
+The generality claim ("learned rewards break under optimization") is NOT
+supported. Every non-MLP arm is better calibrated on the optimized policy than
+the paper's predictor, and the richer-representation arm is calibrated outright.
+
+CAVEATS, all of which must be stated before this is used:
+ 1. My mlp12 refit gives grpo bias +89.0 / 7-of-30, while the DEPLOYED
+    surrogate_v3 measured +235.9 / 25-of-30 (rescore_surrogate.py against the
+    actual checkpoint). Same qualitative direction, milder. The cross-
+    architecture comparison is internally consistent (identical rows, identical
+    protocol) but the mlp12 absolute numbers are NOT the paper's numbers.
+    Re-run the ablation scoring the deployed checkpoint as the mlp12 arm before
+    publishing the table.
+ 2. Designs are procedurally generated (limitation F6). An n-gram model may be
+    matching implementation STYLE across tap counts -- legitimate
+    generalisation, but a reviewer may read it as template matching. The
+    honest statement is that it generalises across the frozen held-out split,
+    which is what we froze it for.
+ 3. Single split, single fit. Needs restarts / multiple splits for error bars.
+
+WHAT THIS DOES TO THE PAPER. The old thesis ("learned physical rewards collapse
+under optimization; offline metrics cannot see it") is not supportable as
+stated. The supportable and more useful thesis:
+  - The collapse is real, consequential, and measurable against silicon.
+  - Its CAUSE is an impoverished feature representation, not learned reward
+    modelling per se.
+  - A standard richer representation, trained on identical data, is calibrated
+    exactly where the hand-engineered one fails -- so the fix is cheap and does
+    not require more labels.
+  - Therefore: a reward model must be validated on the OPTIMIZED distribution,
+    and representation capacity is the axis that matters.
+That is a paper with a solution rather than only a warning.
+
+FOLLOW-ON THAT IS NOW OBVIOUS: retrain the surrogate with n-gram features and
+re-run GRPO. If reward hacking disappears and held-out Fmax improves, that is a
+positive result to go with the negative one. This supersedes re-anchoring as
+the recommended repair.
