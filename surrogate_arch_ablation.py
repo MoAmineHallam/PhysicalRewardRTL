@@ -188,7 +188,15 @@ def within_design_rho(test, pred_mhz):
     This is the statistic the reward actually consumes: GRPO z-scores rewards
     inside a group of samples for ONE design, so only the ordering within a
     design drives the gradient. Cross-design correlation can stay high while
-    this collapses, and on the optimized distribution it does.
+    this collapses.
+
+    WARNING -- on the optimized distribution this is nearly unmeasurable from
+    our artifacts: only 3 of 30 optimized designs have three or more DISTINCT
+    real frequencies, because the policy converges onto one implementation. Any
+    within-design number for the optimized policy therefore rests on three
+    designs and should not be used to separate architectures. Answering the
+    question properly needs candidates with genuine within-design diversity,
+    which these evals do not contain.
     """
     by = collections.defaultdict(lambda: collections.defaultdict(list))
     for t_, p in zip(test, pred_mhz):
@@ -197,12 +205,19 @@ def within_design_rho(test, pred_mhz):
     for pol, designs in by.items():
         rs = []
         for d, pairs in designs.items():
-            u = {(round(a, 3), round(b, 3)) for a, b in pairs}
-            if len(u) < 3:
+            # Eligibility must depend ONLY on the REAL values, never on the
+            # predictions. An earlier version required 3 distinct (pred, real)
+            # PAIRS, which let an architecture with more varied predictions
+            # qualify on more designs -- so the arms were being averaged over
+            # different design subsets and could not be compared. Ranking is
+            # undefined where the real values are tied, whatever the predictor
+            # says about them.
+            real = [b for _, b in pairs]
+            if len({round(b, 3) for b in real}) < 3:
                 continue
-            a = np.array([x[0] for x in u]); b = np.array([x[1] for x in u])
-            if b.max() - b.min() < 1.0:      # no real spread -> rho undefined
+            if max(real) - min(real) < 1.0:
                 continue
+            a = np.array([x[0] for x in pairs]); b = np.array([x[1] for x in pairs])
             rs.append(spearman(a, b))
         out[pol] = (float(np.mean(rs)) if rs else float("nan"), len(rs))
     return out

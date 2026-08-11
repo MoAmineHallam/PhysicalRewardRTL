@@ -2466,3 +2466,68 @@ FOLLOW-ON THAT IS NOW OBVIOUS: retrain the surrogate with n-gram features and
 re-run GRPO. If reward hacking disappears and held-out Fmax improves, that is a
 positive result to go with the negative one. This supersedes re-anchoring as
 the recommended repair.
+
+### 2026-08-11 — ARCHITECTURE ABLATION, deployed checkpoint, run by the user on
+### the server. VERDICT: the generality claim is DEAD; the collapse is OURS.
+
+`surrogate_arch_ablation.py --repeats 3 --ckpt surrogate_v3.pt`. Train every
+predictor on the SAME 229 v3 rows; test on the 345 held-out candidates the
+optimized policy produced, each with a real Vivado frequency. Reproduced
+independently on the laptop (identical to 3 decimal places except the MLP arm,
+which has random restarts).
+
+architecture      grpo bias   saturated   cross-design rho   (sft bias / sat)
+mlp12_deployed      +235.9      22/30          0.325           +4.7  / 0-30
+mlp12_refit          +89.0       7/30          0.227          +12.3  / 0-30
+gbm12                +27.1       0/30          0.326           +1.4  / 0-30
+rf12                 -13.2       0/30          0.481           +4.8  / 0-30
+knn12                -11.1       0/30          0.543           +6.6  / 0-30
+ngram_ridge           -0.2       0/30          0.804           +0.5  / 0-30
+ngram_gbm            -18.8       0/30          0.455           +1.0  / 0-30
+
+ESTABLISHED:
+ - Saturation is UNIQUE to the deployed 12-feature MLP. 22 of 30 optimized
+   cells pinned at the clamp; ZERO for all five alternatives, including a
+   gradient-boosted model on the SAME twelve features. So it is not even the
+   feature set alone -- the MLP's unbounded extrapolation is the proximate
+   cause, and richer features remove the residual bias on top of that.
+ - Every architecture predicts the SUPERVISED distribution well (+0.5 to
+   +12.3 MHz). The entire difference lives on the optimized distribution.
+ - ngram_ridge (char 3-5 grams, TF-IDF, RidgeCV -- no deep learning) is
+   unbiased there: -0.2 MHz, 0/30 saturated, cross-design rho 0.804 against
+   the deployed reward's 0.325.
+
+THEREFORE the claim "learned physical rewards collapse under optimization" is
+NOT SUPPORTED. What we measured is that OUR reward did, and that several
+standard alternatives trained on identical data do not. Any paper text asserting
+generality over learned rewards must be rewritten. The defensible thesis:
+  - the collapse is real, consequential, and silicon-validated;
+  - its cause is the predictor's representation and unbounded extrapolation,
+    not learned reward modelling as such;
+  - the fix is cheap and needs NO new labels -- a standard richer
+    representation on the same 229 rows;
+  - so a reward model must be validated ON THE OPTIMIZED DISTRIBUTION, and
+    representation/extrapolation behaviour is the axis that matters.
+This supersedes re-anchoring (43 new labels) as the recommended repair.
+
+NOT ANSWERABLE FROM THESE ARTIFACTS, and I initially reported it as if it were:
+within-design ranking on the optimized distribution. Only 3 of 30 optimized
+designs have >= 3 DISTINCT real frequencies -- the policy converges onto one
+implementation, so there is nothing left to rank. My first version of the metric
+required 3 distinct (pred, real) PAIRS, which let arms with more varied
+predictions qualify on more designs (3 for mlp12_deployed vs 9 for ngram_ridge),
+i.e. the arms were averaged over DIFFERENT design subsets and were never
+comparable. Eligibility now depends on the real values only. The column is
+retained but is underpowered by construction on the optimized policy; do not use
+it to separate architectures. Answering the question needs candidates with
+genuine within-design diversity, which these evals do not contain.
+
+REMAINING CAVEAT: designs are procedurally generated (F6). An n-gram model may
+be recognising implementation STYLE across tap counts. That is legitimate
+generalisation across the frozen held-out split -- which is what the split was
+frozen for -- but a reviewer may read it as template matching, and the paper
+should say so before they do.
+
+OBVIOUS FOLLOW-ON: retrain the surrogate with n-gram features and re-run GRPO.
+If reward hacking disappears and held-out Fmax improves, the paper gains a
+positive result to sit beside the negative one.
