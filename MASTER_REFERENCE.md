@@ -2257,3 +2257,48 @@ Sandbox toolchain (all ephemeral, reinstall after a container reset):
   pip install numpy torch          # the pytorch.org CPU index 403s via the proxy;
                                    # default PyPI works
 Preprint builds clean: 7 pages, 0 undefined refs, 0 overfull boxes.
+
+### 2026-08-11 — PREPRINT DELETED at the user's instruction
+
+`paper/preprint/` removed in full (main.tex, refs.bib, make_figs.py,
+figures/fig1_trajectory.tex, figures/fig3_scatter.tex, README.md, build
+artifacts). Decision: stop the preprint track, wait for the user's own
+`verify_claims.py` run, then start the CCF-A paper from the beginning.
+
+RECOVERABLE: everything is in git history. To get it back:
+    git log --oneline --diff-filter=D -- paper/preprint    # find the delete commit
+    git checkout <commit>^ -- paper/preprint
+
+PRESERVED BEFORE DELETING (do not re-derive these):
+ - The verified 2026-08-11 citations were merged into `paper/refs.bib`, which
+   previously lacked five of them entirely: chipseek2025, fang2024presynthesis,
+   formalrtl2026, gao2023scaling, ppartl2025. Two more (drrtl2026, poet2026)
+   were present but author-less and have been replaced with the verified
+   versions. Full-paper bib is now 25 entries. ppartl2025 still carries its
+   TODO -- author list not publicly recoverable, fill from IEEE Xplore, never
+   guess it.
+ - `make_figs.py` is GONE with the directory. It generated Fig. 1 (predicted vs
+   measured trajectory, split interp/extrap) and Fig. 3 (predicted-vs-measured
+   scatter) as pgfplots fragments. Recover from git if the CCF-A paper wants
+   either; the full paper has its own `paper/make_figures.py`, which is a
+   different script.
+ - All analysis scripts survive at repo root and are untouched:
+   verify_claims.py, compare_surrogate_lodo.py, analyze_bestofn.py,
+   analyze_policy_fmax.py, analyze_surrogate_error.py, analyze_passk.py,
+   audit_oracle.py, rescore_surrogate.py.
+
+STATE OF THE EVIDENCE at the moment of deletion (nothing below is affected by
+removing the preprint -- these are measurements, not prose):
+ - A/B/C/D of verify_claims.py reproduce. Trajectory, best-of-N, aggregate
+   correctness and the oracle audit are all deterministic over committed
+   artifacts.
+ - PROVISIONAL and awaiting the user's `--lodo 10`: the 0.972 / 0.915 / 0.913
+   LODO figures now in 01_introduction.tex, 05_results.tex, 07_conclusion.tex
+   and RESULTS.md. Single unseeded draws against a figure (0.75-0.82) that was
+   itself a seed range. If the v3 spread overlaps 0.75-0.82 these must revert
+   to a range and my correction was wrong.
+ - NOT provisional: the matched-set v3-vs-v4 comparison (0.930 vs 0.919,
+   indistinguishable) seeds each fold and averages 5 restarts.
+
+NEXT: wait for the user. Do not resume writing until they report the
+verify_claims.py output.
