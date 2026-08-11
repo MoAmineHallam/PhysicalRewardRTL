@@ -114,6 +114,20 @@ def fit_mlp(Xtr, ytr, Xte, seed=0):
                                 dtype=torch.float32)).numpy().ravel()
 
 
+def predict_deployed(ckpt, texts):
+    """Score with the ACTUAL checkpoint GRPO was trained against.
+
+    A refit MLP is not the deployed model: with the training length and seed
+    used here a refit lands at roughly +89 MHz bias on the optimized policy,
+    while surrogate_v3.pt itself measures +235.9. Since the whole question is
+    whether the deployed reward's failure is architectural, the deployed reward
+    has to be the arm we compare, not a milder reconstruction of it.
+    """
+    from rescore_surrogate import load_surrogate
+    predict, _ = load_surrogate(ckpt)
+    return np.log(np.array([predict(x) for x in texts], float))
+
+
 def fit_sklearn(model, Xtr, ytr, Xte):
     model.fit(Xtr, ytr)
     return model.predict(Xte)
@@ -137,7 +151,8 @@ def architectures(repeats):
             est)
 
     return [
-        ("mlp12 (paper's)", "feats", None),          # handled specially
+        ("mlp12_deployed", "ckpt", None),            # the reward GRPO used
+        ("mlp12_refit", "feats", None),              # handled specially
         ("gbm12", "feats",
          lambda: GradientBoostingRegressor(random_state=0)),
         ("rf12", "feats",
@@ -167,6 +182,32 @@ def cellwise(test, pred_mhz):
     return out
 
 
+def within_design_rho(test, pred_mhz):
+    """Mean per-design Spearman over DISTINCT candidates, per policy.
+
+    This is the statistic the reward actually consumes: GRPO z-scores rewards
+    inside a group of samples for ONE design, so only the ordering within a
+    design drives the gradient. Cross-design correlation can stay high while
+    this collapses, and on the optimized distribution it does.
+    """
+    by = collections.defaultdict(lambda: collections.defaultdict(list))
+    for t_, p in zip(test, pred_mhz):
+        by[t_["policy"]][t_["design"]].append((p, t_["fmax"]))
+    out = {}
+    for pol, designs in by.items():
+        rs = []
+        for d, pairs in designs.items():
+            u = {(round(a, 3), round(b, 3)) for a, b in pairs}
+            if len(u) < 3:
+                continue
+            a = np.array([x[0] for x in u]); b = np.array([x[1] for x in u])
+            if b.max() - b.min() < 1.0:      # no real spread -> rho undefined
+                continue
+            rs.append(spearman(a, b))
+        out[pol] = (float(np.mean(rs)) if rs else float("nan"), len(rs))
+    return out
+
+
 def report(name, test, pred_log):
     pred = np.exp(np.clip(pred_log, np.log(CLAMP_LO), np.log(CLAMP_HI)))
     cells = cellwise(test, pred)
@@ -179,13 +220,16 @@ def report(name, test, pred_log):
         sat = int((pr >= CLAMP_HI - 1).sum())
         lines.append((pol, float((pr - rl).mean()), sat, len(pr),
                       float(spearman(pr, rl))))
-    return lines
+    wd = within_design_rho(test, pred)
+    return lines, wd
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--repeats", type=int, default=3,
                     help="restarts for the stochastic MLP arm")
+    ap.add_argument("--ckpt", default=os.path.join(HERE, "surrogate_v3.pt"),
+                    help="the DEPLOYED reward checkpoint (server only)")
     ap.add_argument("--out", default=os.path.join(HERE, "arch_ablation.json"))
     args = ap.parse_args()
 
@@ -203,22 +247,30 @@ def main():
     Tte = [t["txt"] for t in test]
 
     print(f"{'architecture':16s} {'policy':8s} {'bias MHz':>10s} "
-          f"{'saturated':>11s} {'rho':>7s}")
-    print("-" * 60)
+          f"{'saturated':>11s} {'rho':>7s} {'within-design rho':>18s}")
+    print("-" * 79)
     results = {}
     for name, space, mk in architectures(args.repeats):
-        if space == "feats" and mk is None:
+        if space == "ckpt":
+            if not os.path.exists(args.ckpt):
+                print(f"{name:16s} [skipped: {args.ckpt} not found -- run this "
+                      f"on the server where the checkpoints live]\n")
+                continue
+            pred_log = predict_deployed(args.ckpt, Tte)
+        elif space == "feats" and mk is None:
             preds = [fit_mlp(Xtr, ytr, Xte, seed=s) for s in range(args.repeats)]
             pred_log = np.mean(preds, axis=0)
         elif space == "feats":
             pred_log = fit_sklearn(mk(), Xtr, ytr, Xte)
         else:
             pred_log = fit_sklearn(mk(), Ttr, ytr, Tte)
-        rows = report(name, test, pred_log)
-        results[name] = rows
+        rows, wd = report(name, test, pred_log)
+        results[name] = {"cells": rows, "within_design": wd}
         for i, (pol, bias, sat, n, rho) in enumerate(rows):
+            w, nw = wd.get(pol, (float("nan"), 0))
+            ws = "     n/a" if nw == 0 else f"{w:+9.3f} ({nw:2d})"
             print(f"{name if i == 0 else '':16s} {pol:8s} {bias:+10.1f} "
-                  f"{sat:6d}/{n:<4d} {rho:7.3f}")
+                  f"{sat:6d}/{n:<4d} {rho:7.3f} {ws:>18s}")
         print()
 
     json.dump(results, open(args.out, "w"), indent=1)
