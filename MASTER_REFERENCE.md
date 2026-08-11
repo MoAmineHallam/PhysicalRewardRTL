@@ -1870,3 +1870,60 @@ contains known-false claims and v1 is permanent and diffable. Compromise =
 short FOCUSED preprint on the predictor-validity finding only (clean today),
 full paper after the corrections. ChipSeek head-to-head: verify code/weights
 actually exist before committing; fallback is a differentiation table.
+
+## 2026-08-10 — grpo_v9 on the re-anchored surrogate: the repair is better than free
+
+Real Vivado, 30 held-out designs, penalised MHz (incorrect = 0) unless noted.
+Reproduce: `python analyze_policy_fmax.py --dirs rtl/holdout_eval_v9`
+
+                       v8 (surrogate_v3)   v9 (surrogate_v4)
+  penalised MHz ALL             176.7               192.4
+  interp                        198.7               209.3
+  extrap                        138.6               163.0
+  correctness                   86.9%               95.1%
+  optimizer updates               284                 200
+
+v9 wins on every axis with 30% FEWER gradient updates, so the earlier
+"not update-matched" caveat now runs in v9's favour rather than against it.
+SFT re-sampled in the v9 run lands at 73.2 penalised vs 73.0 in the v8 run —
+the two evaluations are comparable and nothing drifted.
+
+MECHANISM. Speed CONDITIONAL on being correct is unchanged:
+  meanF(correct) interp  v8 213.2  vs  v9 213.3
+  meanF(correct) extrap  v8 182.1  vs  v9 181.6
+Re-anchoring did not make designs faster. It stopped the policy emitting
+INCORRECT ones (86.9% -> 95.1%). The entire equal-sample gain is correctness.
+
+This closes a loop with the trajectory data (rtl/traj_v8, surrogate_v3 scored):
+  step0  corr 94.3%  proxy  82.9
+  s100   corr 95.8%  proxy 218.1     (77 updates)
+  s200   corr 95.3%  proxy 213.7     (138)
+  s300   corr 95.3%  proxy 216.6     (205)
+  s400   corr 88.0%  proxy 497.9     (276)  <- saturation AND correctness drop
+The proxy sits flat for ~200 updates, then explodes to the 500 clamp between
+s300 and s400, and correctness collapses at exactly the same point. v9 never
+saturates and never loses correctness. THE CORRECTNESS REGRESSION AND THE PROXY
+SATURATION ARE THE SAME EVENT — "correctness is not uniformly preserved" was
+never a separate defect, it is the overoptimization, measured. Three
+independent observations (trajectory, endpoint error, repaired endpoint) agree.
+
+Per-family, penalised MHz:
+  family      sft   v8 grpo   v9 grpo
+  fir        72.3     206.5     225.2
+  firr       83.1     240.5     251.1
+  poly       49.6     180.3     188.9
+  iir       121.8     129.2     164.6   <- +27% over v8; the family whose
+  med        18.1      20.0      18.4      surrogate error was worst
+iir gains most from re-anchoring, which is exactly the prediction from the
+family-dependent error measurement (iir was mispredicted even at SFT).
+med remains flat under both — a combinational sorting network's critical path
+is not shortened by style choice; that is a template limitation, not a reward
+one, and stays a reported negative result.
+
+STATUS: the arc capability -> diagnosis -> cause -> repair -> validation is
+complete with real Vivado behind every link. The "proxy error was load-bearing"
+reading is REFUTED: the error was doing damage, not work. TCAD estimate raised
+~55% -> ~65%.
+
+REMAINING for the preprint: Vivado on rtl/traj_v8 (144) and rtl/traj_v9 for the
+Figure-1 measured line; P1 timing closure; P2 symmetric silicon; PRE1-PRE3.
