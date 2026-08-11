@@ -2302,3 +2302,64 @@ removing the preprint -- these are measurements, not prose):
 
 NEXT: wait for the user. Do not resume writing until they report the
 verify_claims.py output.
+
+### 2026-08-11 (verification round) — user reran verify_claims.py; two of my numbers moved
+
+**E. LODO stability, n=10 unseeded restarts per arm (user's laptop).** The
+correction to the 0.75-0.82 figure is ESTABLISHED, decisively:
+    surrogate_v2 (203, 3 fam)    0.974 +/- 0.003   range .969-.978
+    surrogate_v3 (229, 5 fam)    0.923 +/- 0.008   range .910-.931
+    surrogate_v4 (272, re-anch)  0.905 +/- 0.009   range .890-.922
+The v3 range bottoms out at 0.910 and never approaches 0.75-0.82. The old
+figures died of leaky normalisation + a 9-feature extractor, not of chance.
+
+MY SINGLE DRAWS WERE UNLUCKY IN BOTH DIRECTIONS: I quoted v3 = 0.915 (near the
+bottom of its range, true mean 0.923) and v4 = 0.913 (near the TOP, true mean
+0.905). Paper now carries means +/- sd, not point draws. Sections A-D of
+verify_claims.py reproduced exactly on the user's machine.
+
+**Matched-set gap, now with error bars (5 independent restart-seed bases via
+`--seed-base`, 229 identical rows, 5 restarts averaged per fold each).** I added
+this because a 0.011 gap quoted without a spread is not a result:
+
+  metric        v3 (original)      v4 (re-anchored)   gap              favours v3
+  Spearman      0.928 +/- 0.012    0.925 +/- 0.005    +0.004 +/- 0.012   4/5
+  top-1/30      0.847 +/- 0.038    0.833 +/- 0.024    +0.013 +/- 0.045   3/5
+  |bias| MHz    7.30 +/- 0.41      4.44 +/- 0.67      -2.86 +/- 1.02     0/5
+  MAE MHz       19.84 +/- 1.13     21.36 +/- 1.07     +1.52 +/- 1.48     4/5
+  Spearman gap per base: +0.011 +0.007 +0.015 +0.002 -0.017; t = 0.64 (df 4).
+
+VERDICT, and note I was wrong TWICE on the way here. First I let the script call
+a 0.011 gap "supported". Then, after three replicates all favoured v3, I told
+the user the direction was consistent and "indistinguishable" was too strong.
+The fifth replicate flipped sign. With all five: the Spearman gap is t = 0.64,
+i.e. nothing. The original "indistinguishable" reading was right; my three-point
+impression was a small sample fooling me exactly the way single draws fooled me
+in section E. Do not report a direction for Spearman or top-1.
+
+What DOES separate them: mean signed error, 5/5, 7.30 vs 4.44 MHz, t ~ 6.3. The
+re-anchored predictor is better CALIBRATED and that is measurable offline.
+
+**The sharper thesis this licenses (use this framing, not "offline accuracy
+doesn't transfer"):** GRPO's advantage is group-relative and z-scored, so reward
+SCALE is irrelevant and only WITHIN-GROUP ORDERING drives the gradient. The
+offline metric that matters is therefore rank, and rank is precisely what LODO
+measures -- and it reports ~0.93 for both rewards. The failure is not that the
+offline metric measures the wrong quantity. It measures the RIGHT quantity on
+the WRONG DISTRIBUTION: under optimization the policy moves to where the
+predictor saturates (25/30 cells at the clamp, median within-design real spread
+0.0 MHz), which destroys ordering exactly there, while the LODO rows -- drawn
+from the pre-optimization distribution -- retain it. Calibration error catches
+what rank misses only because saturation shows up as bias before it shows up as
+inversion.
+CAVEAT before this goes in a paper: the flat-group counts (32-50% across v9
+seeds) are CONSISTENT with saturation-induced ties killing the gradient, but I
+have not measured per-group reward variance at the saturating checkpoint. That
+measurement is cheap and should be done before the mechanism is asserted.
+
+`compare_surrogate_lodo.py` gained `--seed-base`. Reproduce with:
+  for sb in 0 10 20 30 40; do python compare_surrogate_lodo.py \
+    --a rtl/fmax_probe_v4 rtl/fmax_data rtl/policy_cmp rtl/fmax_d2 \
+    --b rtl/fmax_probe_v4 rtl/fmax_data rtl/policy_cmp rtl/fmax_d2 rtl/fmax_d3 \
+    --label-a v3 --label-b v4 --epochs 300 --seeds 5 --seed-base $sb \
+    --out /tmp/lodo_sb$sb.json; done
