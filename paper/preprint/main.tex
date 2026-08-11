@@ -1,0 +1,565 @@
+%% ---------------------------------------------------------------------------
+%% Offline Accuracy Is Not Optimization Validity
+%% Focused preprint. Overleaf: upload this folder, set main.tex as the root
+%% document, compiler pdfLaTeX. Figures build from committed artifacts with
+%%     python make_figs.py
+%% and are optional -- the document compiles without them (see \iffigures).
+%% ---------------------------------------------------------------------------
+\documentclass[journal]{IEEEtran}
+
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+
+% Flip to \figurestrue once make_figs.py has produced figures/*.pdf
+\newif\iffigures
+\figuresfalse
+
+\newcommand{\fmax}{$F_{\mathit{max}}$}
+\newcommand{\TODO}[1]{\textcolor{red}{[TODO: #1]}}
+\usepackage{xcolor}
+
+\begin{document}
+
+\title{Offline Accuracy Is Not Optimization Validity:\\
+Measuring Learned-Reward Collapse in RTL Generation\\
+Against Physical Ground Truth}
+
+\author{Mohamed Amine Hallam\thanks{Harbin Institute of Technology (Shenzhen).
+Correspondence: hallamamine05@gmail.com}}
+
+\maketitle
+
+\begin{abstract}
+Reinforcement learning for register-transfer level (RTL) generation increasingly
+optimizes a \emph{learned} model of physical quality, because invoking a
+synthesis tool inside the training loop is prohibitively slow. Such a reward is
+validated the way any regressor is: held-out accuracy. We show that this
+validation is not sufficient, and we measure the gap against real
+electronic design automation (EDA) results rather than a synthetic proxy for
+them. On a held-out set of thirty digital signal processing accelerators frozen
+before training, a learned maximum-frequency predictor is highly accurate on the
+behaviour policy it was fitted near---mean error $+4.7$\,MHz, Spearman
+$0.958$---and badly invalid on the policy that optimization produces---mean
+error $+235.9$\,MHz, with $25$ of $30$ designs pinned at the predictor's own
+output ceiling. Tracking the predictor along the optimization path shows the
+failure is abrupt rather than gradual: predictions are stable for roughly two
+hundred gradient updates and then saturate, and functional correctness degrades
+at exactly that point. A causal control isolates the cause. Removing the
+physical term while retaining the correctness gate and the trust-region penalty
+raises correctness to its highest observed value, $98.3\%$, while reducing
+measured frequency $38\%$ below the supervised starting policy: the two
+objectives trade off directly. Finally, we show the failure is repairable at
+small cost. Adding $43$ real post-implementation measurements drawn from the
+region the optimizer reaches reduces predictor error from $+235.9$ to
+$+30.7$\,MHz and eliminates saturation on $29$ of $30$ affected cases;
+re-optimizing against the repaired predictor improves measured frequency from
+$176.7$ to $192.4$\,MHz and correctness from $86.9\%$ to $95.1\%$ using $30\%$
+fewer gradient updates. Notably, the repaired predictor scores \emph{worse} by
+conventional offline cross-validation than the one it replaces, so a
+practitioner selecting on that metric would have kept the broken reward.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Reinforcement learning, reward modelling, RTL generation, high-level synthesis,
+FPGA, design automation, reward overoptimization.
+\end{IEEEkeywords}
+
+% ===========================================================================
+\section{Introduction}
+% ===========================================================================
+
+\IEEEPARstart{L}{arge} language models are now routinely fine-tuned with
+reinforcement learning to produce hardware description code that is not merely
+correct but physically fast~\cite{chipseek2025,ppartl2025}. The obstacle is
+cost. A single synthesis and implementation run takes minutes; a policy-gradient
+step needs a reward for every sample in a group, and a training run needs
+hundreds of steps. Invoking the EDA tool in the loop is therefore impractical at
+the scale at which these methods operate, and the standard resolution is to
+train a surrogate: a learned model mapping a design to its predicted maximum
+operating frequency, queried in milliseconds.
+
+The surrogate is a regressor, and it is validated as one---held-out
+accuracy, rank correlation, leave-one-design-out cross-validation. If those
+numbers are good, the reward is taken to be sound. This paper argues that the
+inference is invalid, and supplies the measurement that shows why.
+
+The concern is not new in the abstract. Optimizing against an imperfect proxy is
+known to degrade true objective performance once optimization pressure is
+sufficient, a phenomenon characterized for language-model reward models by
+Gao \emph{et al.}~\cite{gao2023scaling}. Their study, by necessity, used a
+synthetic gold-standard reward model in place of ground truth, because
+collecting enough genuine human preference data was infeasible.
+
+Hardware generation removes that limitation. The ground truth is a synthesis
+tool and a physical device. This lets us ask a question that has not previously
+been answerable with real measurements: \emph{when a learned physical reward is
+optimized, where and how does it stop being true?}
+
+Our contributions are:
+
+\begin{enumerate}
+\item \textbf{A measurement of proxy collapse against real EDA.} On a frozen
+held-out set, the same predictor has mean error $+4.7$\,MHz on the supervised
+policy and $+235.9$\,MHz on the reinforcement-learned policy
+(Section~\ref{sec:divergence}). No held-out fit detects this, because the
+distribution on which it fails does not exist until optimization creates it.
+
+\item \textbf{The dynamics of the failure.} Evaluating saved checkpoints along
+the optimization path shows predictions stable for approximately two hundred
+gradient updates followed by abrupt saturation, with functional correctness
+degrading simultaneously (Section~\ref{sec:trajectory}). The correctness
+regression is not a separate defect; it is the same event.
+
+\item \textbf{A causal control.} Removing the physical reward term while keeping
+the correctness gate and the trust-region penalty produces the highest
+correctness we observe ($98.3\%$) and frequency $38\%$ \emph{below} the
+supervised starting point (Section~\ref{sec:ablation}). The learned physical
+signal is doing the work, and the two objectives genuinely conflict.
+
+\item \textbf{A cheap repair, and evidence that offline metrics misrank it.}
+Forty-three real measurements from the optimized region reduce error to
+$+30.7$\,MHz and improve every downstream outcome, while scoring worse by
+leave-one-design-out cross-validation than the predictor it replaces
+(Section~\ref{sec:repair}).
+\end{enumerate}
+
+\iffigures
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig1_trajectory.pdf}
+\caption{Predicted and measured \fmax{} along the optimization path, as a
+function of cumulative optimizer updates. Left: the original predictor. Its
+predictions track measurement for roughly two hundred updates, then saturate at
+the output ceiling while the measured value does not follow. Right: the
+re-anchored predictor, on which the two curves remain together. Correctness is
+overlaid; it degrades only where saturation occurs.}
+\label{fig:trajectory}
+\end{figure*}
+\fi
+
+% ===========================================================================
+\section{Setup}
+\label{sec:setup}
+% ===========================================================================
+
+\subsection{Task and models}
+
+We generate single-input streaming DSP accelerators sharing one interface (a
+clock, an active-low reset, an $8$-bit input sample, a $16$-bit registered
+output) across five families spanning three structurally distinct circuit
+classes: multiply--accumulate datapaths (\texttt{fir}, \texttt{firr}),
+polynomial evaluation (\texttt{poly}), recursive filters with genuine feedback
+(\texttt{iir}), and multiplier-free comparator networks (\texttt{med}). The
+common interface is what makes a uniform executable oracle and a uniform
+measurement harness possible.
+
+The base model is RTLCoder-6.7B~\cite{liu2024rtlcoder}, adapted with
+LoRA~\cite{hu2022lora} ($r=16$). Supervised fine-tuning provides the starting
+policy; policy optimization uses group-relative advantage
+estimation~\cite{shao2024deepseekmath} with group size $G=8$, a generation
+budget of $1536$ tokens, and a Kullback--Leibler penalty against a
+\emph{frozen copy of the supervised policy} rather than the base model.
+
+\subsection{Reward}
+
+The reward gates a learned frequency prediction on functional correctness:
+\begin{equation}
+r(m) =
+\begin{cases}
+\mathrm{clip}\!\left(\hat{F}(m),\, 5,\, 500\right) & \text{if } m \text{ is
+correct},\\[2pt]
+0 & \text{otherwise},
+\end{cases}
+\label{eq:reward}
+\end{equation}
+where $\hat{F}$ is a multilayer perceptron over twelve lexical features of the
+generated source, trained to predict $\log$ \fmax{} from real
+post-implementation results. The clip bounds are applied in log space before
+exponentiation; they exist because an earlier unbounded version overflowed to
+infinity on one design family. \textbf{The upper bound of this clip becomes
+central to what follows.}
+
+Correctness is decided \emph{only} by an executable oracle that compares the
+candidate's simulated output stream against a reference implementation under
+Icarus Verilog, allowing for pipeline latency. No similarity heuristic
+participates.
+
+\subsection{Held-out protocol}
+
+The held-out split was fixed before any model reported here was trained and is
+enforced by a single predicate imported by the corpus generator, the
+optimization design list, and the predictor's data loader; each refuses to
+proceed if a held-out design appears. It distinguishes \emph{interpolation}
+(parameters inside the trained range, withheld) from \emph{extrapolation}
+(parameters outside it, constructed at evaluation time), giving $30$ held-out
+designs---$19$ interpolation, $11$ extrapolation---against $145$ training
+designs.
+
+Evaluation samples $n=48$ per design and decides correctness with two stimulus
+seeds disjoint from the training seed, each four times longer.
+
+\subsection{Measurement and its limits}
+
+All frequencies come from Vivado 2023.1 targeting a Xilinx Zynq-7020
+(\texttt{xc7z020clg400-1}) with a $5$\,ns target period, computed from the
+post-implementation worst negative slack as $1000/(T - \mathrm{WNS})$. We state
+plainly that this is a \emph{WNS-derived estimate from a single implementation
+run}, not a timing-closure result: we do not iterate the constraint to the point
+of closure. It is the standard basis for relative comparison in this
+literature~\cite{ustun2020accurate}, and all comparisons here are relative,
+between policies on identical designs with an identical flow.
+
+The reported per-design frequency weights each distinct implementation by the
+number of samples that collapsed onto it. We report two variants: the mean over
+\emph{correct} candidates, and a \emph{penalised} mean scoring incorrect samples
+$0$\,MHz. The second is the equal-sample-cost number and we lead with it,
+because the first cannot distinguish a policy that is fast from one that is fast
+only on the rare occasions it is right.
+
+% ===========================================================================
+\section{The Predictor Is Accurate Where It Was Fitted and Invalid Where
+Optimization Goes}
+\label{sec:divergence}
+% ===========================================================================
+
+Table~\ref{tab:divergence} pairs the predictor's output with the measured value
+for every (policy, design) cell of the held-out set.
+
+\begin{table}[t]
+\caption{Predictor error against real post-implementation measurement, by the
+policy that generated the candidates. Identical predictor throughout.}
+\label{tab:divergence}
+\centering
+\small
+\begin{tabular}{lrrrrc}
+\toprule
+policy & pred. & measured & bias & MAE & saturated \\
+\midrule
+base            & 329.2 &  45.6 & $+283.6$ & 283.6 & 10/16 \\
+supervised      &  88.3 &  83.6 & $+4.7$   &  20.5 & 1/30 \\
+best-of-8       & 154.5 & 155.5 & $-1.0$   &  35.1 & 0/30 \\
+\textbf{optimized} & \textbf{433.6} & \textbf{197.7} & $\mathbf{+235.9}$ &
+\textbf{240.1} & \textbf{25/30} \\
+\bottomrule
+\end{tabular}
+\\[2pt]
+\footnotesize All values in MHz. ``Saturated'' counts designs whose maximum
+prediction sits on the $500$\,MHz clip bound of Eq.~\eqref{eq:reward}.
+\end{table}
+
+Three observations follow.
+
+\textbf{The predictor is genuinely good where it was fitted.} On the supervised
+policy its bias is $+4.7$\,MHz against measurements spanning $15$--$347$\,MHz,
+with Spearman correlation $0.958$. By any conventional standard this is a
+successful regressor, and it is the standard by which such rewards are accepted.
+
+\textbf{It is not good where optimization takes the policy.} On the optimized
+policy the bias is $+235.9$\,MHz and $25$ of $30$ designs are pinned at the clip
+bound. Once predictions pile onto a ceiling, the reward can no longer
+distinguish a fast design from a faster one, and the gradient stops carrying
+frequency information.
+
+\textbf{The improvement is real; its magnitude is not.} Measured frequency does
+rise from $83.6$ to $197.7$\,MHz. The predictor claims a rise from $88.3$ to
+$433.6$. The excess,
+\begin{equation}
+\underbrace{(433.6-88.3)}_{\text{predicted gain}} -
+\underbrace{(197.7-83.6)}_{\text{measured gain}} = +231.2~\text{MHz},
+\end{equation}
+is inflation attributable purely to the proxy. Reward overoptimization here does
+not destroy the objective, it overstates progress roughly threefold---which is
+harder to notice than outright failure.
+
+\subsection{The error is also family-dependent}
+
+The failure is not solely a function of optimization pressure. On the
+\texttt{iir} family the predictor is badly wrong \emph{even on the supervised
+policy} ($+154.9$ and $+182.2$\,MHz on two designs, $-86.1$ on a third). These
+are precisely the families where optimization delivered least benefit. Where the
+proxy is valid the method works; where it is not, it does not. This is a
+falsifiable prediction the repair experiment later confirms.
+
+% ===========================================================================
+\section{Dynamics: The Failure Is Abrupt, and Correctness Fails With It}
+\label{sec:trajectory}
+% ===========================================================================
+
+Endpoint measurements cannot distinguish gradual drift from sudden collapse. We
+therefore evaluated saved checkpoints along the optimization path with identical
+prompts, oracle and measurement flow (Table~\ref{tab:trajectory}).
+
+\begin{table}[t]
+\caption{Predictor output and functional correctness along the optimization
+path.}
+\label{tab:trajectory}
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+checkpoint & updates & correctness & predicted \fmax{} \\
+\midrule
+supervised & 0   & 94.3\% &  82.9 \\
+c1         & 77  & 95.8\% & 218.1 \\
+c2         & 138 & 95.3\% & 213.7 \\
+c3         & 205 & 95.3\% & 216.6 \\
+\textbf{c4} & \textbf{276} & \textbf{88.0\%} & \textbf{497.9} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The predictor rises once, early, to roughly $215$\,MHz and then sits there for
+some two hundred gradient updates. Between the third and fourth checkpoint it
+jumps to $497.9$---the clip bound of Eq.~\eqref{eq:reward} to within rounding.
+
+Correctness collapses over the same interval, from $95.3\%$ to $88.0\%$, having
+been stable or improving until then.
+
+We draw the inference explicitly: \textbf{the correctness regression and the
+predictor saturation are one event}, not two. Practitioners who observe a late
+correctness regression in correctness-gated optimization may be observing proxy
+saturation rather than an independent problem with the gate, and the diagnostic
+is cheap---saturation is visible in the training log without any EDA invocation.
+
+% ===========================================================================
+\section{Causal Control: The Physical Term Is Load-Bearing
+\label{sec:ablation}}
+% ===========================================================================
+
+That measured frequency rises during optimization does not establish that the
+learned physical reward caused it. Correctness pressure and the trust-region
+penalty are also present. We therefore re-ran optimization from the same
+supervised checkpoint with Eq.~\eqref{eq:reward} replaced by a constant reward
+of $1$ for correct candidates, leaving the correctness gate and the penalty
+untouched (Table~\ref{tab:ablation}).
+
+\begin{table}[t]
+\caption{Effect of removing the learned physical term. Equal-sample measured
+\fmax{} (incorrect samples scored $0$) and correctness.}
+\label{tab:ablation}
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+policy & interp. & extrap. & all & correctness \\
+\midrule
+supervised          &  79.9 &  61.2 &  73.0 & 88.7\% \\
+correctness-only    &  52.8 &  31.1 &  45.3 & \textbf{98.3\%} \\
+physical reward     & \textbf{198.7} & \textbf{138.6} & \textbf{176.7} & 86.9\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Removing the physical term does not merely forgo the gain. Correctness reaches
+$98.3\%$, the highest of any policy we trained, while measured frequency falls
+$38\%$ below the supervised starting point. The candidate-level view is
+sharper than the aggregate: on one design the supervised policy emits
+implementations measuring $34$, $43$, $224$, $224$ and $43$\,MHz, while the
+correctness-only policy emits $43$, $43$, $43$. The fast implementation is not
+made less likely; it is eliminated.
+
+The explanation is straightforward once stated. The implementation most likely
+to be correct is the naive direct form, and a purely correctness-driven
+objective walks toward it. Speed and correctness are in genuine tension, and the
+physical reward is what prevents collapse onto the slowest correct design.
+
+\subsection{A binary reward extinguishes its own gradient}
+
+The control also exposes a practical obstacle to the obvious alternative. Under
+group-relative advantage, a group whose rewards are all equal contributes
+nothing. With the supervised policy already $\sim\!\!90\%$ correct, most groups
+under a binary reward return unanimous: the correctness-only run produced $159$
+optimizer updates from $1997$ attempted steps ($92\%$ degenerate), against
+$284$ from $408$ ($30\%$) for the physical reward, and drifted $36\times$ less
+per update. A binary correctness reward is not merely weaker at this competence
+level---it removes the signal it depends on.
+
+% ===========================================================================
+\section{Repair, and Why Offline Selection Would Have Missed It}
+\label{sec:repair}
+% ===========================================================================
+
+If the predictor fails because optimization moves the policy off its training
+distribution, then labelling that region should repair it. We synthesised $43$
+candidates drawn from the optimized policy on \emph{training-split} designs
+only---held-out labels would violate the protocol---spanning $22.0$ to
+$338.4$\,MHz, and refitted.
+
+\begin{table}[t]
+\caption{Predictor error before and after re-anchoring, scored on identical
+stored candidates.}
+\label{tab:repair}
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+ & \multicolumn{2}{c}{original} & \multicolumn{2}{c}{re-anchored} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+policy & bias & sat. & bias & sat. \\
+\midrule
+base         & $+283.6$ & 10/16 & $+124.0$ & 2/16 \\
+supervised   & $+4.7$   &  1/30 & $+6.8$   & 2/30 \\
+optimized    & $+235.9$ & 25/30 & $\mathbf{+30.7}$ & \textbf{2/30} \\
+\midrule
+\multicolumn{5}{l}{\emph{offline} leave-one-design-out $\rho$:
+\;0.965 $\rightarrow$ \textbf{0.841}} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Bias on the optimized distribution falls from $+235.9$ to $+30.7$\,MHz and
+saturation from $25$ of $30$ designs to $2$. Aggregate saturation across all
+cells falls from $36$ of $106$ to $7$.
+
+\textbf{And the repaired predictor is worse by the conventional offline
+metric}---leave-one-design-out rank correlation drops from $0.965$ to $0.841$. A
+practitioner selecting a reward model by cross-validation, which is the normal
+practice, would have kept the broken one. This is the paper's thesis applied to
+its own model-selection step.\footnote{The two cross-validation figures are
+computed on different pair sets ($203$ and $272$), so this is an observation
+rather than a controlled comparison; we report it as such.}
+
+\subsection{Re-optimizing against the repaired predictor}
+
+\begin{table}[t]
+\caption{Optimization against the original versus the re-anchored predictor.
+Equal-sample measured \fmax{}.}
+\label{tab:v9}
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+ & original & re-anchored \\
+\midrule
+measured \fmax{}, all      & 176.7 & \textbf{192.4} \\
+\quad interpolation        & 198.7 & \textbf{209.3} \\
+\quad extrapolation        & 138.6 & \textbf{163.0} \\
+correctness                & 86.9\% & \textbf{95.1\%} \\
+optimizer updates          & 284   & \textbf{200} \\
+\midrule
+\emph{conditional on correct}, interp. & 213.2 & 213.3 \\
+\emph{conditional on correct}, extrap. & 182.1 & 181.6 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The repaired reward is better on every axis, using $30\%$ fewer gradient
+updates (Table~\ref{tab:v9}). The mechanism is visible in the last two rows:
+frequency \emph{conditional on being correct} is unchanged to within
+$0.1$\,MHz. Re-anchoring did not make designs faster. It stopped the policy
+producing incorrect ones---and since the correctness regression was the
+saturation event (Section~\ref{sec:trajectory}), removing the saturation removes
+the regression.
+
+Per family, the largest improvement is on \texttt{iir}
+($129.2 \rightarrow 164.6$\,MHz, $+27\%$), the family whose predictions were
+worst before repair. This is the prediction made in
+Section~\ref{sec:divergence}, and it holds. The \texttt{med} family is unchanged
+($20.0 \rightarrow 18.4$): a combinational sorting network's critical path is
+not shortened by coding style, which is a limitation of the design corpus rather
+than of the reward.
+
+% ===========================================================================
+\section{Evaluation Integrity}
+\label{sec:integrity}
+% ===========================================================================
+
+Because our claims rest on an executable oracle, we audited the acceptance rule
+rather than asserting it. All $1{,}529$ accepted candidates were re-scored under
+three stricter rules: exact equality rather than the deployed threshold;
+comparison of the post-reset window that the deployed rule skips; and a latency
+offset inferred on one seed and frozen for the other. \emph{None} of the
+$1{,}529$ was rejected by any of the three.
+
+The deployed threshold is near-exact by construction: it compares
+$k = n - \ell - w$ samples, so at the training length it admits zero mismatches
+and at the evaluation length at most one in $1016$. We report the sample counts
+rather than the threshold, since the latter reads as an approximate-similarity
+score and is not one.
+
+% ===========================================================================
+\section{Limitations}
+\label{sec:limitations}
+% ===========================================================================
+
+\textbf{One device, one tool, one surrogate architecture.} All measurements are
+Vivado 2023.1 on a Zynq-7020 with a twelve-feature lexical predictor. Whether
+the collapse threshold transfers to graph-based predictors or other flows is
+untested.
+
+\textbf{WNS-derived estimates, not timing closure.} As stated in
+Section~\ref{sec:setup}. Comparisons are relative and use an identical flow
+throughout; absolute frequencies should not be read as closed timing.
+
+\textbf{Procedurally generated designs.} The thirty held-out designs come from
+one parameterised catalogue, so family should be treated as the unit of
+independence rather than design. With five families, statistical claims are
+correspondingly weak, and we make none.
+
+\textbf{Single seed.} The results reported here use one optimization seed per
+configuration. Replication across seeds is in progress and will accompany the
+full version.
+
+\textbf{Saturation is partially, not wholly, repaired.} Six cells---the two
+largest tap counts, across every policy including the supervised
+one---still reach the clip bound after re-anchoring. The repair reduces the
+failure; it does not eliminate it.
+
+% ===========================================================================
+\section{Related Work}
+\label{sec:related}
+% ===========================================================================
+
+\textbf{Reinforcement learning for RTL quality.} ChipSeek-R1~\cite{chipseek2025}
+trains with hierarchical correctness and PPA rewards; PPA-RTL~\cite{ppartl2025}
+uses post-synthesis PPA directly as the reinforcement signal. Both establish
+that physical feedback can drive RTL generation, and we do not claim that
+contribution. Our subject is orthogonal and, we argue, prior to theirs: the
+conditions under which such a reward remains \emph{valid} while it is being
+optimized. Neither work measures its reward's error against ground truth on a
+distribution created by its own optimization.
+
+\textbf{Reward overoptimization.} Gao \emph{et al.}~\cite{gao2023scaling}
+characterize the phenomenon for language-model reward models using a synthetic
+gold reward model as ground truth. We measure it with a synthesis tool and a
+physical device. The qualitative shape we observe---stability followed by
+saturation---is consistent with theirs; the ability to attach real units to the
+gap is what hardware adds.
+
+\textbf{Evaluating RTL optimization.} RTL-OPT~\cite{lu2026rtlopt} provides a
+benchmark for optimization-oriented RTL evaluation, and
+FormalRTL~\cite{formalrtl2026} couples reference models to formal equivalence
+checking. Our oracle is simulation-based and we make no formal claim; the audit
+in Section~\ref{sec:integrity} is what supports the acceptance rule.
+
+% ===========================================================================
+\section{Conclusion}
+% ===========================================================================
+
+A learned physical reward can pass every offline check available to the
+practitioner who trains it, and be wrong by $236$\,MHz precisely where
+optimization drives the policy. The failure is abrupt, it is accompanied by a
+functional-correctness regression that is the same event rather than a separate
+one, and it is not visible in cross-validation---indeed, cross-validation ranks
+the broken predictor above its repair.
+
+The remedy is inexpensive: forty-three real measurements taken from the region
+the optimizer actually reaches. What is not inexpensive is knowing that the
+remedy is needed, and the practical recommendation we draw is to monitor the
+reward's saturation during training, since it costs nothing and is the earliest
+available signal that the objective has stopped meaning what it did.
+
+\section*{Reproducibility}
+
+Code, the frozen held-out design set, all generated candidates, and every
+post-implementation measurement underlying the tables above are available at
+\url{https://github.com/MoAmineHallam/FPGA}. Each table regenerates from the
+committed artifacts with a single named script.
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\end{document}
