@@ -2017,11 +2017,20 @@ result, a training diagnostic):
   v9     surrF 120 -> 169, corr 91.9% -> 96.9%
   v9_s1  surrF 159 -> 227, corr 93.5% -> 88.0%
   v9_s2  surrF 133 -> 277, corr 88.9% -> 96.8%
-Seed 2 climbs highest (max group mean 468) but:
-  ** ZERO groups reached the clip bound in ANY of the three seeds (0.0%). **
-Under the original surrogate the run saturated; under the re-anchored one, three
-independent seeds do not. That is the replication the single-seed limitation
-asked for, on the training side.
+Seed 2 climbs highest (max group mean 468).
+
+CORRECTED 2026-08-11 (external review, verified): I wrote "ZERO groups reached
+the clip bound in ANY of the three seeds (0.0%)". That was measured on the group
+MEAN and stated as though no saturation occurred at all. WRONG. Group means
+never reach the clamp, but individual CLAMPED CANDIDATES appear in every seed:
+  grpo_v9_log.jsonl      3 groups (lines 8, 72, 82)
+  grpo_v9_s1_log.jsonl   2 groups (lines 58, 238)
+  grpo_v9_s2_log.jsonl   5 groups (lines 14, 82, 160, 174, 181)
+Correct wording: "no group-mean saturation, but 2-5 logged groups per seed
+contain a clamped candidate." The re-anchored reward reduces saturation
+sharply; it does not eliminate it, which is what the preprint's limitation
+section already said about the endpoint measurement and what the training logs
+say too.
 
 PENDING for the full paper (not the preprint): eval_holdout + Vivado for
 grpo_v9_s1/s2 to turn this into a held-out seed-variance row. The preprint keeps
@@ -2531,3 +2540,43 @@ should say so before they do.
 OBVIOUS FOLLOW-ON: retrain the surrogate with n-gram features and re-run GRPO.
 If reward hacking disappears and held-out Fmax improves, the paper gains a
 positive result to sit beside the negative one.
+
+### 2026-08-11 — external review, adjudicated
+
+Three claims checked against the files. Two upheld, one superseded.
+
+1. UPHELD, and it was my error. "Zero groups reached the clamp" was measured on
+   the group MEAN. Individual clamped candidates appear in every seed (2-5
+   groups each). Corrected in place above, with line numbers.
+
+2. UPHELD, and it is the sharpest point anyone has made about the ablation.
+   **The n-gram model was chosen by looking at the optimized distribution.**
+   Six architectures were scored on the 345 post-optimization candidates and
+   the best one was reported. That is selection on the test set. What the
+   ablation licenses is "a richer representation WOULD HAVE predicted this
+   optimized distribution well", NOT "a richer representation prevents the
+   collapse". The latter requires using it as the reward and running GRPO.
+   Until then, do not write that n-grams fix anything.
+   Note the recursion, which is the interesting part: an n-gram reward fitted
+   on the same 229 rows has UNKNOWN validity on the distribution that n-gram-
+   guided GRPO would create. The paper's own thesis says you cannot know in
+   advance. So both outcomes are publishable -- no collapse means
+   representation is the actionable axis; a collapse at a different rate means
+   the deeper claim (any learned reward is eventually exploited; representation
+   changes only how fast) survives and is stronger.
+
+3. SUPERSEDED. "Documentation drift: knn12 GRPO rho documented 0.543 but
+   committed 0.604." The reviewer read commit b76f540, the LAPTOP run, before
+   the server run (cb5981b) replaced it. The current committed file has 0.543
+   and MASTER_REFERENCE matches it.
+   BUT a real issue hides underneath: knn12 is deterministic, and the laptop
+   produced 0.604 where the sandbox and server both produced 0.543. Same data,
+   same code, different sklearn/numpy build. Pick ONE canonical environment for
+   every number that reaches the paper and record its versions; do not mix
+   machines within a table.
+
+Also upheld and already known: the seed pushes are TRAINING LOGS only -- no
+seed-specific candidates, oracle summaries, manifests or Vivado results, so
+they are not outcome replications; and the current manuscript still presents
+correctness-gated GRPO as the central contribution and contains none of the
+trajectory, re-anchoring, seed or ablation work.
