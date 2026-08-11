@@ -274,7 +274,9 @@ Sources of RTL candidates:
 - CVDP: arXiv 2506.14074 (783 problems, SOTA ≤34% pass@1 — confirms 37.2% is competitive)
 - RL-in-ICs survey: Integration journal 2025 (good for related-work, confirms every prior RL work uses simulation not real hardware)
 
-**FABRICATED (never cite):** ChipMATE, VFlow, ChipSeek-R1 — these don't exist.
+**UNVERIFIED (do not cite):** ChipMATE, VFlow — no public record found.
+**CORRECTED 2026-08-11:** ChipSeek-R1 was on this list in error. It is REAL
+(arXiv:2507.04736) and is cited in the preprint. See MASTER_REFERENCE.md.
 
 ---
 

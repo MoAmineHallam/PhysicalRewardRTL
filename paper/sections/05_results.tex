@@ -36,12 +36,12 @@ RTLCoder-6.7B (five families) & 4.2\% & \best{94.8\%} \\
 
 Table~\ref{tab:money} and Figure~\ref{fig:money} report the principal result.
 Over thirty frozen held-out designs, the correctness-gated policy raises the
-mean timing-closed \fmax{} from $86.5$ to $211.3$~MHz under interpolation
+mean WNS-derived \fmax{} from $86.5$ to $211.3$~MHz under interpolation
 ($+144\%$) and from $78.5$ to $174.2$~MHz under extrapolation ($+122\%$).
 
 \begin{table}[t]
 \centering
-\caption{Held-out mean \fmax{} (MHz), real timing-closed Vivado, five families,
+\caption{Held-out mean \fmax{} (MHz), real WNS-derived Vivado, five families,
 $n=48$ samples per design, computed by Equation~(\ref{eq:realmean}). Best-of-8
 selects among the first eight supervised samples using the surrogate.}
 \label{tab:money}
@@ -61,7 +61,7 @@ Extrap.\ (11) & 16.4 & 78.5 & 159.0 & \best{174.2} & $+122\%$ \\
 \centering
 \includegraphics[width=\linewidth]{fig_money}
 \caption{Mean held-out \fmax{} by regime and policy. All values are
-timing-closed Vivado results; no surrogate value appears.}
+WNS-derived Vivado results; no surrogate value appears.}
 \label{fig:money}
 \end{figure}
 
@@ -98,14 +98,22 @@ Family & Regime & SFT & \textbf{GRPO} & Change \\
 \end{tabular}
 \end{table}
 
-Correctness is preserved rather than traded away in aggregate, but not uniformly.
-Several designs improve markedly (\texttt{fir26} $79 \rightarrow 96\%$,
-\texttt{iir9} $81 \rightarrow 94\%$, \texttt{med7} $79 \rightarrow 85\%$), while
-five regress (\texttt{iir9\_v1} $92 \rightarrow 58\%$, \texttt{fir40}
-$79 \rightarrow 52\%$, \texttt{poly7\_v1} $94 \rightarrow 77\%$, \texttt{iir20}
-$79 \rightarrow 62\%$, \texttt{iir16} $42 \rightarrow 35\%$). The regressions are
-not randomly distributed, and Section~\ref{sec:hacking} identifies what they have
-in common.
+Correctness declines slightly in aggregate, from $88.7\%$ to $86.9\%$, and the
+decline is not evenly spread. Under interpolation it is flat
+($92.8 \rightarrow 93.2\%$); under extrapolation it falls by more than five
+points ($81.6 \rightarrow 76.1\%$). Per design, several improve markedly
+(\texttt{fir26} $79 \rightarrow 96\%$, \texttt{iir9} $81 \rightarrow 94\%$,
+\texttt{med7} $79 \rightarrow 85\%$), while five regress (\texttt{iir9\_v1}
+$92 \rightarrow 58\%$, \texttt{fir40} $79 \rightarrow 52\%$, \texttt{poly7\_v1}
+$94 \rightarrow 77\%$, \texttt{iir20} $79 \rightarrow 62\%$, \texttt{iir16}
+$42 \rightarrow 35\%$).
+
+We draw attention to the regime split rather than the aggregate, because the
+regressions are not randomly distributed: they concentrate in exactly the region
+where Section~\ref{sec:hacking} shows the reward to be saturated, and where it
+therefore supplies no gradient that distinguishes a fast correct design from a
+fast incorrect one. Reporting only the aggregate would have described this as a
+small uniform cost. It is not uniform, and its location is the finding.
 
 \subsection{Mechanism: reallocation, not invention}
 \label{sec:mechanism}
@@ -169,26 +177,34 @@ one. Figure~\ref{fig:bestofn} shows the resulting curves.
 \includegraphics[width=\linewidth]{fig_bestofn}
 \caption{Expected \fmax{} of the best of $N$ supervised samples under a
 \emph{perfect} selector, against a single sample from the optimised policy.
-Under interpolation one optimised sample exceeds a perfectly selected best of
-forty-eight supervised samples.}
+One optimised sample is worth roughly twenty-two perfectly selected supervised
+samples under interpolation and eight under extrapolation.}
 \label{fig:bestofn}
 \end{figure}
 
-Under interpolation, a single sample from the optimised policy ($222.6$~MHz)
-exceeds the expected best of \emph{forty-eight} perfectly selected supervised
-samples ($207.8$~MHz); under extrapolation it is equivalent to a perfectly
-selected best of thirty-two. The comparison is conservative in the policy's
-disfavour, since the perfect selector is unattainable in practice.
+Under interpolation, a single sample from the optimised policy ($198.7$~MHz)
+is worth approximately twenty-two perfectly selected supervised samples
+(between $191.4$ at $N{=}16$ and $206.6$ at $N{=}32$); under extrapolation
+($138.6$~MHz) approximately eight ($137.1$ at $N{=}8$). It does \emph{not}
+exceed a perfectly selected best of forty-eight in either regime. Because the
+perfect selector requires the true post-implementation frequency of all $N$
+candidates---that is, $N$ synthesis runs---it upper-bounds every realisable
+reranker, so one optimised sample is worth strictly more than $N$ real
+supervised samples. The claim that survives without any selector assumption is
+the equal-cost one: at one sample against one sample, $79.9 \rightarrow 198.7$
+under interpolation and $61.2 \rightarrow 138.6$ under extrapolation.
 
-More decisively, sampling cannot solve the problem at all on some designs. For
-\texttt{firr10} the supervised model does not produce the fast implementation in
-any of forty-eight samples ($68.9$~MHz at $N=48$, against $306.8$~MHz for the
-policy), and for \texttt{fir40} the corresponding figures are $20.9$ and
-$181.8$~MHz. These are existence failures rather than selection failures: no
-selector can choose an implementation that was never generated. This
-distinguishes distribution shift from improved sampling, and is the clearest
-evidence that the optimisation occurs in the policy rather than in the
-selection.
+We previously reported that sampling could not solve some designs at all, on the
+grounds that the supervised model never emits the fast implementation. On the
+frozen thirty-design set that is false, and in both directions: for
+\texttt{firr10} the supervised best-of-$48$ reaches $313.2$~MHz against the
+policy's $300.7$, and for \texttt{fir40} it reaches $181.7$ against $94.7$. The
+supervised model emits the fast form on both---rarely, but it emits it. The
+effect is therefore reallocation of probability mass toward implementations the
+policy already had, not the creation of implementations it lacked, which is the
+same conclusion Section~\ref{sec:mechanism} reaches by a different route. We
+state the correction explicitly because the stronger version of the claim
+appeared in an earlier draft of this work.
 
 \subsection{Silicon validation}
 \label{sec:silicon}
@@ -320,7 +336,7 @@ measure $191$--$193$~MHz: the surrogate was wrong in magnitude while remaining
 correct in \emph{ranking}, which is sufficient for group-relative advantage
 estimation, and the outcome was a $+326\%$ improvement. For the median family
 the surrogate reported $188.6$~MHz for designs that measure $36$--$40$~MHz in
-timing-closed synthesis. Had we reported surrogate values, this family would
+post-implementation synthesis. Had we reported surrogate values, this family would
 have appeared as the method's most dramatic success---a $4.5\times$
 improvement---when in fact it achieved no frequency gain whatsoever. This is the
 concrete justification for the invariant of Section~\ref{sec:surrogate}: a

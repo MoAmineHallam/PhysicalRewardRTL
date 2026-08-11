@@ -87,9 +87,15 @@ $1536$ tokens. Training uses oracle seed $0$ with stimulus length $512$.
 
 \paragraph{Synthesis} All reported frequencies are obtained from Vivado 2023.1
 targeting a Xilinx Zynq-7020 (\texttt{xc7z020clg400-1}) with a $5$~ns target
-period, taking \fmax{} from the post-implementation worst negative slack. A
-design that fails to close or fails synthesis is recorded as such rather than
-dropped.
+period, computed from the post-implementation (post-route) worst negative slack
+as $\fmax{} = 1000/(T - \mathrm{WNS})$. We state plainly that this is a
+\emph{WNS-derived estimate from a single implementation run}, not a
+timing-closure result: we do not iterate the constraint until the design closes.
+It is the standard basis for relative comparison in this
+literature~\cite{ustun2020accurate}, and every comparison we report is
+relative---between policies, on identical designs, through an identical flow.
+Absolute frequencies should not be read as closed timing. A design that fails
+synthesis or implementation is recorded as such rather than dropped.
 
 \paragraph{Evaluation protocol} Each policy is sampled $n=48$ times per held-out
 design. Correctness at evaluation time is assessed with oracle seeds $1$ and $2$

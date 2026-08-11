@@ -372,9 +372,17 @@ for ($k=0; $k -le 7; $k++) { vivado -mode batch -source rtl\cand_batches\build_c
 - **Abandoned:** measured-power reward (PMBus telemetry too coarse on both boards);
   SFT warm-start (caused forgetting).
 
-### FABRICATED citations to NEVER use
-ChipMATE, VFlow, ChipSeek-R1 (do not cite; they don't exist). Verify every SOTA
-number against the original paper before quoting.
+### Citations: verify before use
+ChipMATE and VFlow remain UNVERIFIED -- no public record found; do not cite.
+
+CORRECTED 2026-08-11: **ChipSeek-R1 is REAL** and this list was wrong about it.
+arXiv:2507.04736, Chen, Chang, Li, He, Chen, Li, Wang, Xu, Han, Wang. Note the
+paper was retitled in a later version to "ChipSeek: Optimizing Verilog
+Generation via EDA-Integrated Reinforcement Learning" -- check which title the
+version we cite carries before camera-ready. It is cited in the preprint and is
+one of the two works that preempted the original "correctness-gated GRPO makes
+fast RTL" framing (the other being PPA-RTL, DOI 10.1109/DAC63849.2025.11132897).
+Verify every SOTA number against the original paper before quoting.
 
 ---
 
@@ -2065,3 +2073,69 @@ and provably did not".
 NOTE for whoever runs the sandbox next: iverilog was again absent from this
 container (ephemeral filesystem, as warned in CLAUDE.md). `apt-get install -y
 iverilog` restored it; numpy also needed `pip install numpy`.
+
+### PRE1 CLOSED — false claims purged from the manuscripts (2026-08-11)
+
+1. **"timing-closed" (12 sites)** — `paper/main.tex`, `paper/sections/*.tex`,
+   `paper/README.md`, `RESULTS.md`. The flow (`ppa_synth.tcl:72-79`) runs
+   route_design, reads WNS from ONE 5 ns run, and computes 1000/(T - WNS). That
+   is a post-implementation WNS-derived ESTIMATE, not timing closure — nothing
+   iterates the constraint. All sites now say "WNS-derived". `04_setup.tex`
+   gained the same explicit disclaimer the preprint already carried. The
+   preprint was already correct and needed no change.
+2. **"Correctness is preserved in aggregate"** (`05_results.tex`) — FALSE.
+   88.7% -> 86.9%, a 1.8-point DECLINE. Rewritten with the regime split, which
+   is the honest and stronger version: interp flat (92.8 -> 93.2), extrap down
+   5.5 points (81.6 -> 76.1). The decline sits exactly where the reward is
+   saturated, so it corroborates the trajectory finding instead of being an
+   unexplained cost.
+3. **best-of-48 (RESULTS.md 2b, 05_results.tex sec:bestofn)** — the claim "one
+   GRPO sample beats a perfect selector over 48 SFT samples" came from the old
+   22-design set. On the frozen 30-design set: interp 1 GRPO sample ~ perfect
+   best-of-22 (198.7 vs bo16=191.4/bo32=206.6), extrap ~ best-of-8 (138.6 vs
+   bo8=137.1). GRPO does NOT exceed bo48 in either regime. `analyze_bestofn.py`
+   already printed the withdrawal; the prose had not been updated.
+   Two SUPPORTING examples were also wrong, in the opposite direction:
+     - firr10: SFT bo48 = 313.2 BEATS grpo bo1 = 300.7 (was cited as 68.9)
+     - fir40:  SFT bo48 = 181.7 BEATS grpo bo1 = 94.7  (was cited as 20.9 —
+       that number is the SFT MEDIAN, not its best of 48)
+   So "existence failures sampling cannot fix" is WITHDRAWN. The SFT model does
+   emit the fast form on both designs, rarely. Correct framing: reallocation of
+   probability mass, not creation of missing implementations — which is what
+   sec:mechanism concludes independently, so the paper loses nothing.
+   fir40 corrected sample-cost: sft 38/48 correct, best real 181.8; grpo 25/48,
+   best real 181.8 — IDENTICAL best Fmax. fir40 is a design where GRPO buys
+   nothing and costs correctness, and it lives in the saturated region.
+4. **ChipSeek-R1 "fabricated"** (MASTER_REFERENCE:376, HANDOFF:277) — WRONG.
+   Verified real: arXiv:2507.04736, Chen/Chang/Li/He/Chen/Li/Wang/Xu/Han/Wang;
+   retitled in a later version to "ChipSeek: Optimizing Verilog Generation via
+   EDA-Integrated Reinforcement Learning" (check before camera-ready). ChipMATE
+   and VFlow stay on the do-not-cite list as UNVERIFIED (no public record).
+
+### Citations verified this session (all real; authors added to refs.bib)
+  RTL-OPT      arXiv:2601.01765  Lu, Liu, Zhou, Fang, Zhang, Xie (Jan 2026)
+  FormalRTL    arXiv:2603.08738  Li, Li, Wen, Zhao, Wu, Huang, Xu (Feb 2026)
+  ChipSeek-R1  arXiv:2507.04736  (above)
+  Dr. RTL      arXiv:2604.14989  Fang, Lu, Liu, Wang, Guo, He, Tu, Xie (HKUST)
+  POET         arXiv:2603.19333  Ping et al. (USC)
+  presynthesis PPA estimation, Fang et al., TCAD 2024
+STILL MISSING: PPA-RTL author list (DOI 10.1109/DAC63849.2025.11132897) is not
+recoverable from public listings; refs.bib carries a TODO. Fill from IEEE
+Xplore before submission — do NOT guess it.
+
+Related work grew two paragraphs. (a) Tool-in-the-loop 2026 work (Dr. RTL, POET)
+optimises against the real tool, so it CANNOT have our failure — its signal is
+ground truth. It pays in tool invocations, which is exactly what a learned
+reward exists to avoid; our result is the price of that trade. (b) Learned
+pre-synthesis PPA prediction (Fang TCAD'24, Ustun'20) is evaluated with held-out
+accuracy and rank correlation — our point is not that these are inaccurate
+(ours is accurate by those metrics and still useless as a reward) but that the
+metric is measured on a distribution deployment will not preserve.
+Also noted honestly: Dr. RTL argues for industrial flows over open-source tools
+and degraded designs; our WNS-derived estimates do not meet that bar, and the
+related-work section now says so rather than leaving a reviewer to find it.
+
+Other 2026 work seen while verifying, NOT yet read or cited (for the full
+paper): COEVO 2604.15001, Ares 2607.27879, RTLScout 2606.06530, Alpha-RTL
+2606.05253, StepPRM-RTL 2606.04246, AutoGate 2606.17461, ASPEN (MLCAD'25),
+ChipVerilog 2607.13079.

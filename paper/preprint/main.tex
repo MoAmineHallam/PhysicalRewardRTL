@@ -604,11 +604,38 @@ physical device. The qualitative shape we observe---stability followed by
 saturation---is consistent with theirs; the ability to attach real units to the
 gap is what hardware adds.
 
+\textbf{Tool-in-the-loop optimization.} A 2026 line of work optimizes RTL by
+calling the synthesis tool itself inside the search rather than learning a
+model of it: Dr.\ RTL~\cite{drrtl2026} performs agentic critical-path analysis
+and rewriting against an industrial flow, and POET~\cite{poet2026} runs an
+LLM-driven evolutionary search with non-dominated sorting over measured PPA.
+These methods do not have the failure we describe, by construction---their
+signal cannot drift from ground truth because it \emph{is} ground truth. They
+pay for that in tool invocations, which is precisely the cost a learned reward
+exists to avoid. Our result should be read as the price of that trade: the
+proxy is cheap until optimization leaves the region its labels cover, and
+nothing in the offline metrics announces when that happens.
+
+\textbf{Learned pre-synthesis PPA prediction.} Predicting post-synthesis
+quality from RTL is an established problem with its own
+literature~\cite{fang2024presynthesis,ustun2020accurate}, evaluated in the
+standard way: held-out accuracy and rank correlation over a fixed corpus. Our
+argument is not that these models are inaccurate---ours is accurate by exactly
+those metrics, and remains so after it has become useless as a reward. It is
+that the metric is measured on a distribution the predictor's own deployment
+will not preserve. Any predictor used as an optimization target, not merely as
+an estimator, inherits this.
+
 \textbf{Evaluating RTL optimization.} RTL-OPT~\cite{lu2026rtlopt} provides a
 benchmark for optimization-oriented RTL evaluation, and
 FormalRTL~\cite{formalrtl2026} couples reference models to formal equivalence
 checking. Our oracle is simulation-based and we make no formal claim; the audit
-in Section~\ref{sec:integrity} is what supports the acceptance rule.
+in Section~\ref{sec:integrity} is what supports the acceptance rule. We note
+that this line of work also raises the bar on evaluation realism---Dr.\
+RTL~\cite{drrtl2026} in particular argues for industrial flows over degraded
+designs and open-source tools---and that our WNS-derived estimates
+(Section~\ref{sec:limitations}) do not meet that bar. Our comparisons are
+internal and relative, and we make no absolute frequency claim.
 
 % ===========================================================================
 \section{Conclusion}

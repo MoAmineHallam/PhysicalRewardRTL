@@ -88,6 +88,6 @@ Or import the repo into Overleaf (New Project → Import from GitHub) and set
 - **Never type a measured number into a `.tex` file by hand.** Take it from
   `RESULTS.md`, which is derived from the artifacts.
 - **No surrogate-derived frequency is ever reported.** Every \fmax in the paper
-  is timing-closed Vivado or a measured hardware sweep (invariant #2).
+  is WNS-derived Vivado or a measured hardware sweep (invariant #2).
 - Numbers currently in the tables correspond to `RESULTS.md` as of the
   5-family Vivado pass; re-check §2a, §7, §7b, §2c, §5, §8b after any re-run.

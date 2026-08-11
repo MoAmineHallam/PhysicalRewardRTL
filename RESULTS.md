@@ -19,7 +19,7 @@ Oracle correctness (probe_competence, n=16/design, corpus-format prompts):
 ## 2. THE MONEY TABLE — held-out real-Vivado verdict (Phase B core) ✅
 
 22 frozen held-out designs (never in corpus/GRPO/surrogate), n=48/design,
-oracle seeds 1&2 n=1024, real timing-closed Vivado Fmax (freq-weighted means):
+oracle seeds 1&2 n=1024, real WNS-derived Vivado Fmax (freq-weighted means):
 
 | regime | base | sft_v5 | best-of-8 | **grpo_v7** | grpo vs sft | grpo vs bo8 |
 |---|--:|--:|--:|--:|--:|--:|
@@ -36,7 +36,7 @@ fast form on 6 designs → RL beats fast-tail sampling, not just cheaper.
 ## 2a. THE 5-FAMILY MONEY TABLE (grpo_v8, real Vivado) ✅ — the D2 headline
 
 30 frozen held-out designs across **5 families / 3 circuit classes**, never in
-corpus/GRPO/surrogate. n=48/design, oracle seeds 1&2 n=1024, real timing-closed
+corpus/GRPO/surrogate. n=48/design, oracle seeds 1&2 n=1024, real (WNS-derived)
 Vivado (freq-weighted means, 346 synthesized candidates):
 
 | regime | base | sft_v6c | best-of-8 | **grpo_v8** | grpo vs sft | vs bo8 |
@@ -74,28 +74,52 @@ the SFT ceiling (firr10 334 vs 313; firr40 195 vs 189).
 - **Best-of-8 still misses the fast form entirely** on firr40 (20.7 MHz) and
   firr10 (66.6) — existence failures sampling cannot fix.
 
-## 2b. Best-of-N curves: one GRPO sample ≈ 48 perfectly-selected SFT samples ✅
+## 2b. Best-of-N curves: one GRPO sample ≈ 22 perfectly-selected SFT samples ✅
+
+CORRECTED 2026-08-11. The previous version of this section claimed "one GRPO
+sample beats a perfect selector over 48 SFT samples". That was computed on the
+OLD 22-design set and does NOT survive the frozen 30-design 5-family set. Three
+of its bullet points were wrong; all are restated below. `analyze_bestofn.py`
+already carries the withdrawal in its own output.
 
 Exact expected best-of-N (i.i.d., closed form) from the existing eval
 artifacts, assuming a PERFECT selector (upper-bounds surrogate top-1 or any
-reranker). `analyze_bestofn.py` → rtl/holdout_eval/bestofn.json:
+reranker). `analyze_bestofn.py --dirs rtl/holdout_eval_v8_{firfirr,poly,iirmed}`:
 
 | regime (mean, real MHz) | bo1 | bo8 | bo16 | bo32 | bo48 | **GRPO bo1** |
 |---|--:|--:|--:|--:|--:|--:|
-| Interpolation | 60.7 | 135.2 | 171.5 | 198.6 | 207.8 | **222.6** |
-| Extrapolation | 47.3 | 109.2 | 133.8 | 152.3 | 159.5 | **150.0** |
+| Interpolation | 79.9 | 164.2 | 191.4 | 206.6 | 210.3 | **198.7** |
+| Extrapolation | 61.2 | 137.1 | 154.8 | 166.2 | 170.4 | **138.6** |
 
-- Interp: **a single GRPO sample beats a perfect selector over 48 SFT
-  samples.** Extrap: one GRPO sample ≈ perfect best-of-32.
-- Existence failures sampling can't fix: SFT never emits the fast form in 48
-  samples for firr10 (bo48 = 68.9 vs GRPO 306.8) or fir40 (bo48 = 20.9 vs
-  GRPO 181.8) — distribution shift, not selection.
-- fir40 sample-cost: GRPO p(correct)=0.167 → expected **6.0 one-second oracle
-  sims** to a correct 181.8 MHz design; SFT is 75% correct there but its best
-  of all 48 samples is 20.9 MHz.
-- Area (F7 resolved): GRPO is *smaller* in LUTs on fir (e.g. fir40 1079→788)
-  paying only pipeline FFs; poly maps to DSPs (sft 5–7 → grpo +1); DSP column
-  now in every table.
+- Interp: one GRPO sample ≈ perfect **best-of-22** (198.7, between bo16=191.4
+  and bo32=206.6). Extrap: ≈ perfect **best-of-8** (138.6 vs bo8=137.1).
+  GRPO does NOT exceed bo48 on either regime.
+- The perfect selector is unbuildable — it needs the true post-implementation
+  Fmax of all N candidates, i.e. N synthesis runs — so it upper-bounds every
+  real reranker. The two defensible statements are (a) at EQUAL sample count
+  (1 vs 1) GRPO beats SFT 79.9→198.7 interp / 61.2→138.6 extrap, which is not a
+  selection effect; and (b) one GRPO sample is worth roughly the N above of SFT
+  samples judged by a selector nobody can build, hence strictly more than N
+  real samples.
+- GRPO bo1 exceeds SFT bo48 on 6 of 30 designs, all poly (poly7_8b 192.1 vs
+  188.7; poly7_v3 191.1 vs 170.2; poly8_v6/v7 179.2 vs 170.6/170.9;
+  poly7_v2 191.1 vs 188.7; poly7_v5 187.1 vs 183.9), and ties fir18 and firr26.
+- WITHDRAWN — "existence failures sampling cannot fix". On the 30-design set
+  SFT bo48 REACHES the fast form on both designs previously cited: firr10
+  bo48 = 313.2 (vs GRPO 300.7, i.e. SFT wins) and fir40 bo48 = 181.7 (vs GRPO
+  94.7, SFT wins). The old "bo48 = 20.9" for fir40 confused the SFT MEDIAN
+  (20.9 MHz, correct — see the area table) with its best of 48. The fast form
+  is a RARE event under SFT, not an absent one, and the honest framing is
+  distribution reallocation, not existence.
+- fir40 sample-cost, corrected: sft 38/48 correct (p=0.792, 1.3 expected
+  oracle-checked samples to first correct, best real 181.8 MHz); grpo 25/48
+  (p=0.521, 1.9 samples, best real 181.8 MHz). Identical best Fmax. fir40 is a
+  design where GRPO buys nothing and costs correctness — it is one of the five
+  regressions, and it sits in the extrapolation region where the reward is
+  saturated (§ trajectory analysis, 2026-08-11).
+- Area (F7 resolved): GRPO is *smaller* in LUTs on fir (fir40 1079→788, fir26
+  655→480) paying only pipeline FFs; poly maps to DSPs (sft 3–7 → grpo +1);
+  DSP column now in every table.
 
 ## 2c. HLS baseline (D1) — LLM ≈ expert HLS, ≫ naive HLS ✅
 
@@ -199,7 +223,7 @@ breaks at 333 (sweeps capped at 260).
 ## 7b. Qwen held-out MONEY TABLE (real Vivado) ✅ — the method transfers
 
 Second base model (Qwen2.5-Coder-7B), same corpus/trainer/oracle, real
-timing-closed Vivado Fmax, n=48/design, oracle seeds 1&2 n=1024:
+WNS-derived Vivado Fmax, n=48/design, oracle seeds 1&2 n=1024:
 
 | regime | base | sft | best-of-8 | **grpo** | grpo vs sft |
 |---|--:|--:|--:|--:|--:|
