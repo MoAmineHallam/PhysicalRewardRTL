@@ -127,7 +127,14 @@ def load_dataset(dirs, exclude_holdout=True):
             f = os.path.join(d, mod + ".sv")
             if not os.path.exists(f):
                 continue
+            # `mod` is NOT unique across data dirs -- the same module name
+            # recurs in different probe runs with different RTL and different
+            # measured Fmax. Anything that keys rows (e.g. the matched-set
+            # comparison in compare_surrogate_lodo.py) must use `key`, not
+            # `mod`, or it will silently collapse distinct rows together.
             rows.append({"mod": mod, "design": design_of(mod),
+                         "key": os.path.join(os.path.basename(d), mod),
+                         "src": d,
                          "fmax": float(p.get("fmax_mhz", 0.0)),
                          "feats": extract_features(open(f).read())})
     if dropped:
@@ -176,18 +183,24 @@ def main():
         return nn.Sequential(nn.Linear(X.shape[1], 32), nn.ReLU(),
                              nn.Linear(32, 32), nn.ReLU(), nn.Linear(32, 1))
 
-    # leave-one-design-out evaluation (rank metrics are what GRPO needs)
+    # leave-one-design-out evaluation (rank metrics are what GRPO needs).
+    # Normalisation is refit INSIDE the fold. Using the all-data mu/sd here --
+    # which this script did until 2026-08-11 -- leaks the held-out design's
+    # feature distribution into its own evaluation, and does so worst for
+    # exactly the designs whose features are unlike the rest, i.e. the
+    # extreme-Fmax rows whose ordering the reward depends on.
     preds = np.zeros(len(y))
     for d in sorted(set(dz)):
         tr, te = dz != d, dz == d
-        Xt = torch.tensor((X[tr]-mu)/sd, dtype=torch.float32)
+        mu_f, sd_f = X[tr].mean(0), X[tr].std(0) + 1e-6
+        Xt = torch.tensor((X[tr]-mu_f)/sd_f, dtype=torch.float32)
         yt = torch.tensor(y[tr], dtype=torch.float32).view(-1, 1)
         net = mlp(); opt = torch.optim.Adam(net.parameters(), lr=1e-2)
         for _ in range(args.epochs):
             opt.zero_grad()
             loss = ((net(Xt)-yt)**2).mean(); loss.backward(); opt.step()
         with torch.no_grad():
-            preds[te] = net(torch.tensor((X[te]-mu)/sd,
+            preds[te] = net(torch.tensor((X[te]-mu_f)/sd_f,
                             dtype=torch.float32)).numpy().ravel()
 
     print(f"LODO pooled Spearman(pred, actual) = {spearman(preds, y):.3f}")
