@@ -117,9 +117,20 @@ def audit_one(cand):
             return out
         f8, L8, k8 = best_over_lat(y_dut, y_ref, WARMUP)
         f0, L0, k0 = best_over_lat(y_dut, y_ref, 0)
+        # legacy parse: the pre-fix oracle DELETED every x/z sample instead of
+        # comparing it, so its trace is exactly this one with the sentinels
+        # removed. Scoring both lets the audit say whether the defect ever
+        # changed a verdict on real candidates, rather than only on injected
+        # faults.
+        n_undef = 0 if y_dut is None else int((y_dut == oracle.X_SENTINEL).sum())
+        y_leg = None if y_dut is None else y_dut[y_dut != oracle.X_SENTINEL]
+        if y_leg is not None and len(y_leg) < 32:
+            y_leg = None
+        f_leg, _, _ = best_over_lat(y_leg, y_ref, WARMUP)
         per_seed[seed] = {"compiled": y_dut is not None,
                           "frac_w8": f8, "lat_w8": L8, "k_w8": k8,
                           "frac_w0": f0, "lat_w0": L0, "k_w0": k0,
+                          "n_undef": n_undef, "frac_legacy": f_leg,
                           "_dut": y_dut, "_ref": y_ref}
 
     s1, s2 = per_seed[EVAL_SEEDS[0]], per_seed[EVAL_SEEDS[1]]
@@ -139,6 +150,8 @@ def audit_one(cand):
     out["lat_consistent"] = bool(s1["lat_w8"] == s2["lat_w8"] and s1["lat_w8"] >= 0)
 
     # the four acceptance decisions (a candidate must pass on BOTH seeds)
+    out["n_undef"] = max(s1["n_undef"], s2["n_undef"])
+    out["accept_legacy"] = bool(min(s1["frac_legacy"], s2["frac_legacy"]) >= PASS)
     out["accept_now"] = bool(min(s1["frac_w8"], s2["frac_w8"]) >= PASS)
     out["accept_exact"] = bool(min(s1["frac_w8"], s2["frac_w8"]) >= 1.0)
     out["accept_warmup0"] = bool(min(s1["frac_w0"], s2["frac_w0"]) >= PASS)
@@ -183,6 +196,20 @@ def run_report(args):
 
     now = [r for r in ok if r["accept_now"]]
     print(f"accepted by the CURRENT rule: {len(now)}/{len(ok)}\n")
+
+    # undefined-output accounting (the x/z parse defect)
+    und = [r for r in ok if r.get("n_undef", 0)]
+    if any("accept_legacy" in r for r in ok):
+        flip_in = [r for r in ok if r.get("accept_legacy") and not r["accept_now"]]
+        flip_out = [r for r in ok if r["accept_now"] and not r.get("accept_legacy")]
+        print(f"candidates emitting x/z on some cycle: {len(und)}/{len(ok)}")
+        print(f"  accepted by the OLD (x/z-deleting) parse but not now: "
+              f"{len(flip_in)}   <- false positives the defect could hide")
+        print(f"  accepted now but not by the old parse:                "
+              f"{len(flip_out)}")
+        for r in flip_in[:10]:
+            print(f"    + {r['key']:52s} undef={r['n_undef']}")
+        print()
     print("Of those accepted now, how many survive each stricter rule?")
     for rule, label in [("accept_exact", "exact equality (frac == 1.0)"),
                         ("accept_warmup0", "warmup=0 (reset window compared)"),

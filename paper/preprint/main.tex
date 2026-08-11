@@ -527,6 +527,34 @@ and at the evaluation length at most one in $1016$. We report the sample counts
 rather than the threshold, since the latter reads as an approximate-similarity
 score and is not one.
 
+\textbf{A defect the audit found in the oracle itself.} The comparison above
+tests the acceptance \emph{rule}; it does not test the code that produces the
+trace the rule consumes. Inspecting that code, we found that the trace parser
+retained only decimal tokens, so a cycle on which the design under test drove an
+unknown or high-impedance value---rendered \texttt{x} or \texttt{z} by the
+simulator---was silently \emph{deleted} rather than compared. Deletion shortens
+the trace and shifts every later sample one position earlier, and because the
+rule searches over a latency offset, the shift can be absorbed. The failure mode
+is not hypothetical: a design we constructed to be correct except that its final
+sixteen output cycles are undefined scores a \emph{perfect} $1.0000$ under the
+deleting parser and is accepted.
+
+We now retain such a sample in place as a sentinel that cannot equal any
+reference value, so an undefined output counts as a mismatch. Retaining rather
+than rejecting outright is deliberate: an unreset pipeline is legitimately
+undefined while it fills, and the warmup and latency window already excuses that
+prefix. On the same constructed design the corrected parser scores $0.9622$ and
+rejects.
+
+Re-auditing all $1{,}529$ candidates under the corrected parser, $18$ emit an
+undefined value on at least one cycle, and in every case those cycles fall
+entirely within the pipeline-fill prefix the rule already skips; all $18$ still
+score exactly $1.0000$. \textbf{No verdict changed.} We report the defect
+because a reader is entitled to know that the acceptance criterion was audited
+by execution rather than by inspection alone, and because the result---a real
+defect that provably could have admitted a wrong design, and provably did
+not---is the only kind of statement this audit can honestly make.
+
 % ===========================================================================
 \section{Limitations}
 \label{sec:limitations}

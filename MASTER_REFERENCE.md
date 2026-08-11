@@ -2006,3 +2006,62 @@ asked for, on the training side.
 PENDING for the full paper (not the preprint): eval_holdout + Vivado for
 grpo_v9_s1/s2 to turn this into a held-out seed-variance row. The preprint keeps
 the single-seed limitation as written and can cite the training-side replication.
+
+### PRE2 CLOSED — oracle x/z parse defect: real, demonstrated, zero verdicts changed
+
+DEFECT (`oracle.py`, old line 231): the trace parser was
+`[int(t) for t in r.stdout.split() if t.strip().isdigit() and 0 <= int(t) < 65536]`.
+iverilog renders a 16-bit value with any unknown/high-Z bit as x/z (all bits
+unknown) or X/Z (some bits unknown) under %0d -- verified empirically. Those
+tokens are not digits, so the sample was DELETED, not compared. Deletion
+shortens the trace and shifts every later sample one place earlier; align_score
+searches over latency, so the shift can be absorbed.
+
+Two incidental findings while confirming this:
+ - iverilog writes "<file>:<line>: $finish called at <t> (<unit>)" to STDOUT,
+   not stderr. Its "656000" token was excluded only by the `< 65536` range
+   guard, i.e. by luck, not by design. The new parser skips multi-token lines
+   explicitly (a %0d value print is always exactly one token on its line).
+ - The old parser was also a FALSE-NEGATIVE source: an x in the middle of a
+   trace misaligned everything after it (measured 0.3813 on a design that is
+   0.9821 under the corrected parser).
+
+EXPLOIT (constructed, reproducible): fir8_8b correct except its last ~16 output
+cycles are undefined.
+   OLD parser: len=493  match=1.0000  ACCEPTED   <-- false positive
+   NEW parser: len=512  match=0.9622  rejected
+A leading-X variant (first 15 cycles undefined, warmup=8) is rejected by both,
+but for the wrong reason under the old one (0.0021, pure misalignment).
+
+FIX: keep x/z IN PLACE as X_SENTINEL = -1 in an int32 trace; -1 never equals a
+16-bit reference value, so an undefined sample counts as a mismatch while the
+trace keeps its length. Deliberately NOT a hard reject: an unreset pipeline is
+legitimately undefined while it fills, and align_score's warmup+latency window
+already excuses exactly that prefix. Hard-rejecting would have thrown away
+correct designs. Non-numeric, non-x/z single-token output, or a value >= 65536,
+now returns None (candidate rejected) instead of being silently skipped.
+
+RE-AUDIT (audit_oracle.py, now scores the legacy parse alongside the fixed one
+by re-deriving the legacy trace as new[new != -1], so both verdicts come from
+ONE simulation): all 1,529 stored candidates, seeds 1&2, n=1024.
+   accepted by the current rule ........ 1529/1529
+   emit x/z on some cycle .............. 18/1529
+   accepted by OLD parse, not by new ... 0     <- no false positive was realised
+   accepted by new parse, not by old ... 0
+   exact equality / warmup=0 / frozen latency: 1529 survive each, 0 lost
+   latency inconsistent across seeds ... 0
+All 18 x/z candidates have undef counts of 1, 4 or 7 falling inside the
+pipeline-fill prefix (latencies 1-9); all score exactly 1.0000 under both
+parsers. Mostly poly7/poly4 from the student and v8_poly evals, plus six base-
+policy candidates.
+
+Prior audit output preserved as `audit_oracle_legacyparse.jsonl` for provenance.
+Preprint Sec. VII rewritten to report the defect, the constructed exploit, the
+fix, and the zero-verdicts-changed re-audit. This makes the section stronger,
+not weaker: the acceptance criterion is now audited by EXECUTION, and the honest
+statement is "a real defect that provably could have admitted a wrong design,
+and provably did not".
+
+NOTE for whoever runs the sandbox next: iverilog was again absent from this
+container (ephemeral filesystem, as warned in CLAUDE.md). `apt-get install -y
+iverilog` restored it; numpy also needed `pip install numpy`.

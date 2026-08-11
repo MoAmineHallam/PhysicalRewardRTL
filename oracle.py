@@ -228,9 +228,52 @@ def run_dut(rtl_text, design, stim, in_w):
             # pathological candidate (runaway elaboration/sim or memory bomb):
             # score it INCORRECT, never let it OOM/hang the whole GRPO run.
             return None
-        vals = [int(t) for t in r.stdout.split()
-                if t.strip().isdigit() and 0 <= int(t) < 65536]
-    return np.array(vals, dtype=np.uint16) if len(vals) >= 32 else None
+        vals = _parse_trace(r.stdout)
+    return vals if vals is not None and len(vals) >= 32 else None
+
+
+# a value print from _tb's $display("%0d", y) is always a line holding exactly
+# one token; anything else on stdout is simulator chatter (iverilog puts
+# "<file>:<line>: $finish called at <t> (<unit>)" there, not on stderr).
+_CHATTER = re.compile(r"\s")
+
+X_SENTINEL = -1          # never equal to any 16-bit reference value
+
+
+def _parse_trace(stdout):
+    """Turn a vvp stdout into the DUT's output stream, or None if unparseable.
+
+    iverilog renders an output with any unknown or high-impedance bit as
+    'x'/'z' (all bits unknown) or 'X'/'Z' (some bits unknown) under %0d. The
+    previous filter kept only decimal tokens, which DROPPED those samples: the
+    trace silently got shorter, every later sample shifted one place earlier,
+    and a candidate whose output is undefined on some cycles was compared as if
+    those cycles had never been driven. Two candidates could differ in exactly
+    the cycles that vanished and still compare equal.
+
+    Undefined output is wrong output, so an x/z sample is kept IN PLACE as a
+    sentinel that cannot equal any reference value. Keeping it positional
+    rather than rejecting the candidate outright matters: an unreset pipeline
+    is legitimately undefined while it fills, and align_score's warmup/latency
+    window already excuses exactly that prefix. A candidate undefined after the
+    window now fails, which is the intended behaviour; one undefined only
+    during fill still passes, as it did before.
+    """
+    vals = []
+    for line in stdout.splitlines():
+        t = line.strip()
+        if not t or _CHATTER.search(t):
+            continue
+        if t.isdigit():
+            v = int(t)
+            if v >= 65536:               # not a 16-bit y print
+                return None
+            vals.append(v)
+        elif t in ("x", "X", "z", "Z"):
+            vals.append(X_SENTINEL)
+        else:
+            return None                  # unexpected single-token output
+    return np.array(vals, dtype=np.int32) if vals else None
 
 
 # ---------------------------------------------------------------- score
