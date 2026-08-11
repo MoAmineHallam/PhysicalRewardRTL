@@ -227,9 +227,10 @@ def report(name, test, pred_log):
     pred = np.exp(np.clip(pred_log, np.log(CLAMP_LO), np.log(CLAMP_HI)))
     cells = cellwise(test, pred)
     lines = []
-    for pol in ("sft", "grpo", "bestof8", "base"):
-        if pol not in cells:
-            continue
+    order = ["sft", "grpo", "bestof8", "base"]
+    pols = ([p for p in order if p in cells] +
+            sorted(p for p in cells if p not in order))
+    for pol in pols:
         pr = np.array([c[0] for c in cells[pol]])
         rl = np.array([c[1] for c in cells[pol]])
         sat = int((pr >= CLAMP_HI - 1).sum())
@@ -241,6 +242,13 @@ def report(name, test, pred_log):
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--test-dirs", nargs="*", default=None,
+                    help="override the evaluation dirs. Point this at "
+                         "rtl/traj_v8 / rtl/traj_v9 to score the checkpoint "
+                         "trajectory instead of the final policy: those "
+                         "candidates predate convergence, so they carry real "
+                         "within-design diversity, which the final policy does "
+                         "not.")
     ap.add_argument("--repeats", type=int, default=3,
                     help="restarts for the stochastic MLP arm")
     ap.add_argument("--ckpt", default=os.path.join(HERE, "surrogate_v3.pt"),
@@ -249,7 +257,7 @@ def main():
     args = ap.parse_args()
 
     train = read_train(TRAIN_DIRS)
-    test = read_test(TEST_DIRS)
+    test = read_test(args.test_dirs or TEST_DIRS)
     print(f"train: {len(train)} labelled rows (held-out designs excluded)")
     print(f"test : {len(test)} held-out candidates with real Vivado Fmax")
     print(f"       policies: "
