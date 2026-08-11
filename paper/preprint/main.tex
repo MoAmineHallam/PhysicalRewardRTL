@@ -123,11 +123,15 @@ correctness we observe ($98.3\%$) and frequency $38\%$ \emph{below} the
 supervised starting point (Section~\ref{sec:ablation}). The learned physical
 signal is doing the work, and the two objectives genuinely conflict.
 
-\item \textbf{A cheap repair, and evidence that offline metrics misrank it.}
+\item \textbf{A cheap repair, and evidence that offline metrics cannot see it.}
 Forty-three real measurements from the optimized region reduce error to
-$+30.7$\,MHz and improve every downstream outcome, while scoring worse by
-leave-one-design-out cross-validation than the predictor it replaces
-(Section~\ref{sec:repair}).
+$+30.7$\,MHz and improve every downstream outcome. Under a matched-set
+leave-one-design-out comparison---identical target rows, normalisation refit
+within each fold---the repaired and original predictors are
+\emph{indistinguishable} ($\rho = 0.919$ against $0.930$, with per-design top-1
+favouring the repaired one). No offline metric available at selection time
+separates two rewards whose behaviour under optimization differs by an order of
+magnitude (Section~\ref{sec:repair}).
 \end{enumerate}
 
 % fig1 appears automatically once make_figs.py can build it
@@ -451,8 +455,8 @@ base         & $+283.6$ & 10/16 & $+124.0$ & 2/16 \\
 supervised   & $+4.7$   &  1/30 & $+6.8$   & 2/30 \\
 optimized    & $+235.9$ & 25/30 & $\mathbf{+30.7}$ & \textbf{2/30} \\
 \midrule
-\multicolumn{5}{l}{\emph{offline} leave-one-design-out $\rho$:
-\;0.965 $\rightarrow$ \textbf{0.841}} \\
+\multicolumn{5}{l}{\emph{offline} matched-set LODO $\rho$:
+\;0.930 $\rightarrow$ 0.919 \;(indistinguishable, Table~\ref{tab:lodo})} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -461,13 +465,58 @@ Bias on the optimized distribution falls from $+235.9$ to $+30.7$\,MHz and
 saturation from $25$ of $30$ designs to $2$. Aggregate saturation across all
 cells falls from $36$ of $106$ to $7$.
 
-\textbf{And the repaired predictor is worse by the conventional offline
-metric}---leave-one-design-out rank correlation drops from $0.965$ to $0.841$. A
-practitioner selecting a reward model by cross-validation, which is the normal
-practice, would have kept the broken one. This is the paper's thesis applied to
-its own model-selection step.\footnote{The two cross-validation figures are
-computed on different pair sets ($203$ and $272$), so this is an observation
-rather than a controlled comparison; we report it as such.}
+\textbf{And the conventional offline metric cannot tell the two apart.} We
+compare them under leave-one-design-out cross-validation on an
+\emph{identical} set of target rows---the repaired predictor's training set is a
+strict superset of the original's, so both arms predict the same $229$ shared
+rows---with the feature normalisation refit inside every fold.\footnote{Fitting
+normalisation over all rows, as our own trainer did until we audited it, leaks
+the held-out design's feature distribution into its own evaluation, and leaks it
+hardest for designs unlike the rest: exactly the extreme-frequency rows whose
+ordering the reward depends on.} Table~\ref{tab:lodo} gives the result.
+
+\begin{table}[t]
+\caption{Matched-set leave-one-design-out comparison. Identical target rows,
+fold-local normalisation, five restarts averaged per fold. Errors are in MHz
+after applying the reward's own clamp.}
+\label{tab:lodo}
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+predictor & $\rho$ & top-1 & mean err & MAE \\
+\midrule
+original    & \textbf{0.930} & 25/30 & $+7.0$ & \textbf{20.2} \\
+re-anchored & 0.919 & \textbf{26/30} & $\mathbf{+4.5}$ & 21.7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The separation is $0.011$ in rank correlation, and the metrics disagree about
+its direction: rank correlation and mean absolute error marginally favour the
+original, per-design top-1 accuracy and bias favour the re-anchored one. By any
+reading, the two are indistinguishable offline. Under optimization they are not
+remotely comparable---bias $+235.9$ against $+30.7$\,MHz, saturated cells $25$
+of $30$ against $2$.
+
+We draw the weaker and, we think, more useful conclusion. It is not that
+cross-validation prefers the broken reward; on a controlled comparison it does
+not prefer either. It is that \emph{no offline metric available at selection
+time distinguishes them at all}, while the choice between them determines
+whether optimization succeeds or destroys correctness. Offline validity does not
+transfer to optimization validity, and the failure is invisible rather than
+merely misleading. An earlier draft of this work reported a large offline gap
+($0.965 \rightarrow 0.841$) in support of the stronger claim; that comparison
+used two different predictor versions scored on two different row sets, and does
+not survive being controlled.
+
+We note one incidental result from the same run. Holding out \texttt{med3}---a
+design with no near neighbour among the training rows---makes the predictor
+extrapolate to a log-frequency of $3.5 \times 10^6$, an absurdity that plain
+cross-validation absorbs without comment because rank statistics are insensitive
+to it. Both predictors do this. It is the same off-support blow-up the reward
+clamp exists to contain, visible here in an offline metric that nonetheless
+reports $\rho > 0.9$.
 
 \subsection{Re-optimizing against the repaired predictor}
 

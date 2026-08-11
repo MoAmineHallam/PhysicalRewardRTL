@@ -118,10 +118,21 @@ def metrics(pred, truth, design_of):
         tot += 1
         pv = np.array([pred[m] for m in ms])
         top1 += int(ms[int(np.argmax(pv))] == ms[int(np.argmax(fm))])
-    err = np.exp(p) - np.exp(t)
+    # Errors are reported in MHz after applying the SAME clamp the reward
+    # applies, [ln 5, ln 500]. Without it a single fold can dominate: leaving
+    # out a design with no near neighbour in the training rows (med3 here) makes
+    # the MLP extrapolate to log-Fmax ~3.5e6, and exp() of that overflows to
+    # inf, which silently turns mean error and MAE into inf. That blow-up is
+    # itself worth knowing about -- it is the same off-support extrapolation the
+    # reward clamp exists to contain -- so it is counted rather than hidden.
+    LO, HI = np.log(5.0), np.log(500.0)
+    n_blow = int((p > HI).sum())
+    err = np.exp(np.clip(p, LO, HI)) - np.exp(t)
     return {"n_rows": len(mods), "spearman": float(spearman(p, t)),
             "top1": f"{top1}/{tot}",
             "top1_frac": (top1 / tot) if tot else float("nan"),
+            "n_above_clamp": n_blow,
+            "max_pred_log": float(p.max()),
             "mean_err_mhz": float(err.mean()),
             "mae_mhz": float(np.abs(err).mean())}
 
@@ -171,28 +182,48 @@ def main():
     print("MATCHED-SET LODO  (identical target rows, fold-local normalisation)")
     print("=" * 72)
     print(f"{'arm':14s} {'rows':>6s} {'Spearman':>9s} {'top-1':>8s} "
-          f"{'mean err':>10s} {'MAE':>8s}")
+          f"{'mean err':>10s} {'MAE':>8s} {'>clamp':>7s}")
     for label in (args.label_a, args.label_b):
         r = res[label]
         print(f"{label:14s} {r['n_rows']:6d} {r['spearman']:9.3f} "
-              f"{r['top1']:>8s} {r['mean_err_mhz']:+9.1f}  {r['mae_mhz']:7.1f}")
+              f"{r['top1']:>8s} {r['mean_err_mhz']:+9.1f}  {r['mae_mhz']:7.1f} "
+              f"{r['n_above_clamp']:7d}")
 
-    da = res[args.label_a]["spearman"]
-    db = res[args.label_b]["spearman"]
+    A, B = res[args.label_a], res[args.label_b]
+    da, db = A["spearman"], B["spearman"]
+    # A verdict must not turn on the sign of a difference that is smaller than
+    # the noise this estimate carries. MARGIN is deliberately conservative:
+    # with ~30 designs, LODO rho moves by more than this between restart seeds.
+    MARGIN = 0.03
+    votes = {"spearman": da - db,
+             "top1": A["top1_frac"] - B["top1_frac"],
+             "bias": abs(B["mean_err_mhz"]) - abs(A["mean_err_mhz"])}
+    prefers_a = sum(1 for v in votes.values() if v > 0)
+    print("\nper-metric preference (positive = prefers "
+          f"{args.label_a}): " +
+          ", ".join(f"{k} {v:+.3f}" for k, v in votes.items()))
     print()
-    if db < da:
-        print(f"On identical rows the offline metric still prefers "
-              f"{args.label_a} ({da:.3f} > {db:.3f}).\nThe claim that standard "
-              f"model selection picks the reward that fails under\n"
-              f"optimization is supported, and is not an artifact of the two "
-              f"arms being\nscored on different data.")
+    if da - db > MARGIN and prefers_a == len(votes):
+        print(f"On identical rows the offline metric clearly prefers "
+              f"{args.label_a} ({da:.3f} vs {db:.3f}),\nand every metric agrees."
+              f" The claim that standard model selection picks the\nreward that "
+              f"fails under optimization is SUPPORTED as a controlled result.")
+    elif db - da > MARGIN and prefers_a == 0:
+        print(f"On identical rows the offline metric clearly prefers "
+              f"{args.label_b} ({db:.3f} vs {da:.3f}).\nThe earlier gap was an "
+              f"artifact of scoring the two arms on different row sets.\nDO NOT "
+              f"claim the offline metric picks the broken model.")
     else:
-        print(f"On identical rows the offline metric prefers {args.label_b} "
-              f"({db:.3f} >= {da:.3f}).\nThe earlier gap was an artifact of "
-              f"scoring the two arms on different row\nsets. DO NOT claim the "
-              f"offline metric picks the broken model -- say instead\nthat it "
-              f"fails to WARN of the failure, which the endpoint and "
-              f"trajectory\nmeasurements show independently.")
+        print(f"INDISTINGUISHABLE. The gap ({da:.3f} vs {db:.3f}, "
+              f"|d|={abs(da-db):.3f}) is below the {MARGIN}\nmargin"
+              + ("" if prefers_a in (0, len(votes))
+                 else " and the metrics disagree with each other")
+              + f". DO NOT claim the offline metric picks the broken\nmodel, "
+              f"and do not claim it picks the good one either. The defensible\n"
+              f"statement is that no offline metric available at selection time "
+              f"separates\nthem, while their behaviour under optimization "
+              f"differs enormously -- which\nis a cleaner form of the thesis: "
+              f"offline validity does not transfer.")
 
     json.dump(res, open(args.out, "w"), indent=1)
     print(f"\nwrote {args.out}")

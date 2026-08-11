@@ -2139,3 +2139,68 @@ Other 2026 work seen while verifying, NOT yet read or cited (for the full
 paper): COEVO 2604.15001, Ares 2607.27879, RTLScout 2606.06530, Alpha-RTL
 2606.05253, StepPRM-RTL 2606.04246, AutoGate 2606.17461, ASPEN (MLCAD'25),
 ChipVerilog 2607.13079.
+
+### PRE3 CLOSED — LODO leak fixed; the "offline metric picks the broken one" claim FAILS
+
+Three separate problems, one of which invalidated a headline claim.
+
+**(a) Normalisation leak (`surrogate_train.py`).** mu/sd were fit over ALL rows
+and then used inside every LODO fold, leaking the held-out design's feature
+distribution into its own evaluation -- worst for designs unlike the rest, i.e.
+the extreme-Fmax rows the reward depends on. Now refit per fold. CONSEQUENCE:
+every LODO number produced before 2026-08-11 is suspect, including the
+0.965 / 0.75-0.82 figures in `01_introduction.tex:101`, `05_results.tex:308`,
+`07_conclusion.tex:39`, `RESULTS.md:157,166`. Recompute before the full paper.
+
+**(b) `mod` is not a unique row key.** The same module name recurs across data
+dirs with different RTL and different measured Fmax; keying by it collapsed 177
+rows to 139. Rows now carry `key` (= <dir>/<mod>) and `src`. Anything keying
+surrogate rows by module name has been silently merging distinct measurements.
+
+**(c) The published offline comparison was TWO artifacts stacked.** The preprint
+said LODO rho 0.965 -> 0.841, therefore "a practitioner selecting by
+cross-validation would have kept the broken one". Reconstructing the datasets:
+    surrogate_v2 = probe_v4 + data + policy_cmp            = 203 rows, 35 designs
+    surrogate_v3 = v2 + fmax_d2                            = 229 rows, 41 designs  <- what grpo_v8 used
+    surrogate_v4 = v3 + fmax_d3                            = 272 rows, 41 designs
+So 0.965 is **v2**, not v3 -- the published before/after skipped the predictor
+actually used -- AND the two figures were computed on different row sets.
+
+MATCHED-SET RESULT (`compare_surrogate_lodo.py`, identical 229 target rows,
+fold-local normalisation, 5 restarts averaged, epochs=300 = the real training
+setting; NOT 4000, an early run of mine used 4000 and was both slow and
+unfaithful):
+
+  arm             rows  Spearman   top-1   mean err    MAE   >clamp
+  surrogate_v3     229     0.930   25/30      +7.0    20.2        6
+  surrogate_v4     229     0.919   26/30      +4.5    21.7        6
+  per-metric preference for v3: spearman +0.010, top1 -0.033, bias -2.481
+
+**INDISTINGUISHABLE.** Gap 0.010, below any reasonable noise margin, and the
+metrics disagree in direction (rho/MAE lean v3; top-1/bias lean v4). The strong
+claim is WITHDRAWN. The script now refuses to call a sub-0.03 difference a
+preference -- its first version reported this same result as "supported", which
+is exactly the kind of over-generous verdict this project keeps having to catch.
+
+The surviving claim is cleaner and needs no assumption about which model CV
+prefers: **no offline metric available at selection time separates the two**,
+while under optimization they differ by an order of magnitude (bias +235.9 vs
++30.7 MHz; saturated cells 25/30 vs 2/30). Offline validity does not transfer;
+the failure is INVISIBLE, not merely misleading. Preprint contribution #3 and
+Sec. VI rewritten accordingly, with a new Table (tab:lodo) and an explicit
+sentence retiring the earlier number.
+
+**Incidental finding, kept in the paper.** Holding out `med3` (no near neighbour
+in the training rows) makes the MLP predict log-Fmax = 3.5e6 -- exp() of that
+overflows to inf and silently turned mean-err/MAE into inf in the first run.
+BOTH arms do it, 6 rows each. Rank statistics absorb it without comment while
+still reporting rho > 0.9. It is the same off-support blow-up the reward clamp
+exists to contain, now visible inside a plain offline metric. Errors are now
+reported after applying the reward's own [5, 500] MHz clamp, and rows above the
+clamp are counted (`n_above_clamp`).
+
+**Verified positively:** invariant #3 holds -- zero held-out designs appear in
+the surrogate training rows under ANY combination of the five data dirs.
+
+Sandbox notes: torch installed from default PyPI (the pytorch.org CPU index is
+403 through the proxy); iverilog via apt; numpy via pip. All ephemeral.
