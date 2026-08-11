@@ -1948,18 +1948,30 @@ over CORRECT candidates (Eq. 5 unpenalised). Checkpoints plotted against
 CUMULATIVE OPTIMIZER UPDATES, not steps: grpo_v8_cont restarts its step counter,
 so step-indexing would compare runs that got different amounts of optimisation.
 
-traj_v8 (original surrogate)          traj_v9 (re-anchored)
-upd  pred   meas   corr%              upd  pred   meas   corr%
-  0   82.9   76.4  94.3                 0  100.9   73.3  89.1
- 77  218.1  230.5  95.8                69  332.6  227.6  93.2
-138  213.7  230.9  95.3               116  332.6  237.0  97.9
-205  216.6  230.9  95.3               159  332.6  231.4  95.8
-276  497.9  212.3  88.0               200  333.2  238.1  99.0
+BASIS MATTERS HERE and I initially mixed the two. meas(correct) = weighted over
+CORRECT candidates (comparable with the prediction, which only ever scores
+correct ones); meas(penalised) = incorrect scored 0 MHz (the equal-sample-cost
+number the money table leads with). Both, so neither can be quoted loose:
 
-The v8 endpoint is the failure in one row: prediction 497.9 (clip bound is 500),
-measurement DROPS 230.9 -> 212.3, correctness 95.3 -> 88.0. Saturation and the
-correctness regression are the same event, now visible as a time series and not
-only as an endpoint comparison.
+traj_v8 (original surrogate)                traj_v9 (re-anchored)
+upd  pred  m(corr) m(pen) corr%         upd  pred  m(corr) m(pen) corr%
+  0   82.9    81.0   76.4  94.3           0  100.9    82.4   73.3  89.1
+ 77  218.1   240.5  230.5  95.8          69  332.6   244.1  227.6  93.2
+138  213.7   242.2  230.9  95.3         116  332.6   242.1  237.0  97.9
+205  216.6   242.2  230.9  95.3         159  332.6   241.5  231.4  95.8
+276  497.9   241.2  212.3  88.0         200  333.2   240.7  238.1  99.0
+
+The v8 endpoint is the failure in one row: prediction 497.9 (clip bound 500)
+against 241.2 measured. CORRECTION to my first reading of this: measured Fmax
+CONDITIONAL ON CORRECTNESS does not fall at all -- it is flat at ~241 from the
+first checkpoint onward, including across the jump. The 230.9 -> 212.3 fall is
+on the PENALISED basis, i.e. it is 100% the correctness term (95.3 -> 88.0).
+
+That is the sharper mechanism statement, and it agrees with the independent v8-
+vs-v9 finding that meanF(correct) is identical (213.2 vs 213.3): a saturated
+reward does not make designs slower, it stops penalising the ones that do not
+work. Figure 1 plots the meas(correct) basis, so its caption must NOT say
+measurement fell.
 
 ### The regime split — the honest, and sharper, version
 
@@ -2204,3 +2216,44 @@ the surrogate training rows under ANY combination of the five data dirs.
 
 Sandbox notes: torch installed from default PyPI (the pytorch.org CPU index is
 403 through the proxy); iverilog via apt; numpy via pip. All ephemeral.
+
+### 2026-08-11 (later) — self-verification harness, and one error it caught in MY OWN work
+
+`verify_claims.py` reproduces every claim-changing number of today from
+committed artifacts, printing claimed-vs-computed so a disagreement is visible
+without reading prose. Sections A-D are deterministic (pure numpy over
+ppa.jsonl + manifests). Section E (--lodo N) reruns the UNSEEDED LODO N times.
+
+Run: `python verify_claims.py` / `python verify_claims.py --lodo 10`
+Current status: A, B, C, D all reproduce.
+
+**Error it caught (mine).** I quoted the trajectory as "measurement DROPS
+230.9 -> 212.3" while Figure 1 plots the over-CORRECT basis, on which measured
+Fmax is FLAT (242.2 -> 241.2). I had mixed the penalised and over-correct bases
+between the aggregate row and the regime split. Corrected everywhere; the
+trajectory table above now carries BOTH columns. The corrected reading is
+stronger: a saturated reward does not make correct designs slower, it stops
+penalising incorrect ones -- which independently agrees with meanF(correct)
+being identical across v8/v9 (213.2 vs 213.3). Preprint Tab. III gained a
+measured column and a paragraph making exactly this point; Fig. 1's caption
+gained the "what measurement does NOT do" sentence.
+
+**Weakness I have NOT resolved, flagged loudly.** `surrogate_train.py` sets no
+random seed, so today's 0.972 / 0.915 / 0.913 LODO figures are single draws.
+The figure they replaced (0.75-0.82) was explicitly reported as a seed RANGE.
+A single draw cannot refute a range. Until `verify_claims.py --lodo 10` shows
+the v3 spread sitting clear of 0.75-0.82, the corrected numbers in
+01_introduction.tex / 05_results.tex / 07_conclusion.tex / RESULTS.md should be
+treated as PROVISIONAL. Three confounds separate them from the old figures:
+fold-local vs leaked normalisation, 12 vs 9 features, and one draw vs a range.
+NOTE the matched-set v3-vs-v4 comparison does NOT have this problem -- it seeds
+each fold explicitly and averages 5 restarts.
+
+Sandbox toolchain (all ephemeral, reinstall after a container reset):
+  apt-get install -y iverilog
+  apt-get install -y --no-install-recommends texlive-latex-recommended \
+      texlive-latex-extra texlive-fonts-recommended texlive-pictures \
+      texlive-publishers          # IEEEtran lives in texlive-publishers
+  pip install numpy torch          # the pytorch.org CPU index 403s via the proxy;
+                                   # default PyPI works
+Preprint builds clean: 7 pages, 0 undefined refs, 0 overfull boxes.

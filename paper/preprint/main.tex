@@ -344,20 +344,21 @@ therefore evaluated saved checkpoints along the optimization path with identical
 prompts, oracle and measurement flow (Table~\ref{tab:trajectory}).
 
 \begin{table}[t]
-\caption{Predictor output and functional correctness along the optimization
-path.}
+\caption{Predictor output, measured frequency and functional correctness along
+the optimization path. Measured \fmax{} is count-weighted over correct
+candidates, so it and the prediction describe the same population.}
 \label{tab:trajectory}
 \centering
 \small
-\begin{tabular}{lrrr}
+\begin{tabular}{lrrrr}
 \toprule
-checkpoint & updates & correctness & predicted \fmax{} \\
+checkpoint & updates & correct. & predicted & measured \\
 \midrule
-supervised & 0   & 94.3\% &  82.9 \\
-c1         & 77  & 95.8\% & 218.1 \\
-c2         & 138 & 95.3\% & 213.7 \\
-c3         & 205 & 95.3\% & 216.6 \\
-\textbf{c4} & \textbf{276} & \textbf{88.0\%} & \textbf{497.9} \\
+supervised & 0   & 94.3\% &  82.9 & 81.0 \\
+c1         & 77  & 95.8\% & 218.1 & 240.5 \\
+c2         & 138 & 95.3\% & 213.7 & 242.2 \\
+c3         & 205 & 95.3\% & 216.6 & 242.2 \\
+\textbf{c4} & \textbf{276} & \textbf{88.0\%} & \textbf{497.9} & 241.2 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -365,9 +366,21 @@ c3         & 205 & 95.3\% & 216.6 \\
 The predictor rises once, early, to roughly $215$\,MHz and then sits there for
 some two hundred gradient updates. Between the third and fourth checkpoint it
 jumps to $497.9$---the clip bound of Eq.~\eqref{eq:reward} to within rounding.
+Measurement does not accompany it. Real frequency reaches $240$\,MHz by the
+first checkpoint and stays within $2$\,MHz of that for the rest of the run,
+including across the jump.
 
 Correctness collapses over the same interval, from $95.3\%$ to $88.0\%$, having
 been stable or improving until then.
+
+The two facts together identify what the saturated reward destroys. Conditional
+on being correct, the policy's output is no faster at the end of training than
+it was two hundred updates earlier; what changes after saturation is that it is
+correct less often. Scored at equal sample cost---counting an incorrect sample
+as $0$\,MHz---the same trajectory reads $230.9 \rightarrow 212.3$\,MHz over the
+final interval, and every megahertz of that decline is the correctness term. A
+reward that can no longer distinguish one fast design from another does not
+make designs slower; it stops penalising the ones that do not work.
 
 We draw the inference explicitly: \textbf{the correctness regression and the
 predictor saturation are one event}, not two. Practitioners who observe a late

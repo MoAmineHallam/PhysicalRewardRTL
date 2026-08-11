@@ -190,9 +190,12 @@ yields no gradient and the two runs differ in how often that happens.
 the interpolation designs to within $12$\,MHz for roughly two hundred updates and
 then saturates at the reward's clip bound ($496.9$ predicted against $261.5$
 measured), while on the extrapolation designs it first \emph{{under}}-predicts and
-then saturates as well. Correctness falls at exactly that checkpoint, and falls
-where the saturation is worst: $92.2\%\!\to\!73.4\%$ on extrapolation against
-$96.9\%\!\to\!95.3\%$ on interpolation. \textbf{{Right:}} after re-anchoring on
+then saturates as well. Note what measurement does \emph{{not}} do: conditional on
+correctness it is flat from the first checkpoint onward, so saturation does not
+make the policy's correct outputs slower. What it does is stop penalising the
+incorrect ones---correctness falls at exactly the saturating checkpoint, and
+falls where the saturation is worst ($92.2\%\!\to\!73.4\%$ on extrapolation
+against $96.9\%\!\to\!95.3\%$ on interpolation). \textbf{{Right:}} after re-anchoring on
 $43$ train-split measurements, the interpolation curves stay together for the
 whole run ($254.5$ against $266.7$ at the end) and no collapse occurs. The
 extrapolation curves do not recover: the re-anchor labels span $4$--$32$ taps, so
