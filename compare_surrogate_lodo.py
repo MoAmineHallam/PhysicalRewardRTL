@@ -67,7 +67,7 @@ def pack(rows):
     return {r["key"]: r for r in rows}
 
 
-def lodo_on_targets(arm_rows, target_mods, epochs, seeds):
+def lodo_on_targets(arm_rows, target_mods, epochs, seeds, seed_base=0):
     """LODO predictions for exactly `target_mods`, using arm_rows for training.
 
     Returns mod -> mean predicted log-Fmax over `seeds` restarts. Every target
@@ -93,7 +93,7 @@ def lodo_on_targets(arm_rows, target_mods, epochs, seeds):
             continue
         Xte = np.array([X[idx[m]] for m in tgt], float)
         acc = np.zeros(len(tgt))
-        for s in range(seeds):
+        for s in range(seed_base, seed_base + seeds):
             acc += fit_predict(X[tr], y[tr], Xte, epochs, s)
         for m, p in zip(tgt, acc / seeds):
             out[m] = float(p)
@@ -144,6 +144,11 @@ def main():
     ap.add_argument("--label-a", default="A")
     ap.add_argument("--label-b", default="B")
     ap.add_argument("--epochs", type=int, default=4000)
+    ap.add_argument("--seed-base", type=int, default=0,
+                    help="offset for the restart seeds. The averaged rho is "
+                         "itself a random variable; re-running with a different "
+                         "base is how you get an error bar on the v3-vs-v4 gap "
+                         "instead of asserting one.")
     ap.add_argument("--seeds", type=int, default=3,
                     help="restarts averaged per fold, to keep the comparison "
                          "from turning on one lucky initialisation")
@@ -171,7 +176,8 @@ def main():
     res = {}
     for label, rows in ((args.label_a, rows_a), (args.label_b, rows_b)):
         print(f"\nLODO for {label} on the shared target rows ...", flush=True)
-        pred = lodo_on_targets(rows, shared, args.epochs, args.seeds)
+        pred = lodo_on_targets(rows, shared, args.epochs, args.seeds,
+                               args.seed_base)
         common = sorted(set(pred) & set(truth))
         res[label] = metrics({m: pred[m] for m in common},
                              {m: truth[m] for m in common},

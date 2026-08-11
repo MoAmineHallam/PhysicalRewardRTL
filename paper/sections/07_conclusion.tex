@@ -15,10 +15,11 @@ three circuit classes, under a split frozen before training and enforced
 programmatically, the method raises mean WNS-derived \fmax{} from $86.5$ to
 $211.3$~MHz under parameter interpolation and from $78.5$ to $174.2$~MHz under
 extrapolation, exceeding a perfect-selector best-of-eight baseline in both
-regimes. A single sample from the optimised policy exceeds the expected best of
-forty-eight perfectly selected supervised samples in the interpolation regime,
-and on two designs the supervised model never produces the fast implementation at
-all---an existence failure that no selection procedure can repair. Five held-out
+regimes. A single sample from the optimised policy is worth roughly twenty-two
+perfectly selected supervised samples in the interpolation regime and eight
+under extrapolation---a selector that cannot be built, since it would require
+synthesising every candidate, so the true saving against any realisable
+reranker is larger. Five held-out
 design pairs measured on a Zynq-7020 sustain $2.25$--$3.40\times$ the clock of
 the supervised baseline, with zero spread across repeated sweeps and with a
 co-resident canary bounding attribution. The recipe transfers unmodified to a
@@ -36,7 +37,7 @@ family correct is combinational by construction, so no fast alternative exists t
 amplify) as the cases in which the method yields little or no frequency gain.
 
 We further document a caught case of reward hacking: the learned surrogate,
-whose leave-one-design-out correlation falls only from $0.972$ to $0.915$ once
+whose leave-one-design-out correlation falls only from $0.974$ to $0.923$ once
 structurally dissimilar circuit classes are added, reported $188.6$~MHz for
 median filters measuring $36$--$40$~MHz in silicon-bound synthesis, while
 saturating identically on a polynomial family that genuinely reached

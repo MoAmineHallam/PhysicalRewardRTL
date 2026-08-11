@@ -71,8 +71,12 @@ the SFT ceiling (firr10 334 vs 313; firr40 195 vs 189).
 - **Correctness costs**: iir9_v1 92→58%, fir40 79→52%, poly7_v1 94→77%,
   iir20 79→62%, iir16 42→35%. Gains elsewhere: fir26 79→96%, iir9 81→94%,
   med7 79→85%, med11 29→40%.
-- **Best-of-8 still misses the fast form entirely** on firr40 (20.7 MHz) and
-  firr10 (66.6) — existence failures sampling cannot fix.
+- **Best-of-8 (SURROGATE-selected) still misses the fast form** on firr40
+  (20.7 MHz) and firr10 (66.6). CORRECTED 2026-08-11: this is a SELECTION
+  failure, not an existence failure — a PERFECT selector over the same 8
+  samples gets 187.1 and 243.4 respectively, so the fast form was present and
+  the surrogate failed to pick it. That makes it evidence for the reward-
+  validity thesis, not against sampling. See §2b for the full withdrawal.
 
 ## 2b. Best-of-N curves: one GRPO sample ≈ 22 perfectly-selected SFT samples ✅
 
@@ -154,8 +158,9 @@ med7 84) held or improved. Saturation is therefore an **observable early-warning
 signal for reward hacking**.
 
 The clearest single case: **med7 surrogate 188.6 MHz vs real Vivado 36–40 MHz.**
-The surrogate (LODO Spearman 0.915 after the 5-family retrain, down only from
-0.972 on 3 families -- both RECOMPUTED 2026-08-11 with fold-local normalisation;
+The surrogate (LODO Spearman 0.923 +/- 0.008 after the 5-family retrain, down
+only from 0.974 +/- 0.003 on 3 families -- both RECOMPUTED 2026-08-11 with
+fold-local normalisation, means over 10 restarts;
 the old 0.965 / 0.75-0.82 figures used a leaky normalisation and a 9-feature
 extractor) had no discrimination on comparator networks and was gamed. Note how
 little the offline number moved: rho stayed above 0.9 while the predictor was
@@ -167,12 +172,17 @@ results.
 
 ## 3. Surrogate + gaming case study ✅
 
-- surrogate_v2: 203 labelled pairs, LODO Spearman **0.972**, top-1 **23/25**
-  (recomputed 2026-08-11, fold-local normalisation; was 0.965 when the
-  normalisation leaked across folds). v3 (229 pairs, 5 families) 0.915,
-  top-1 26/30; v4 (272 pairs, re-anchored) 0.913, top-1 22/30. The
-  CONTROLLED v3-vs-v4 comparison is the matched-set one: 0.930 vs 0.919,
-  indistinguishable (`compare_surrogate_lodo.py`).
+- LODO Spearman, RECOMPUTED 2026-08-11 with fold-local normalisation, as
+  mean +/- sd over 10 unseeded restarts (`verify_claims.py --lodo 10`;
+  surrogate_train.py seeds nothing, so a single draw is not a number):
+    surrogate_v2 (203 pairs, 3 fam)     **0.974 +/- 0.003**  (range .969-.978)
+    surrogate_v3 (229 pairs, 5 fam)     **0.923 +/- 0.008**  (range .910-.931)
+    surrogate_v4 (272 pairs, re-anch)   **0.905 +/- 0.009**  (range .890-.922)
+  The old 0.965 (leaky) and 0.75-0.82 (leaky + 9 features) figures are DEAD:
+  the v3 range bottoms out at 0.910 and does not come near 0.75-0.82.
+  These are OWN-DATASET numbers, not a controlled comparison -- v3 and v4 are
+  scored on different row counts. The controlled v3-vs-v4 result is the
+  matched-set one (`compare_surrogate_lodo.py`), see below.
 - Gaming: GRPO drove poly4 to surrogate **+inf** (pilot) / 460–500 claims (v7);
   clamp [5,500] contained it; real Vivado ceiling = 191–193 MHz. Direction was
   right (grpo poly mean ≈190 vs sft ≈45–60 real); only MAGNITUDE was gamed.
