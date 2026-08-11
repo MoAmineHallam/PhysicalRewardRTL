@@ -11,11 +11,15 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{url}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usetikzlibrary{arrows.meta, positioning, fit, backgrounds}
 \usepackage[hidelinks]{hyperref}
 
 % Flip to \figurestrue once make_figs.py has produced figures/*.pdf
 \newif\iffigures
-\figuresfalse
+\figurestrue
 
 \newcommand{\fmax}{$F_{\mathit{max}}$}
 \newcommand{\TODO}[1]{\textcolor{red}{[TODO: #1]}}
@@ -126,19 +130,58 @@ leave-one-design-out cross-validation than the predictor it replaces
 (Section~\ref{sec:repair}).
 \end{enumerate}
 
-\iffigures
-\begin{figure*}[t]
+% fig1 appears automatically once make_figs.py can build it
+\IfFileExists{figures/fig1_trajectory.tex}{\input{figures/fig1_trajectory}}{}
+
+% ---------------------------------------------------------------------------
+% Method diagram. Hand-written TikZ so it stays editable in Overleaf.
+% ---------------------------------------------------------------------------
+\begin{figure}[t]
 \centering
-\includegraphics[width=\textwidth]{figures/fig1_trajectory.pdf}
-\caption{Predicted and measured \fmax{} along the optimization path, as a
-function of cumulative optimizer updates. Left: the original predictor. Its
-predictions track measurement for roughly two hundred updates, then saturate at
-the output ceiling while the measured value does not follow. Right: the
-re-anchored predictor, on which the two curves remain together. Correctness is
-overlaid; it degrades only where saturation occurs.}
-\label{fig:trajectory}
-\end{figure*}
-\fi
+\begin{tikzpicture}[
+  font=\scriptsize,
+  box/.style   = {draw, rounded corners=2pt, minimum height=6mm,
+                  align=center, inner xsep=3pt},
+  cheap/.style = {box, fill=blue!6},
+  study/.style = {box, fill=red!10, very thick},
+  truth/.style = {box, fill=black!5},
+  ar/.style    = {-{Latex[length=1.6mm]}, thin}
+]
+\node[box] (pi) {policy $\pi_\theta$};
+\node[box, right=7mm of pi] (samp) {$G{=}8$\\samples};
+\node[cheap, right=7mm of samp] (orc) {oracle\\$\sim$1\,s};
+\node[study, right=7mm of orc] (sur) {\textbf{surrogate} $\hat{F}$\\$\sim$1\,ms};
+\node[box, below=6mm of sur] (adv) {group-relative\\advantage};
+\node[box, left=7mm of adv] (upd) {update $\theta$};
+
+\draw[ar] (pi) -- (samp);
+\draw[ar] (samp) -- node[above]{RTL} (orc);
+\draw[ar] (orc) -- node[above]{correct} (sur);
+\draw[ar] (sur) -- (adv);
+\draw[ar] (adv) -- (upd);
+\draw[ar] (upd) -| (pi);
+\draw[ar] (orc.south) |- ++(0,-4mm) -| node[pos=.25,below]{incorrect: $r{=}0$} (adv.west);
+
+% ground truth, deliberately outside the loop
+\node[truth, below=13mm of upd, xshift=6mm] (viv)
+  {Vivado implementation\\$\sim$1\,min \emph{per design}};
+\draw[ar, dashed] (viv.north) -- node[right, pos=.45]{too slow for the loop} (upd.south);
+\node[anchor=west, font=\scriptsize\itshape, gray] at ([xshift=3mm]viv.east)
+  {ground truth\\(this paper)};
+
+\begin{scope}[on background layer]
+  \node[draw, dashed, gray, rounded corners, fit=(pi)(samp)(orc)(sur)(adv)(upd),
+        inner sep=3mm, label={[gray,font=\scriptsize]above right:training loop}] {};
+\end{scope}
+\end{tikzpicture}
+\caption{Where the learned reward sits. The oracle and the surrogate are both
+cheap enough to query for every sample of every group; the synthesis tool is
+not, which is why the surrogate exists. The surrogate is fitted on data from the
+supervised policy and then queried, throughout training, on a distribution that
+optimization is actively moving away from it. This paper measures the
+consequence against the tool in the lower box.}
+\label{fig:pipeline}
+\end{figure}
 
 % ===========================================================================
 \section{Setup}
@@ -250,7 +293,11 @@ best-of-8       & 154.5 & 155.5 & $-1.0$   &  35.1 & 0/30 \\
 prediction sits on the $500$\,MHz clip bound of Eq.~\eqref{eq:reward}.
 \end{table}
 
-Three observations follow.
+\IfFileExists{figures/fig3_scatter.tex}{\input{figures/fig3_scatter}}{}
+
+Three observations follow, and Fig.~\ref{fig:scatter} shows their geometry: the
+supervised cells lie along the identity line, while the optimized cells lift off
+it and accumulate against the clip bound.
 
 \textbf{The predictor is genuinely good where it was fitted.} On the supervised
 policy its bias is $+4.7$\,MHz against measurements spanning $15$--$347$\,MHz,
