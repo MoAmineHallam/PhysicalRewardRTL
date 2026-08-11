@@ -88,29 +88,48 @@ def cell_weighted(dirs, pred_file=None):
     return out
 
 
+# Extrapolation designs of the fir/firr trajectory set: tap counts outside the
+# 4..32 range the policy and the re-anchor labels were trained on. Splitting the
+# figure on this line is not cosmetic -- the re-anchored predictor is repaired
+# on one side of it and still saturated on the other, and an aggregate curve
+# would hide that.
+EXTRAP = {"fir36_8b", "fir40_8b", "firr36", "firr40"}
+
+
 def traj_points(d, updates):
+    """checkpoint -> predicted / measured / correctness, split by regime.
+
+    measured is the count-weighted mean over CORRECT candidates (Eq. 5,
+    unpenalised): the question this figure asks is whether the reward tracks
+    the frequency of what the policy actually produces, which is a question
+    about the correct samples. Correctness is plotted separately.
+    """
     summ = json.load(open(os.path.join(d, "holdout_summary.json")))
     mani = json.load(open(os.path.join(d, "fmax_manifest.json")))
     real = real_fmax(d)
     if real is None:
         return None
-    agg = collections.defaultdict(lambda: {"w": 0.0, "tot": 0})
-    seen = set()
+    agg = collections.defaultdict(lambda: {"w": 0.0, "c": 0})
     for mod, i in mani.items():
         if mod in real:
-            agg[i["policy"]]["w"] += real[mod] * i["count"]
-        if (i["policy"], i["design"]) not in seen:
-            seen.add((i["policy"], i["design"]))
-            agg[i["policy"]]["tot"] += i["n"]
+            g = "extrap" if i["design"] in EXTRAP else "interp"
+            for k in (g, "all"):
+                agg[(i["policy"], k)]["w"] += real[mod] * i["count"]
+                agg[(i["policy"], k)]["c"] += i["count"]
     pts = []
     for tag in sorted(summ, key=lambda k: updates.get(k, 0)):
         rows = summ[tag]
-        a = agg.get(tag, {"w": 0.0, "tot": 0})
-        pts.append({
-            "x": updates.get(tag, 0),
-            "pred": sum(r["mean_surr_fmax"] for r in rows.values()) / len(rows),
-            "meas": (a["w"] / a["tot"]) if a["tot"] else 0.0,
-            "corr": sum(r["corr_pct"] for r in rows.values()) / len(rows)})
+        q = {"x": updates.get(tag, 0)}
+        for g in ("interp", "extrap", "all"):
+            sel = [r for nm, r in rows.items()
+                   if g == "all" or (nm in EXTRAP) == (g == "extrap")]
+            a = agg.get((tag, g), {"w": 0.0, "c": 0})
+            q[f"pred_{g}"] = sum(r["mean_surr_fmax"] for r in sel) / len(sel)
+            q[f"meas_{g}"] = (a["w"] / a["c"]) if a["c"] else 0.0
+            q[f"corr_{g}"] = sum(r["corr_pct"] for r in sel) / len(sel)
+        # kept for callers that want the aggregate under the old names
+        q["pred"], q["meas"], q["corr"] = q["pred_all"], q["meas_all"], q["corr_all"]
+        pts.append(q)
     return pts
 
 
@@ -130,24 +149,31 @@ def fig_trajectory(args):
     for tag, title in (("v8", "Original predictor"),
                        ("v9", "Re-anchored predictor")):
         p = out[tag]
+        pos = ("at={(v8.right of south east)}, xshift=13mm, ylabel={}"
+               if tag == "v9" else "name=v8")
+        # blue = interpolation, red = extrapolation; solid = reward's belief,
+        # dashed+open = what Vivado measured for the same candidates.
+        series = "\n".join(rf"""
+\addplot[{col}, mark=*, thick] coordinates {{{coords([(q['x'], q['pred_' + g]) for q in p])}}};
+\addlegendentry{{predicted, {lbl}}}
+\addplot[{col}, mark=o, thick, dashed] coordinates {{{coords([(q['x'], q['meas_' + g]) for q in p])}}};
+\addlegendentry{{measured, {lbl}}}"""
+                           for g, col, lbl in
+                           (("interp", "blue!70!black", "interp."),
+                            ("extrap", "red!70!black", "extrap.")))
         body.append(rf"""
-\begin{{groupplot}}[group style={{group size=1 by 1}}]
-\end{{groupplot}}""" if False else rf"""
 \begin{{axis}}[
-  name={tag}, title={{{title}}},
-  width=.49\textwidth, height=5.2cm,
+  {pos}, title={{{title}}},
+  width=.47\textwidth, height=5.4cm,
   xlabel={{cumulative optimizer updates}},
-  ylabel={{$F_{{max}}$ (MHz)}}, ymin=0, ymax=560,
-  legend pos=north west, legend style={{font=\scriptsize, draw=none}},
-  grid=major, grid style={{gray!20}},
-  {'at={(v8.right of south east)}, xshift=12mm, ylabel={}' if tag == 'v9' else ''}
+  ylabel={{$F_{{max}}$ (MHz)}}, ymin=0, ymax=575,
+  legend pos=south east, legend columns=2,
+  legend style={{font=\tiny, draw=none, fill opacity=.75, text opacity=1}},
+  grid=major, grid style={{gray!20}}
 ]
-\addplot+[mark=*, thick] coordinates {{{coords([(q['x'], q['pred']) for q in p])}}};
-\addlegendentry{{predicted}}
-\addplot+[mark=square*, thick, dashed] coordinates {{{coords([(q['x'], q['meas']) for q in p])}}};
-\addlegendentry{{measured (Vivado)}}
 \addplot[gray, dotted, thick, forget plot] coordinates {{(0,500) ({p[-1]['x']},500)}};
-\node[gray, font=\scriptsize, anchor=south east] at (axis cs:{p[-1]['x']},505) {{reward clip bound}};
+\node[gray, font=\scriptsize, anchor=south west] at (axis cs:2,503) {{reward clip bound}};
+{series}
 \end{{axis}}""")
     tex = rf"""% generated by make_figs.py -- do not edit by hand
 \begin{{figure*}}[t]
@@ -155,13 +181,28 @@ def fig_trajectory(args):
 \begin{{tikzpicture}}
 {''.join(body)}
 \end{{tikzpicture}}
-\caption{{Predicted and measured \fmax{{}} along the optimisation path, against
-cumulative optimizer updates (not attempted steps: the two runs differ in how
-many steps produced a gradient). Left: the original predictor tracks measurement
-for roughly two hundred updates, then saturates at the reward's clip bound while
-measurement does not follow. Right: the re-anchored predictor stays with
-measurement throughout. Correctness degrades only where saturation occurs
-(Table~\ref{{tab:trajectory}}).}}
+\caption{{Predicted and measured \fmax{{}} along the optimisation path, for the
+twelve held-out \textsc{{fir}}/\textsc{{firr}} designs ($n{{=}}16$ samples each),
+count-weighted over correct candidates. The abscissa is cumulative optimizer
+updates rather than attempted steps, because a group whose rewards are all equal
+yields no gradient and the two runs differ in how often that happens.
+\textbf{{Left:}} under the original predictor, prediction tracks measurement on
+the interpolation designs to within $12$\,MHz for roughly two hundred updates and
+then saturates at the reward's clip bound ($496.9$ predicted against $261.5$
+measured), while on the extrapolation designs it first \emph{{under}}-predicts and
+then saturates as well. Correctness falls at exactly that checkpoint, and falls
+where the saturation is worst: $92.2\%\!\to\!73.4\%$ on extrapolation against
+$96.9\%\!\to\!95.3\%$ on interpolation. \textbf{{Right:}} after re-anchoring on
+$43$ train-split measurements, the interpolation curves stay together for the
+whole run ($254.5$ against $266.7$ at the end) and no collapse occurs. The
+extrapolation curves do not recover: the re-anchor labels span $4$--$32$ taps, so
+at $36$ and $40$ taps the predictor is pinned near the clip bound from the first
+checkpoint onward and orders nothing. Measured extrapolation frequency is
+consequently the same under both rewards ($188.8$ against $188.1$); the
+improvement the repair buys is confined to the region the labels reach. We read
+this as the sharper form of the claim -- a learned reward is valid only over the
+support of its supervision, and offline accuracy reports nothing about the region
+optimisation will travel to.}}
 \label{{fig:trajectory}}
 \end{{figure*}}
 """

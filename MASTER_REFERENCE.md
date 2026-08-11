@@ -1927,3 +1927,82 @@ reading is REFUTED: the error was doing damage, not work. TCAD estimate raised
 
 REMAINING for the preprint: Vivado on rtl/traj_v8 (144) and rtl/traj_v9 for the
 Figure-1 measured line; P1 timing closure; P2 symmetric silicon; PRE1-PRE3.
+
+---
+
+## 2026-08-11 — Figure 1 measured line, and three-seed replication of v9
+
+### Trajectory: predicted vs REAL Vivado along the optimisation path
+
+`rtl/traj_v8` (144 modules) and `rtl/traj_v9` (134) synthesised on the laptop,
+0 failures. Twelve held-out fir/firr designs, n=16 per checkpoint, count-weighted
+over CORRECT candidates (Eq. 5 unpenalised). Checkpoints plotted against
+CUMULATIVE OPTIMIZER UPDATES, not steps: grpo_v8_cont restarts its step counter,
+so step-indexing would compare runs that got different amounts of optimisation.
+
+traj_v8 (original surrogate)          traj_v9 (re-anchored)
+upd  pred   meas   corr%              upd  pred   meas   corr%
+  0   82.9   76.4  94.3                 0  100.9   73.3  89.1
+ 77  218.1  230.5  95.8                69  332.6  227.6  93.2
+138  213.7  230.9  95.3               116  332.6  237.0  97.9
+205  216.6  230.9  95.3               159  332.6  231.4  95.8
+276  497.9  212.3  88.0               200  333.2  238.1  99.0
+
+The v8 endpoint is the failure in one row: prediction 497.9 (clip bound is 500),
+measurement DROPS 230.9 -> 212.3, correctness 95.3 -> 88.0. Saturation and the
+correctness regression are the same event, now visible as a time series and not
+only as an endpoint comparison.
+
+### The regime split — the honest, and sharper, version
+
+Splitting on interpolation (taps 6/10/18/26) vs extrapolation (36/40):
+
+              v8 interp        v8 extrap        v9 interp        v9 extrap
+upd/ck    pred   meas      pred   meas      pred   meas      pred   meas
+step0      95.1   96.6      58.3   48.8      90.9   96.7     121.0   52.8
+s100      256.6  267.1     141.0  185.5     253.8  268.2     490.1  188.4
+s200      253.4  266.0     134.4  188.3     253.8  267.4     490.1  188.2
+s300      257.1  267.9     135.5  188.3     253.8  266.7     490.1  188.2
+s400      496.9  261.5     500.0  188.8     254.5  266.7     490.4  188.1
+
+Two findings, one of them a correction to how I was about to write the caption:
+
+1. Re-anchoring REPAIRS the interpolation region and does NOT repair the
+   extrapolation region. The 43 re-anchor labels span 4..32 taps; at 36 and 40
+   the v9 predictor sits at 490 from the FIRST checkpoint and never orders
+   anything. Measured extrapolation frequency is therefore identical under both
+   rewards (188.8 vs 188.1) — the repair's benefit is confined to where the
+   labels reach. An aggregate curve hid this; the figure now plots the split.
+   Do NOT write "the re-anchored predictor stays with measurement throughout".
+2. The v8 correctness collapse is CONCENTRATED where saturation is worst:
+   s300 -> s400 extrapolation 92.2% -> 73.4%, interpolation 96.9% -> 95.3%.
+   The damage localises to the designs whose reward went uninformative.
+
+This is a better claim than "the repair works": a learned reward is valid only
+over the support of its supervision, and offline accuracy says nothing about the
+region optimisation will travel to. It also predicts the fix (label the region
+you will optimise into) and states its own limit.
+
+Figures rebuilt: `paper/preprint/figures/fig1_trajectory.tex` (four series per
+panel: predicted/measured x interp/extrap), `fig3_scatter.tex`.
+
+### Three-seed replication of grpo_v9 (TRAIN-split training logs)
+
+grpo_v9_s1 (253 updates, 36.8% flat) and grpo_v9_s2 (272, 32.0%) finished;
+original v9 was 200 updates / 50.0% flat. Flat-group rate varies a lot run to
+run — report the RANGE (32-50%), not the single figure currently in the draft.
+
+Binned over training (group size 8, TRAIN designs, surrogate reward — NOT a
+result, a training diagnostic):
+  v9     surrF 120 -> 169, corr 91.9% -> 96.9%
+  v9_s1  surrF 159 -> 227, corr 93.5% -> 88.0%
+  v9_s2  surrF 133 -> 277, corr 88.9% -> 96.8%
+Seed 2 climbs highest (max group mean 468) but:
+  ** ZERO groups reached the clip bound in ANY of the three seeds (0.0%). **
+Under the original surrogate the run saturated; under the re-anchored one, three
+independent seeds do not. That is the replication the single-seed limitation
+asked for, on the training side.
+
+PENDING for the full paper (not the preprint): eval_holdout + Vivado for
+grpo_v9_s1/s2 to turn this into a held-out seed-variance row. The preprint keeps
+the single-seed limitation as written and can cite the training-side replication.
