@@ -65,7 +65,7 @@ import argparse
 import subprocess
 import tempfile
 
-CANON_VERSION = "1.4.1"        # bump on ANY behaviour change; it is preregistered
+CANON_VERSION = "1.5.0"        # bump on ANY behaviour change; it is preregistered
 
 # ---------------------------------------------------------------- tokenizer
 KEYWORDS = set("""
@@ -213,7 +213,22 @@ def canon_lexical(src, module_name="top"):
     txt = " ".join(out)
     txt = re.sub(r"\bmodule\s+\S+", f"module {module_name}", txt, count=1)
     # one statement per line -> layout becomes a constant, not a choice
-    txt = re.sub(r"\s*;\s*", " ;\n", txt)
+    # One statement per line, but ONLY breaking at semicolons that are at
+    # parenthesis depth 0. A `for (i = 0; i < 5; i = i + 1)` header contains
+    # semicolons that do not end statements; splitting on them shredded loop
+    # headers across three pseudo-statements and made loop bounds invisible to
+    # every feature. check_a caught this as an unorderable median-filter pair.
+    out2, depth = [], 0
+    for ch in txt:
+        if ch in "([":
+            depth += 1
+        elif ch in ")]":
+            depth -= 1
+        if ch == ";" and depth == 0:
+            out2.append(" ;\n")
+        else:
+            out2.append(ch)
+    txt = "".join(out2)
     txt = re.sub(r"\bbegin\b", "begin\n", txt)
     txt = re.sub(r"\bend\b", "\nend\n", txt)
     txt = re.sub(r"[ \t]+", " ", txt)
@@ -322,7 +337,8 @@ def canon_hash(txt):
 # -------------------------------------------------------- structural features
 STRUCT_FEATURES = ["n_mult", "max_stmt_mult", "n_posedge", "n_nonblock",
                    "n_blocking", "accum_struct", "n_regs", "n_wires",
-                   "n_ternary", "n_cmp", "n_stmts", "pipe_ratio_struct"]
+                   "n_ternary", "n_cmp", "n_stmts", "pipe_ratio_struct",
+                   "n_loops", "loop_bound_max", "loop_bound_sum"]
 
 
 def struct_feature_dict(canon_txt):
@@ -336,13 +352,17 @@ def struct_feature_dict(canon_txt):
     """
     toks = tokenize(canon_txt)
     words = [t for k, t in toks]
-    stmts, cur = [], []
-    for k, t in toks:
-        if t == ";":
+    stmts, cur, sdepth = [], [], 0
+    for k, tk in toks:
+        if tk in "([":
+            sdepth += 1
+        elif tk in ")]":
+            sdepth -= 1
+        if tk == ";" and sdepth == 0:
             stmts.append(cur)
             cur = []
         else:
-            cur.append(t)
+            cur.append(tk)
     if cur:
         stmts.append(cur)
 
@@ -398,6 +418,12 @@ def struct_feature_dict(canon_txt):
                 n_cmp += 1
     fd["n_cmp"] = n_cmp
     fd["n_stmts"] = len(stmts)
+    # restored: the v1.3.0 classifier rewrite replaced a block that also
+    # computed these, and check_a caught the KeyError before they could reach a
+    # frozen feature vector.
+    fd["n_regs"] = words.count("reg") + words.count("logic")
+    fd["n_wires"] = words.count("wire")
+    fd["n_ternary"] = words.count("?")
     acc = 0
     for s in stmts:
         if "<=" not in s:
@@ -408,6 +434,31 @@ def struct_feature_dict(canon_txt):
             acc += 1
     fd["accum_struct"] = acc
     fd["pipe_ratio_struct"] = acc / (fd["n_mult"] + 1.0)
+
+    # Loop structure. A `for` bound determines how many comparators or adders
+    # the loop unrolls into, so it determines the critical path -- two median
+    # filters differing only in `i < 5` versus `i < 4` measured 60.4 and 38.3
+    # MHz while every other feature was identical. Bounds are structural, not
+    # cosmetic, and no layout change can alter them.
+    fd["n_loops"] = words.count("for")
+    bounds = []
+    for i, tk in enumerate(words):
+        if tk != "for":
+            continue
+        depth, j, lits = 0, i, []
+        while j < len(words):
+            if words[j] in "([":
+                depth += 1
+            elif words[j] in ")]":
+                depth -= 1
+                if depth == 0:
+                    break
+            elif depth > 0 and words[j].isdigit():
+                lits.append(int(words[j]))
+            j += 1
+        bounds.append(max(lits) if lits else 0)
+    fd["loop_bound_max"] = max(bounds) if bounds else 0
+    fd["loop_bound_sum"] = sum(bounds)
     return fd
 
 

@@ -2734,3 +2734,49 @@ Second pre-registered risk (Check B): a bounded RF cannot extrapolate. Off
 support it returns a leaf mean and supplies NO gradient. That is the failure
 mode which replaces saturation, and "canonical GRPO barely moves" must be
 called in advance rather than discovered.
+
+### 2026-08-11 — canonicaliser v1.5.0; Check A GO (conditional on traces)
+
+CONTRACT (server, v1.4.1, lexical, 490 candidates): 484 passed, 1 rejected,
+0 collisions, **5 TRACE FAILURES**. The five are an OPEN BLOCKER: the go rule is
+zero unsafe semantic merges, and a trace failure means the canonicaliser changed
+a design. They must be diagnosed and the check re-run at v1.5.0, whose canonical
+output differs from v1.4.1.
+
+CHECK A (sandbox, v1.5.0, 229 training rows, held-out already excluded):
+  material within-design pairs .......... 389
+  unorderable (identical features) ...... 5  (1.3%)
+  family rates: fir 0.0  firr 0.0  poly 0.0  iir 0.0  other 0.0  med 21.7%
+  unsafe semantic merges ................ 0
+  rejection rate ........................ 0.00%
+  VERDICT: GO  (all four preregistered thresholds met)
+NOTE: med at 21.7% is a MARGINAL pass against a 25% ceiling, on the one family
+GRPO already gains nothing on. Report it as marginal; do not present 1.3% alone.
+
+TWO DEFECTS CHECK A CAUGHT, both fixed before any freeze:
+ 1. `for (i = 0; i < 5; i = i + 1)` contains semicolons, and the statement
+    splitter broke on EVERY `;`, shredding loop headers into three pseudo-
+    statements. Both the canonical emitter and the feature extractor now split
+    only at parenthesis depth 0.
+ 2. No feature saw loop TRIP COUNTS. Two med5 candidates differing only in
+    `n6 < 5` vs `n6 < 4` -- i.e. in how many comparator stages the loop unrolls
+    into -- measured 60.4 and 38.3 MHz with byte-identical feature vectors.
+    Added n_loops, loop_bound_max, loop_bound_sum. A loop bound determines the
+    synthesised hardware and cannot be altered by any layout change, so this is
+    a structural feature, not a fitted one.
+
+PROVENANCE OF THAT FIX, stated because it matters: the loop features were added
+AFTER seeing Check A fail, on TRAINING data only, before the freeze, and the
+external review explicitly directs "fix the representation" on a NO-GO. It is
+not tuning against v8 outputs or the sealed split, neither of which was
+consulted. med moved 30.4% -> 21.7%; the threshold was not moved.
+
+ALSO FIXED at v1.4.2: the v1.3.0 classifier rewrite had silently dropped
+n_regs / n_wires / n_ternary from the feature dict. check_a raised KeyError
+before they could reach a frozen vector.
+
+BACKEND DECISION, LOCKED: lexical. Yosys reached 33/60 on the byte contract and
+would additionally need an RTLIL-specific feature extractor -- the current
+features count Verilog tokens (`<=`, `posedge`, `*`) that `proc; opt_clean` no
+longer represents -- plus its own Check A. It is the TCAD extension. The claim
+we make is LEXICAL invariance.
