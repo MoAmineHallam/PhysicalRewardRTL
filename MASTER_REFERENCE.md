@@ -2818,3 +2818,37 @@ rejection, 0 collisions, 91 equivalence merges; Check A GO (389 material pairs,
 5 unorderable = 1.3%, med 21.7% marginal, 0 unsafe merges, 0.00% rejection).
 AWAITING: the server re-run of --check-traces at v1.5.1. The blocker closes only
 when that reads 0 canonical-compile failures.
+
+### 2026-08-11 — canonicaliser v1.6.1. Two tokenizer gaps, and a guard that failed.
+
+TRACE CHECK (server, v1.5.1): 5 canonical-compile failures -> 1. The remaining
+one was `base__firr18__g1.sv`:
+    original   y <= {12'b0, $signed($signed({3'b0, tap[0]}) * 1)} + ...
+    canonical  y <= { 12'b0 , $ signed ( $ signed ( ...     <- invalid
+The `ident` pattern is `[A-Za-z_][A-Za-z0-9_$]*`, which does not allow a LEADING
+`$`, so `$signed` split into `$` + `signed` and space-joining broke it. Fixed in
+v1.6.0 with a `systask` token group: `\$[A-Za-z_][A-Za-z0-9_$]*`.
+
+THIS WAS THE SECOND GAP OF THE SAME SHAPE (`'0` was the first). I added a
+token-count guard intended to catch the class systemically, then TESTED IT by
+synthetically removing the `'0` rule. **IT DID NOT FIRE.** Input `'0` tokenises
+as `'` + `0` (2 tokens); output `' 0` re-tokenises as `'` + `0` (2 tokens).
+Same count, same sequence, invalid Verilog.
+
+NO TOKEN-LEVEL CHECK CAN CATCH A TOKENIZER GAP. The tokenizer does not know the
+two pieces had to stay adjacent, so nothing computed from its output can notice
+they were separated. Both gaps also passed the ENTIRE byte-level contract --
+idempotence, metamorphic equality, feature equality -- because a consistently
+broken output is still perfectly consistent with itself.
+
+THE ONLY SUFFICIENT DETECTOR IS COMPILING THE OUTPUT.
+=> `--check-traces` over the full corpus is MANDATORY in the frozen protocol,
+   and must be re-run whenever the corpus or the tokenizer changes.
+=> A passing contract is NOT evidence that the canonical form is well formed.
+The guard is kept for the narrower class it does catch (a construct vanishing)
+and its limitation is documented in the code so nobody re-derives false comfort.
+
+STATE (sandbox, v1.6.1): self-test PASSED; contract 489/490, 1 explicit
+rejection, 0 collisions, 91 equivalence merges; Check A GO (389 material pairs,
+5 unorderable = 1.3%, med 21.7% marginal, 0 unsafe merges, 0.00% rejection).
+AWAITING the server trace re-run at v1.6.1; the blocker closes at 0.

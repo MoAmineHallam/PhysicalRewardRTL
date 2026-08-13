@@ -65,7 +65,7 @@ import argparse
 import subprocess
 import tempfile
 
-CANON_VERSION = "1.5.1"        # bump on ANY behaviour change; it is preregistered
+CANON_VERSION = "1.6.1"        # bump on ANY behaviour change; it is preregistered
 
 # ---------------------------------------------------------------- tokenizer
 KEYWORDS = set("""
@@ -92,6 +92,7 @@ TOK = re.compile(r"""
   | (?P<string>"(?:\\.|[^"\\])*")
   | (?P<escid>\\[^\s]+\s)
   | (?P<macro>`[A-Za-z_][A-Za-z0-9_$]*)
+  | (?P<systask>\$[A-Za-z_][A-Za-z0-9_$]*)   # $signed $display $clog2 ...
   | (?P<number>[0-9]*'[sS]?[bBoOdDhH][0-9a-fA-FxXzZ_?]+|'[01xXzZ](?![A-Za-z0-9_])|[0-9][0-9_]*(?:\.[0-9_]+)?)
   | (?P<ident>[A-Za-z_][A-Za-z0-9_$]*)   # NOTE: the unsized-fill alternative
                                           # above must precede plain numbers,
@@ -216,6 +217,28 @@ def canon_lexical(src, module_name="top"):
 
     # normalise the module name too: it is metadata, not hardware
     txt = " ".join(out)
+
+    # Cheap partial guard: canonicalisation renames and re-lays-out, so it must
+    # never change the NUMBER of tokens. A drop means a construct vanished.
+    #
+    # WHAT THIS CANNOT CATCH, stated because it was written believing otherwise
+    # and tested to find out: a TOKENIZER GAP. `'0` tokenises as `'` + `0`
+    # (two tokens); the emitter separates them into `' 0`; re-tokenising gives
+    # `'` + `0` again -- same count, same sequence, and the output is invalid
+    # Verilog. `$signed` behaved identically. No token-level check can detect
+    # this, because the tokenizer does not know the two pieces had to stay
+    # adjacent. Both gaps also passed the entire byte-level contract, since a
+    # consistently broken output is still idempotent, metamorphic-equal and
+    # feature-equal.
+    #
+    # THE ONLY SUFFICIENT DETECTOR IS COMPILING THE OUTPUT. `--check-traces`
+    # over the whole corpus is therefore MANDATORY in the frozen protocol and
+    # must be re-run whenever the corpus or the tokenizer changes. Do not treat
+    # a passing contract as evidence that the canonical form is well formed.
+    if len(toks) != len(tokenize(txt)):
+        raise Unsupported(
+            f"token count changed: {len(toks)} in, {len(tokenize(txt))} out -- "
+            f"a construct vanished; refusing to emit")
     txt = re.sub(r"\bmodule\s+\S+", f"module {module_name}", txt, count=1)
     # one statement per line -> layout becomes a constant, not a choice
     # One statement per line, but ONLY breaking at semicolons that are at
