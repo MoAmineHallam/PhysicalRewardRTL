@@ -65,7 +65,7 @@ import argparse
 import subprocess
 import tempfile
 
-CANON_VERSION = "1.5.0"        # bump on ANY behaviour change; it is preregistered
+CANON_VERSION = "1.5.1"        # bump on ANY behaviour change; it is preregistered
 
 # ---------------------------------------------------------------- tokenizer
 KEYWORDS = set("""
@@ -92,8 +92,13 @@ TOK = re.compile(r"""
   | (?P<string>"(?:\\.|[^"\\])*")
   | (?P<escid>\\[^\s]+\s)
   | (?P<macro>`[A-Za-z_][A-Za-z0-9_$]*)
-  | (?P<number>[0-9]*'[sS]?[bBoOdDhH][0-9a-fA-FxXzZ_?]+|[0-9][0-9_]*(?:\.[0-9_]+)?)
-  | (?P<ident>[A-Za-z_][A-Za-z0-9_$]*)
+  | (?P<number>[0-9]*'[sS]?[bBoOdDhH][0-9a-fA-FxXzZ_?]+|'[01xXzZ](?![A-Za-z0-9_])|[0-9][0-9_]*(?:\.[0-9_]+)?)
+  | (?P<ident>[A-Za-z_][A-Za-z0-9_$]*)   # NOTE: the unsized-fill alternative
+                                          # above must precede plain numbers,
+                                          # or `'0` tokenises as `'` + `0` and
+                                          # space-joins into the invalid `' 0`.
+                                          # That broke 5 of 490 candidates and
+                                          # surfaced only via trace checking.
   | (?P<op>===|!==|>>>|<<<|<=|>=|==|!=|&&|\|\||<<|>>|\*\*|\+:|-:|~\^|\^~|~&|~\|)
   | (?P<other>.)
 """, re.VERBOSE | re.DOTALL)
@@ -534,8 +539,14 @@ def trace_equal(src, canon, design, n=256, seeds=(1, 2)):
                            design, stim, in_w)
         b = oracle.run_dut(re.sub(r"\bmodule\s+\w+", f"module {design}", canon, 1),
                            design, stim, in_w)
-        if a is None or b is None:
-            return False, "simulation failed"
+        if a is None and b is None:
+            return None, "neither original nor canonical simulates"
+        if a is None:
+            # the input itself does not simulate; the canonicaliser is not at
+            # fault and this candidate is NOT evaluable evidence either way
+            return None, "original does not simulate (not evaluable)"
+        if b is None:
+            return False, "CANONICAL FORM DOES NOT SIMULATE"
         if len(a) != len(b) or not bool((a == b).all()):
             return False, f"trace differs at seed {sd}"
     return True, "identical"

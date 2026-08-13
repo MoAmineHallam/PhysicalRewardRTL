@@ -2780,3 +2780,41 @@ would additionally need an RTLIL-specific feature extractor -- the current
 features count Verilog tokens (`<=`, `posedge`, `*`) that `proc; opt_clean` no
 longer represents -- plus its own Check A. It is the TCAD extension. The claim
 we make is LEXICAL invariance.
+
+### 2026-08-11 — the 5 trace failures: SystemVerilog unsized fill literal. FIXED.
+
+The trace check (which exists because byte-level metamorphic equality cannot
+prove the canonical form is the same circuit) found 5 of 490 canonical forms
+that DO NOT COMPILE. Originals all simulate; the defect was entirely ours.
+
+CAUSE, one token:
+    original   a0 <= '0;
+    canonical  n0 <= ' 0 ;          <- invalid
+`'0` is the SystemVerilog UNSIZED FILL literal. The tokenizer's number pattern
+required a base letter (`'d`, `'h`, `'b`), so `'0` never matched as one token;
+it split into `'` + `0` and space-joining produced `' 0`. Only candidates using
+`'0` broke, which is why it was exactly 5 and why it appeared in fir40/firr18/
+firr6 (their reset blocks use `'0`).
+
+FIX (v1.5.1): added `'[01xXzZ](?![A-Za-z0-9_])` to the number alternation,
+placed AFTER the based-literal alternative so `8'd1` still matches whole.
+
+WHY THIS MATTERS BEYOND THE BUG. Nothing else would have caught it. The
+contract passed 489/490 WITH this defect present: idempotence held (the broken
+output is stable), metamorphic equality held (all spellings produce the same
+broken output), features matched, and there were no collisions. A canonicaliser
+can be perfectly self-consistent and still emit garbage. Only running the
+output through a simulator found it. Keep --check-traces in the frozen protocol
+and never treat the byte contract as sufficient.
+
+SECOND FIX, same commit: `trace_equal` returned "simulation failed" whenever
+EITHER side failed to simulate, which hid whether the input or the canonicaliser
+was at fault -- I initially guessed the inputs were broken and was wrong. It now
+returns None ("original does not simulate -- not evaluable", excluded from the
+denominator) versus False ("CANONICAL FORM DOES NOT SIMULATE", a defect).
+
+State after v1.5.1 (sandbox): self-test PASSED; contract 489/490, 1 explicit
+rejection, 0 collisions, 91 equivalence merges; Check A GO (389 material pairs,
+5 unorderable = 1.3%, med 21.7% marginal, 0 unsafe merges, 0.00% rejection).
+AWAITING: the server re-run of --check-traces at v1.5.1. The blocker closes only
+when that reads 0 canonical-compile failures.
