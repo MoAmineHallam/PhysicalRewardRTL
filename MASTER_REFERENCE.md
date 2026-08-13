@@ -2639,3 +2639,52 @@ layout-canonical form (comments stripped, one statement per line) and reports
 what share of the s300->s400 jump disappears, plus token-identical cross-
 checkpoint pairs (same tokens, same hardware, different reward). Then STOP
 diagnosing v8.
+
+### 2026-08-11 — ATTRIBUTION CLOSED. The late reward jump is 100% layout.
+
+`analyze_reflow_attribution.py --ckpt surrogate_v3.pt`, 144 stored v8 trajectory
+candidates, canonicalisation verified LOSSLESS (0/144 token streams changed).
+
+ckpt   upd  raw pred  canon pred    real   lines  nb_raw  nb_can  tokens
+step0    0      83.3       201.8    81.0    32.3    17.2    25.8   430.8
+s100    77     219.5       494.2   240.5    36.2    24.2    46.3   424.9
+s200   138     217.3       496.5   242.2    36.0    24.0    46.0   419.8
+s300   205     218.0       497.5   242.2    36.4    24.4    46.8   429.5
+s400   276     497.7       494.1   241.2    56.5    44.4    44.4   411.1
+
+  s300 -> s400 reward jump, RAW layout        +279.7 MHz
+  s300 -> s400 reward jump, CANONICAL layout    -3.4 MHz
+  s300 -> s400 real Vivado change               -1.0 MHz
+  share of the jump removed by canonicalisation: 101.2%
+
+Under a uniform layout the late "gain" is -3.4 MHz, which matches the measured
+-1.0 MHz. The entire +279.7 was formatting.
+
+THE CLEANEST STATEMENT OF THE HACK, straight from the table:
+  nb_CANON is essentially FLAT across s100/s200/s300/s400: 46.3, 46.0, 46.8,
+  44.4 -- the design has ~46 nonblocking assignments the whole time.
+  nb_RAW goes 24.2, 24.0, 24.4 -> 44.4. The policy did not add assignments; it
+  moved them onto their own lines so the line-anchored regex would count them.
+  At s400, nb_raw == nb_can == 44.4: the policy had converged ONTO the canonical
+  layout, which is why canonicalisation changes nothing there and everything at
+  s300.
+
+NULL RESULT, reported: zero token-identical cross-checkpoint pairs. The policy
+changed tokens as well as layout between checkpoints, so the "same tokens,
+different reward" figure does not exist in these artifacts. The attribution
+number carries the claim instead.
+
+CAVEAT THAT MUST TRAVEL WITH THE 101.2% -- do not drop it. The canonical scores
+sit at 494-497 for every checkpoint from s100 on, i.e. AT THE 500 MHz CLAMP.
+The existing predictor was trained on raw-layout rows where nb_assign has a
+different distribution, so feeding it canonical text saturates it. This is
+therefore an ATTRIBUTION DIAGNOSTIC, not a demonstration that canonicalisation
+yields a working reward. Applying canonical form to the deployed predictor
+would replace one broken reward with another. The repair requires RETRAINING on
+canonical representations -- the rf_struct plan -- and its success is an open
+question this analysis does not answer.
+
+YOSYS: conda create -p /tmp/yosys_test -c conda-forge yosys SUCCEEDS.
+Yosys 0.68+ available. The structural canonicalisation path is open; the lexical
+fallback is no longer needed as the primary route. Install into the persistent
+env (-p /zeng_gk/Amine/mas/env_mas) before relying on it -- /tmp is ephemeral.
