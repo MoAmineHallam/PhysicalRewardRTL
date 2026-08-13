@@ -1,45 +1,71 @@
 #!/usr/bin/env python3
 """
-reward_invariance_audit.py  -  does a candidate reward respond to changes that
-cannot alter the hardware?
+reward_invariance_audit.py  -  does a candidate reward respond to edits that
+cannot change the hardware?
 
-THE GATE. Before any reward is used to optimize a policy, it must be shown not
-to move under edits the oracle and the synthesis tool both ignore. A reward that
-moves under comment insertion is a reward a policy can raise by writing
-comments, and no amount of offline accuracy repairs that.
+THE GATE. Before a reward is used to optimize a policy, it should be shown not
+to move under edits the simulator and the synthesis tool both ignore. A reward
+that moves under comment insertion can be raised by writing comments, and no
+amount of offline accuracy repairs that.
 
-Two tiers, because they are not the same kind of evidence.
+WHAT THIS MEASURES, AND WHAT IT DOES NOT
+----------------------------------------
+It measures VULNERABILITY of a reward, not EXPLOITATION by a policy. Those are
+different claims and the distinction is load-bearing: of the 116 stored held-out
+candidates from the optimized policy, ZERO contain a comment, as do zero of the
+159 supervised ones (only the base model writes comments, 19 of 41). So a
+comment-channel failure below says the reward COULD be gamed that way, never
+that it WAS. Any text derived from this script must preserve that distinction.
 
-  STRICT  comment insertion, whitespace normalisation, scope-limited internal
-          identifier renaming. These provably cannot change the implemented
-          hardware, so real Fmax is unchanged by construction and ANY reward
-          movement is a defect. No synthesis is needed to judge them.
+TIERS, by what can be proven about them
+---------------------------------------
+  EXACT     comment insertion, whitespace normalisation. The parsed design is
+            unchanged, so the implemented hardware is unchanged and the reward
+            must not move at all. Judged against an exact-invariance criterion,
+            not a tolerance.
 
-  SOFT    dead-logic insertion. Synthesis usually removes it but not always
-          identically, so real Fmax MAY legitimately move. These cannot be
-          judged without re-synthesising, and this script only PREPARES them:
-          it writes the mutants to a directory for run_ppa.py and records the
-          predictions, so the comparison can be made once real numbers exist.
-          Declaration reordering is deliberately NOT implemented -- procedural
-          order, declaration initialisation and positional attributes can all
-          make it semantics-changing, and a lexer alone cannot prove otherwise.
+  LEXICAL   scope-limited internal identifier renaming. I/O behaviour is
+            unchanged and we verify that by exact trace equality, but internal
+            names remain visible to a synthesis tool, which may preserve or
+            report them differently. We therefore do NOT claim renaming is
+            timing-invariant; we claim it is I/O-equivalent, report it in its
+            own tier, and leave the timing question to the canonicalisation
+            work.
 
-Identifier renaming is tokenizer-based, never regex over raw text. It renames
-only identifiers that are declared inside the module body and are not: the
-module name, any port, a Verilog keyword, a system task, a macro, an escaped
-identifier, or anything appearing inside a string or comment. Anything it cannot
-prove safe, it leaves alone -- the audit is worthless if the mutation itself
-changes behaviour, so it errs toward mutating less.
+  SOFT      dead-logic insertion. Synthesis usually strips it but not always
+            identically, so real Fmax MAY legitimately move. Never judged
+            offline: --emit-soft writes the mutants for run_ppa.py so the
+            comparison can be made against re-synthesised numbers.
+
+  Declaration reordering is deliberately absent. Procedural order, declaration
+  initialisation and positionally-attached attributes can all make it
+  semantics-changing and a tokenizer cannot prove otherwise.
+
+CRITERIA (two, reported separately -- an earlier version conflated them)
+-----------------------------------------------------------------------
+  exact invariance : max |dPred| <= EPS over candidates the mutation ACTUALLY
+                     changed. This is the criterion that matters for EXACT-tier
+                     mutations; a tolerance band cannot excuse a deterministic
+                     predictor moving at all.
+  operational      : does the mutation change anything the optimizer consumes?
+                     GRPO z-scores rewards inside a group of samples for one
+                     design, so only within-group ORDER and standardized
+                     ADVANTAGE drive the gradient. A reward may move by 40 MHz
+                     and change no decision, or move by 3 MHz and flip the
+                     argmax. Both are reported: pairwise order reversals,
+                     top-1 changes, and max |d advantage|.
+  severity band    : max(5 MHz, 2%) is retained as a magnitude label only. It
+                     was pre-registered but never derived, and pre-registration
+                     does not make an arbitrary threshold meaningful.
+
+Denominators are mutation-conditioned: a mutation that leaves a candidate byte
+identical cannot be evidence about that candidate, so it is excluded rather than
+counted as a pass. Every mutation is drawn with a per-candidate seed, so the
+audit does not rest on one mutation pattern.
 
     python reward_invariance_audit.py --strict-only
+    python reward_invariance_audit.py --strict-only --check-oracle --limit 40
     python reward_invariance_audit.py --emit-soft rtl/mutants_soft
-
-Predeclared rejection rule for the STRICT tier, fixed before running:
-    a reward FAILS if any strict mutation moves its prediction by more than
-    max(5 MHz, 2% of the original prediction), or changes the ordering of any
-    two candidates of the same design.
-Predictors here are deterministic, so there is no sampling noise to excuse a
-movement.
 """
 
 import os
@@ -53,6 +79,10 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
+EPS = 1e-6           # exact-invariance tolerance: floating point only
+ADV_EPS = 1e-3       # advantage shift below this is numerically uninteresting
+
+
 # ---------------------------------------------------------------- tokenizer
 KEYWORDS = set("""
 module endmodule input output inout wire reg logic integer parameter localparam
@@ -61,11 +91,9 @@ case casez casex endcase default posedge negedge or and not xor nand nor xnor
 signed unsigned genvar generate endgenerate initial function endfunction task
 endtask return automatic static const typedef struct union enum packed void
 bit byte shortint int longint real time realtime string chan disable fork join
-repeat forever wait sepcify endspecify defparam
+repeat forever wait specify endspecify defparam
 """.split())
 
-# strings, comments, escaped identifiers, sized/based numbers, identifiers,
-# whitespace, everything else. Order matters: longest / most specific first.
 TOK = re.compile(r"""
     (?P<ws>\s+)
   | (?P<lcomment>//[^\n]*)
@@ -83,21 +111,17 @@ def tokenize(src):
     return [(m.lastgroup, m.group()) for m in TOK.finditer(src)]
 
 
-def module_header_names(toks, design):
-    """Module name + every port identifier, which must never be renamed.
-
-    Conservative: takes every identifier between 'module' and the ';' that ends
-    the header. That over-collects (it includes type keywords' neighbours and
-    parameter names), which is the safe direction -- an over-collected name is
-    simply left unrenamed.
-    """
-    names, depth, seen_module, i = set(), 0, False, 0
+def header_names(toks):
+    """Module name + everything in the port/parameter header. Over-collects on
+    purpose: an over-collected name is simply left unrenamed, which is the safe
+    direction."""
+    names, depth, seen, = set(), 0, False
     for kind, txt in toks:
         if kind in ("ws", "lcomment", "bcomment"):
             continue
-        if not seen_module:
+        if not seen:
             if kind == "ident" and txt == "module":
-                seen_module = True
+                seen = True
             continue
         if kind == "other" and txt in "([":
             depth += 1
@@ -107,96 +131,159 @@ def module_header_names(toks, design):
             break
         elif kind == "ident" and txt not in KEYWORDS:
             names.add(txt)
-    names.add(design)
     return names
 
 
-def rename_internals(src, design, salt):
-    """Alpha-rename module-internal identifiers only. Returns (text, n_renamed)."""
+def rename_internals(src, salt):
+    """Alpha-rename module-internal identifiers. Tokenizer-based, never regex
+    over raw text.
+
+    LIMITATION, stated because the audit is only as good as this: the renamer
+    is not declaration-aware. It collects unprotected identifiers appearing
+    outside the header rather than proving each one is locally declared. On this
+    corpus that is adequate -- the sampled candidates contain no macros,
+    functions, tasks, hierarchy, packages, interfaces or multiple modules -- but
+    it is NOT a reusable SystemVerilog mutation operator, and every mutant is
+    checked for exact I/O-trace equality before its reward movement counts.
+    """
     toks = tokenize(src)
-    protected = module_header_names(toks, design)
-    # candidates: identifiers that appear outside the header, are not keywords,
-    # not protected, not immediately preceded by '.' (port connection / member),
-    # and not immediately followed by '(' (task / function / instance call).
-    counts = collections.Counter()
-    prev_sig, nxt = None, None
+    protected = header_names(toks)
     sig = [(k, t) for k, t in toks if k not in ("ws", "lcomment", "bcomment")]
-    for idx, (kind, txt) in enumerate(sig):
+    cand = set()
+    for i, (kind, txt) in enumerate(sig):
         if kind != "ident" or txt in KEYWORDS or txt in protected:
             continue
-        if idx and sig[idx - 1][1] == ".":
+        if i and sig[i - 1][1] == ".":            # .port(sig) connection
             continue
-        if idx + 1 < len(sig) and sig[idx + 1][1] == "(":
+        if i + 1 < len(sig) and sig[i + 1][1] == "(":   # call / instantiation
             continue
-        if txt.startswith("$"):
-            continue
-        counts[txt] += 1
-    mapping = {n: f"r{salt}_{i}" for i, n in enumerate(sorted(counts))}
-    out = []
-    for kind, txt in toks:
-        if kind == "ident" and txt in mapping:
-            out.append(mapping[txt])
-        else:
-            out.append(txt)
+        cand.add(txt)
+    mapping = {n: f"r{salt}_{i}" for i, n in enumerate(sorted(cand))}
+    out = [mapping.get(t, t) if k == "ident" else t for k, t in toks]
     return "".join(out), len(mapping)
 
 
 # ---------------------------------------------------------------- mutations
-WORDS = ("pipeline stage register transposed unrolled critical path timing "
-         "closure fast optimized throughput latency balanced retimed").split()
+FAST_WORDS = ("pipeline stage register transposed unrolled critical path timing "
+              "closure fast optimized throughput latency balanced retimed"
+              ).split()
+NEUTRAL_WORDS = ("note here value signal block section update local copy "
+                 "temporary index bound offset element").split()
 
 
 def mut_comments(src, rng):
-    """Insert comments containing vocabulary associated with FAST designs.
+    """Insert comments carrying vocabulary associated with FAST designs.
 
-    Deliberately adversarial: if a lexical reward has learned that the word
-    'pipeline' predicts high frequency, this is the cheapest way for a policy to
-    exploit it, and the mutation must therefore be exactly that attack rather
-    than neutral filler.
+    Adversarial on purpose: if a lexical reward has learned that 'pipeline'
+    predicts high frequency, this is the cheapest exploit available to a policy,
+    so a neutral-filler test would understate the vulnerability. mut_comments_
+    neutral is the control that separates 'reacts to added lines' from 'reacts
+    to the words in them'.
     """
-    lines = src.split("\n")
+    return _insert(src, rng, FAST_WORDS)
+
+
+def mut_comments_neutral(src, rng):
+    return _insert(src, rng, NEUTRAL_WORDS)
+
+
+def _insert(src, rng, vocab):
     out, n = [], 0
-    for ln in lines:
+    for ln in src.split("\n"):
         out.append(ln)
         if rng.random() < 0.25:
-            out.append("  // " + " ".join(rng.sample(WORDS, 4)))
+            out.append("  // " + " ".join(rng.sample(vocab, 4)))
+            n += 1
+    return "\n".join(out), n
+
+
+def mut_blanklines(src, rng):
+    """Blank lines only: no words at all. Isolates pure line-count sensitivity
+    from vocabulary sensitivity."""
+    out, n = [], 0
+    for ln in src.split("\n"):
+        out.append(ln)
+        if rng.random() < 0.25:
+            out.append("")
             n += 1
     return "\n".join(out), n
 
 
 def mut_whitespace(src, rng):
-    """Reindent and pad. Never touches string or comment interiors."""
+    """Re-indent. Never touches string or comment interiors."""
     out = []
     for kind, txt in tokenize(src):
-        if kind == "ws":
-            out.append("\n" if "\n" in txt else "  ")
-        else:
-            out.append(txt)
+        out.append(("\n" if "\n" in txt else "  ") if kind == "ws" else txt)
     return "".join(out), 1
 
 
-def mut_rename(src, rng, design=""):
-    return rename_internals(src, design, rng.randint(1000, 9999))
+def mut_rename(src, rng):
+    return rename_internals(src, rng.randint(1000, 9999))
 
 
 def mut_deadcode(src, rng):
-    """SOFT tier: unused declarations synthesis is expected to strip.
-
-    Not judged offline. Written out for re-synthesis, because 'expected to
-    strip' is not 'provably stripped', and a real frequency change here would
-    make reward movement legitimate rather than a defect.
-    """
     m = re.search(r"\bendmodule\b", src)
     if not m:
         return src, 0
-    dead = "\n".join(
-        f"  wire [{rng.randint(1, 31)}:0] dead_{i}_unused;" for i in range(4))
+    dead = "\n".join(f"  wire [{rng.randint(1, 31)}:0] dead_{i}_unused;"
+                     for i in range(4))
     return src[:m.start()] + dead + "\n" + src[m.start():], 4
 
 
-STRICT = [("comments", mut_comments), ("whitespace", mut_whitespace),
-          ("rename", mut_rename)]
+EXACT = [("comments_fast", mut_comments), ("comments_neutral", mut_comments_neutral),
+         ("blanklines", mut_blanklines), ("whitespace", mut_whitespace)]
+LEXICAL = [("rename", mut_rename)]
 SOFT = [("deadcode", mut_deadcode)]
+TIER = ({n: "EXACT" for n, _ in EXACT} | {n: "LEXICAL" for n, _ in LEXICAL}
+        | {n: "SOFT" for n, _ in SOFT})
+
+
+# ---------------------------------------------------------------- metrics
+def group_metrics(test, base, mut, changed):
+    """Everything the optimizer would actually notice.
+
+    GRPO standardizes rewards inside a (policy, design) group, so scale is
+    irrelevant and only order and standardized advantage matter. A 40 MHz shift
+    that preserves the ordering changes no gradient; a 3 MHz shift that flips
+    the argmax does.
+    """
+    by = collections.defaultdict(list)
+    for i, t in enumerate(test):
+        by[(t["policy"], t["design"])].append(i)
+    rev = top1 = groups = 0
+    dadv = 0.0
+    for _, idx in by.items():
+        if len(idx) < 2 or not any(changed[i] for i in idx):
+            continue
+        groups += 1
+        b = np.array([base[i] for i in idx])
+        m = np.array([mut[i] for i in idx])
+        for a in range(len(idx)):
+            for c in range(a + 1, len(idx)):
+                if np.sign(b[a] - b[c]) != np.sign(m[a] - m[c]):
+                    rev += 1
+        if int(np.argmax(b)) != int(np.argmax(m)):
+            top1 += 1
+        ab = (b - b.mean()) / (b.std() + 1e-8)
+        am = (m - m.mean()) / (m.std() + 1e-8)
+        dadv = max(dadv, float(np.abs(ab - am).max()))
+    return {"groups_touched": groups, "pair_reversals": rev,
+            "top1_changes": top1, "max_abs_dadvantage": dadv}
+
+
+def stratify(test, base, mut, changed):
+    out = {}
+    by = collections.defaultdict(list)
+    for i, t in enumerate(test):
+        if changed[i]:
+            by[t["policy"]].append(i)
+    for pol, idx in by.items():
+        d = np.array([mut[i] - base[i] for i in idx])
+        out[pol] = {"n_changed": len(idx), "mean_signed": float(d.mean()),
+                    "max_abs": float(np.abs(d).max()),
+                    "n_increases": int((d > 0).sum()),
+                    "n_decreases": int((d < 0).sum())}
+    return out
 
 
 # ---------------------------------------------------------------- main
@@ -208,61 +295,87 @@ def main():
     ap.add_argument("--train-dirs", nargs="*", default=[
         "rtl/fmax_probe_v4", "rtl/fmax_data", "rtl/policy_cmp", "rtl/fmax_d2"])
     ap.add_argument("--ckpt", default=os.path.join(HERE, "surrogate_v3.pt"))
-    ap.add_argument("--limit", type=int, default=120,
-                    help="candidates to mutate (sampled with a fixed seed)")
+    ap.add_argument("--limit", type=int, default=0,
+                    help="0 = every candidate (default). Sampling is only for "
+                         "the slow --check-oracle pass.")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--strict-only", action="store_true")
-    ap.add_argument("--emit-soft", default="",
-                    help="directory to write SOFT-tier mutants for run_ppa.py")
+    ap.add_argument("--emit-soft", default="")
     ap.add_argument("--check-oracle", action="store_true",
-                    help="verify each strict mutant is still oracle-correct "
-                         "(needs iverilog; slow but this is the whole premise)")
+                    help="prove each mutant is I/O-identical to its original by "
+                         "comparing FULL TRACES on identical stimuli, not merely "
+                         "by both scoring correct")
+    ap.add_argument("--oracle-seeds", type=int, nargs="*", default=[1, 2])
     ap.add_argument("--out", default=os.path.join(HERE, "reward_invariance.json"))
     args = ap.parse_args()
 
     import surrogate_arch_ablation as A
-    rng = random.Random(args.seed)
 
     train = A.read_train(args.train_dirs)
-    test = A.read_test([d for d in args.dirs])
-    rng.shuffle(test)
-    test = test[:args.limit]
-    print(f"train rows: {len(train)}   candidates to mutate: {len(test)}")
+    test = A.read_test(args.dirs)
+    if args.limit:
+        random.Random(args.seed).shuffle(test)
+        test = test[:args.limit]
+    print(f"train rows: {len(train)}   candidates: {len(test)}")
+    pols = collections.Counter(t["policy"] for t in test)
+    print(f"by policy: {dict(pols)}")
+    ncom = sum(1 for t in test if "//" in t["txt"])
+    print(f"candidates that ALREADY contain a comment: {ncom}/{len(test)}  "
+          f"({dict(collections.Counter(t['policy'] for t in test if '//' in t['txt']))})")
+    print("  -> a comment-channel failure is a VULNERABILITY of the reward, not\n"
+          "     evidence the policy used it.\n")
 
-    # ---- build the mutant set --------------------------------------------
-    variants = {"original": [t["txt"] for t in test]}
-    stats = {}
-    for name, fn in (STRICT if args.strict_only else STRICT + SOFT):
-        muts, touched = [], 0
-        for t in test:
-            r = random.Random(args.seed)
-            if name == "rename":
-                s, n = mut_rename(t["txt"], r, t["design"])
-            else:
-                s, n = fn(t["txt"], r)
-            muts.append(s)
-            touched += (1 if n else 0)
-        variants[name] = muts
-        stats[name] = {"candidates_changed": touched, "n": len(test)}
-        print(f"  mutation {name:11s}: changed {touched}/{len(test)} candidates")
+    muts = EXACT + LEXICAL + ([] if args.strict_only else SOFT)
+    variants, changed_mask, stats = {}, {}, {}
+    for name, fn in muts:
+        outs, ch = [], []
+        for i, t in enumerate(test):
+            r = random.Random(args.seed * 100003 + i)   # per-candidate pattern
+            s, _ = fn(t["txt"], r)
+            outs.append(s)
+            ch.append(s != t["txt"])
+        variants[name] = outs
+        changed_mask[name] = ch
+        stats[name] = {"tier": TIER[name], "n_changed": int(sum(ch)),
+                       "n": len(test)}
+        print(f"  {name:17s} [{TIER[name]:7s}] changed {sum(ch):4d}/{len(test)}")
 
+    # ---- prove the mutants are I/O-identical ------------------------------
     if args.check_oracle:
         import oracle
-        print("\nverifying strict mutants preserve oracle behaviour ...")
-        bad = collections.Counter()
-        for name in [n for n, _ in STRICT]:
+        print("\nproving mutants are I/O-identical (full trace equality, "
+              f"seeds {args.oracle_seeds}) ...")
+        fails = collections.Counter()
+        checked = collections.Counter()
+        for name in [n for n, _ in EXACT + LEXICAL]:
             for t, s in zip(test, variants[name]):
-                stem = re.sub(r"\bmodule\s+\w+", f"module {t['design']}", s, 1)
+                if s == t["txt"]:
+                    continue
+                d = t["design"]
+                o = re.sub(r"\bmodule\s+\w+", f"module {d}", t["txt"], 1)
+                m = re.sub(r"\bmodule\s+\w+", f"module {d}", s, 1)
                 try:
-                    ok = oracle.score(stem, t["design"], n=256, seed=1)["correct"]
+                    _, in_w = oracle.build_reference(d)
+                    same = True
+                    for sd in args.oracle_seeds:
+                        stim = oracle.gen_stimulus(256, in_w, sd)
+                        a = oracle.run_dut(o, d, stim, in_w)
+                        b = oracle.run_dut(m, d, stim, in_w)
+                        if a is None or b is None or len(a) != len(b) \
+                                or not bool((a == b).all()):
+                            same = False
+                            break
                 except Exception:
-                    ok = False
-                if not ok:
-                    bad[name] += 1
-            print(f"  {name:11s}: {bad[name]} of {len(test)} mutants no longer "
-                  f"score correct" + ("   <-- MUTATION IS UNSAFE" if bad[name]
-                                      else ""))
-        stats["oracle_failures"] = dict(bad)
+                    same = False
+                checked[name] += 1
+                if not same:
+                    fails[name] += 1
+            print(f"  {name:17s}: {fails[name]:3d} of {checked[name]:3d} mutants "
+                  f"are NOT trace-identical"
+                  + ("   <-- MUTATION UNSAFE, its reward numbers are void"
+                     if fails[name] else ""))
+        stats["oracle_trace_failures"] = dict(fails)
+        stats["oracle_trace_checked"] = dict(checked)
 
     if args.emit_soft and not args.strict_only:
         os.makedirs(args.emit_soft, exist_ok=True)
@@ -273,20 +386,20 @@ def main():
                 re.sub(r"\bmodule\s+\w+", f"module {mod}", s, 1))
             mani[mod] = {"policy": t["policy"], "design": t["design"],
                          "count": 1, "n": 1, "orig_fmax": t["fmax"]}
-        json.dump(mani, open(os.path.join(args.emit_soft,
-                                          "fmax_manifest.json"), "w"), indent=1)
-        print(f"\nwrote {len(mani)} SOFT mutants to {args.emit_soft}/ "
-              f"-- run run_ppa.py there, then compare against orig_fmax")
+        json.dump(mani, open(os.path.join(args.emit_soft, "fmax_manifest.json"),
+                             "w"), indent=1)
+        print(f"\nwrote {len(mani)} SOFT mutants to {args.emit_soft}/")
 
-    # ---- score every variant with every reward ---------------------------
+    # ---- score ------------------------------------------------------------
     Xtr = np.array([r["feats"] for r in train], float)
     ytr = np.log(np.array([r["fmax"] for r in train], float))
     Ttr = [r["txt"] for r in train]
 
     results = {}
-    print(f"\n{'reward':16s} {'mutation':11s} {'max |dPred|':>12s} "
-          f"{'mean |dPred|':>13s} {'> tol':>8s} {'verdict':>9s}")
-    print("-" * 76)
+    print(f"\n{'reward':16s} {'mutation':17s} {'chg':>5s} {'max|d|':>8s} "
+          f"{'mean d':>8s} {'revrs':>6s} {'top1':>5s} {'dAdv':>7s} "
+          f"{'exact':>6s} {'operational':>12s}")
+    print("-" * 104)
     for name, space, mk in A.architectures(1):
         def score(texts):
             if space == "ckpt":
@@ -294,43 +407,62 @@ def main():
                     return None
                 return np.exp(np.clip(A.predict_deployed(args.ckpt, texts),
                                       np.log(A.CLAMP_LO), np.log(A.CLAMP_HI)))
-            feats = np.array([A.extract_features(x) for x in texts], float)
+            f = np.array([A.extract_features(x) for x in texts], float)
             if space == "feats" and mk is None:
-                pl = A.fit_mlp(Xtr, ytr, feats, seed=0)
+                pl = A.fit_mlp(Xtr, ytr, f, seed=0)
             elif space == "feats":
-                pl = A.fit_sklearn(mk(), Xtr, ytr, feats)
+                pl = A.fit_sklearn(mk(), Xtr, ytr, f)
             else:
                 pl = A.fit_sklearn(mk(), Ttr, ytr, texts)
             return np.exp(np.clip(pl, np.log(A.CLAMP_LO), np.log(A.CLAMP_HI)))
 
-        base = score(variants["original"])
+        base = score([t["txt"] for t in test])
         if base is None:
             print(f"{name:16s} [skipped: {args.ckpt} absent]")
             continue
-        rows, failed = {}, False
-        for mname in [k for k in variants if k != "original"]:
+        rows = {}
+        for mname, _ in muts:
             mp = score(variants[mname])
-            d = np.abs(mp - base)
-            tol = np.maximum(5.0, 0.02 * base)
-            n_over = int((d > tol).sum())
-            tier = "STRICT" if mname in [n for n, _ in STRICT] else "soft"
-            bad = tier == "STRICT" and n_over > 0
-            failed |= bad
-            rows[mname] = {"max_abs": float(d.max()), "mean_abs": float(d.mean()),
-                           "n_over_tol": n_over, "n": len(d), "tier": tier}
-            print(f"{name:16s} {mname:11s} {d.max():12.1f} {d.mean():13.1f} "
-                  f"{n_over:5d}/{len(d):<4d} "
-                  f"{'FAIL' if bad else ('ok' if tier == 'STRICT' else 'defer'):>9s}")
-        results[name] = {"rows": rows, "strict_pass": not failed}
+            ch = changed_mask[mname]
+            sel = [i for i, c in enumerate(ch) if c]
+            if not sel:
+                continue
+            d = np.array([mp[i] - base[i] for i in sel])
+            tol = np.array([max(5.0, 0.02 * base[i]) for i in sel])
+            g = group_metrics(test, base, mp, ch)
+            exact_ok = float(np.abs(d).max()) <= EPS
+            oper_bad = (g["pair_reversals"] > 0 or g["top1_changes"] > 0
+                        or g["max_abs_dadvantage"] > ADV_EPS)
+            rows[mname] = {
+                "tier": TIER[mname], "n_changed": len(sel),
+                "max_abs": float(np.abs(d).max()),
+                "mean_signed": float(d.mean()),
+                "n_over_severity_band": int((np.abs(d) > tol).sum()),
+                "exact_invariant": bool(exact_ok),
+                "operationally_clean": bool(not oper_bad),
+                **g, "by_policy": stratify(test, base, mp, ch)}
+            print(f"{name:16s} {mname:17s} {len(sel):5d} "
+                  f"{np.abs(d).max():8.1f} {d.mean():+8.2f} "
+                  f"{g['pair_reversals']:6d} {g['top1_changes']:5d} "
+                  f"{g['max_abs_dadvantage']:7.3f} "
+                  f"{'ok' if exact_ok else 'FAIL':>6s} "
+                  f"{'ok' if not oper_bad else 'FAIL':>12s}")
+        results[name] = rows
         print()
 
     json.dump({"stats": stats, "results": results}, open(args.out, "w"), indent=1)
     print(f"wrote {args.out}\n")
-    print("STRICT verdict: a reward that moves at all under comment insertion,")
-    print("whitespace, or internal renaming is exploitable by a policy that")
-    print("edits any of them, and must not be used as a training signal.")
-    print("SOFT rows say 'defer': dead code may legitimately change real Fmax,")
-    print("so judge them only against re-synthesised numbers (--emit-soft).")
+    print("Read the two verdict columns separately.")
+    print("  exact       : did a deterministic predictor move at all under an")
+    print("                edit that cannot change the parsed design?")
+    print("  operational : did anything the optimizer consumes change --")
+    print("                within-group ORDER, the argmax, or the standardized")
+    print("                advantage? A reward can fail 'exact' and still be")
+    print("                operationally inert, and that distinction decides")
+    print("                whether a failure is cosmetic or load-bearing.")
+    print("\nNeither column licenses a claim that the POLICY used a channel.")
+    print("Check the per-policy stratification and the already-contains-comment")
+    print("count above before writing anything about observed behaviour.")
 
 
 if __name__ == "__main__":
