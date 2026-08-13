@@ -1,0 +1,19 @@
+module counter8b__base__1 (
+    input  wire clk,
+    input  wire rst_n,
+    output reg  [7:0] count
+);
+
+always @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+        count <= 8'b0;
+    end else begin
+        if (count == 8'b11111111) begin
+            count <= 8'b0;
+        end else begin
+            count <= count + 1;
+        end
+    end
+end
+
+endmodule

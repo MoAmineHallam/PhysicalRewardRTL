@@ -1,0 +1,21 @@
+module counter6b__base__4 (
+    input  wire clk,
+    input  wire rst_n,
+    output reg  [5:0] count
+);
+
+always @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+        count <= 6'b0;
+    end
+    else begin
+        if (count == 6'b111111) begin
+            count <= 6'b0;
+        end
+        else begin
+            count <= count + 1;
+        end
+    end
+end
+
+endmodule
