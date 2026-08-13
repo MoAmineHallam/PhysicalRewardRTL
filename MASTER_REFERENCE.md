@@ -2852,3 +2852,36 @@ STATE (sandbox, v1.6.1): self-test PASSED; contract 489/490, 1 explicit
 rejection, 0 collisions, 91 equivalence merges; Check A GO (389 material pairs,
 5 unorderable = 1.3%, med 21.7% marginal, 0 unsafe merges, 0.00% rejection).
 AWAITING the server trace re-run at v1.6.1; the blocker closes at 0.
+
+### 2026-08-13 — BLOCKER CLOSED. preregistration.json FROZEN (revision 1).
+
+Server, canonicaliser v1.6.1, lexical backend, 490 candidates:
+  contract passed .............. 489/490 (1 explicit rejection)
+  collisions ................... 0
+  failures ..................... {} (empty)
+  CANONICAL-COMPILE/TRACE ...... 0     <- the go criterion, met
+Check A (server, same version): GO. 389 material pairs, 5 unorderable (1.3%),
+0 unsafe merges, 0.00% rejection. Family: fir/firr/poly/iir/other all 0.0%,
+med 21.7% (MARGINAL against the 25% ceiling -- always report it as marginal,
+never quote the 1.3% overall alone).
+
+`preregistration.json` written and frozen. It pins: environment (canonical
+machine + library versions, because knn12 rho differed 0.543 vs 0.604 across
+machines on deterministic code); sha256 of all seven load-bearing scripts;
+canonicaliser version/backend/contract result; the rf_struct feature list with
+its provenance; the training-row manifest; the selection rule (design-blocked
+nested CV, training rows only) with an explicit disclosure that RandomForest was
+noticed while inspecting v8; Check A thresholds and result; Check B's
+reward-resolution-failure definition; the sealed-split spec (20 designs, seed
+20260813, unopened) with its honest limitation; the three training arms x two
+seeds matched on non-flat updates; the per-group logging requirement; the
+evaluation protocol; the five success criteria; and the stop rules.
+
+DO NOT EDIT IT after the sealed split is opened. To change anything: bump
+`revision`, record the reason in `amendments`, and say in the paper that the
+change came after freeze.
+
+NEXT, in order: (1) generate + seal the 20-design split from seed 20260813,
+unopened; (2) extend grpo_oracle.py with the per-group logging the
+preregistration requires; (3) train three arms x two seeds; (4) Vivado once;
+(5) stop and write. Manuscript drafting runs in parallel starting now.

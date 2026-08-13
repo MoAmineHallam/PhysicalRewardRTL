@@ -1,0 +1,206 @@
+{
+  "_README": [
+    "FROZEN PRE-REGISTRATION for the prospective reward-repair experiment.",
+    "",
+    "Everything below was fixed BEFORE the sealed evaluation split was generated",
+    "and before any arm was trained. Nothing here may be changed after the sealed",
+    "split is opened. If something must change, bump `revision`, record why in",
+    "`amendments`, and state in the paper that the change happened after freeze.",
+    "",
+    "The point of this file is that a reader can check what we committed to",
+    "against what we report. It is the direct answer to the failure this paper",
+    "documents: a reward that looked fine by every metric we chose after seeing",
+    "the data."
+  ],
+
+  "revision": 1,
+  "frozen_utc": "2026-08-13",
+  "amendments": [],
+
+  "environment": {
+    "_note": "canonical machine for every number that reaches the paper. Numbers from other machines are not mixed into a table; knn12 rho differed 0.543 vs 0.604 between machines on identical deterministic code, which is why this is pinned.",
+    "host": "GPU server, /zeng_gk/Amine/mas/fpga",
+    "python": "3.10.20",
+    "numpy": "2.2.6",
+    "sklearn": "1.7.2",
+    "torch": "2.4.1+cu121",
+    "iverilog": "12.0",
+    "vivado": "2023.1 (laptop, xc7z020clg400-1)"
+  },
+
+  "code_hashes_sha256_16": {
+    "canonicalize.py": "7172bde213e99814",
+    "check_a_orderability.py": "d876587bdd843cf5",
+    "oracle.py": "ac0b7dffcd8457b7",
+    "grpo_oracle.py": "b1b5c20fe8eda31d",
+    "gen_accelerator_catalog.py": "eda4eba410917640",
+    "gen_sft_corpus.py": "0e1b362d85f4f9ab",
+    "surrogate_train.py": "2db3b4a24f33d5bd"
+  },
+
+  "canonicaliser": {
+    "version": "1.6.1",
+    "backend": "lexical",
+    "_backend_rationale": [
+      "The yosys backend reached 33/60 on the byte contract and would ALSO need",
+      "an RTLIL-specific feature extractor, because the features below count",
+      "Verilog tokens that `proc; opt_clean` no longer represents. It is future",
+      "work. The claim we make is LEXICAL invariance, not canonical hardware",
+      "structure."
+    ],
+    "contract_result": {
+      "n": 490,
+      "passed": 489,
+      "rejected": 1,
+      "rejection_reason": "macro/function/task/generate/multi-module",
+      "collisions": 0,
+      "equivalence_merges": 91,
+      "canonical_compile_or_trace_failures": 0
+    },
+    "invariance_suite": ["comments", "blanklines", "whitespace", "reflow",
+                         "pack", "rename"],
+    "_suite_note": "`reflow` is the attack the policy actually used (one statement per line) and `pack` is its inverse, so the exploited channel is in the suite by construction.",
+    "mandatory_recheck": [
+      "--check-traces over the FULL corpus is mandatory and must be re-run",
+      "whenever the corpus or the tokenizer changes. Two tokenizer gaps ('0 and",
+      "$signed) passed the entire byte-level contract -- idempotence,",
+      "metamorphic equality, feature equality -- while emitting invalid Verilog,",
+      "because a consistently broken output is still self-consistent. A token-",
+      "level guard was built for this and DOES NOT WORK; compiling the output is",
+      "the only sufficient detector."
+    ]
+  },
+
+  "reward": {
+    "name": "rf_struct",
+    "model": "RandomForestRegressor",
+    "hyperparameters": {"n_estimators": 300, "random_state": 0, "n_jobs": -1},
+    "target": "log(Fmax_MHz)",
+    "clamp_mhz": [5.0, 500.0],
+    "features": ["n_mult", "max_stmt_mult", "n_posedge", "n_nonblock",
+                 "n_blocking", "accum_struct", "n_regs", "n_wires", "n_ternary",
+                 "n_cmp", "n_stmts", "pipe_ratio_struct", "n_loops",
+                 "loop_bound_max", "loop_bound_sum"],
+    "_feature_provenance": [
+      "n_lines DELETED -- it is the channel the policy exploited and has no",
+      "hardware meaning. nb_assign replaced: it was line-anchored. accum",
+      "replaced: it matched a signal-NAME regex. n_loops / loop_bound_* ADDED",
+      "after Check A failed on the median family, on TRAINING data only, before",
+      "this freeze: two med5 candidates differing only in `i < 5` versus `i < 4`",
+      "measured 60.4 and 38.3 MHz with identical feature vectors. A loop bound",
+      "determines the synthesised hardware and no layout change can alter it.",
+      "The representation was moved; the thresholds were not."
+    ],
+    "training_rows": {
+      "dirs": ["rtl/fmax_probe_v4", "rtl/fmax_data", "rtl/policy_cmp",
+               "rtl/fmax_d2"],
+      "n": 229,
+      "holdout_excluded": true,
+      "_note": "held-out and sealed designs are excluded by gen_sft_corpus.is_holdout(); invariant #3"
+    },
+    "selection_rule": [
+      "Design-blocked nested cross-validation on TRAINING rows only.",
+      "The v8 optimized distribution and the sealed split are NOT consulted.",
+      "Primary metric: within-design ranking on training designs with genuine",
+      "PPA diversity. Secondary: worst-design calibration, seed stability,",
+      "fraction of non-flat reward groups. One-standard-error rule for ties.",
+      "DISCLOSURE: RandomForest was noticed while inspecting v8 outputs. That",
+      "makes it a hypothesis generated post-hoc; the prospective run on the",
+      "sealed split is what tests it."
+    ]
+  },
+
+  "check_a": {
+    "_purpose": "does canonicalisation destroy the information needed to ORDER candidates?",
+    "thresholds": {"unsafe_semantic_merges": 0, "unorderable_overall": 0.10,
+                   "unorderable_any_family": 0.25, "rejection_rate": 0.01},
+    "result": {"material_pairs": 389, "unorderable": 5, "rate": 0.013,
+               "unsafe_merges": 0, "rejection_rate": 0.0,
+               "family_rates": {"fir": 0.0, "firr": 0.0, "poly": 0.0,
+                                "iir": 0.0, "med": 0.217, "other": 0.0},
+               "verdict": "GO"},
+    "_med_caveat": "med at 21.7% is a MARGINAL pass against a 25% ceiling, on the one family GRPO already gains nothing on. Report it as marginal; never quote 1.3% alone."
+  },
+
+  "check_b": {
+    "_name": "reward-resolution failure (a diagnosed null, not an expected outcome)",
+    "eligible_group": ">= 2 oracle-correct candidates with distinct canonical feature vectors",
+    "resolved_group": "rf_struct prediction range over the group > 5 MHz",
+    "plateau_diagnosed_if": "< 20% of eligible groups resolved over the fixed run",
+    "interpretation": {
+      "flat_reward_and_little_policy_movement": "reward-resolution failure",
+      "moving_reward_and_policy_but_no_sealed_gain": "reward misalignment / generalisation failure",
+      "sealed_vivado_gain": "successful repair"
+    }
+  },
+
+  "sealed_split": {
+    "n_designs": 20,
+    "layout": "2 designs in each of 5 families x 2 regimes (interp, extrap)",
+    "families": ["fir", "firr", "poly", "iir", "med"],
+    "generation": "gen_accelerator_catalog parameterisations drawn from a committed seed; NO hand selection",
+    "seed": 20260813,
+    "excluded_from": ["SFT corpus", "reward training rows", "GRPO prompts",
+                      "backend and hyperparameter selection", "all prior analysis"],
+    "opened": false,
+    "open_condition": "after BOTH seeds of ALL arms are complete and every configuration is frozen",
+    "_honest_limitation": "These are unseen PARAMETERISATIONS from the same generator families. That repairs adaptive reuse of the old 30-design set. It does NOT establish cross-template generalisation, and the paper must say so. External circuits are a TCAD extension."
+  },
+
+  "arms": [
+    {"name": "sft", "trained": false, "_note": "evaluation-only non-RL baseline"},
+    {"name": "grpo_mlp_original", "reward": "surrogate_v3.pt (the deployed, exploited reward)", "seeds": [1, 2]},
+    {"name": "grpo_rf_struct", "reward": "rf_struct on canonical form", "seeds": [1, 2]},
+    {"name": "grpo_correctness_only", "reward": "1.0 if oracle-correct else 0", "seeds": [1, 2]}
+  ],
+
+  "training_protocol": {
+    "matched_on": "non-flat optimizer updates, NOT attempted steps",
+    "shared": ["SFT initialisation", "prompts", "oracle", "KL coefficient",
+               "group size", "sampling temperature", "max tokens"],
+    "per_group_logging_required": [
+      "raw RTL", "canonical hash", "oracle verdict", "raw features",
+      "canonical structural features", "predicted reward",
+      "standardized advantage", "line/token/statement counts",
+      "flat-or-update status"
+    ],
+    "_logging_rationale": "The invariance gate's operational columns were computed over RECONSTRUCTED (policy, design) sets of deduplicated evaluation candidates, not the actual 8-sample training groups. They are counterfactual decision-sensitivity metrics. This logging makes the prospective numbers direct measurements instead."
+  },
+
+  "evaluation": {
+    "samples_per_design_per_seed": 24,
+    "samples_per_arm_per_design": 48,
+    "sft_samples_per_design": 48,
+    "oracle_seeds": [1, 2],
+    "oracle_n": 1024,
+    "synthesis": "Vivado 2023.1, xc7z020clg400-1, 5 ns target, WNS-derived",
+    "_synthesis_caveat": "WNS-derived from a single implementation run. NOT timing closure. All comparisons relative, identical flow.",
+    "synthesise": "every distinct correct candidate",
+    "primary_endpoints": ["correctness",
+                          "real Fmax conditional on correct",
+                          "real Fmax with incorrect scored 0 (equal sample cost)"],
+    "uncertainty": "paired design-level bootstrap CIs; training seeds reported separately, never pooled as independent samples"
+  },
+
+  "success_criteria": {
+    "_all_must_hold": true,
+    "criteria": [
+      "passes exact canonical invariance",
+      "canonical GRPO improves real equal-sample Fmax over SFT in BOTH regimes",
+      "the improvement appears in BOTH training seeds",
+      "retains a substantial part of the original GRPO gain",
+      "does not reproduce the late reward / real-Fmax divergence"
+    ],
+    "_note": "It does NOT have to beat the original MLP's peak Fmax. 'Slightly less peak improvement, but a valid and stable reward' is a good result."
+  },
+
+  "stop_rules": [
+    "One canonicaliser version after this freeze.",
+    "One prospectively selected reward.",
+    "One sealed evaluation, opened once.",
+    "NO tuning after the sealed results are opened.",
+    "If a different structural exploit appears: report the boundary, do not build repair v2.",
+    "If seeds disagree: report the instability, do not add seeds until significance appears.",
+    "No new corpora, boards, EDA tools, reward architectures or mutation families before submission."
+  ]
+}
