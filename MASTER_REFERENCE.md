@@ -2688,3 +2688,49 @@ YOSYS: conda create -p /tmp/yosys_test -c conda-forge yosys SUCCEEDS.
 Yosys 0.68+ available. The structural canonicalisation path is open; the lexical
 fallback is no longer needed as the primary route. Install into the persistent
 env (-p /zeng_gk/Amine/mas/env_mas) before relying on it -- /tmp is ephemeral.
+
+### 2026-08-11 — canonicalize.py v1.0.0 built; lexical backend PASSES the contract
+
+`canonicalize.py --backend lexical` over 490 stored candidates
+(holdout_eval_v8_* + traj_v8):
+
+  contract PASSED     489/490
+  rejected              1/490  (base__fir26_8b__g2.sv, explicit refusal:
+                                macro/function/task/generate/multi-module)
+  equivalence merges     91    (same design, different spelling -- CORRECT)
+  collisions              0    (different designs, same canonical form)
+
+Contract clauses all verified per candidate: idempotence C(C(x))==C(x); bytewise
+equality of C(x) and C(m(x)) for m in {comments, blanklines, whitespace, reflow,
+pack, rename}; explicit rejection of unsupported syntax; identical structural
+features across the whole suite. `reflow` is the OBSERVED attack (one statement
+per line) and `pack` its inverse, so the exploited channel is in the suite by
+construction.
+
+STRUCTURAL FEATURES (STRUCT_FEATURES) deliberately differ from the deployed 12:
+  n_lines    DELETED -- it is the exploited channel and has no hardware meaning
+  nb_assign  was line-anchored `^\s*\w+...<=`; now a statement-level token count
+  accum      was `\b[a-z]+\d` i.e. it read SIGNAL NAMES; now a token-shape match
+
+ERROR I MADE AND CAUGHT: the first collision audit counted "different raw token
+streams -> same canonical form" as a failure and reported 91 collisions. That is
+the canonicaliser WORKING -- alpha-renaming exists so that `acc0` and `a0`
+collapse. All 91 groups are within a single design. The audit now defines a
+collision as DIFFERENT DESIGNS sharing a canonical form (different reference
+models => different hardware), which is 0. The rigorous version compares oracle
+traces and belongs in the frozen pre-registration run.
+
+YOSYS BACKEND IS UNTESTED. It is written (read_verilog -> proc; opt_clean ->
+write_rtlil, src/hdlname attributes stripped, autogen ids renumbered) but no
+yosys exists in the sandbox. It must be contract-tested on the server before it
+is preferred over lexical; until then the honest claim is LEXICAL invariance.
+
+OPEN, and a genuine go/no-go before any GPU time (Check A): does canonicalising
+the 229 labelled training rows COLLAPSE their feature diversity? Rows that
+become feature-identical with different real Fmax are label noise rf_struct
+cannot resolve. If diversity collapses, rf_struct is a weak reward before it
+ever meets a policy.
+Second pre-registered risk (Check B): a bounded RF cannot extrapolate. Off
+support it returns a leaf mean and supplies NO gradient. That is the failure
+mode which replaces saturation, and "canonical GRPO barely moves" must be
+called in advance rather than discovered.
