@@ -65,7 +65,7 @@ import argparse
 import subprocess
 import tempfile
 
-CANON_VERSION = "1.0.0"        # bump on ANY behaviour change; it is preregistered
+CANON_VERSION = "1.1.0"        # bump on ANY behaviour change; it is preregistered
 
 # ---------------------------------------------------------------- tokenizer
 KEYWORDS = set("""
@@ -94,6 +94,7 @@ TOK = re.compile(r"""
   | (?P<macro>`[A-Za-z_][A-Za-z0-9_$]*)
   | (?P<number>[0-9]*'[sS]?[bBoOdDhH][0-9a-fA-FxXzZ_?]+|[0-9][0-9_]*(?:\.[0-9_]+)?)
   | (?P<ident>[A-Za-z_][A-Za-z0-9_$]*)
+  | (?P<op>===|!==|>>>|<<<|<=|>=|==|!=|&&|\|\||<<|>>|\*\*|\+:|-:|~\^|\^~|~&|~\|)
   | (?P<other>.)
 """, re.VERBOSE | re.DOTALL)
 
@@ -290,24 +291,42 @@ def struct_feature_dict(canon_txt):
     fd["n_mult"] = words.count("*")
     fd["max_stmt_mult"] = max((s.count("*") for s in stmts), default=0)
     fd["n_posedge"] = words.count("posedge")
-    fd["n_nonblock"] = sum(1 for i in range(len(words) - 1)
-                           if words[i] == "<" and words[i + 1] == "=")
-    fd["n_nonblock"] += words.count("<=")
+    # `<=` is nonblocking assignment at statement level and less-or-equal
+    # inside an expression. Verilog cannot distinguish them lexically, so use
+    # parenthesis depth: a `<=` at depth 0 within a statement is the assignment
+    # operator, one inside brackets is a comparison. Before this was fixed the
+    # tokenizer split `<=` into `<` and `=`, and every nonblocking assignment
+    # was ALSO counted as a comparison -- n_cmp read 3 on a module with one
+    # comparison. A reward feature that confuses assignment with comparison is
+    # exactly the kind of thing this file exists to remove.
+    fd["n_nonblock"] = 0
+    n_cmp = 0
+    for s in stmts:
+        depth = 0
+        for tk in s:
+            if tk in "([":
+                depth += 1
+            elif tk in ")]":
+                depth -= 1
+            elif tk == "<=":
+                if depth == 0:
+                    fd["n_nonblock"] += 1
+                else:
+                    n_cmp += 1
+            elif tk in ("<", ">", ">=", "==", "!=", "===", "!=="):
+                n_cmp += 1
     fd["n_blocking"] = sum(1 for s in stmts
                            if "=" in s and "<=" not in s and "==" not in s)
     fd["n_regs"] = words.count("reg") + words.count("logic")
     fd["n_wires"] = words.count("wire")
     fd["n_ternary"] = words.count("?")
-    fd["n_cmp"] = sum(words.count(c) for c in ("<", ">", "==", "!=", ">=", "<="))
+    fd["n_cmp"] = n_cmp
     fd["n_stmts"] = len(stmts)
     acc = 0
     for s in stmts:
-        j = next((i for i in range(len(s) - 1)
-                  if s[i] == "<" and s[i + 1] == "="), None)
-        if j is None and "<=" in s:
-            j = s.index("<=")
-        if j is None:
+        if "<=" not in s:
             continue
+        j = s.index("<=")
         rhs = s[j:]
         if "*" in rhs and "+" in rhs:
             acc += 1
