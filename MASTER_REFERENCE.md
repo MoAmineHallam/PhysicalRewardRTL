@@ -2580,3 +2580,62 @@ seed-specific candidates, oracle summaries, manifests or Vivado results, so
 they are not outcome replications; and the current manuscript still presents
 correctness-gated GRPO as the central contribution and contains none of the
 trajectory, re-anchoring, seed or ablation work.
+
+### 2026-08-11 — THE REWARD HACK, OBSERVED. Layout channel, verified in source.
+
+The invariance gate said the deployed reward is vulnerable to line count. The
+TRAJECTORY says the policy USED it. Both verified here against committed files.
+
+rtl/traj_v8, 12 held-out fir/firr designs, count-weighted per checkpoint:
+
+  ckpt    lines  nb_assign  tokens  blank  cmt   real Fmax   surrogate
+  step0    32.3       17.2   494.8   0.00 0.00        81.0        82.9
+  s100     36.2       24.2   515.2   0.00 0.00       240.5       218.1
+  s200     36.0       24.0   509.7   0.00 0.00       242.2       213.7
+  s300     36.4       24.4   520.5   0.00 0.00       242.2       216.6
+  s400     56.5       44.4   496.9   0.00 0.00       241.2       497.9
+
+s300 -> s400: lines +20.1, nb_assign +20.0 (tracks lines almost exactly),
+TOKENS -23.6 (the code got SMALLER), surrogate +281.3, real -1.0.
+Zero blank lines and zero comments at every checkpoint, so the literal
+blank-line attack from the gate was NOT the channel.
+
+MECHANISM, visible in the source (fir18_8b, same design, consecutive ckpts):
+  s300 (33 lines): a0 <= 24'd0; a1 <= 24'd0; a2 <= 24'd0; a3 <= 24'd0; ...
+  s400 (51 lines): a0 <= 24'd0;
+                   a1 <= 24'd0;
+                   a2 <= 24'd0;
+`nb_assign` = re.findall(r"^\s*\w+(?:\[[^\]]*\])?\s*<=", txt, MULTILINE)
+counts assignments that BEGIN A LINE. Packed: 1. Split: 18. Same hardware.
+The policy learned that pressing Enter raises the reward.
+
+THIS IS THE PAPER'S CENTRAL FIGURE. It is a reward hack with real Vivado
+measurements on both sides, a mechanism visible in two lines of source, and a
+feature definition that explains it exactly.
+
+THE TWO-PHASE STORY, which is stronger than either previous framing:
+  phase 1 (to ~step 100): the physical reward teaches genuinely faster RTL.
+    81.0 -> 240.5 MHz REAL. This is the positive result and it is unaffected.
+  phase 2 (~step 300-400): continued optimization discovers a layout channel.
+    surrogate +281 MHz, real -1 MHz, correctness 95.3% -> 88.0%.
+"The reward was useful early and hacked late" -- not "it worked" and not "it
+failed".
+
+CREDIT: the layout hypothesis came from the external reviewer, who derived it
+from the line/token/nb_assign drift before we had looked. Verified independently
+here.
+
+CAVEATS carried forward:
+ - trace equality certifies the SAMPLED mutants (40 candidates x 2 seeds x 256
+   vectors), not equivalence for all inputs. For comments/whitespace the
+   unchanged token stream is the stronger argument.
+ - the gate's "operational" groups are reconstructed (policy, design) sets of
+   deduplicated eval candidates, NOT the actual 8-sample training groups. They
+   are counterfactual decision-sensitivity metrics. The prospective run must log
+   real training groups and compute advantage directly.
+
+NEXT: analyze_reflow_attribution.py re-scores every trajectory candidate under a
+layout-canonical form (comments stripped, one statement per line) and reports
+what share of the s300->s400 jump disappears, plus token-identical cross-
+checkpoint pairs (same tokens, same hardware, different reward). Then STOP
+diagnosing v8.
