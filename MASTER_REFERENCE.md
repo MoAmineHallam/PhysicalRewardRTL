@@ -2971,3 +2971,46 @@ NEXT, in order: (1) re-verify contract + Check A at the new hashes; (2) train
 the rf_struct reward artifact; (3) generate + seal the split; (4) freeze hashes;
 (5) train the arms; (6) Vivado once; (7) stop and write. Manuscript drafting
 runs in parallel starting now.
+
+### rf_struct reward trained (2026-08-14) — recorded BEFORE any arm ran
+
+`train_rf_struct.py` on the canonical machine, iverilog 12.0, sklearn 1.7.2:
+229 rows kept, 0 dropped, 41 designs, 15 canonical features.
+
+Descriptive leave-one-design-out (selects nothing; the architecture is fixed by
+the preregistration):
+```
+pooled Spearman rho        0.885
+within-design rho  mean    0.555   over 30 designs with >=3 rows and spread
+within-design rho  median  0.816
+worst designs   sft__poly8_v3_8b -1.00, med3 -1.00, sft__fir32_8b -0.87,
+                fir32_8b -0.61, med5 -0.12
+```
+
+Feature importances: `n_mult` 0.267, `accum_struct` 0.264,
+`pipe_ratio_struct` 0.241, `n_regs` 0.084, `n_nonblock` 0.060, everything else
+below 0.04.
+
+**Two predictions recorded now, before the sealed split exists and before any
+arm trains.** They are stated so they cannot later be offered as post-hoc
+explanation.
+
+1. **The loop features contribute almost nothing to the fitted model.**
+   `loop_bound_max` 0.0063, `loop_bound_sum` 0.0049, `n_loops` 0.0001. They were
+   added to repair med's orderability after Check A failed at 30.4%, and they
+   did what they were added to do — Check A measures whether feature VECTORS
+   differ, and med moved to 21.7% — but making two candidates *distinguishable*
+   is not the same as the fitted model *ordering them correctly*. Both facts can
+   hold at once, and here they do.
+2. **med is the family most likely to underperform**, and `med3` at rho = -1.00
+   plus `med5` at -0.12 is the same weakness Check A flagged at 21.7%, seen
+   through a different instrument. This is consistent with med's predeclared
+   high-risk status. It is NOT grounds to remove med: the stop rules forbid it,
+   and dropping the hard family after seeing the diagnostic is precisely the
+   move this preregistration exists to prevent.
+
+Within-design ranking is what a GRPO reward actually needs — only the ORDER
+inside a sampled group drives the gradient. A within-design mean of 0.555 with
+several strongly negative designs is a real risk to the prospective run, and the
+preregistration already names the outcome it would produce: `stable_null`, or
+`reward_resolution_failure` if fewer than 20% of eligible groups resolve.
