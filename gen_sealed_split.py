@@ -50,6 +50,15 @@ Re-running with the same seed and the same code must reproduce it exactly;
 """
 
 import os
+
+# Set BEFORE transformers is imported. The eligibility check tokenises, then the
+# oracle forks iverilog per candidate, and a forked process that has already used
+# parallel tokenizers prints a five-line warning every time -- hundreds of them,
+# burying the actual selection. Silencing it here rather than relying on the
+# caller's shell keeps the run reproducible from the command line alone. It has
+# no effect on which designs are drawn.
+os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+
 import re
 import sys
 import json
