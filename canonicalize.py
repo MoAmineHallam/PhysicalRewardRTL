@@ -538,6 +538,34 @@ SUITE = [("comments", _m_comments), ("blanklines", _m_blanklines),
          ("pack", _m_pack), ("rename", _m_rename)]
 
 
+def compiles(txt, timeout=60):
+    """Does `txt` compile as Verilog on its own? -> (ok, stderr_tail).
+
+    The reward-time gate. Two tokenizer defects ('0 -> ' 0 and $signed ->
+    $ signed) passed the entire byte-level contract -- idempotence, metamorphic
+    equality, feature equality -- while emitting invalid Verilog, because a
+    consistently broken output is still perfectly self-consistent. A token-count
+    guard was built for this class and provably does NOT fire: '0 is two tokens
+    and ' 0 re-tokenises to the same two.
+
+    So: compile the output. Note the limit honestly -- compilation detects
+    SYNTACTIC corruption only. A canonicaliser can emit valid Verilog that
+    behaves differently (a rename that merged two signals would compile fine).
+    trace_equal() supplies the stronger semantic evidence, and even that is
+    sampled equality, not formal equivalence.
+    """
+    import tempfile
+    with tempfile.TemporaryDirectory() as wd:
+        f = os.path.join(wd, "c.v")
+        open(f, "w").write(txt)
+        try:
+            p = subprocess.run(["iverilog", "-t", "null", "-g2012", f],
+                               capture_output=True, text=True, timeout=timeout)
+        except Exception as e:
+            return False, f"iverilog failed to run: {e}"
+        return p.returncode == 0, (p.stderr or "")[-300:]
+
+
 def trace_equal(src, canon, design, n=256, seeds=(1, 2)):
     """Do the original and its canonical form produce identical output streams?
 

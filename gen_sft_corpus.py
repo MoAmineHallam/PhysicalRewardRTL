@@ -53,8 +53,41 @@ HOLDOUT_MED_W = {7}                      # interpolation
 HOLDOUT_EXTRAP_MED_W = {11}              # extrapolation (outside the grid)
 
 
+SEALED_MANIFEST = os.path.join(HERE, "sealed_split.json")
+_SEALED = None
+
+
+def sealed_designs():
+    """Names in the frozen SEALED evaluation split (preregistration rev 2).
+
+    Read from sealed_split.json if it has been generated. Sealed designs are
+    excluded from the SFT corpus, the reward's training rows and the GRPO prompt
+    list exactly like the §5 held-out set; 'sealed' refers to the RESULTS never
+    being consulted before every configuration is frozen, not to the names being
+    secret -- the names must be known in order to be excluded from training.
+    """
+    global _SEALED
+    if _SEALED is None:
+        try:
+            mani = json.load(open(SEALED_MANIFEST))
+            _SEALED = {d["design"] for d in mani["designs"]}
+        except Exception:
+            _SEALED = set()
+    return _SEALED
+
+
 def is_holdout(name):
-    """True if `name` is in the frozen §5 held-out split (interp OR extrap)."""
+    """True if `name` is in the frozen §5 held-out split (interp OR extrap), or
+    in the sealed split, or is a coefficient-VARIANT form of fir/firr.
+
+    The variant forms (fir{T}_v{n}_8b, firr{T}_v{n}) exist only to build sealed
+    designs: the train grid never emits them. Refusing them here is defence in
+    depth -- isolation must not depend on sealed_split.json being present.
+    """
+    if name in sealed_designs():
+        return True
+    if re.match(r"firr?(\d+)_v(\d+)(_8b)?$", name):
+        return True
     m = re.match(r"fir(\d+)_8b$", name)
     if m:
         T = int(m.group(1))

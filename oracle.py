@@ -127,6 +127,16 @@ def cordic_ref(xs, atan, x0, n):
 
 def build_reference(design):
     """design name -> (reference callable, input width). Params via GAC (DRY)."""
+    # coefficient-variant forms (sealed split, prereg rev 2) are matched FIRST;
+    # the v0 patterns below are anchored so they cannot swallow a _v{n} name.
+    m = re.match(r"fir(\d+)_v(\d+)_8b$", design)
+    if m:
+        H = GAC.fir_coeffs_var(int(m.group(1)), int(m.group(2)))
+        return (lambda xs: fir_ref(xs, H)), 8
+    m = re.match(r"firr(\d+)_v(\d+)$", design)
+    if m:
+        H = GAC.firr_coeffs_var(int(m.group(1)), int(m.group(2)))
+        return (lambda xs: fir_ref(xs, H)), 8
     m = re.match(r"fir(\d+)_8b$", design)
     if m:
         H = GAC.fir_coeffs(int(m.group(1)))

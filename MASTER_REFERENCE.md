@@ -2885,3 +2885,89 @@ NEXT, in order: (1) generate + seal the 20-design split from seed 20260813,
 unopened; (2) extend grpo_oracle.py with the per-group logging the
 preregistration requires; (3) train three arms x two seeds; (4) Vivado once;
 (5) stop and write. Manuscript drafting runs in parallel starting now.
+
+### Preregistration revision 2 (2026-08-14) — pre-outcome implementation amendment
+
+External review approved the science and blocked the artifact: revision 1
+declared procedures that were **not yet executable or not yet numerically
+defined**. Revision 2 fixes exactly that and nothing else. No sealed design
+existed, none was viewed, and no arm had trained when it was written, so nothing
+in it is informed by an outcome. Approved as-is: canonicaliser v1.6.1, Check A
+GO, the RandomForest disclosure, and the 20-design split.
+
+What was not executable, and what closes it:
+
+1. **The sealed split had no generator.** `gen_accelerator_catalog.py` emits
+   fixed grids and has no seed-driven selection, so seed 20260813 alone
+   determined nothing — a reader could not have reconstructed the split, which
+   is the whole point of naming it. `gen_sealed_split.py` is that determinism,
+   hashed before it runs. Two things it forced into the open:
+   - The trained grid covers **every** fir/firr tap count in 4..32, so "an
+     unseen tap count inside the trained range" does not exist. Interpolation
+     designs come from a coefficient axis (`fir_coeffs_var`, `firr_coeffs_var`,
+     matching the existing poly/iir variant axes); firr variants stay affine in
+     the tap index so the family keeps its no-coefficient-table property.
+   - **med's interpolation pool is provably empty** — a median is defined by its
+     window width alone and every width inside the trained range is consumed by
+     the train grid {3,5,9} or the held-out set {7,11}. Its two slots are
+     reallocated by a declared rule (interp = fir 3, firr 3, poly 2, iir 2,
+     med 0; extrap = 2 each). 20 designs, 10 per regime, all five families.
+2. **`grpo_oracle.py` could not run the experiment**: no rf_struct reward, no
+   flat-group or raw-candidate logging, checkpoints indexed by attempted step
+   rather than optimizer update. All three implemented. Checkpoint indexing
+   matters because arms are matched on non-flat updates — a step-indexed
+   checkpoint compares different amounts of learning across arms.
+3. **Vague terms operationalized.** "Substantial part" → high retention ≥50% of
+   the prospective original-MLP improvement, and a *modifier* on success rather
+   than part of the gate, so an unexpected MLP failure cannot make the repaired
+   reward unclassifiable. "Late divergence" → reward up materially from update
+   138 to 276 while equal-sample real Fmax falls materially, max(5 MHz, 2%);
+   it requires the mid checkpoint (8 samples/design/seed at update 138),
+   without which only the weaker endpoint sign-disagreement claim is available.
+4. **The conjunctive success criterion is gone.** Five must-all-hold conditions
+   made a partial result — the likelier outcome — classifiable only after the
+   fact. Replaced by an eight-label taxonomy assigned by `analyze_sealed.py`,
+   frozen before the data exists.
+5. **Identities.** Full SHA-256 for the model, adapter, reward artifact and
+   labelled rows, not just 16-char script prefixes. Hash basis stated exactly:
+   LF-normalised content for text, raw bytes for binaries, path-sorted manifest
+   digest for directories — **not** git blob hashes (git prepends
+   `blob <len>\0`, giving a different digest).
+
+**Wording correction, and it is the paper's own thesis again.** Compilation was
+sufficient to catch the two tokenizer defects, but compilation is not
+*generally* sufficient: a canonicaliser can emit valid Verilog that behaves
+differently — a rename merging two signals would compile cleanly. The frozen
+statement is: *token-level self-checks cannot generally certify source
+preservation; compilation detects syntactic corruption; sampled full-trace
+equality supplies stronger semantic evidence, though not formal equivalence.*
+The trace audit is pinned at **256 vectors under seeds 1 and 2** — sampled, not
+exhaustive.
+
+Also frozen: reward-time gates (raw RTL passes the oracle; canonical form
+compiles; unsupported or canonical-invalid → reward 0 **and logged with a
+reason**, so each rate is reportable rather than an invisible loss of gradient);
+a pre-open mutation contract over every distinct rf_struct-arm training
+candidate, whose failure classifies the experiment `invalid_repair` under the
+existing stop rule rather than triggering a repair; med retained as a
+predeclared high-risk stratum at equal weight; and a corrected budget cut order
+— if six runs are unaffordable the cut is **grpo_mlp_original seed 2**, because
+the correctness-only arm answers the causal objection and cannot be inferred
+from history, while the MLP already has the measured v8 trajectory.
+
+Power, recorded before the fact: 10 independent designs per regime, paired
+design SD ≈ 66 MHz (interp) / 59 MHz (extrap), 80%-power detectable effect
+≈ 60–65 MHz. Adequate for effects like the prior 77–119 MHz gains, underpowered
+below ~40 MHz. Two designs per family × regime do **not** support inferential
+family claims; family results are descriptive.
+
+`canonicalize.py` gained an additive `compiles()` helper for the reward gate.
+Canonicalisation behaviour is unchanged (version stays 1.6.1) but the file hash
+moved, so the byte contract and Check A are re-run at the new hash to confirm
+the reported results still hold. If either differs, revision 2 is void and the
+difference is reported.
+
+NEXT, in order: (1) re-verify contract + Check A at the new hashes; (2) train
+the rf_struct reward artifact; (3) generate + seal the split; (4) freeze hashes;
+(5) train the arms; (6) Vivado once; (7) stop and write. Manuscript drafting
+runs in parallel starting now.

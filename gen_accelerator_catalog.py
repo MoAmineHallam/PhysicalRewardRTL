@@ -50,6 +50,41 @@ def fir_coeffs(taps):
     return [(min(i, taps - 1 - i) + 1) * 2 + 1 for i in range(taps)]
 
 
+def fir_coeffs_var(taps, v=0):
+    """Coefficient set for fir{taps}[_v{v}]_8b. v=0 is the trained default.
+
+    Added for the SEALED SPLIT (preregistration revision 2). The trained grid
+    covers every tap count 4..32, so an unseen INTERPOLATION design cannot be a
+    new tap count -- the tap axis inside the trained range is exhausted. A new
+    coefficient set at a trained tap count is a genuinely unseen design (different
+    constant multipliers => different synthesised hardware => different Fmax)
+    that lies inside the trained parameter region, which is exactly what
+    interpolation means. Same construction as poly_coeffs_var/iir_coeffs_var:
+    deterministic from (taps, v), so the oracle rebuilds it from the name alone.
+    """
+    if v == 0:
+        return fir_coeffs(taps)
+    import random
+    rng = random.Random(3000 * taps + v)
+    return [rng.randint(1, 63) for _ in range(taps)]
+
+
+def firr_coeffs_var(taps, v=0):
+    """Coefficients for firr{taps}[_v{v}]. v=0 is the trained ramp (k+1).
+
+    firr's defining property is that the coefficient is DERIVED FROM THE INDEX
+    with no constant table to copy, so a variant must keep that property or it
+    degenerates into a plain fir. Variants are therefore affine in the index:
+    coefficient(k) = a*(k+1) + b, with (a, b) deterministic from (taps, v).
+    """
+    if v == 0:
+        return [k + 1 for k in range(taps)]
+    import random
+    rng = random.Random(4000 * taps + v)
+    a, b = rng.randint(2, 5), rng.randint(0, 7)
+    return [a * (k + 1) + b for k in range(taps)]
+
+
 def poly_coeffs(deg):
     # small odd constants c0..c_deg
     return [2 * k + 1 for k in range(deg + 1)]
@@ -732,13 +767,14 @@ def cordic_spec(name, n):
             f"of the final x into `y`. Clear `y` to 0 on `!rst_n`.\n")
 
 
-def fir_spec(name, T):
+def fir_spec(name, T, coeffs=None):
+    c = fir_coeffs(T) if coeffs is None else list(coeffs)
     return (f"Write a Verilog module named `{name}`, a {T}-tap direct-form FIR "
             f"filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned "
             f"sample input `x`, and a 16-bit registered output `y`. Keep a "
             f"{T}-element delay line of past samples and each cycle output the "
             f"low 16 bits of the sum of products of the taps with the fixed "
-            f"coefficients {fir_coeffs(T)}. Clear state to 0 on `!rst_n`.\n")
+            f"coefficients {c}. Clear state to 0 on `!rst_n`.\n")
 
 
 def poly_spec(name, D, coeffs):
@@ -750,16 +786,20 @@ def poly_spec(name, D, coeffs):
             f"on `!rst_n`.\n")
 
 
-def firr_spec(name, T):
+def firr_spec(name, T, v=0):
     # ramp coefficients DERIVED from the tap index (no constant table to copy):
-    # coefficient for tap k is (k+1). The model can write acc += (i+1)*tap[i].
+    # coefficient for tap k is a*(k+1)+b (v=0 => a=1, b=0, i.e. plain k+1). The
+    # model can write acc += (a*(i+1)+b)*tap[i]; there is still no table.
+    c = firr_coeffs_var(T, v)
+    a, b = (c[1] - c[0]), (2 * c[0] - c[1])
+    expr = "(k+1)" if (a, b) == (1, 0) else f"({a}*(k+1) + {b})"
     return (f"Write a Verilog module named `{name}`, a {T}-tap direct-form FIR "
             f"filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned "
             f"sample input `x`, and a 16-bit registered output `y`. Maintain a "
             f"{T}-element delay line of past samples (tap 0 = newest = current "
-            f"`x`). The coefficient for tap k is simply (k+1) -- there is no "
+            f"`x`). The coefficient for tap k is simply {expr} -- there is no "
             f"coefficient table; compute it from the index. Each cycle set `y` "
-            f"to the low 16 bits of the sum over k=0..{T-1} of (k+1)*tap[k]. "
+            f"to the low 16 bits of the sum over k=0..{T-1} of {expr}*tap[k]. "
             f"Clear all state to 0 on `!rst_n`.\n")
 
 
