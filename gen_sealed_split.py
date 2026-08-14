@@ -34,14 +34,20 @@ WHY MEDIAN HAS NO INTERPOLATION DESIGNS
     designs, so all five families appear in the sealed set.
 
 ELIGIBILITY IS A PROPERTY OF THE DESIGN, NEVER OF AN OUTCOME
-    A candidate is rejected only if (a) the oracle cannot build a reference for
-    it, (b) its own reference implementation fails the oracle, or (c) the
-    canonicaliser cannot handle that reference. None of these consult a policy,
-    a reward, or a measurement. (c) matters because a design whose reference is
-    un-canonicalisable would leave the rf_struct arm structurally blind on it;
-    excluding such designs before the freeze is legitimate, and it is a stated
-    limitation -- the sealed set is restricted to designs whose reference
-    implementation is canonicalisable.
+    A design is eligible if AT LEAST ONE of its correct styles (a) has an oracle
+    reference, (b) fits the family's generation budget, (c) passes the oracle,
+    and (d) canonicalises to a trace-equal form. Styles are tried shortest
+    first. None of these consult a policy, a reward, or a measurement.
+
+    Asking about ONE arbitrary style is the wrong question and it showed: the
+    first run rejected the entire median extrapolation pool because med_comb, a
+    fully unrolled comparator network, needs 6,670 tokens at W=13 -- while
+    med_sort expresses the same filter in about 680 and is the style that made
+    the family learnable at all. The designs were always answerable; the witness
+    was wrong. (b) is F4 as an eligibility rule: a design whose every correct
+    form overflows the budget would measure the budget, not the policy. (d)
+    matters because a design with no canonicalisable form would leave the
+    rf_struct arm structurally blind on it.
 
 Run ONCE, on the canonical machine, then commit sealed_split.json:
     python gen_sealed_split.py --out sealed_split.json
@@ -132,27 +138,52 @@ def design_name(family, p, v):
 
 
 def build(family, p, v):
-    """-> (spec_text, reference_rtl, params_dict). The reference is a solvability
-    witness only: it is never shown to a model and never enters any corpus."""
+    """-> (spec_text, {style: reference_rtl}, params_dict).
+
+    ALL styles are returned, not one. Answerability is a question about the
+    design -- does a correct implementation exist inside the generation budget --
+    not about whichever style this script happened to pick. Validating against a
+    single arbitrary style once rejected the ENTIRE median extrapolation pool:
+    med_comb is a fully unrolled comparator network needing 6,670 tokens at W=13,
+    while med_sort expresses the same filter in about 680 and is the style that
+    made the family learnable at all (6.2% -> 89.6% in sft_v6c). The design was
+    always answerable; the witness was wrong.
+
+    References are solvability witnesses only: never shown to a model, never in
+    any corpus.
+    """
     nm = design_name(family, p, v)
     if family == "fir":
         c = GAC.fir_coeffs_var(p, v)
-        return GAC.fir_spec(nm, p, c), GAC.fir_ref(nm, c), {"taps": p, "v": v,
-                                                            "coeffs": c}
+        return GAC.fir_spec(nm, p, c), {
+            "ref": GAC.fir_ref(nm, c), "pipe": GAC.fir_pipe(nm, c),
+            "unrolled": GAC.fir_unrolled(nm, c),
+            "transposed": GAC.fir_transposed(nm, c)}, {"taps": p, "v": v,
+                                                       "coeffs": c}
     if family == "firr":
         c = GAC.firr_coeffs_var(p, v)
-        return GAC.firr_spec(nm, p, v), GAC.fir_ref(nm, c), {"taps": p, "v": v,
-                                                             "coeffs": c}
+        return GAC.firr_spec(nm, p, v), {
+            "ref": GAC.fir_ref(nm, c), "pipe": GAC.fir_pipe(nm, c),
+            "unrolled": GAC.fir_unrolled(nm, c),
+            "transposed": GAC.fir_transposed(nm, c)}, {"taps": p, "v": v,
+                                                       "coeffs": c}
     if family == "poly":
         c = GAC.poly_coeffs_var(p, v)
-        return GAC.poly_spec(nm, p, c), GAC.poly_ref(nm, c), {"degree": p,
-                                                              "v": v, "coeffs": c}
+        return GAC.poly_spec(nm, p, c), {
+            "ref": GAC.poly_ref(nm, c), "pipe": GAC.poly_pipe(nm, c),
+            "inline": GAC.poly_inline(nm, c)}, {"degree": p, "v": v,
+                                                "coeffs": c}
     if family == "iir":
         B = GAC.iir_coeffs_var(p, v)
-        return GAC.iir_spec(nm, p, B), GAC.iir_ref(nm, B), {"order": p, "v": v,
-                                                            "coeffs": B}
+        return GAC.iir_spec(nm, p, B), {
+            "ref": GAC.iir_ref(nm, B),
+            "transposed": GAC.iir_transposed(nm, B)}, {"order": p, "v": v,
+                                                       "coeffs": B}
     if family == "med":
-        return GAC.med_spec(nm, p), GAC.med_comb(nm, p), {"window": p, "v": 0}
+        return GAC.med_spec(nm, p), {
+            "comb": GAC.med_comb(nm, p), "pipe": GAC.med_pipe(nm, p),
+            "pipe2": GAC.med_pipe2(nm, p),
+            "sort": GAC.med_sort(nm, p)}, {"window": p, "v": 0}
     raise ValueError(family)
 
 
@@ -196,37 +227,55 @@ def previously_used():
     return used
 
 
-def validate(name, family, spec, ref_rtl, ntok):
-    """Pre-outcome eligibility. Returns (ok, reason).
+def validate(name, family, spec, styles, ntok):
+    """Pre-outcome eligibility. Returns (ok, reason, witness_style, witness_rtl).
 
-    ntok(text) -> token count under the POLICY's tokenizer. A design whose own
-    reference implementation does not fit the family's generation budget is
-    unanswerable by construction -- no model can emit a correct module it has no
-    room for -- so it would measure the budget, not the policy. This is the F4
-    truncation failure turned into an eligibility rule.
+    A design is ELIGIBLE if AT LEAST ONE of its correct styles satisfies every
+    gate. Styles are tried shortest-first, which is deterministic given the
+    emitters and picks the most compact witness, so the budget gate asks the
+    right question: does a correct implementation of this design exist inside
+    the generation budget?
+
+    Gates, all properties of the DESIGN and never of an outcome:
+      - the oracle can build a reference for the name;
+      - the style fits the family's generation budget (F4 as an eligibility
+        rule: a design whose every correct form overflows the budget would
+        measure the budget, not the policy);
+      - the style passes the oracle;
+      - the canonicaliser accepts it, and the canonical form is trace-equal.
     """
     try:
         oracle.build_reference(name)
     except Exception as e:
-        return False, f"no oracle reference: {e}"
-    nt = ntok(ref_rtl)
-    if nt > MAX_TOKENS[family]:
-        return False, (f"reference needs {nt} tokens > {MAX_TOKENS[family]} "
-                       f"budget (unanswerable by construction)")
-    try:
-        r = oracle.score(ref_rtl, name, n=ORACLE_N, seed=ORACLE_SEED)
-    except Exception as e:
-        return False, f"oracle raised: {e}"
-    if not r["correct"]:
-        return False, f"reference not correct (match={r.get('match')})"
-    try:
-        canon, _backend = canonicalize(ref_rtl, "lexical")
-    except Unsupported as e:
-        return False, f"reference not canonicalisable: {e}"
-    ok, why = trace_equal(ref_rtl, canon, name)
-    if ok is not True:
-        return False, f"canonical trace mismatch: {why}"
-    return True, "ok"
+        return False, f"no oracle reference: {e}", None, None
+    budget = MAX_TOKENS[family]
+    ordered = sorted(styles.items(), key=lambda kv: (len(kv[1]), kv[0]))
+    why_last = "no style tried"
+    for style, rtl in ordered:
+        nt = ntok(rtl)
+        if nt > budget:
+            why_last = (f"smallest correct style '{style}' needs {nt} tokens > "
+                        f"{budget} budget (unanswerable by construction)")
+            continue
+        try:
+            r = oracle.score(rtl, name, n=ORACLE_N, seed=ORACLE_SEED)
+        except Exception as e:
+            why_last = f"style '{style}': oracle raised: {e}"
+            continue
+        if not r["correct"]:
+            why_last = f"style '{style}' not correct (match={r.get('match')})"
+            continue
+        try:
+            canon, _backend = canonicalize(rtl, "lexical")
+        except Unsupported as e:
+            why_last = f"style '{style}' not canonicalisable: {e}"
+            continue
+        ok, tw = trace_equal(rtl, canon, name)
+        if ok is not True:
+            why_last = f"style '{style}' canonical trace mismatch: {tw}"
+            continue
+        return True, style, style, rtl
+    return False, f"no eligible style ({why_last})", None, None
 
 
 def quotas():
@@ -308,8 +357,8 @@ def main():
                 if nm in used:
                     rejections.append({"design": nm, "reason": "already used"})
                     continue
-                spec, ref, prm = build(family, p, v)
-                ok, why = validate(nm, family, spec, ref, ntok)
+                spec, styles, prm = build(family, p, v)
+                ok, why, wstyle, ref = validate(nm, family, spec, styles, ntok)
                 if not ok:
                     rejections.append({"design": nm, "reason": why})
                     print(f"  reject {nm:18s} {why}")
@@ -319,12 +368,14 @@ def main():
                     "design": nm, "family": family, "regime": regime,
                     "params": prm, "max_tokens": MAX_TOKENS[family],
                     "prompt": prompt, "prompt_sha256": sha256_text(prompt),
+                    "witness_style": wstyle,
                     "reference_sha256": sha256_text(ref),
                     "reference_chars": len(ref),
                     "reference_tokens": ntok(ref)})
                 used.add(nm)
                 got += 1
-                print(f"  {regime:6s} {family:5s} {nm}")
+                print(f"  {regime:6s} {family:5s} {nm:16s} "
+                      f"witness={wstyle} ({ntok(ref)} tok)")
             if got < need:
                 raise SystemExit(
                     f"POOL EXHAUSTED: {family}/{regime} supplied {got}/{need}. "
