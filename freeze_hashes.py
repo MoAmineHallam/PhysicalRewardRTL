@@ -87,14 +87,31 @@ def sha256_dir(root):
     return h.hexdigest(), len(entries)
 
 
-def collect(model=None, adapters=()):
+def collect(model=None, adapters=(), progress=True):
+    """Progress is printed as each entry is computed, not at the end.
+
+    The base model is ~13 GB on network storage, so a silent run looks hung for
+    minutes and invites a Ctrl-C. Nothing here is slow by mistake -- hashing the
+    weights is the point -- but the user should be able to see it working.
+    """
     out = {}
+
+    def note(label, extra=""):
+        if progress:
+            print(f"  hashing {label}{extra}", flush=True)
+
     for rel in SCRIPTS + DATA + BINARIES:
         p = os.path.join(HERE, rel)
-        out[rel] = sha256_path(p) if os.path.exists(p) else None
+        if os.path.exists(p):
+            sz = os.path.getsize(p)
+            note(rel, f"  ({sz/1e6:.1f} MB)" if sz > 5e6 else "")
+            out[rel] = sha256_path(p)
+        else:
+            out[rel] = None
     for rel in list(DIRS) + list(adapters):
         p = rel if os.path.isabs(rel) else os.path.join(HERE, rel)
         if os.path.isdir(p):
+            note(rel + "/", "  (directory manifest)")
             dg, n = sha256_dir(p)
             out[rel] = dg
             out[rel + "::n_files"] = n
@@ -102,6 +119,8 @@ def collect(model=None, adapters=()):
             out[rel] = None
     if model:
         if os.path.isdir(model):
+            note("BASE MODEL " + model,
+                 "  (~13 GB, this is the slow one -- do NOT interrupt)")
             dg, n = sha256_dir(model)
             out["BASE_MODEL:" + model] = dg
             out["BASE_MODEL:" + model + "::n_files"] = n
@@ -120,6 +139,7 @@ def main():
     args = ap.parse_args()
 
     got = collect(args.model, args.adapters)
+    print()
     basis = ("SHA-256; text files (%s) LF-normalised content, binaries raw "
              "bytes, directories = path-sorted manifest digest. NOT git blob "
              "hashes (a git blob prepends 'blob <len>\\0')."
