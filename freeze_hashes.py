@@ -37,7 +37,8 @@ import argparse
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-TEXT_EXT = {".py", ".tcl", ".json", ".jsonl", ".md", ".txt", ".sv", ".v", ".bib"}
+TEXT_EXT = {".py", ".tcl", ".json", ".jsonl", ".md", ".txt", ".sv", ".v",
+            ".bib", ".sh"}
 
 # Everything whose identity the experiment depends on. Missing entries are
 # reported as null rather than skipped, so an unpinned object is visible.
@@ -46,7 +47,7 @@ SCRIPTS = [
     "gen_accelerator_catalog.py", "gen_sft_corpus.py", "surrogate_train.py",
     "train_rf_struct.py", "gen_sealed_split.py", "analyze_sealed.py",
     "gen_fmax_candidates.py", "eval_holdout.py", "run_ppa.py",
-    "ppa_synth.tcl",
+    "ppa_synth.tcl", "run_arm.sh",
     "reward_invariance_audit.py", "probe_competence.py", "build_dataset.py",
 ]
 DATA = ["sealed_split.json", "rf_rows.json", "preregistration.json"]

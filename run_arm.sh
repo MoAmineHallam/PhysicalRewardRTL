@@ -30,10 +30,20 @@ export TOKENIZERS_PARALLELISM=false
 BASE="${RTLCODER_PATH:-/zeng_gk/Amine/mas/rtlcoder}"
 SFT=sft_v6c_out
 
+# PER-ARM attempt ceiling (preregistration revision 2, amendment 1). A SHARED
+# ceiling silently reintroduces step-matching, which the protocol explicitly
+# rejects: a flat group yields no gradient, and the flat RATE differs by arm by
+# construction. Measured on an existing log, grpo_ablate_const_matched_log.jsonl,
+# the binary-correctness reward went non-flat on only 159 of 1997 groups (0.080),
+# because a group is flat when all 8 candidates are correct OR all 8 are wrong and
+# sft_v6c is ~95% correct on train designs (0.95^8 = 0.66 all-correct). Reaching
+# 276 updates therefore needs ~3450 groups, so its ceiling is 4500. The MATCHED
+# QUANTITY -- 276 non-flat updates -- is identical across arms; only the number of
+# attempts differs, which is exactly what matching on updates means.
 case "$REWARD" in
-  rf_struct)   TAG=rf   ; EXTRA="--reward rf_struct --rf rf_struct.joblib" ;;
-  mlp)         TAG=mlp  ; EXTRA="--reward mlp --surrogate surrogate_v3.pt" ;;
-  correctness) TAG=corr ; EXTRA="--reward correctness" ;;
+  rf_struct)   TAG=rf   ; MAXG=2000 ; EXTRA="--reward rf_struct --rf rf_struct.joblib" ;;
+  mlp)         TAG=mlp  ; MAXG=2000 ; EXTRA="--reward mlp --surrogate surrogate_v3.pt" ;;
+  correctness) TAG=corr ; MAXG=4500 ; EXTRA="--reward correctness" ;;
   *) echo "unknown reward '$REWARD'"; exit 2 ;;
 esac
 OUT="grpo_${TAG}_s${SEED}"
@@ -58,7 +68,7 @@ echo "== arm=$REWARD seed=$SEED gpu=$GPU out=$OUT =="
 python -u grpo_oracle.py \
   --base "$BASE" --sft "$SFT" $EXTRA \
   --seed "$SEED" \
-  --steps 2000 --max-updates 276 --max-groups 2000 \
+  --steps "$MAXG" --max-updates 276 --max-groups "$MAXG" \
   --save-at-updates 138,276 \
   --group 8 --gen-batch 4 --temp 1.0 --max-tokens 1536 \
   --lr 1e-5 --kl_coef 0.1 \
