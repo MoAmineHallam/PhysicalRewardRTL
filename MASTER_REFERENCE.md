@@ -3186,3 +3186,48 @@ successful symmetric board build and live sweep would strengthen the paper but
 does not exist yet. The strongest current framing is therefore a reproducible
 capability paper with a bounded reward-overoptimization subplot, not a silicon
 paper and not a completed reward-repair paper.
+
+### TCAD-first manuscript conversion (2026-08-17)
+
+After the supervisor's journal recommendation was confirmed by the user, the
+submission target changed from a DAC-first plan to **IEEE TCAD first**. This is
+consistent with the earlier supervisor-endorsed venue record at line 1870 of
+this file. The same work must not be submitted concurrently to DAC or another
+venue.
+
+No experiment or empirical value changed during the conversion. The paper now
+uses `\documentclass[journal]{IEEEtran}` and the standard journal author form.
+The obsolete ICCAD length comments and conference-only balancing were removed.
+Current TCAD instructions allow a 14-page regular-paper submission, require
+IEEE two-column format, and require a generative-AI-use acknowledgment. The
+official instructions explicitly list a missing AI disclosure, inadequate
+related work, insufficient state-of-the-art comparison, and insufficient new
+results as possible desk-rejection grounds:
+https://ieee-ceda.org/publications/tcad/tcad-paper-submissions
+
+The disclosure is intentionally specific and must not be weakened: OpenAI
+Codex assisted repository auditing, analysis-code development, LaTeX drafting,
+and prose editing; the author remains responsible for all code, analysis,
+figures, citations, and text. `paper/TCAD_SUBMISSION.md` records the remaining
+human-only decisions: final authorship, ORCIDs, prior-submission history,
+Associate Editor conflicts, and Traditional-versus-Open-Access choice.
+
+Journal hardening added only derivations and literature-grounded positioning:
+
+- the exact standardized group advantage and frozen-SFT KL estimator used by
+  `grpo_oracle.py`;
+- the identity decomposing penalized Fmax into correctness and
+  conditional-on-correct frequency, clarifying why neither conditional speed
+  nor distinct-candidate averaging is the primary endpoint;
+- paired-design uncertainty and candidate-concentration definitions;
+- a protocol-level comparison with VeriSeek, PPA-RTL, ChipSeek, Alpha-RTL, and
+  RTL-OPT, without manufacturing a numeric leaderboard across incompatible
+  technology/process/evaluation settings; and
+- an artifact-traceability section linking the frozen manifests, RTL,
+  multiplicities, PPA rows, generator, figures, and claim ledger.
+
+The full post-conversion audit passed unchanged: 171 claim records with valid
+artifact line pointers, 150 claim IDs used in rendered manuscript sources, zero
+raw numeric literals in authored prose, all primary/replication/context outputs
+current, and no symmetric live-silicon artifact. A rendered PDF and page count
+remain blocked only by the absence of a TeX installation on this laptop.

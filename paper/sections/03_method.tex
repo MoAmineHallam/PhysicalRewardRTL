@@ -28,13 +28,37 @@ two correct implementations properly; that question is deferred to real EDA.
 
 \subsection{Supervised warm start and policy optimization}
 
-The base model is first adapted with completion-masked LoRA on oracle-verified
-accelerator RTL.  This warm start is necessary because the raw model's sparse
+The base model is first adapted with completion-masked LoRA~\cite{hu2022lora}
+on oracle-verified accelerator RTL.  This warm start is necessary because the raw model's sparse
 correctness provides too little physical signal for online policy optimization.
 The optimized policy begins from the supervised adapter, samples groups across
 all train-split designs, normalizes rewards within each group, and applies a KL
-penalty to a frozen copy of the supervised policy.  All frozen held-out designs
+penalty to a frozen copy of the supervised policy.  The group-relative update
+follows the estimator family introduced for GRPO~\cite{shao2024deepseekmath}.
+All frozen held-out designs
 are excluded from supervised examples, proxy rows, and policy prompts.
+
+For a sampled group, rewards are standardized within the design.  If $R_i$ is
+the gated reward of completion $m_i$, its advantage is
+
+\begin{equation}
+A_i=\frac{R_i-\overline{R}}{s_R+\epsilon}.
+\end{equation}
+
+Groups with no reward variation produce no ranking information and are skipped.
+For every remaining completion, the implementation minimizes a sequence-level
+policy loss with a nonnegative KL estimator,
+
+\begin{equation}
+\mathcal{L}_i=-A_i\log\pi_\theta(m_i\mid d)
++\beta\left(\exp(\Delta_i)-\Delta_i-\one\right),
+\end{equation}
+
+where $\Delta_i=\log\pi_{\mathrm{SFT}}(m_i\mid d)-
+\log\pi_\theta(m_i\mid d)$.  The reference adapter is a frozen copy of the SFT
+policy, rather than the raw base model.  This matters because anchoring to the
+base would pull the policy away from the functional competence established by
+supervision.
 
 The primary run uses an RTL-specialized backbone.  The replication repeats the
 same stages with Qwen-Coder; it is not merely inference from a different base
@@ -64,6 +88,27 @@ statistic is the unweighted mean of $\overline{F}_{p,d}$ over designs, making th
 design rather than the candidate the unit of aggregation.  Conditional-on-
 correct frequency and correctness are reported separately as diagnostics.
 
+This endpoint can be decomposed as
+
+\begin{equation}
+\overline{F}_{p,d}=q_{p,d}\,\mu_{p,d},
+\end{equation}
+
+where $q_{p,d}=\sum_m c_m/n_d$ is empirical correctness and
+$\mu_{p,d}=\sum_m c_m F_{\mathrm{Vivado}}(m)/\sum_m c_m$ is mean frequency
+conditional on a measured correct implementation.  Reporting only
+$\mu_{p,d}$ would hide a policy that occasionally emits very fast RTL but
+usually fails.  Averaging candidates directly would instead overweight designs
+whose policy happens to produce more distinct implementations.  The chosen
+endpoint avoids both changes of estimand.
+
+For paired uncertainty, the analysis first computes the GRPO-minus-SFT
+difference for every design and then resamples those differences within each
+frozen regime.  The intervals are descriptive summaries of the committed
+artifacts.  Designs, rather than individual completions, are resampled because
+both policies answer the same specification and because samples within a design
+share a task-specific physical scale.
+
 \subsection{Perfect-selector upper bound}
 
 For the supervised policy we reconstruct an empirical distribution containing
@@ -72,6 +117,28 @@ sample.  The expected maximum of $N$ independent draws is computed exactly from
 that distribution.  This selector is intentionally unrealizable: it assumes
 the post-route frequency of every candidate.  It therefore upper-bounds any
 practical reranker at the same supervised sampling budget.
+
+\subsection{Candidate-distribution diagnostics}
+
+The mechanism analysis retains multiplicity rather than treating each distinct
+RTL string as equally likely.  For a correct candidate, define its all-sample
+mass as $w_{p,d,m}=c_m/n_d$.  The dominant mass is $\max_m w_{p,d,m}$.  To
+separate concentration within the correct support from the correctness rate,
+we also normalize $\widetilde{w}_{p,d,m}=c_m/\sum_j c_j$ over correct
+candidates and compute the effective support
+
+\begin{equation}
+D_{p,d}=\exp\left(-\sum_m \widetilde{w}_{p,d,m}
+\log\widetilde{w}_{p,d,m}\right).
+\end{equation}
+
+A smaller effective support means that probability is concentrated on fewer
+distinct correct strings; it does not by itself imply higher physical quality.
+We therefore combine it with real candidate frequencies and with a support
+test asking whether the SFT sample set contains an implementation at least as
+fast as the GRPO conditional mean.  The test distinguishes probability
+reallocation from the stronger claim that optimization must invent an
+implementation absent from supervised sampling.
 
 \subsection{Fail-closed result generation}
 

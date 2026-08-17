@@ -1,6 +1,6 @@
-# Paper reproducibility contract
+# TCAD paper reproducibility contract
 
-This is the integrated capability paper. Its primary result remains the frozen
+This is the TCAD-first integrated capability paper. Its primary result remains the frozen
 30-design, five-family `grpo_v8` evaluation; strong secondary results are
 included under explicit evidence labels rather than being omitted or silently
 pooled with the primary set.
@@ -10,9 +10,14 @@ pooled with the primary set.
 From the repository root:
 
 ```powershell
+python gen_symmetric_holdout_bitstream.py --check
 python analyze_main_results.py
 python verify_claims.py
 ```
+
+Keep this order. The symmetric-board preflight refreshes its selection manifest;
+the canonical paper generator then consumes that manifest, and the verifier
+finally checks that every generated artifact is current.
 
 `analyze_main_results.py` is the sole generator for empirical manuscript
 values, headline tables, and verified figures. It fails closed if the primary
@@ -89,3 +94,21 @@ pdflatex main
 The current Windows environment does not expose a TeX compiler on `PATH`; use a
 TeX installation or import the repository into Overleaf with `paper/main.tex`
 as the main document.
+
+## TCAD submission contract
+
+The manuscript uses `\documentclass[journal]{IEEEtran}` and the IEEE two-column
+journal layout. Current TCAD instructions allow at most 14 submission pages for
+a regular paper. The accepted-paper charging policy currently permits 9 pages
+before mandatory overlength charges; these rules must be rechecked on the live
+TCAD author page immediately before submission.
+
+TCAD requires a generative-AI disclosure and lists omission as a desk-rejection
+ground. `sections/08_acknowledgment.tex` discloses Codex assistance with code
+auditing, analysis development, LaTeX drafting, and editing. Do not delete or
+weaken that statement. Every qualifying author must review and approve it.
+
+TCAD does not allow concurrent submission. Before upload, the corresponding
+author and supervisor must reconcile every prior review or public version and
+complete the disclosure portion of `TCAD_SUBMISSION.md`. Do not assert that
+there was no earlier submission unless all authors confirm it.
