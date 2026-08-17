@@ -6,28 +6,41 @@ VerilogEval and RTLLM established executable evaluation for natural-language to
 RTL generation~\cite{liu2023verilogeval,lu2024rtllm}.  VeriGen, RTLCoder, CodeV,
 and CraftRTL improve supervised generation or data construction
 ~\cite{thakur2024verigen,liu2024rtlcoder,zhao2024codev,liu2024craftrtl}.
-VeriSeek and VeriReason introduce verification-derived feedback
-~\cite{wang2024veriseek,wang2025verireason}.  These systems motivate our
-correctness oracle, but correctness alone cannot rank equivalent implementations
-by achievable clock.
+VeriSeek and VeriReason use verification or executable feedback to improve
+reasoning and correctness~\cite{wang2024veriseek,wang2025verireason}.  Our functional oracle
+serves the same essential role, but the learning question is orthogonal:
+correct RTL remains admissible only, and real physical quality ranks the
+admissible implementations.
 
-\paragraph{Physical optimization}
+\paragraph{Physical optimization of generated RTL}
 RTLRewriter optimizes existing RTL through rewriting~\cite{yao2024rtlrewriter},
-while recent evolutionary and agentic systems search for improved power,
-performance, or area at inference time
-~\cite{min2025revolution,poet2026,evolve2026,coevo2026,drrtl2026}.  PPA-RTL and
-RTL-OPT contribute physically evaluated tasks and benchmarks
-~\cite{ppartl2025,lu2026rtlopt}.  Our question is complementary: can training
-change a generator's one-draw distribution so repeated inference-time search is
-less necessary?  The perfect-selector comparison gives an optimistic upper
-bound to any supervised-policy reranker because it assumes the true post-route
-frequency of every draw is already known.
+while PPA-RTL and ChipSeek-R1 incorporate synthesis-derived PPA into
+reinforcement learning~\cite{ppartl2025,chipseek2025}.  Other evolutionary and
+agentic systems search for power, performance, or area at inference time
+~\cite{min2025revolution,poet2026,evolve2026,coevo2026,drrtl2026}.
+Alpha-RTL instead updates the policy at test time against per-design EDA
+feedback~\cite{zhou2026alphartl}.
+RTL-OPT contributes a physically evaluated optimization benchmark
+~\cite{lu2026rtlopt}.  Our setting instead asks whether
+training changes a generator's one-draw distribution, reducing dependence on
+repeated generation and physical reranking.  The perfect-selector analysis is
+deliberately favorable to inference-time search: it assumes the true post-route
+frequency of every supervised draw is known before selection.
 
-\paragraph{Learned rewards}
-Proxy optimization can exploit errors that are small on the data distribution
-but large where an optimizer concentrates probability~\cite{gao2023scaling}.
-Pre-synthesis predictors are nevertheless useful because implementation is
-expensive~\cite{fang2024presynthesis,ustun2020accurate,wu2022highlevel}.  We use
-such a predictor only inside training.  The paper's reward-hacking analysis is a
-case study of one deployed proxy and one trajectory; it is not evidence that all
-learned physical rewards fail.
+\paragraph{Learned rewards and physical predictors}
+Reward-model optimization can exploit errors that appear small on the behavior
+distribution but grow where an optimizer moves probability
+~\cite{gao2023scaling}.  Pre-synthesis predictors remain useful because detailed
+implementation is expensive
+~\cite{fang2024presynthesis,ustun2020accurate,wu2022highlevel}.  We use such a
+predictor only inside training and reconstruct evaluation from Vivado.  The
+late-trajectory analysis is consequently a measured instance of proxy
+overoptimization, not a claim that every learned physical reward fails.
+
+\paragraph{Positioning}
+The paper combines elements that prior lines usually separate: executable
+functional gating during policy training, distribution-level physical
+evaluation on a frozen parameter split, and a direct comparison between reward
+trajectory and post-route reality.  Its scope is narrower than general RTL
+generation or arbitrary RTL-to-RTL optimization, but the narrowness makes an
+equal-sample physical endpoint and candidate-level mechanism auditable.

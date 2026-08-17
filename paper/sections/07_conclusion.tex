@@ -1,20 +1,24 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-Correctness-gated policy optimization raises the equal-sample, post-route
-frequency of generated accelerator RTL from \claim{OverallSftPenalized} to
-\claim{OverallGrpoPenalized}~MHz across \claim{DesignCount} frozen held-out
-designs.  The gain appears on \claim{OverallImproved} designs, remains positive
-under interpolation and extrapolation bootstrap analyses, and is measured after
-assigning zero frequency to every incorrect or failed sample.  One optimized
-draw also matches many draws from the supervised policy even when the latter is
-given an unattainable perfect selector.
+Correctness-gated policy optimization raises equal-sample post-route frequency
+from \claim{OverallSftPenalized} to \claim{OverallGrpoPenalized}~MHz across
+\claim{DesignCount} frozen held-out designs.  The gain occurs under both
+interpolation and extrapolation, appears on \claim{OverallImproved} individual
+designs, and survives assigning zero frequency to every incorrect or failed
+sample.  A second backbone independently improves all
+\claim{QwenDesignCount} designs in its narrower replication.
 
-The evidence supports a distribution-shift claim: optimization makes already
-learned fast implementation styles more likely.  It does not support claims of
-open-ended circuit invention, preserved correctness in every regime, or
-universal reward-model collapse.  The bounded trajectory case shows why this
-distinction matters: proxy reward can continue rising after real conditional
-frequency has flattened, so real EDA artifacts must remain the reporting
-authority.  A symmetric silicon sweep and independent policy-training seeds are
-the clearest next validations.
+Candidate-level evidence supports a distribution-shift account: optimization
+increases mass on a smaller set of fast correct implementations that supervised
+sampling often already contains.  The perfect-selector analysis quantifies the
+resulting sampling efficiency, while the API, HLS, and VerilogEval controls
+separate one-draw utility, selected implementation quality, and general-RTL
+regression.
+
+The late reward trajectory supplies the necessary warning.  Proxy reward can
+continue rising after measured conditional frequency has flattened and
+equal-sample performance has fallen.  The strongest conclusion is therefore
+neither open-ended circuit invention nor trust in the proxy: correctness-gated
+optimization can make fast accelerator RTL substantially more likely, provided
+that executable oracles and real EDA artifacts remain the final authority.

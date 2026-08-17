@@ -51,29 +51,31 @@ hallamamine05@gmail.com}
 \maketitle
 
 \begin{abstract}
-Functional correctness alone does not distinguish slow register-transfer level
-(RTL) from hardware that closes timing at a useful clock. We train a generator
-with a correctness-gated physical objective: an input/output-equivalence oracle
-first rejects incorrect modules, and a learned frequency proxy ranks only those
-that pass. The proxy is used for training but never as an evaluation result.
-Evaluation instead joins the original sample multiplicities to real post-route
-Vivado measurements and assigns zero frequency to every incorrect or
-implementation-failed sample. On a split frozen before training, covering
-\claim{DesignCount} designs from \claim{FamilyCount} accelerator families, this
-equal-sample endpoint rises from \claim{InterpSftPenalized} to
-\claim{InterpGrpoPenalized}~MHz under parameter interpolation and from
-\claim{ExtrapSftPenalized} to \claim{ExtrapGrpoPenalized}~MHz under
-extrapolation. The paired gain is positive for \claim{OverallImproved} of
-\claim{DesignCount} designs. One optimized draw matches an idealized perfect
-selector over approximately \claim{InterpEquivalentDraws} supervised draws in
-interpolation and \claim{ExtrapEquivalentDraws} in extrapolation. A bounded
-trajectory audit also catches reward overoptimization: late proxy reward rises
-from \claim{TrajectoryLateProxy} to \claim{TrajectoryFinalProxy}~MHz while
-conditional measured frequency changes from \claim{TrajectoryLateConditional}
-to \claim{TrajectoryFinalConditional}~MHz and equal-sample measured frequency
-falls. The result is therefore a measured policy-distribution shift toward fast,
-correct implementations, not evidence that the learned proxy is itself an
-accurate evaluator.
+Functionally equivalent register-transfer-level (RTL) modules can differ
+sharply in achievable clock frequency.  We train an RTL generator with a
+correctness-gated physical objective: an input/output-equivalence oracle rejects
+incorrect modules before a learned frequency proxy supplies reward.  The proxy
+guides training but never supplies an evaluation result.  Instead, evaluation
+joins original sample multiplicities to real post-route Vivado measurements and
+assigns zero frequency to incorrect and implementation-failed samples.  On a
+split frozen before policy training, spanning \claim{DesignCount} designs and
+\claim{FamilyCount} accelerator families, this equal-sample endpoint rises from
+\claim{OverallSftPenalized} to \claim{OverallGrpoPenalized}~MHz and improves on
+\claim{OverallImproved} designs.  The paired gains are
+\claim{InterpGain}~MHz under interpolation and \claim{ExtrapGain}~MHz under
+extrapolation.  A second code-model backbone replicates the result on an earlier
+\claim{QwenDesignCount}-design split: \claim{QwenOverallSftPenalized} to
+\claim{QwenOverallGrpoPenalized}~MHz, with every evaluated design improving.
+Candidate-level measurements explain the shift: the mean probability on the
+most frequent distinct correct implementation rises from
+\claim{MechanismSftDominantMass}\% to
+\claim{MechanismGrpoDominantMass}\%, while supervised samples already contain a
+candidate at least as fast as the optimized conditional mean on
+\claim{MechanismSupportCount} designs.  Finally, a bounded trajectory audit
+shows genuine early hardware improvement followed by late proxy inflation and
+falling equal-sample performance.  Correctness-gated optimization therefore
+changes the one-draw distribution toward fast RTL, but real EDA remains the
+reporting authority.
 \end{abstract}
 
 \begin{IEEEkeywords}

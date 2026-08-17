@@ -5,49 +5,81 @@
 
 Correctness-gated policy optimization changes the one-draw distribution of RTL
 quality.  The central evidence is the equal-sample endpoint: it preserves the
-original probability mass, assigns failures zero, uses real post-route
+original probability mass, assigns every failure zero, uses real post-route
 measurements, and improves on \claim{OverallImproved} of
-\claim{DesignCount} frozen designs.  The best-of-$N$ analysis further shows that
-the change is practically meaningful for sampling efficiency.
+\claim{DesignCount} frozen designs.  The Qwen-Coder result supplies an
+independent backbone and training run, while the perfect-selector curve shows
+that the distribution change has practical sampling value.
 
-The mechanism is best described as probability reallocation.  Supervised
-training teaches multiple implementation styles; policy optimization raises the
-mass on styles that the gate accepts and the proxy ranks highly.  This account
-predicts smaller gains when the supervised support lacks a fast reliable style,
-matching the weaker families in Table~\ref{tab:family-verified}.  We therefore do
-not claim autonomous invention of unseen microarchitectures.
+The candidate analysis sharpens the mechanism.  SFT often contains a fast
+implementation but assigns it little mass; GRPO concentrates on fewer correct
+implementations and makes the fast forms common.  This is a learned generation
+policy, not merely a post-hoc reranker, but it is also not evidence of autonomous
+microarchitecture invention.  The median exception and mixed recursive-filter
+results show that a useful fast form must already be representable and
+reward-distinguishable.
+
+The contextual baselines answer narrower objections.  A timing prompt can make
+the API model's correct tail fast, but its low correctness makes the one-draw
+penalized result weak.  Selected GRPO candidates approach pragma-optimized HLS,
+showing that the learned distribution contains competitive implementations;
+selection prevents promoting that comparison to the policy-level headline.
+VerilogEval reveals the cost of specialization and isolates the claim that GRPO
+does not add another general-RTL regression.
 
 \subsection{Threats to validity}
 
 \paragraph{Template-bounded generalization}
 The frozen split establishes transfer to unseen parameters and extrapolation
-beyond training ranges within the generator's design system.  It does not test
-free-form industrial specifications, control-dominated systems, memories, or
-multiple clock domains.
+beyond training ranges within the benchmark generators.  It does not test
+free-form industrial specifications, control-dominated systems, memories,
+multiple clock domains, or cross-template synthesis.
 
-\paragraph{One device and one main training run}
-Physical measurements target one FPGA family, and the primary policy result
-comes from one training trajectory.  The paired design breadth makes the
-evaluation stronger than a few selected examples, but independent training
-seeds and another device would materially strengthen a journal version.
+\paragraph{Backbones, runs, and scope}
+The second backbone materially reduces a model-specific explanation, but it
+uses the earlier \claim{QwenFamilyCount}-family split rather than the complete
+primary set.  The primary result still comes from one optimized training
+trajectory.  Independent seeds on the full frozen evaluation remain the most
+important missing statistical validation.
 
-\paragraph{Timing-derived frequency}
-The primary endpoint is derived from worst negative slack after implementation,
-not from repeated timing closure at every candidate clock.  Both policies use
-the same tool flow.  The symmetric board sweep is the planned external check,
-and no historical asymmetric board value is used as evidence in this draft.
+\paragraph{One target and timing-derived frequency}
+All physical measurements target one FPGA part.  Frequency is derived from
+worst negative slack after a single implementation flow rather than repeated
+timing closure at candidate-specific clocks.  This is symmetric across policies
+but is not device-independent ground truth.  The pending symmetric board sweep
+is the appropriate external check.
 
-\paragraph{Post-hoc uncertainty}
-The bootstrap intervals quantify sensitivity to the held-out design sample.
-They were added after the artifacts existed and should not be interpreted as a
-preregistered confirmatory test.
+\paragraph{Secondary-baseline comparability}
+The API arms have a smaller sampling budget and represent one prompt and model
+configuration.  The HLS comparison changes both input representation and
+selection rule.  We therefore use neither as the causal baseline for the GRPO
+claim.  They answer whether fast candidates exist under alternative workflows,
+not why the policy distribution changed.
 
-\subsection{Why the trajectory is a subplot}
+\paragraph{Post-hoc uncertainty and mechanism}
+The paired bootstrap intervals and concentration summaries were computed after
+the artifacts existed.  They quantify the frozen result but are not
+preregistered confirmation.  Candidate identity and similar frequency also do
+not establish semantic microarchitecture equivalence; the mechanism is a
+distribution-level explanation supported by measured support and
+concentration.
 
-The trajectory reveals an important operational failure, but it is downstream
-of the main capability result.  Early training yields a large real improvement;
-later training inflates proxy reward while measured conditional frequency is
-flat and correctness falls.  This motivates periodic real-EDA audits and early
-stopping criteria.  It does not justify replacing the paper with a general
-reward-model-repair claim, especially because later architecture experiments
-showed that the observed collapse was not universal.
+\subsection{Why the reward-hacking result is a subplot}
+
+The trajectory is important operational evidence: early proxy optimization
+corresponds to real hardware gain, while later reward growth accompanies flat
+conditional frequency and falling correctness.  The lexical source audit makes
+the failure concrete, but its canonical rescoring is saturated and lacks
+token-identical pairs.  The result therefore motivates periodic real-EDA audits,
+proxy-distribution monitoring, and early stopping; it does not establish a
+general repair or universal reward-model collapse.
+
+\subsection{Evidence intentionally outside the claim set}
+
+Two attractive results remain outside the quantitative manuscript claims.  The
+historical silicon sweep uses asymmetric SFT-versus-GRPO selection and can only
+serve as engineering feasibility until the symmetric rerun finishes.  The
+small-student distillation study has functional training-side evidence but no
+complete held-out physical evaluation.  Excluding them is not a judgment that
+they are uninteresting; it prevents selected or exploratory observations from
+carrying the primary causal conclusion.

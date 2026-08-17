@@ -3120,3 +3120,69 @@ reports no symmetric silicon number and does not reuse the historical
 asymmetric table. `sweep_catalog.py` was extended so a future successful live
 sweep records raw runs, bitstream/HWH/selection hashes, environment provenance,
 per-entry Vivado references, and explicit no-pass rows.
+
+### Strongest-paper integration after the recovery checkpoint (2026-08-17)
+
+The capability paper now restores the strongest independently checkable
+secondary results without promoting them to the primary causal claim.
+`analyze_main_results.py` remains the sole fail-closed paper generator and now
+validates all of the following artifacts before emitting any manuscript number:
+
+1. the frozen 30-design, five-family `grpo_v8` primary comparison;
+2. the complete raw-base correctness rows on that same universe;
+3. the earlier Qwen second-backbone replication on 22 designs and three
+   families;
+4. candidate-level concentration and implementation-diversity diagnostics;
+5. the stored same-task API baseline, VerilogEval control, selected HLS
+   comparison, reflow-attribution diagnostic, and evaluation-protocol source;
+6. the symmetric-board selection manifest, while continuing to reject any live
+   silicon claim unless the missing catalog artifact exists.
+
+The restored results and their evidentiary roles are:
+
+```
+primary raw base, same 30 tasks       2.8% correct; 1.8 MHz penalized Fmax
+Qwen replication, 22 tasks           64.9 -> 200.5 MHz; +135.6 [122.7,147.3]; 22/22
+dominant correct-candidate mass       43.5% -> 72.6% (SFT -> GRPO)
+effective correct implementations    2.88 -> 1.74
+SFT support contains >= GRPO mean     25/30 designs
+stored API, same prompt               14.3 MHz penalized; 27.1% correct
+stored API, timing prompt             55.0 MHz penalized; 22.9% correct
+VerilogEval pass@1                    base 32.2%; SFT 16.0%; GRPO 16.7%
+selected fastest GRPO / pragma HLS    0.96x geometric mean over 19 valid designs
+selected fastest GRPO / plain HLS     46.0x geometric mean, range 18.3x--108.3x
+```
+
+These tiers must not be collapsed. The primary result is the equal-sample
+policy comparison. Qwen is a narrower earlier replication. Candidate
+concentration is a mechanism diagnostic. The API run is one stored prompt/API
+configuration, not a general frontier-model comparison. The HLS table compares
+the selected fastest GRPO implementation with engineer-written C++ baselines,
+not policy-average samples. VerilogEval shows a large specialization cost from
+the base model to SFT and no material additional loss from SFT to GRPO. The
+reflow study remains a bounded diagnostic: canonical rescoring removes 101.2%
+of the raw late jump, but its scores are clamp-saturated and there are zero
+token-identical cross-checkpoint pairs.
+
+The generated paper now includes `table_replication.tex`, `table_context.tex`,
+and `fig_mechanism_verified.{pdf,png}`. Deterministic figure metadata makes all
+six generated figure files byte-stable across consecutive runs. The claim
+ledger currently contains 171 validated claims, of which the manuscript uses
+150. `verify_claims.py` resolves every included TeX file, checks each artifact
+`file:line` pointer, rejects unknown claim IDs, and rejects raw numeric literals
+in authored prose. The final local audit passed all correctness, best-of-N,
+trajectory, oracle, manuscript-provenance, and symmetric-board checks.
+
+Citation metadata was re-audited against primary records. In particular, the
+previous PPA-RTL title was false: the record is *Hardware Generation with High
+Flexibility using Reinforcement Learning Enhanced LLMs* by Zhao, Fu, Li, Hu,
+Guo, and Jin. VeriReason, POET, EvolVE, and COEVO author lists were corrected,
+and Alpha-RTL was added to the test-time policy-adaptation discussion.
+
+Still missing before calling the paper submission-ready: a real LaTeX build and
+page-layout pass (no TeX distribution is installed on this laptop), human prose
+and citation review, and preferably additional independent primary seeds. A
+successful symmetric board build and live sweep would strengthen the paper but
+does not exist yet. The strongest current framing is therefore a reproducible
+capability paper with a bounded reward-overoptimization subplot, not a silicon
+paper and not a completed reward-repair paper.

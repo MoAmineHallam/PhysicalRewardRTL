@@ -4,50 +4,67 @@
 \subsection{Design families and frozen split}
 
 The benchmark contains streaming FIR, reverse-FIR, polynomial, recursive-filter,
-and median-filter accelerators under a uniform clocked interface.  Specifications
-and reference functions are generated programmatically so that each parameter
-choice has an executable oracle.  The resulting domain spans
-\claim{FamilyCount} families and several implementation styles, but remains
-template bounded.
+and median-filter accelerators under a uniform clocked interface.
+Specifications and executable reference functions are generated
+programmatically.  The resulting domain spans \claim{FamilyCount} families and
+several implementation templates, but remains bounded by those generators.
 
-The held-out split was committed before the model used for the reported policy
-run was trained.  Interpolation contains \claim{InterpDesignCount} unseen
-parameter choices inside the training ranges.  Extrapolation contains
+The held-out split was committed before the policy used for the primary result
+was trained.  Interpolation contains \claim{InterpDesignCount} unseen parameter
+choices inside training ranges.  Extrapolation contains
 \claim{ExtrapDesignCount} larger or newly parameterized designs outside those
-ranges.  No held-out design appears in supervised examples, policy-optimization
-prompts, or proxy-training rows.
+ranges.  No held-out design appears in supervised examples, policy prompts, or
+proxy-training rows.
 
-\subsection{Generation and physical evaluation}
+\subsection{Models, sampling, and functional evaluation}
 
-The evaluated policies are the supervised checkpoint and the subsequent
-correctness-gated policy checkpoint.  Each is sampled
-\claim{SamplesPerDesign} times for every held-out design.  Evaluation uses
-stimuli distinct from training, and a candidate is retained only when the oracle
-accepts it on both evaluation streams.
+The primary comparison uses RTLCoder~\cite{liu2024rtlcoder}, its supervised
+LoRA adapter, and the subsequent correctness-gated policy adapter.  Each policy
+is sampled \claim{SamplesPerDesign} times per primary design.  A candidate is
+accepted only if it matches the reference under \claim{EvalOracleStreams}
+held-out stimulus streams, each containing \claim{EvalVectorsPerStream}
+vectors.  Distinct accepted RTL is stored once together with its original
+multiplicity.
 
-All reported physical frequencies come from post-synthesis, placement, and
-routing for the same Xilinx Zynq target and timing constraint.  Frequency is
-derived from the requested period and reported worst negative slack.  The term
-``timing-derived frequency'' is used because the flow does not rerun
-implementation at every possible clock.  This limitation affects both policies
-symmetrically.
+The second-backbone replication uses Qwen-Coder and
+\claim{QwenSamplesPerDesign} samples per policy on
+\claim{QwenDesignCount} designs from the earlier
+\claim{QwenFamilyCount}-family split.  It is reported separately because it
+does not include the later recursive and median families.
 
-\subsection{Endpoints and uncertainty}
+\subsection{Physical evaluation}
+
+Every reported candidate frequency comes from synthesis, placement, and routing
+for part \texttt{\claim{TargetPart}} under a requested
+\claim{TargetPeriod}-ns clock.  Frequency is derived from that request and the
+reported worst negative slack.  We call this ``timing-derived frequency''
+because the flow does not rerun implementation at every candidate clock.  Both
+policies use the same flow and constraint.
 
 The primary endpoint is penalized equal-sample frequency as defined in
 Section~\ref{sec:method}.  Secondary diagnostics are conditional frequency,
-oracle correctness, per-family effects, and exact perfect-selector curves.
-Uncertainty intervals resample paired designs within each reported regime using
-a fixed analysis seed.  They are a post-hoc uncertainty analysis of frozen
-artifacts, not a preregistered hypothesis test.
+oracle correctness, family effects, candidate concentration, and exact
+perfect-selector curves.  Uncertainty intervals resample paired designs within
+each regime.  They are post-hoc uncertainty analyses of frozen artifacts, not
+preregistered hypothesis tests.
+
+\subsection{Contextual baselines and controls}
+
+The stored API baseline applies the same specifications and oracle to two prompt
+arms, using \claim{FrontierSamplesPerDesign} samples per arm and design.  Its
+smaller budget and single API configuration make it diagnostic rather than a
+general ranking of frontier models.  The HLS comparison uses post-implementation
+throughput and distinguishes no-pragma C++ from engineer-placed pipeline
+pragmas.  Because the RTL column selects the fastest measured optimized
+candidate, HLS is a selected quality bound rather than a policy-average result.
+VerilogEval supplies a separate general-RTL regression control.
 
 \subsection{Symmetric silicon protocol}
 
-The earlier board table compared a count-weighted supervised median against an
-optimized-policy maximum and is excluded from the present quantitative claims.
-The replacement protocol selects the count-weighted real-Vivado median for both
-policies on the same pre-existing held-out designs.  Both members of every pair
-share the same functional golden, are packed into one bitstream with a
-co-resident canary, and are swept with the same clock schedule.  A board number
-will enter the manuscript only after the live sweep artifact exists under the
-symmetric protocol.
+The historical board table compared a count-weighted supervised median against
+an optimized-policy maximum and is excluded from quantitative claims.  The
+replacement protocol applies the same count-weighted-median candidate rule to
+both policies on the pre-existing design set.  Both members of every pair share
+the same golden, occupy one bitstream with a co-resident canary, and use the same
+clock sweep.  A silicon number enters the manuscript only after the reserved
+live-sweep artifact exists.

@@ -1,8 +1,9 @@
 # Paper reproducibility contract
 
-The manuscript is an IEEE-format recovery draft centered on the frozen
-thirty-design `grpo_v8` evaluation. Empirical values are not copied from
-`RESULTS.md` and must not be typed into the TeX source.
+This is the integrated capability paper. Its primary result remains the frozen
+30-design, five-family `grpo_v8` evaluation; strong secondary results are
+included under explicit evidence labels rather than being omitted or silently
+pooled with the primary set.
 
 ## Regenerate and verify
 
@@ -13,43 +14,67 @@ python analyze_main_results.py
 python verify_claims.py
 ```
 
-`analyze_main_results.py` is the sole generator for headline result tables. It
-requires exactly the three frozen evaluation chunks and fails if they do not
-contain exactly thirty designs, the expected interpolation/extrapolation split,
-both policies, a common sample count, and a PPA row for every manifest
-candidate. The primary endpoint is equal-sample post-route Fmax: incorrect and
-implementation-failed samples score zero.
+`analyze_main_results.py` is the sole generator for empirical manuscript
+values, headline tables, and verified figures. It fails closed if the primary
+evaluation is not exactly 30 designs (19 interpolation, 11 extrapolation), if
+either policy lacks its 48-sample denominator, or if a manifest candidate lacks
+a PPA row. The primary endpoint is mean per-design equal-sample post-route
+Fmax: incorrect and implementation-failed samples score zero.
+
+The same script independently validates each secondary artifact before adding
+claims:
+
+- raw-model correctness over the complete primary design universe;
+- the 22-design, three-family Qwen-Coder replication;
+- candidate multiplicities and concentration statistics;
+- the two-arm, same-task API baseline;
+- the committed VerilogEval per-sample verdicts;
+- `rtl/hls_baseline/hls_results.json`, including a cross-check of every selected
+  GRPO value against the committed held-out Vivado rows; and
+- the bounded lexical/reflow diagnostic in `reflow_attribution.json`.
 
 Generated files live under `paper/generated/`:
 
-- `claims.json`: values, computations, and artifact `file:line` ranges;
-- `claims.tex`: TeX definitions for named `\claim{...}` references;
+- `claims.json`: values, methods, and artifact `file:line` ranges;
+- `claims.tex`: named `\claim{...}` definitions;
 - `claim_provenance.md`: human-readable claim ledger;
-- `main_results.json`: design-level and aggregate audit object;
-- `table_*.tex`: generated headline tables.
+- `main_results.json`: primary and secondary audit object; and
+- `table_*.tex`: generated manuscript tables.
 
-The canonical script also regenerates `fig_main_verified` and
+Verified figures are `fig_main_verified`, `fig_mechanism_verified`, and
 `fig_trajectory_verified` in PDF and PNG form.
 
-`verify_claims.py` independently reproduces the earlier correctness,
-best-of-N, trajectory, and oracle audits. Its manuscript check additionally:
+`verify_claims.py` recomputes the generated outputs, validates every source
+pointer, recursively resolves TeX inputs, rejects unknown claim identifiers,
+and fails on raw numeric literals in authored manuscript prose. If a value is
+not in the generated ledger, it does not enter the paper.
 
-- reruns the canonical generator in stale-check mode;
-- validates every claim source path and line range;
-- recursively resolves the TeX inputs;
-- fails on an unknown `\claim{...}` identifier; and
-- fails on any raw numeric literal in authored title, abstract, or prose.
+## Evidence tiers
 
-That last rule is intentional. If a result is not in the generated ledger, it
-does not enter the manuscript.
+The manuscript labels evidence by what it can support:
+
+- **Primary causal comparison:** frozen 30-design RTLCoder SFT-versus-GRPO
+  evaluation, equal sample cost, real post-route measurements.
+- **Replication:** Qwen-Coder repeats the complete SFT-to-GRPO pipeline on the
+  earlier 22-design scope.
+- **Mechanism:** candidate-level real-Fmax distributions and multiplicities.
+- **Context:** the API prompt arms and selected-candidate HLS comparison. These
+  are not pooled with the primary endpoint.
+- **Control:** VerilogEval separates SFT specialization cost from additional
+  GRPO regression.
+- **Diagnostic:** the trajectory/reflow analysis documents one late proxy
+  failure without claiming a general reward repair.
+
+The small-student study remains exploratory because it has no complete
+held-out PPA evaluation. The historical board comparison remains excluded
+because its SFT and GRPO selection rules were asymmetric.
 
 ## Silicon rule
 
-The historical `rtl/holdout_silicon/catalog_fmax.json` comparison is asymmetric
-(SFT median versus GRPO maximum) and is excluded from the recovery draft. Only
-`rtl/holdout_silicon_symmetric/catalog_fmax.json`, produced after symmetric
-median-versus-median selection and a new live sweep, may support a silicon
-number. A generated bitstream is not a measurement.
+Only `rtl/holdout_silicon_symmetric/catalog_fmax.json`, produced by a live sweep
+after symmetric candidate selection, may create a silicon table. A generated
+bitstream is not a measurement. Until that file exists and its hashes validate,
+the generated paper states that no symmetric silicon result is available.
 
 ## Compile
 
@@ -61,6 +86,6 @@ pdflatex main
 pdflatex main
 ```
 
-The local Windows environment used for this recovery did not expose a TeX
-compiler on `PATH`; use a TeX installation or import the repository into
-Overleaf and select `paper/main.tex` as the main document.
+The current Windows environment does not expose a TeX compiler on `PATH`; use a
+TeX installation or import the repository into Overleaf with `paper/main.tex`
+as the main document.

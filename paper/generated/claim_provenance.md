@@ -85,6 +85,77 @@ Every `\claim{...}` used by the manuscript resolves through this ledger.
 | `TrajectoryFinalPenalized` | 212.3 | MHz | `rtl/traj_v8/fmax_manifest.json:1-1010`<br>`rtl/traj_v8/holdout_summary.json:1-432`<br>`rtl/traj_v8/ppa.jsonl:1-144` |
 | `TrajectoryFinalConditional` | 241.2 | MHz | `rtl/traj_v8/fmax_manifest.json:1-1010`<br>`rtl/traj_v8/holdout_summary.json:1-432`<br>`rtl/traj_v8/ppa.jsonl:1-144` |
 | `TrajectoryFinalCorrectness` | 88.0 | percent | `rtl/traj_v8/fmax_manifest.json:1-1010`<br>`rtl/traj_v8/holdout_summary.json:1-432`<br>`rtl/traj_v8/ppa.jsonl:1-144` |
+| `BaseCorrectness` | 2.8 | percent | `rtl/holdout_eval_v8_firfirr/fmax_manifest.json:1-1094`<br>`rtl/holdout_eval_v8_firfirr/holdout_summary.json:1-346`<br>`rtl/holdout_eval_v8_firfirr/ppa.jsonl:1-156`<br>`rtl/holdout_eval_v8_iirmed/fmax_manifest.json:1-597`<br>`rtl/holdout_eval_v8_iirmed/holdout_summary.json:1-234`<br>`rtl/holdout_eval_v8_iirmed/ppa.jsonl:1-85`<br>`rtl/holdout_eval_v8_poly/fmax_manifest.json:1-737`<br>`rtl/holdout_eval_v8_poly/holdout_summary.json:1-290`<br>`rtl/holdout_eval_v8_poly/ppa.jsonl:1-105` |
+| `BasePenalized` | 1.8 | MHz | `rtl/holdout_eval_v8_firfirr/fmax_manifest.json:1-1094`<br>`rtl/holdout_eval_v8_firfirr/holdout_summary.json:1-346`<br>`rtl/holdout_eval_v8_firfirr/ppa.jsonl:1-156`<br>`rtl/holdout_eval_v8_iirmed/fmax_manifest.json:1-597`<br>`rtl/holdout_eval_v8_iirmed/holdout_summary.json:1-234`<br>`rtl/holdout_eval_v8_iirmed/ppa.jsonl:1-85`<br>`rtl/holdout_eval_v8_poly/fmax_manifest.json:1-737`<br>`rtl/holdout_eval_v8_poly/holdout_summary.json:1-290`<br>`rtl/holdout_eval_v8_poly/ppa.jsonl:1-105` |
+| `MechanismSftDominantMass` | 43.5 | percent | `rtl/holdout_eval_v8_firfirr/fmax_manifest.json:1-1094`<br>`rtl/holdout_eval_v8_firfirr/ppa.jsonl:1-156`<br>`rtl/holdout_eval_v8_iirmed/fmax_manifest.json:1-597`<br>`rtl/holdout_eval_v8_iirmed/ppa.jsonl:1-85`<br>`rtl/holdout_eval_v8_poly/fmax_manifest.json:1-737`<br>`rtl/holdout_eval_v8_poly/ppa.jsonl:1-105` |
+| `MechanismGrpoDominantMass` | 72.6 | percent | `rtl/holdout_eval_v8_firfirr/fmax_manifest.json:1-1094`<br>`rtl/holdout_eval_v8_firfirr/ppa.jsonl:1-156`<br>`rtl/holdout_eval_v8_iirmed/fmax_manifest.json:1-597`<br>`rtl/holdout_eval_v8_iirmed/ppa.jsonl:1-85`<br>`rtl/holdout_eval_v8_poly/fmax_manifest.json:1-737`<br>`rtl/holdout_eval_v8_poly/ppa.jsonl:1-105` |
+| `MechanismSftEffective` | 2.88 | effective implementations | `rtl/holdout_eval_v8_firfirr/fmax_manifest.json:1-1094`<br>`rtl/holdout_eval_v8_firfirr/ppa.jsonl:1-156`<br>`rtl/holdout_eval_v8_iirmed/fmax_manifest.json:1-597`<br>`rtl/holdout_eval_v8_iirmed/ppa.jsonl:1-85`<br>`rtl/holdout_eval_v8_poly/fmax_manifest.json:1-737`<br>`rtl/holdout_eval_v8_poly/ppa.jsonl:1-105` |
+| `MechanismGrpoEffective` | 1.74 | effective implementations | `rtl/holdout_eval_v8_firfirr/fmax_manifest.json:1-1094`<br>`rtl/holdout_eval_v8_firfirr/ppa.jsonl:1-156`<br>`rtl/holdout_eval_v8_iirmed/fmax_manifest.json:1-597`<br>`rtl/holdout_eval_v8_iirmed/ppa.jsonl:1-85`<br>`rtl/holdout_eval_v8_poly/fmax_manifest.json:1-737`<br>`rtl/holdout_eval_v8_poly/ppa.jsonl:1-105` |
+| `MechanismSupportCount` | 25 | designs | `rtl/holdout_eval_v8_firfirr/fmax_manifest.json:1-1094`<br>`rtl/holdout_eval_v8_firfirr/ppa.jsonl:1-156`<br>`rtl/holdout_eval_v8_iirmed/fmax_manifest.json:1-597`<br>`rtl/holdout_eval_v8_iirmed/ppa.jsonl:1-85`<br>`rtl/holdout_eval_v8_poly/fmax_manifest.json:1-737`<br>`rtl/holdout_eval_v8_poly/ppa.jsonl:1-105` |
+| `MechanismMedianSftDominantMass` | 35.4 | percent | `rtl/holdout_eval_v8_firfirr/fmax_manifest.json:1-1094`<br>`rtl/holdout_eval_v8_firfirr/ppa.jsonl:1-156`<br>`rtl/holdout_eval_v8_iirmed/fmax_manifest.json:1-597`<br>`rtl/holdout_eval_v8_iirmed/ppa.jsonl:1-85`<br>`rtl/holdout_eval_v8_poly/fmax_manifest.json:1-737`<br>`rtl/holdout_eval_v8_poly/ppa.jsonl:1-105` |
+| `MechanismMedianGrpoDominantMass` | 25.0 | percent | `rtl/holdout_eval_v8_firfirr/fmax_manifest.json:1-1094`<br>`rtl/holdout_eval_v8_firfirr/ppa.jsonl:1-156`<br>`rtl/holdout_eval_v8_iirmed/fmax_manifest.json:1-597`<br>`rtl/holdout_eval_v8_iirmed/ppa.jsonl:1-85`<br>`rtl/holdout_eval_v8_poly/fmax_manifest.json:1-737`<br>`rtl/holdout_eval_v8_poly/ppa.jsonl:1-105` |
+| `QwenInterpSftPenalized` | 69.8 | MHz | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenInterpSftCorrectness` | 73.4 | percent | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenInterpGrpoPenalized` | 214.8 | MHz | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenInterpGrpoCorrectness` | 93.5 | percent | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenInterpGain` | 145.0 | MHz | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenInterpImproved` | 14 | designs | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenInterpCiLow` | 130.7 | MHz | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenInterpCiHigh` | 158.3 | MHz | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenExtrapSftPenalized` | 56.4 | MHz | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenExtrapSftCorrectness` | 91.9 | percent | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenExtrapGrpoPenalized` | 175.4 | MHz | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenExtrapGrpoCorrectness` | 92.2 | percent | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenExtrapGain` | 119.0 | MHz | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenExtrapImproved` | 8 | designs | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenExtrapCiLow` | 97.7 | MHz | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenExtrapCiHigh` | 133.7 | MHz | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenOverallSftPenalized` | 64.9 | MHz | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenOverallSftCorrectness` | 80.1 | percent | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenOverallGrpoPenalized` | 200.5 | MHz | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenOverallGrpoCorrectness` | 93.0 | percent | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenOverallGain` | 135.6 | MHz | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenOverallImproved` | 22 | designs | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenOverallCiLow` | 122.7 | MHz | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenOverallCiHigh` | 147.3 | MHz | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenDesignCount` | 22 | designs | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenInterpDesignCount` | 14 | designs | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenExtrapDesignCount` | 8 | designs | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenFamilyCount` | 3 | families | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `QwenSamplesPerDesign` | 48 | samples/policy/design | `rtl/holdout_eval_qwen/fmax_manifest.json:1-1136`<br>`rtl/holdout_eval_qwen/holdout_summary.json:1-626`<br>`rtl/holdout_eval_qwen/ppa.jsonl:1-162` |
+| `FrontierPlainPenalized` | 14.3 | MHz | `rtl/frontier_eval/fmax_manifest.json:1-842`<br>`rtl/frontier_eval/frontier_summary.json:1-366`<br>`rtl/frontier_eval/ppa.jsonl:1-120` |
+| `FrontierPlainConditional` | 52.8 | MHz | `rtl/frontier_eval/fmax_manifest.json:1-842`<br>`rtl/frontier_eval/frontier_summary.json:1-366`<br>`rtl/frontier_eval/ppa.jsonl:1-120` |
+| `FrontierPlainCorrectness` | 27.1 | percent | `rtl/frontier_eval/fmax_manifest.json:1-842`<br>`rtl/frontier_eval/frontier_summary.json:1-366`<br>`rtl/frontier_eval/ppa.jsonl:1-120` |
+| `FrontierFastPenalized` | 55.0 | MHz | `rtl/frontier_eval/fmax_manifest.json:1-842`<br>`rtl/frontier_eval/frontier_summary.json:1-366`<br>`rtl/frontier_eval/ppa.jsonl:1-120` |
+| `FrontierFastConditional` | 239.9 | MHz | `rtl/frontier_eval/fmax_manifest.json:1-842`<br>`rtl/frontier_eval/frontier_summary.json:1-366`<br>`rtl/frontier_eval/ppa.jsonl:1-120` |
+| `FrontierFastCorrectness` | 22.9 | percent | `rtl/frontier_eval/fmax_manifest.json:1-842`<br>`rtl/frontier_eval/frontier_summary.json:1-366`<br>`rtl/frontier_eval/ppa.jsonl:1-120` |
+| `FrontierSamplesPerDesign` | 8 | samples/arm/design | `rtl/frontier_eval/fmax_manifest.json:1-842`<br>`rtl/frontier_eval/frontier_summary.json:1-366`<br>`rtl/frontier_eval/ppa.jsonl:1-120` |
+| `VerilogProblemCount` | 156 | problems | `passk_base.jsonl:1-1560`<br>`passk_grpo_v7.jsonl:1-1560`<br>`passk_sft_v5.jsonl:1-1560` |
+| `VerilogSamplesPerProblem` | 10 | samples/problem | `passk_base.jsonl:1-1560`<br>`passk_grpo_v7.jsonl:1-1560`<br>`passk_sft_v5.jsonl:1-1560` |
+| `VerilogBasePassone` | 32.2 | percent | `passk_base.jsonl:1-1560`<br>`passk_grpo_v7.jsonl:1-1560`<br>`passk_sft_v5.jsonl:1-1560` |
+| `VerilogBaseCompileFail` | 35.1 | percent | `passk_base.jsonl:1-1560`<br>`passk_grpo_v7.jsonl:1-1560`<br>`passk_sft_v5.jsonl:1-1560` |
+| `VerilogSftPassone` | 16.0 | percent | `passk_base.jsonl:1-1560`<br>`passk_grpo_v7.jsonl:1-1560`<br>`passk_sft_v5.jsonl:1-1560` |
+| `VerilogSftCompileFail` | 53.3 | percent | `passk_base.jsonl:1-1560`<br>`passk_grpo_v7.jsonl:1-1560`<br>`passk_sft_v5.jsonl:1-1560` |
+| `VerilogGrpoPassone` | 16.7 | percent | `passk_base.jsonl:1-1560`<br>`passk_grpo_v7.jsonl:1-1560`<br>`passk_sft_v5.jsonl:1-1560` |
+| `VerilogGrpoCompileFail` | 53.3 | percent | `passk_base.jsonl:1-1560`<br>`passk_grpo_v7.jsonl:1-1560`<br>`passk_sft_v5.jsonl:1-1560` |
+| `VerilogRlDelta` | 0.7 | percentage points | `passk_base.jsonl:1-1560`<br>`passk_grpo_v7.jsonl:1-1560`<br>`passk_sft_v5.jsonl:1-1560` |
+| `HlsDesignCount` | 19 | designs | `rtl/hls_baseline/hls_results.json:1-464`<br>`rtl/holdout_eval/fmax_manifest.json:1-1997`<br>`rtl/holdout_eval/ppa.jsonl:1-285` |
+| `HlsExpertGeomean` | 0.96 | ratio | `rtl/hls_baseline/hls_results.json:1-464`<br>`rtl/holdout_eval/fmax_manifest.json:1-1997`<br>`rtl/holdout_eval/ppa.jsonl:1-285` |
+| `HlsNaiveGeomean` | 46.0 | ratio | `rtl/hls_baseline/hls_results.json:1-464`<br>`rtl/holdout_eval/fmax_manifest.json:1-1997`<br>`rtl/holdout_eval/ppa.jsonl:1-285` |
+| `HlsNaiveMinimum` | 18.3 | ratio | `rtl/hls_baseline/hls_results.json:1-464`<br>`rtl/holdout_eval/fmax_manifest.json:1-1997`<br>`rtl/holdout_eval/ppa.jsonl:1-285` |
+| `HlsNaiveMaximum` | 108.3 | ratio | `rtl/hls_baseline/hls_results.json:1-464`<br>`rtl/holdout_eval/fmax_manifest.json:1-1997`<br>`rtl/holdout_eval/ppa.jsonl:1-285` |
+| `ReflowLateRawNonblocking` | 24.4 | line-initial assignments | `reflow_attribution.json:1-66` |
+| `ReflowLateCanonicalNonblocking` | 46.8 | canonical assignments | `reflow_attribution.json:1-66` |
+| `ReflowLateTokens` | 429.5 | tokens | `reflow_attribution.json:1-66` |
+| `ReflowFinalRawNonblocking` | 44.4 | line-initial assignments | `reflow_attribution.json:1-66` |
+| `ReflowFinalCanonicalNonblocking` | 44.4 | canonical assignments | `reflow_attribution.json:1-66` |
+| `ReflowFinalTokens` | 411.1 | tokens | `reflow_attribution.json:1-66` |
+| `ReflowRemoved` | 101.2 | percent | `reflow_attribution.json:1-66` |
+| `ReflowTokenPairCount` | 0 | pairs | `reflow_attribution.json:1-66` |
+| `EvalOracleStreams` | 2 | stimulus streams | `eval_holdout.py:1-471`<br>`ppa_synth.tcl:1-96`<br>`run_ppa.py:1-127` |
+| `EvalVectorsPerStream` | 1 | vectors/stream | `eval_holdout.py:1-471`<br>`ppa_synth.tcl:1-96`<br>`run_ppa.py:1-127` |
+| `TargetPeriod` | 5.0 | ns | `eval_holdout.py:1-471`<br>`ppa_synth.tcl:1-96`<br>`run_ppa.py:1-127` |
+| `TargetPart` | xc7z020clg400-1 | FPGA part | `eval_holdout.py:1-471`<br>`ppa_synth.tcl:1-96`<br>`run_ppa.py:1-127` |
 | `FamilyFirCount` | 6 | designs | `rtl/holdout_eval_v8_firfirr/fmax_manifest.json:1-1094`<br>`rtl/holdout_eval_v8_firfirr/ppa.jsonl:1-156`<br>`rtl/holdout_eval_v8_iirmed/fmax_manifest.json:1-597`<br>`rtl/holdout_eval_v8_iirmed/ppa.jsonl:1-85`<br>`rtl/holdout_eval_v8_poly/fmax_manifest.json:1-737`<br>`rtl/holdout_eval_v8_poly/ppa.jsonl:1-105` |
 | `FamilyFirSft` | 83.2 | MHz | `rtl/holdout_eval_v8_firfirr/fmax_manifest.json:1-1094`<br>`rtl/holdout_eval_v8_firfirr/ppa.jsonl:1-156`<br>`rtl/holdout_eval_v8_iirmed/fmax_manifest.json:1-597`<br>`rtl/holdout_eval_v8_iirmed/ppa.jsonl:1-85`<br>`rtl/holdout_eval_v8_poly/fmax_manifest.json:1-737`<br>`rtl/holdout_eval_v8_poly/ppa.jsonl:1-105` |
 | `FamilyFirGrpo` | 206.5 | MHz | `rtl/holdout_eval_v8_firfirr/fmax_manifest.json:1-1094`<br>`rtl/holdout_eval_v8_firfirr/ppa.jsonl:1-156`<br>`rtl/holdout_eval_v8_iirmed/fmax_manifest.json:1-597`<br>`rtl/holdout_eval_v8_iirmed/ppa.jsonl:1-85`<br>`rtl/holdout_eval_v8_poly/fmax_manifest.json:1-737`<br>`rtl/holdout_eval_v8_poly/ppa.jsonl:1-105` |

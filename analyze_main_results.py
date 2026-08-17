@@ -16,8 +16,11 @@ Outputs are generated, never hand edited:
   paper/generated/table_family.tex
   paper/generated/table_bestofn.tex
   paper/generated/table_trajectory.tex
+  paper/generated/table_replication.tex
+  paper/generated/table_context.tex
   paper/generated/table_board.tex
   paper/figures/fig_main_verified.{pdf,png}
+  paper/figures/fig_mechanism_verified.{pdf,png}
   paper/figures/fig_trajectory_verified.{pdf,png}
 
 Run ``python analyze_main_results.py --check`` in CI or before compiling the
@@ -34,6 +37,7 @@ import json
 import math
 import os
 import pathlib
+import re
 import sys
 from dataclasses import dataclass
 
@@ -50,6 +54,21 @@ PRIMARY_DIRS = tuple(
     )
 )
 TRAJECTORY_DIR = ROOT / "rtl" / "traj_v8"
+QWEN_DIR = ROOT / "rtl" / "holdout_eval_qwen"
+FRONTIER_DIR = ROOT / "rtl" / "frontier_eval"
+HLS_RESULT_PATH = ROOT / "rtl" / "hls_baseline" / "hls_results.json"
+HLS_LLM_DIR = ROOT / "rtl" / "holdout_eval"
+REFLOW_PATH = ROOT / "reflow_attribution.json"
+EVAL_SCRIPT = ROOT / "eval_holdout.py"
+PPA_SCRIPT = ROOT / "run_ppa.py"
+PPA_TCL = ROOT / "ppa_synth.tcl"
+VERILOGEVAL_FILES = collections.OrderedDict(
+    (
+        ("base", ROOT / "passk_base.jsonl"),
+        ("sft", ROOT / "passk_sft_v5.jsonl"),
+        ("grpo", ROOT / "passk_grpo_v7.jsonl"),
+    )
+)
 SYMMETRIC_BOARD_DIR = ROOT / "rtl" / "holdout_silicon_symmetric"
 GENERATED = ROOT / "paper" / "generated"
 FIGURES = ROOT / "paper" / "figures"
@@ -288,6 +307,377 @@ def source_spans(eval_dirs: tuple[pathlib.Path, ...]) -> list[str]:
     ]
 
 
+def load_policy_dataset(
+    directory: pathlib.Path,
+    policies: tuple[str, ...],
+    expected_designs: int,
+    expected_n: int,
+    expected_families: int,
+    expected_regimes: dict[str, int],
+    summary_filename: str = "holdout_summary.json",
+) -> tuple[list[dict], list[str]]:
+    """Load a secondary policy comparison without hiding zero-correct designs.
+
+    The manifest contains only distinct oracle-correct candidates.  The summary
+    is therefore the authority for the complete design universe and denominator;
+    each manifest multiplicity is checked back against its summary correctness.
+    """
+    manifest_path = directory / "fmax_manifest.json"
+    ppa_path = directory / "ppa.jsonl"
+    summary_path = directory / summary_filename
+    for path in (manifest_path, ppa_path, summary_path):
+        if not path.is_file():
+            raise RuntimeError(f"secondary artifact missing: {rel(path)}")
+
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    ppa = {}
+    for line in ppa_path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        row = json.loads(line)
+        if row["module"] in ppa:
+            raise RuntimeError(f"duplicate secondary PPA row: {row['module']}")
+        ppa[row["module"]] = row
+
+    for policy in policies:
+        if policy not in summary:
+            raise RuntimeError(f"secondary summary lacks policy {policy}: {rel(summary_path)}")
+    design_sets = [set(summary[policy]) for policy in policies]
+    if any(designs != design_sets[0] for designs in design_sets[1:]):
+        raise RuntimeError(f"secondary policy design sets differ in {rel(summary_path)}")
+    designs = sorted(design_sets[0])
+    if len(designs) != expected_designs:
+        raise RuntimeError(
+            f"expected {expected_designs} secondary designs in {rel(directory)}, got {len(designs)}"
+        )
+
+    rows = []
+    regime_counts = collections.Counter()
+    for design in designs:
+        policy_rows = {}
+        regimes = set()
+        for policy in policies:
+            sm = summary[policy][design]
+            n = int(sm["n"])
+            if n != expected_n:
+                raise RuntimeError(f"expected n={expected_n} for {policy}/{design}, got {n}")
+            regimes.add(sm["regime"])
+            candidates = [
+                (module, info)
+                for module, info in manifest.items()
+                if info["policy"] == policy and info["design"] == design
+            ]
+            if any(module not in ppa for module, _ in candidates):
+                missing = [module for module, _ in candidates if module not in ppa]
+                raise RuntimeError(f"secondary manifest candidates lack PPA rows: {missing}")
+            if any(int(info["n"]) != n or info["regime"] != sm["regime"]
+                   for _, info in candidates):
+                raise RuntimeError(f"secondary manifest metadata mismatch for {policy}/{design}")
+            correct = sum(int(info["count"]) for _, info in candidates)
+            summary_correct = float(sm["corr_pct"]) * n / 100.0
+            if not math.isclose(correct, summary_correct, abs_tol=1e-6):
+                raise RuntimeError(
+                    f"summary/manifest correctness mismatch for {policy}/{design}: "
+                    f"{summary_correct} versus {correct}"
+                )
+            weighted = 0.0
+            compiled_correct = 0
+            for module, info in candidates:
+                ppa_row = ppa[module]
+                if ppa_row.get("compiled"):
+                    fmax = float(ppa_row["fmax_mhz"])
+                    if not math.isfinite(fmax) or fmax < 0:
+                        raise RuntimeError(f"invalid secondary Fmax for {module}: {fmax}")
+                    weighted += int(info["count"]) * fmax
+                    compiled_correct += int(info["count"])
+            policy_rows[policy] = {
+                "n": n,
+                "correct": correct,
+                "compiled": compiled_correct,
+                "penalized_fmax": weighted / n,
+                "conditional_fmax": weighted / correct if correct else 0.0,
+                "correct_pct": 100.0 * correct / n,
+            }
+        if len(regimes) != 1:
+            raise RuntimeError(f"secondary regime mismatch for {design}: {regimes}")
+        regime = regimes.pop()
+        regime_counts[regime] += 1
+        rows.append({
+            "design": design,
+            "family": family(design),
+            "regime": regime,
+            "n": expected_n,
+            **policy_rows,
+        })
+
+    if dict(regime_counts) != expected_regimes:
+        raise RuntimeError(
+            f"expected secondary regimes {expected_regimes}, got {dict(regime_counts)}"
+        )
+    if len({row["family"] for row in rows}) != expected_families:
+        raise RuntimeError(
+            f"expected {expected_families} secondary families in {rel(directory)}"
+        )
+    sources = [file_span(manifest_path), file_span(ppa_path), file_span(summary_path)]
+    return rows, sources
+
+
+def aggregate_policy_rows(rows: list[dict], policies: tuple[str, ...]) -> dict:
+    if not rows:
+        raise RuntimeError("cannot aggregate an empty secondary design set")
+    out = {"designs": len(rows), "samples_per_design": rows[0]["n"]}
+    for policy in policies:
+        total_n = sum(row[policy]["n"] for row in rows)
+        total_correct = sum(row[policy]["correct"] for row in rows)
+        weighted = sum(row[policy]["penalized_fmax"] * row[policy]["n"] for row in rows)
+        out[policy] = {
+            "penalized_fmax": float(np.mean([row[policy]["penalized_fmax"] for row in rows])),
+            "conditional_fmax": weighted / total_correct if total_correct else 0.0,
+            "correct_pct": 100.0 * total_correct / total_n,
+        }
+    return out
+
+
+def load_primary_base() -> tuple[dict, list[str]]:
+    """Recover the raw-model row over the complete frozen design universe."""
+    weighted = 0.0
+    correct = 0
+    total = 0
+    designs = set()
+    sources = []
+    for directory in PRIMARY_DIRS:
+        manifest_path = directory / "fmax_manifest.json"
+        ppa_path = directory / "ppa.jsonl"
+        summary_path = directory / "holdout_summary.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        summary = json.loads(summary_path.read_text(encoding="utf-8"))
+        ppa = {
+            row["module"]: row
+            for row in (
+                json.loads(line)
+                for line in ppa_path.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            )
+        }
+        if "base" not in summary:
+            raise RuntimeError(f"primary summary lacks base policy: {rel(summary_path)}")
+        for design, sm in summary["base"].items():
+            if design in designs:
+                raise RuntimeError(f"duplicate base design across primary chunks: {design}")
+            designs.add(design)
+            total += int(sm["n"])
+        for module, info in manifest.items():
+            if info["policy"] != "base":
+                continue
+            if module not in ppa:
+                raise RuntimeError(f"base manifest candidate lacks PPA row: {module}")
+            correct += int(info["count"])
+            if ppa[module].get("compiled"):
+                weighted += int(info["count"]) * float(ppa[module]["fmax_mhz"])
+        summary_correct = sum(
+            float(sm["corr_pct"]) * int(sm["n"]) / 100.0
+            for sm in summary["base"].values()
+        )
+        manifest_correct = sum(
+            int(info["count"])
+            for info in manifest.values()
+            if info["policy"] == "base"
+        )
+        if not math.isclose(summary_correct, manifest_correct, abs_tol=1e-6):
+            raise RuntimeError(f"base summary/manifest mismatch in {rel(directory)}")
+        sources.extend([file_span(manifest_path), file_span(ppa_path), file_span(summary_path)])
+    if len(designs) != EXPECTED_DESIGNS or total != EXPECTED_DESIGNS * 48:
+        raise RuntimeError(f"incomplete primary base universe: {len(designs)} designs, n={total}")
+    return {
+        "designs": len(designs),
+        "total": total,
+        "correct": correct,
+        "correct_pct": 100.0 * correct / total,
+        "penalized_fmax": weighted / total,
+        "conditional_fmax": weighted / correct if correct else 0.0,
+    }, sources
+
+
+def mechanism_summary(rows: list[dict]) -> dict:
+    out = {"overall": {}, "families": {}}
+    for label, selected in [("overall", rows)] + [
+        (fam, [row for row in rows if row["family"] == fam])
+        for fam in ("fir", "firr", "poly", "iir", "med")
+    ]:
+        entry = {}
+        for policy in EXPECTED_POLICIES:
+            dominant = [
+                max(candidate.count for candidate in row[policy]["candidates"]) / row["n"]
+                for row in selected
+            ]
+            effective = []
+            for row in selected:
+                counts = np.asarray(
+                    [candidate.count for candidate in row[policy]["candidates"]], dtype=float
+                )
+                probabilities = counts / counts.sum()
+                effective.append(float(1.0 / np.sum(probabilities ** 2)))
+            entry[policy] = {
+                "dominant_mass_pct": 100.0 * float(np.mean(dominant)),
+                "effective_correct_implementations": float(np.mean(effective)),
+                "unique_correct_implementations": float(np.mean([
+                    len(row[policy]["candidates"]) for row in selected
+                ])),
+            }
+        if label == "overall":
+            out["overall"] = entry
+        else:
+            out["families"][label] = entry
+    out["sft_support_at_or_above_grpo_conditional"] = sum(
+        max(candidate.fmax for candidate in row["sft"]["candidates"])
+        >= row["grpo"]["conditional_fmax"]
+        for row in rows
+    )
+    return out
+
+
+def load_verilogeval() -> tuple[dict, list[str]]:
+    def pass_at_k(by_problem: dict[str, list[bool]], k: int) -> float:
+        total = 0.0
+        for passes in by_problem.values():
+            n, correct = len(passes), sum(passes)
+            total += (
+                1.0
+                if n - correct < k
+                else 1.0 - math.comb(n - correct, k) / math.comb(n, k)
+            )
+        return 100.0 * total / len(by_problem)
+
+    out = {}
+    sources = []
+    for policy, path in VERILOGEVAL_FILES.items():
+        if not path.is_file():
+            raise RuntimeError(f"VerilogEval artifact missing: {rel(path)}")
+        by_problem = collections.defaultdict(list)
+        rows = []
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            rows.append(row)
+            by_problem[row["problem"]].append(row["status"] == "PASS")
+        if len(by_problem) != 156 or {len(v) for v in by_problem.values()} != {10}:
+            raise RuntimeError(f"unexpected VerilogEval shape for {policy}: {len(by_problem)}")
+        out[policy] = {
+            "problems": len(by_problem),
+            "samples_per_problem": 10,
+            "pass_at_one": pass_at_k(by_problem, 1),
+            "pass_at_five": pass_at_k(by_problem, 5),
+            "pass_at_ten": pass_at_k(by_problem, 10),
+            "compile_fail_pct": 100.0 * sum(
+                row["status"] == "compile_fail" for row in rows
+            ) / len(rows),
+        }
+        sources.append(file_span(path))
+    return out, sources
+
+
+def load_hls_context() -> tuple[dict, list[str]]:
+    """Validate the compact HLS measurement artifact and selected RTL column."""
+    if not HLS_RESULT_PATH.is_file():
+        raise RuntimeError(f"HLS result artifact missing: {rel(HLS_RESULT_PATH)}")
+    table = json.loads(HLS_RESULT_PATH.read_text(encoding="utf-8"))
+    if len(table) != 22:
+        raise RuntimeError(f"expected 22 HLS design rows, got {len(table)}")
+
+    llm_manifest_path = HLS_LLM_DIR / "fmax_manifest.json"
+    llm_ppa_path = HLS_LLM_DIR / "ppa.jsonl"
+    llm_manifest = json.loads(llm_manifest_path.read_text(encoding="utf-8"))
+    llm_ppa = {
+        row["module"]: row
+        for row in (
+            json.loads(line)
+            for line in llm_ppa_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        )
+    }
+    expert_ratios = []
+    naive_ratios = []
+    valid_designs = []
+    for design, row in table.items():
+        grpo_candidates = [
+            module
+            for module, info in llm_manifest.items()
+            if info["policy"] == "grpo" and info["design"] == design
+            and module in llm_ppa and llm_ppa[module].get("compiled")
+        ]
+        expected_top = max(float(llm_ppa[module]["fmax_mhz"]) for module in grpo_candidates)
+        if not math.isclose(float(row["grpo_top"]), expected_top, rel_tol=0, abs_tol=1e-9):
+            raise RuntimeError(f"HLS selected GRPO column is stale for {design}")
+        expert = row["hls_pragma"]
+        naive = row["hls_nopragma"]
+        if expert["fmax"] is not None and expert["ii"] is not None:
+            throughput = float(expert["fmax"]) / int(expert["ii"])
+            if not math.isclose(throughput, float(row["thr_pragma"]), abs_tol=1e-9):
+                raise RuntimeError(f"HLS expert throughput mismatch for {design}")
+            expert_ratios.append(expected_top / throughput)
+            valid_designs.append(design)
+        if naive["fmax"] is not None and naive["ii"] is not None:
+            throughput = float(naive["fmax"]) / int(naive["ii"])
+            if not math.isclose(throughput, float(row["thr_nopragma"]), abs_tol=1e-9):
+                raise RuntimeError(f"HLS naive throughput mismatch for {design}")
+            naive_ratios.append(expected_top / throughput)
+    if len(valid_designs) != 19 or len(naive_ratios) != 19:
+        raise RuntimeError(
+            f"expected 19 implemented HLS comparisons, got {len(valid_designs)}"
+        )
+    return {
+        "designs": valid_designs,
+        "selected_grpo_over_expert_geomean": float(math.prod(expert_ratios) ** (1 / len(expert_ratios))),
+        "selected_grpo_over_naive_geomean": float(math.prod(naive_ratios) ** (1 / len(naive_ratios))),
+        "selected_grpo_over_naive_minimum": min(naive_ratios),
+        "selected_grpo_over_naive_maximum": max(naive_ratios),
+    }, [file_span(HLS_RESULT_PATH), file_span(llm_manifest_path), file_span(llm_ppa_path)]
+
+
+def load_reflow_diagnostic() -> tuple[dict, list[str]]:
+    if not REFLOW_PATH.is_file():
+        raise RuntimeError(f"reflow attribution artifact missing: {rel(REFLOW_PATH)}")
+    data = json.loads(REFLOW_PATH.read_text(encoding="utf-8"))
+    summary = data.get("summary", {})
+    if not {"s300", "s400", "_attribution"}.issubset(summary):
+        raise RuntimeError("reflow attribution lacks late checkpoints")
+    if data.get("token_identical_pairs") != []:
+        raise RuntimeError("reflow null-result expectation changed")
+    return data, [file_span(REFLOW_PATH)]
+
+
+def load_protocol_config() -> tuple[dict, list[str]]:
+    for path in (EVAL_SCRIPT, PPA_SCRIPT, PPA_TCL):
+        if not path.is_file():
+            raise RuntimeError(f"protocol source missing: {rel(path)}")
+    eval_text = EVAL_SCRIPT.read_text(encoding="utf-8")
+    ppa_text = PPA_SCRIPT.read_text(encoding="utf-8")
+    tcl_text = PPA_TCL.read_text(encoding="utf-8")
+    seed_match = re.search(r"EVAL_SEEDS\s*=\s*\(([^)]*)\)", eval_text)
+    vectors_match = re.search(
+        r'add_argument\("--n-stim"[^\n]*\n\s*help=.*?default=(\d+)', eval_text, re.S
+    )
+    if vectors_match is None:
+        vectors_match = re.search(
+            r'add_argument\("--n-stim"[^)]*default=(\d+)', eval_text, re.S
+        )
+    period_match = re.search(
+        r'add_argument\("--period"[^)]*default=([\d.]+)', ppa_text, re.S
+    )
+    part_match = re.search(r"^set\s+part\s+(\S+)", tcl_text, re.M)
+    if not all((seed_match, vectors_match, period_match, part_match)):
+        raise RuntimeError("could not recover frozen evaluation configuration from source")
+    seeds = tuple(int(piece.strip()) for piece in seed_match.group(1).split(",") if piece.strip())
+    return {
+        "oracle_streams": len(seeds),
+        "vectors_per_stream": int(vectors_match.group(1)),
+        "target_period_ns": float(period_match.group(1)),
+        "target_part": part_match.group(1),
+    }, [file_span(EVAL_SCRIPT), file_span(PPA_SCRIPT), file_span(PPA_TCL)]
+
+
 def e_best_of_n(candidates: list[Candidate], n_total: int, n_draws: float) -> float:
     counts = collections.defaultdict(int)
     counts[0.0] = n_total - sum(c.count for c in candidates)
@@ -513,6 +903,230 @@ def build_claims(rows: list[dict], bestof: dict, trajectory: list[dict],
     return claims, result
 
 
+def add_secondary_claims(
+    claims: Claims,
+    result: dict,
+    primary_sources: list[str],
+    base: dict,
+    base_sources: list[str],
+    mechanism: dict,
+    qwen_rows: list[dict],
+    qwen_sources: list[str],
+    frontier_rows: list[dict],
+    frontier_sources: list[str],
+    verilogeval: dict,
+    verilogeval_sources: list[str],
+    hls: dict,
+    hls_sources: list[str],
+    reflow: dict,
+    reflow_sources: list[str],
+    protocol: dict,
+    protocol_sources: list[str],
+) -> None:
+    claims.add("BaseCorrectness", base["correct_pct"], fmt(base["correct_pct"]),
+               "percent", "Oracle-correct raw-model samples divided by the complete frozen sample universe.",
+               base_sources)
+    claims.add("BasePenalized", base["penalized_fmax"], fmt(base["penalized_fmax"]),
+               "MHz", "Real post-route Fmax over the complete raw-model sample universe; incorrect and implementation-failed samples score zero.",
+               base_sources)
+
+    overall_mechanism = mechanism["overall"]
+    claims.add("MechanismSftDominantMass",
+               overall_mechanism["sft"]["dominant_mass_pct"],
+               fmt(overall_mechanism["sft"]["dominant_mass_pct"]), "percent",
+               "Mean across designs of the all-sample mass assigned to the most frequent distinct oracle-correct SFT implementation.",
+               primary_sources)
+    claims.add("MechanismGrpoDominantMass",
+               overall_mechanism["grpo"]["dominant_mass_pct"],
+               fmt(overall_mechanism["grpo"]["dominant_mass_pct"]), "percent",
+               "Mean across designs of the all-sample mass assigned to the most frequent distinct oracle-correct GRPO implementation.",
+               primary_sources)
+    claims.add("MechanismSftEffective",
+               overall_mechanism["sft"]["effective_correct_implementations"],
+               fmt(overall_mechanism["sft"]["effective_correct_implementations"], 2),
+               "effective implementations",
+               "Mean inverse-Simpson effective count over distinct oracle-correct SFT implementations, conditional on correctness.",
+               primary_sources)
+    claims.add("MechanismGrpoEffective",
+               overall_mechanism["grpo"]["effective_correct_implementations"],
+               fmt(overall_mechanism["grpo"]["effective_correct_implementations"], 2),
+               "effective implementations",
+               "Mean inverse-Simpson effective count over distinct oracle-correct GRPO implementations, conditional on correctness.",
+               primary_sources)
+    claims.add("MechanismSupportCount",
+               mechanism["sft_support_at_or_above_grpo_conditional"],
+               str(mechanism["sft_support_at_or_above_grpo_conditional"]), "designs",
+               "Count designs where at least one measured SFT candidate reaches or exceeds the GRPO conditional mean Fmax.",
+               primary_sources)
+    claims.add("MechanismMedianSftDominantMass",
+               mechanism["families"]["med"]["sft"]["dominant_mass_pct"],
+               fmt(mechanism["families"]["med"]["sft"]["dominant_mass_pct"]),
+               "percent", "Median-family version of the dominant distinct-implementation mass diagnostic.",
+               primary_sources)
+    claims.add("MechanismMedianGrpoDominantMass",
+               mechanism["families"]["med"]["grpo"]["dominant_mass_pct"],
+               fmt(mechanism["families"]["med"]["grpo"]["dominant_mass_pct"]),
+               "percent", "Median-family version of the dominant distinct-implementation mass diagnostic.",
+               primary_sources)
+
+    qwen_groups = collections.OrderedDict((
+        ("Interp", [row for row in qwen_rows if row["regime"] == "interp"]),
+        ("Extrap", [row for row in qwen_rows if row["regime"] == "extrap"]),
+        ("Overall", qwen_rows),
+    ))
+    qwen_result = {"regimes": {}, "bootstrap_seed": BOOTSTRAP_SEED,
+                   "bootstrap_replicates": BOOTSTRAP_REPS}
+    for label, selected in qwen_groups.items():
+        aggregate_row = aggregate(selected)
+        ci = bootstrap_ci(selected, np.random.default_rng(BOOTSTRAP_SEED))
+        qwen_result["regimes"][label.lower()] = {"aggregate": aggregate_row, "ci": ci}
+        for policy, policy_name in (("sft", "Sft"), ("grpo", "Grpo")):
+            claims.add(f"Qwen{label}{policy_name}Penalized",
+                       aggregate_row[policy]["penalized_fmax"],
+                       fmt(aggregate_row[policy]["penalized_fmax"]), "MHz",
+                       "Mean per-design equal-sample post-route Fmax in the second-backbone replication; incorrect and implementation-failed samples score zero.",
+                       qwen_sources)
+            claims.add(f"Qwen{label}{policy_name}Correctness",
+                       aggregate_row[policy]["correct_pct"],
+                       fmt(aggregate_row[policy]["correct_pct"]), "percent",
+                       "Oracle-correct sample multiplicity divided by the full second-backbone sample budget.",
+                       qwen_sources)
+        claims.add(f"Qwen{label}Gain", aggregate_row["gain_mhz"],
+                   fmt(aggregate_row["gain_mhz"]), "MHz",
+                   "Mean paired per-design penalized-Fmax difference in the second-backbone replication.",
+                   qwen_sources)
+        claims.add(f"Qwen{label}Improved", aggregate_row["improved"],
+                   str(aggregate_row["improved"]), "designs",
+                   "Count second-backbone designs with a positive paired penalized-Fmax difference.",
+                   qwen_sources)
+        claims.add(f"Qwen{label}CiLow", ci[0], fmt(ci[0]), "MHz",
+                   f"Percentile paired-design bootstrap for the second backbone, seed {BOOTSTRAP_SEED}, {BOOTSTRAP_REPS} resamples.",
+                   qwen_sources)
+        claims.add(f"Qwen{label}CiHigh", ci[1], fmt(ci[1]), "MHz",
+                   f"Percentile paired-design bootstrap for the second backbone, seed {BOOTSTRAP_SEED}, {BOOTSTRAP_REPS} resamples.",
+                   qwen_sources)
+    claims.add("QwenDesignCount", len(qwen_rows), str(len(qwen_rows)), "designs",
+               "Count designs in the committed second-backbone evaluation.", qwen_sources)
+    claims.add("QwenInterpDesignCount", len(qwen_groups["Interp"]),
+               str(len(qwen_groups["Interp"])), "designs",
+               "Count interpolation designs in the second-backbone evaluation.", qwen_sources)
+    claims.add("QwenExtrapDesignCount", len(qwen_groups["Extrap"]),
+               str(len(qwen_groups["Extrap"])), "designs",
+               "Count extrapolation designs in the second-backbone evaluation.", qwen_sources)
+    claims.add("QwenFamilyCount", len({row["family"] for row in qwen_rows}),
+               str(len({row["family"] for row in qwen_rows})), "families",
+               "Count circuit families in the second-backbone evaluation.", qwen_sources)
+    claims.add("QwenSamplesPerDesign", qwen_rows[0]["n"], str(qwen_rows[0]["n"]),
+               "samples/policy/design", "Common second-backbone sampling budget.", qwen_sources)
+
+    frontier_aggregate = aggregate_policy_rows(frontier_rows, ("apiplain", "apifast"))
+    for policy, label in (("apiplain", "Plain"), ("apifast", "Fast")):
+        values = frontier_aggregate[policy]
+        claims.add(f"Frontier{label}Penalized", values["penalized_fmax"],
+                   fmt(values["penalized_fmax"]), "MHz",
+                   "Mean per-design equal-sample post-route Fmax for the stored API arm; incorrect and implementation-failed samples score zero.",
+                   frontier_sources)
+        claims.add(f"Frontier{label}Conditional", values["conditional_fmax"],
+                   fmt(values["conditional_fmax"]), "MHz",
+                   "Count-weighted post-route Fmax conditional on oracle correctness for the stored API arm.",
+                   frontier_sources)
+        claims.add(f"Frontier{label}Correctness", values["correct_pct"],
+                   fmt(values["correct_pct"]), "percent",
+                   "Oracle-correct sample multiplicity divided by the complete API-arm budget.",
+                   frontier_sources)
+    claims.add("FrontierSamplesPerDesign", frontier_rows[0]["n"],
+               str(frontier_rows[0]["n"]), "samples/arm/design",
+               "Common sampling budget for each stored API prompt arm.", frontier_sources)
+
+    claims.add("VerilogProblemCount", verilogeval["sft"]["problems"],
+               str(verilogeval["sft"]["problems"]), "problems",
+               "Count distinct VerilogEval problems in every stored policy file.",
+               verilogeval_sources)
+    claims.add("VerilogSamplesPerProblem", verilogeval["sft"]["samples_per_problem"],
+               str(verilogeval["sft"]["samples_per_problem"]), "samples/problem",
+               "Common VerilogEval sample count per problem and policy.", verilogeval_sources)
+    for policy, label in (("base", "Base"), ("sft", "Sft"), ("grpo", "Grpo")):
+        claims.add(f"Verilog{label}Passone", verilogeval[policy]["pass_at_one"],
+                   fmt(verilogeval[policy]["pass_at_one"]), "percent",
+                   "Unbiased VerilogEval pass-at-one estimator from stored per-sample verdicts.",
+                   verilogeval_sources)
+        claims.add(f"Verilog{label}CompileFail", verilogeval[policy]["compile_fail_pct"],
+                   fmt(verilogeval[policy]["compile_fail_pct"]), "percent",
+                   "Compile-failure fraction in stored VerilogEval samples.",
+                   verilogeval_sources)
+    verilog_delta = verilogeval["grpo"]["pass_at_one"] - verilogeval["sft"]["pass_at_one"]
+    claims.add("VerilogRlDelta", verilog_delta, fmt(verilog_delta), "percentage points",
+               "GRPO pass-at-one minus SFT pass-at-one on the same VerilogEval problems.",
+               verilogeval_sources)
+
+    claims.add("HlsDesignCount", len(hls["designs"]), str(len(hls["designs"])),
+               "designs", "Count designs with both post-implementation expert-HLS and selected-GRPO throughput.",
+               hls_sources)
+    claims.add("HlsExpertGeomean", hls["selected_grpo_over_expert_geomean"],
+               fmt(hls["selected_grpo_over_expert_geomean"], 2), "ratio",
+               "Geometric mean of selected fastest GRPO candidate throughput divided by pragma-optimized HLS throughput.",
+               hls_sources)
+    claims.add("HlsNaiveGeomean", hls["selected_grpo_over_naive_geomean"],
+               fmt(hls["selected_grpo_over_naive_geomean"], 1), "ratio",
+               "Geometric mean of selected fastest GRPO candidate throughput divided by no-pragma HLS throughput.",
+               hls_sources)
+    claims.add("HlsNaiveMinimum", hls["selected_grpo_over_naive_minimum"],
+               fmt(hls["selected_grpo_over_naive_minimum"], 1), "ratio",
+               "Minimum selected-GRPO/no-pragma-HLS throughput ratio.", hls_sources)
+    claims.add("HlsNaiveMaximum", hls["selected_grpo_over_naive_maximum"],
+               fmt(hls["selected_grpo_over_naive_maximum"], 1), "ratio",
+               "Maximum selected-GRPO/no-pragma-HLS throughput ratio.", hls_sources)
+
+    late = reflow["summary"]["s300"]
+    final = reflow["summary"]["s400"]
+    attribution = reflow["summary"]["_attribution"]
+    for name, row in (("Late", late), ("Final", final)):
+        claims.add(f"Reflow{name}RawNonblocking", row["nb_raw"],
+                   fmt(row["nb_raw"]), "line-initial assignments",
+                   "Multiplicity-weighted deployed line-initial nonblocking-assignment feature on stored trajectory candidates.",
+                   reflow_sources)
+        claims.add(f"Reflow{name}CanonicalNonblocking", row["nb_canon"],
+                   fmt(row["nb_canon"]), "canonical assignments",
+                   "Multiplicity-weighted nonblocking-assignment feature after layout canonicalization.",
+                   reflow_sources)
+        claims.add(f"Reflow{name}Tokens", row["tokens"], fmt(row["tokens"]),
+                   "tokens", "Multiplicity-weighted layout-blind token count on stored trajectory candidates.",
+                   reflow_sources)
+    claims.add("ReflowRemoved", attribution["pct_removed"],
+               fmt(attribution["pct_removed"]), "percent",
+               "Share of the late raw proxy jump removed by the diagnostic layout canonicalization; canonical scores are clamp-saturated and this is not a repaired reward.",
+               reflow_sources)
+    claims.add("ReflowTokenPairCount", len(reflow["token_identical_pairs"]),
+               str(len(reflow["token_identical_pairs"])), "pairs",
+               "Token-identical cross-checkpoint candidate pairs found by the committed diagnostic.",
+               reflow_sources)
+
+    claims.add("EvalOracleStreams", protocol["oracle_streams"],
+               str(protocol["oracle_streams"]), "stimulus streams",
+               "Count disjoint held-out oracle stimulus seeds in the evaluation source.",
+               protocol_sources)
+    claims.add("EvalVectorsPerStream", protocol["vectors_per_stream"],
+               str(protocol["vectors_per_stream"]), "vectors/stream",
+               "Default held-out vector count per oracle stimulus stream in the evaluation source.",
+               protocol_sources)
+    claims.add("TargetPeriod", protocol["target_period_ns"],
+               fmt(protocol["target_period_ns"]), "ns",
+               "Requested clock period in the committed physical-evaluation driver.",
+               protocol_sources)
+    claims.add("TargetPart", protocol["target_part"], protocol["target_part"],
+               "FPGA part", "Target FPGA part in the committed post-route Tcl flow.",
+               protocol_sources)
+
+    result["base"] = base
+    result["mechanism"] = mechanism
+    result["qwen_replication"] = qwen_result
+    result["frontier_context"] = frontier_aggregate
+    result["verilogeval"] = verilogeval
+    result["hls_context"] = hls
+    result["reflow_diagnostic"] = reflow
+    result["protocol"] = protocol
+
+
 def tex_claims(claims: Claims) -> str:
     lines = [
         "% AUTO-GENERATED by analyze_main_results.py. DO NOT EDIT.",
@@ -593,6 +1207,62 @@ def table_family(rows: list[dict], claims: Claims, primary_sources: list[str]) -
         )
     lines.extend([r"\bottomrule", r"\end{tabular}", r"\end{table}", ""])
     return "\n".join(lines)
+
+
+def table_replication() -> str:
+    return r"""% AUTO-GENERATED by analyze_main_results.py. DO NOT EDIT.
+\begin{table}[t]
+\centering
+\caption{Second-backbone replication on the earlier three-family split. Values
+are penalized equal-sample post-route frequency; failures score zero.}
+\label{tab:qwen-replication}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Regime & Designs & SFT & GRPO & Improved \\
+\midrule
+Interpolation & \claim{QwenInterpDesignCount} &
+\claim{QwenInterpSftPenalized} & \claim{QwenInterpGrpoPenalized} &
+\claim{QwenInterpImproved}/\claim{QwenInterpDesignCount} \\
+Extrapolation & \claim{QwenExtrapDesignCount} &
+\claim{QwenExtrapSftPenalized} & \claim{QwenExtrapGrpoPenalized} &
+\claim{QwenExtrapImproved}/\claim{QwenExtrapDesignCount} \\
+Overall & \claim{QwenDesignCount} & \claim{QwenOverallSftPenalized} &
+\claim{QwenOverallGrpoPenalized} &
+\claim{QwenOverallImproved}/\claim{QwenDesignCount} \\
+\bottomrule
+\end{tabular}
+\end{table}
+"""
+
+
+def table_context() -> str:
+    return r"""% AUTO-GENERATED by analyze_main_results.py. DO NOT EDIT.
+\begin{table}[t]
+\centering
+\caption{Same-task per-draw context on the frozen design set. The stored API
+arms use fewer samples and test one prompt configuration, so they are diagnostic
+baselines rather than a frontier-model ranking.}
+\label{tab:context-verified}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Policy or arm & Samples/design & Penalized & Conditional & Correct [\%] \\
+\midrule
+API, same prompt & \claim{FrontierSamplesPerDesign} &
+\claim{FrontierPlainPenalized} & \claim{FrontierPlainConditional} &
+\claim{FrontierPlainCorrectness} \\
+API, timing prompt & \claim{FrontierSamplesPerDesign} &
+\claim{FrontierFastPenalized} & \claim{FrontierFastConditional} &
+\claim{FrontierFastCorrectness} \\
+SFT & \claim{SamplesPerDesign} & \claim{OverallSftPenalized} &
+\claim{OverallSftConditional} & \claim{OverallSftCorrectness} \\
+GRPO & \claim{SamplesPerDesign} & \claim{OverallGrpoPenalized} &
+\claim{OverallGrpoConditional} & \claim{OverallGrpoCorrectness} \\
+\bottomrule
+\end{tabular}
+\end{table}
+"""
 
 
 def table_bestofn() -> str:
@@ -769,6 +1439,14 @@ def write_figures(rows: list[dict], trajectory: list[dict]):
 
     FIGURES.mkdir(parents=True, exist_ok=True)
     colors = {"sft": "#7fb3d5", "grpo": "#1f4e79"}
+
+    def save_pair(fig, stem: str):
+        for ext in ("pdf", "png"):
+            kwargs = {"dpi": 220, "bbox_inches": "tight"}
+            if ext == "pdf":
+                kwargs["metadata"] = {"CreationDate": None, "ModDate": None}
+            fig.savefig(FIGURES / f"{stem}.{ext}", **kwargs)
+
     fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.45))
     for ax, regime, title in zip(axes, ("interp", "extrap"), ("Interpolation", "Extrapolation")):
         selected = [r for r in rows if r["regime"] == regime]
@@ -786,8 +1464,43 @@ def write_figures(rows: list[dict], trajectory: list[dict]):
         ax.set_ylabel("Penalized equal-sample $F_{max}$ (MHz)")
     axes[0].legend(frameon=False, ncol=2)
     fig.tight_layout()
-    for ext in ("pdf", "png"):
-        fig.savefig(FIGURES / f"fig_main_verified.{ext}", dpi=220, bbox_inches="tight")
+    save_pair(fig, "fig_main_verified")
+    plt.close(fig)
+
+    ordered = sorted(rows, key=lambda row: (
+        ("fir", "firr", "poly", "iir", "med").index(row["family"]),
+        row["design"],
+    ))
+    fig, ax = plt.subplots(figsize=(7.0, 2.75))
+    for index, row in enumerate(ordered):
+        for policy, offset, marker in (("sft", -0.17, "o"), ("grpo", 0.17, "D")):
+            for candidate in row[policy]["candidates"]:
+                ax.scatter(
+                    index + offset,
+                    candidate.fmax,
+                    s=6.0 + 5.0 * candidate.count,
+                    marker=marker,
+                    facecolor=colors[policy],
+                    edgecolor="black",
+                    linewidth=0.3,
+                    alpha=0.82,
+                    zorder=3,
+                )
+    ax.set_xticks(range(len(ordered)))
+    ax.set_xticklabels([row["design"] for row in ordered], rotation=90, fontsize=5.5)
+    ax.set_ylabel("Real post-route $F_{max}$ (MHz)")
+    handles = [
+        plt.Line2D([], [], marker=marker, color="none", markerfacecolor=colors[policy],
+                   markeredgecolor="black", markersize=5, label=policy.upper())
+        for policy, marker in (("sft", "o"), ("grpo", "D"))
+    ]
+    ax.legend(handles=handles, frameon=False, ncol=2, loc="upper left")
+    ax.set_title(
+        "Distinct correct implementations; marker area is proportional to original sample count",
+        fontsize=7.5,
+    )
+    fig.tight_layout()
+    save_pair(fig, "fig_mechanism_verified")
     plt.close(fig)
 
     fig, ax = plt.subplots(figsize=(3.5, 2.35))
@@ -799,8 +1512,7 @@ def write_figures(rows: list[dict], trajectory: list[dict]):
     ax.set_ylabel("Frequency (MHz)")
     ax.legend(frameon=False, fontsize=7)
     fig.tight_layout()
-    for ext in ("pdf", "png"):
-        fig.savefig(FIGURES / f"fig_trajectory_verified.{ext}", dpi=220, bbox_inches="tight")
+    save_pair(fig, "fig_trajectory_verified")
     plt.close(fig)
 
 
@@ -810,8 +1522,31 @@ def render_outputs() -> tuple[dict[pathlib.Path, str], list[dict], list[dict], d
     bestof = bestof_summary(rows)
     trajectory, trajectory_sources = load_trajectory()
     primary_sources = source_spans(PRIMARY_DIRS)
+    base, base_sources = load_primary_base()
+    mechanism = mechanism_summary(rows)
+    qwen_rows, qwen_sources = load_policy_dataset(
+        QWEN_DIR, ("sft", "grpo"), expected_designs=22, expected_n=48,
+        expected_families=3, expected_regimes={"interp": 14, "extrap": 8},
+    )
+    frontier_rows, frontier_sources = load_policy_dataset(
+        FRONTIER_DIR, ("apiplain", "apifast"), expected_designs=30, expected_n=8,
+        expected_families=5, expected_regimes={"interp": 19, "extrap": 11},
+        summary_filename="frontier_summary.json",
+    )
+    if {row["design"] for row in frontier_rows} != {row["design"] for row in rows}:
+        raise RuntimeError("stored API baseline does not match the frozen primary design set")
+    verilogeval, verilogeval_sources = load_verilogeval()
+    hls, hls_sources = load_hls_context()
+    reflow, reflow_sources = load_reflow_diagnostic()
+    protocol, protocol_sources = load_protocol_config()
     claims, result = build_claims(
         rows, bestof, trajectory, primary_sources, trajectory_sources
+    )
+    add_secondary_claims(
+        claims, result, primary_sources, base, base_sources, mechanism,
+        qwen_rows, qwen_sources, frontier_rows, frontier_sources,
+        verilogeval, verilogeval_sources, hls, hls_sources,
+        reflow, reflow_sources, protocol, protocol_sources,
     )
     family_tex = table_family(rows, claims, primary_sources)
     board_tex, board_summary = table_board(claims)
@@ -852,6 +1587,8 @@ def render_outputs() -> tuple[dict[pathlib.Path, str], list[dict], list[dict], d
         GENERATED / "main_results.json": json.dumps(result, indent=2) + "\n",
         GENERATED / "table_main.tex": table_main(),
         GENERATED / "table_family.tex": family_tex,
+        GENERATED / "table_replication.tex": table_replication(),
+        GENERATED / "table_context.tex": table_context(),
         GENERATED / "table_bestofn.tex": table_bestofn(),
         GENERATED / "table_trajectory.tex": table_trajectory(),
         GENERATED / "table_board.tex": board_tex,
@@ -887,6 +1624,7 @@ def main() -> int:
     if not args.no_figures:
         write_figures(rows, trajectory)
         print("wrote paper/figures/fig_main_verified.{pdf,png}")
+        print("wrote paper/figures/fig_mechanism_verified.{pdf,png}")
         print("wrote paper/figures/fig_trajectory_verified.{pdf,png}")
 
     for regime in ("interp", "extrap", "overall"):

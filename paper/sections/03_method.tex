@@ -5,10 +5,11 @@
 
 For each design specification $d$, a deterministic reference model maps an
 input stream to its expected output stream.  A generated module is compiled and
-simulated on held-out stimuli.  Because valid implementations may have different
-pipeline depths, the oracle searches the admissible latency window and requires
-exact equality after alignment.  Partial similarity earns no credit.  This gate
-is the sole authority for functional correctness.
+simulated on held-out stimuli.  Valid implementations may have different
+pipeline depths, so the oracle searches an admissible latency window and
+requires exact equality after alignment.  Partial similarity earns no credit.
+The same oracle is used for supervised-data filtering, the policy reward gate,
+and held-out evaluation, with disjoint evaluation stimuli.
 
 Let $C_d(m)$ denote the oracle verdict for module $m$, and let
 $\widehat{F}(m)$ denote the learned frequency proxy.  The training reward is
@@ -21,19 +22,33 @@ R_d(m)=
 \end{cases}
 \end{equation}
 
-The gate prevents the optimizer from purchasing predicted frequency by changing
-the required computation.  Group-relative advantages update the policy, with a
-KL penalty to the frozen supervised policy.  A supervised warm start is
-necessary because sparse correctness from the untuned generator does not
-provide a practical physical-optimization signal.
+The gate prevents the optimizer from purchasing predicted frequency by
+changing the required computation.  It does not guarantee that the proxy ranks
+two correct implementations properly; that question is deferred to real EDA.
+
+\subsection{Supervised warm start and policy optimization}
+
+The base model is first adapted with completion-masked LoRA on oracle-verified
+accelerator RTL.  This warm start is necessary because the raw model's sparse
+correctness provides too little physical signal for online policy optimization.
+The optimized policy begins from the supervised adapter, samples groups across
+all train-split designs, normalizes rewards within each group, and applies a KL
+penalty to a frozen copy of the supervised policy.  All frozen held-out designs
+are excluded from supervised examples, proxy rows, and policy prompts.
+
+The primary run uses an RTL-specialized backbone.  The replication repeats the
+same stages with Qwen-Coder; it is not merely inference from a different base
+model using the first model's adapter.  Both evaluations preserve the original
+sample counts after deduplicating identical correct candidates.
 
 \subsection{Training proxy and reporting boundary}
 
-The proxy predicts post-route frequency from RTL features and is clipped during
-training for numerical stability.  It is neither a correctness oracle nor an
-evaluation metric.  After sampling, every distinct oracle-correct candidate is
-implemented by the same Vivado flow.  Candidate multiplicity in the original
-sample set is retained, so deduplication cannot change policy probabilities.
+The deployed proxy predicts post-route frequency from textual and structural
+RTL features and is clipped during training for numerical stability.  It is
+neither a correctness oracle nor an evaluation metric.  After sampling, every
+distinct oracle-correct candidate is implemented by the same Vivado flow.
+Candidate multiplicity in the original sample set is retained, so deduplication
+cannot change the empirical policy probabilities.
 
 For policy $p$ and design $d$, the primary endpoint is
 
@@ -45,26 +60,27 @@ c_m F_{\mathrm{Vivado}}(m)}{n_d},
 where $c_m$ is the original multiplicity and $n_d$ is the full sampling budget.
 Incorrect samples are absent from $\mathcal{M}_{p,d}$ and therefore contribute
 zero; an implementation failure is explicitly assigned zero.  The headline
-statistic is the mean of $\overline{F}_{p,d}$ over designs.  We report
-conditional-on-correct frequency and correctness separately as diagnostics.
+statistic is the unweighted mean of $\overline{F}_{p,d}$ over designs, making the
+design rather than the candidate the unit of aggregation.  Conditional-on-
+correct frequency and correctness are reported separately as diagnostics.
 
 \subsection{Perfect-selector upper bound}
 
-For the supervised policy we reconstruct the empirical distribution containing
-both measured correct candidates and a zero-mass point for every incorrect
+For the supervised policy we reconstruct an empirical distribution containing
+the measured correct candidates plus a zero-mass outcome for every incorrect
 sample.  The expected maximum of $N$ independent draws is computed exactly from
-that empirical cumulative distribution.  This selector is intentionally
-unrealizable: it assumes the post-route frequency of every candidate.  It
-therefore upper-bounds practical reranking at the same sampling budget and is a
-conservative reference for one optimized draw.
+that distribution.  This selector is intentionally unrealizable: it assumes
+the post-route frequency of every candidate.  It therefore upper-bounds any
+practical reranker at the same supervised sampling budget.
 
 \subsection{Fail-closed result generation}
 
-The canonical analysis requires exactly \claim{DesignCount} distinct designs,
-the frozen regime counts, both policies, and a common sample budget of
-\claim{SamplesPerDesign}.  Every manifest candidate must have a corresponding
-PPA row.  The script emits named TeX claims, tables, plots, a JSON result object,
-and a ledger containing the computation and artifact line ranges for every
-claim.  The verification program recomputes the outputs, validates every source
+The canonical analysis requires exactly \claim{DesignCount} distinct primary
+designs, the frozen regime counts, both policies, and a common sample budget of
+\claim{SamplesPerDesign}.  Every manifest candidate must have a PPA row.
+Secondary evidence has its own explicit shape checks and never silently expands
+the primary set.  The script emits named TeX claims, tables, plots, a JSON
+result object, and a ledger containing the computation and artifact line ranges
+for every claim.  The verifier recomputes the outputs, validates every source
 pointer, resolves every claim used by the manuscript, and rejects raw numeric
 literals in authored prose.

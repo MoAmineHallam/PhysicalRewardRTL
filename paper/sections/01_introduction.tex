@@ -1,53 +1,63 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Code-generation benchmarks usually ask whether a generated RTL module compiles
-and matches a reference behavior.  Hardware implementation adds another axis:
-two cycle-compatible modules can be functionally indistinguishable yet have
-very different critical paths.  A policy rewarded only for correctness has no
-reason to prefer the implementation that meets a demanding clock.
+Executable RTL benchmarks ask whether generated code compiles and matches a
+reference behavior.  Physical design adds a separate capability: two
+cycle-compatible implementations can compute the same function yet have very
+different critical paths.  A generator trained only for correctness has no
+reason to prefer the form that closes timing at a useful clock, while selecting
+many candidates after generation shifts the cost to inference and EDA.
 
-Optimizing physical quality with a language model creates a second problem.
+Training against physical quality is difficult for the opposite reason.
 Post-route implementation is too expensive to place inside every policy update,
-so a learned proxy is attractive; once that proxy becomes the objective,
-however, the policy searches precisely where its errors matter most.  Reporting
-the proxy would then conflate reward with evidence.  Our design therefore draws
-a hard boundary: a proxy guides training, while every paper result is recomputed
-from real post-route artifacts.  A functional failure, a missing implementation,
-or a failed implementation receives zero frequency in the primary endpoint.
+so a learned proxy is attractive.  Once optimized, however, that proxy is least
+trustworthy exactly where the policy concentrates probability.  Reporting the
+training reward as achieved frequency would confuse the objective with the
+evidence.  We therefore impose two boundaries: functional equivalence gates the
+reward, and real post-route implementation gates every physical claim in the
+paper.  Incorrect samples, missing candidates, and implementation failures all
+receive zero frequency in the primary endpoint.
 
-We study whether correctness-gated policy optimization changes the probability
-of emitting fast RTL, rather than merely finding an occasional fast candidate.
-The evaluation split was frozen before training and contains
-\claim{DesignCount} parameterized designs across \claim{FamilyCount} families.
-Each policy contributes the same \claim{SamplesPerDesign} original samples per
-design.  Under interpolation, the primary endpoint moves from
-\claim{InterpSftPenalized} to \claim{InterpGrpoPenalized}~MHz; under
-extrapolation it moves from \claim{ExtrapSftPenalized} to
-\claim{ExtrapGrpoPenalized}~MHz.  The corresponding paired gains have bootstrap
-intervals [\claim{InterpCiLow}, \claim{InterpCiHigh}] and
-[\claim{ExtrapCiLow}, \claim{ExtrapCiHigh}]~MHz.  Improvement occurs on
-\claim{OverallImproved} of \claim{DesignCount} designs rather than being driven
-by one outlier.
+The resulting pipeline first turns an RTL-specialized base model with
+\claim{BaseCorrectness}\% held-out correctness into a supervised generator with
+\claim{OverallSftCorrectness}\% correctness.  Correctness-gated group-relative
+policy optimization then changes which correct implementations are likely.  On
+the frozen \claim{DesignCount}-design evaluation, penalized equal-sample
+frequency rises from \claim{OverallSftPenalized} to
+\claim{OverallGrpoPenalized}~MHz.  The gain appears under both interpolation and
+extrapolation, and on \claim{OverallImproved} individual designs rather than a
+few selected examples.
 
-This paper makes the following contributions:
+The effect is not confined to one backbone.  Repeating the complete supervised
+and policy-optimization pipeline with Qwen-Coder~\cite{hui2024qwen25coder}
+raises the same endpoint from \claim{QwenOverallSftPenalized} to
+\claim{QwenOverallGrpoPenalized}~MHz on the earlier
+\claim{QwenDesignCount}-design, \claim{QwenFamilyCount}-family split, with
+\claim{QwenOverallImproved} designs improving.  This replication uses real
+post-route measurements and the same failure penalty, although its narrower
+design scope prevents treating it as a second copy of the primary experiment.
+
+This paper makes four contributions:
 
 \begin{itemize}
-    \item a correctness-gated training objective that makes functional
-    equivalence a prerequisite for physical reward;
-    \item a frozen interpolation/extrapolation protocol whose primary metric is
-    equal-sample post-route frequency, with failures scored as zero;
-    \item a machine-generated claim ledger connecting every reported number to
-    artifact line ranges, so prose and tables cannot drift from analysis; and
-    \item a bounded reward-overoptimization case study that compares proxy and
-    measured trajectories without turning an observed surrogate failure into a
-    general claim about learned rewards.
+    \item a correctness-gated policy objective that combines an executable
+    input/output-equivalence oracle with a learned physical reward while
+    preserving a frozen supervised-policy KL anchor;
+    \item a frozen interpolation/extrapolation evaluation whose primary metric
+    is per-design equal-sample post-route frequency, retaining candidate
+    multiplicities and scoring every failure as zero;
+    \item real-EDA evidence across two model backbones, including paired-design
+    uncertainty, an idealized perfect-selector comparison, and contextual HLS,
+    API, and general-RTL controls; and
+    \item a candidate-distribution explanation plus a bounded reward-
+    overoptimization audit, both generated from the same artifact-backed claim
+    ledger as the headline tables.
 \end{itemize}
 
-The main result is deliberately narrower than ``reinforcement learning invents
-better circuits.''  Candidate-level inspection indicates that supervision
-already exposes several implementation styles and policy optimization
-reallocates probability toward the faster ones.  Families without a fast,
-reliably generated style show correspondingly smaller gains.  The method
-therefore improves sampling efficiency inside a template-bounded design space;
-it does not establish open-ended circuit invention.
+The supported mechanism is probability reallocation, not open-ended circuit
+invention.  Supervision already exposes several implementations; optimization
+places more probability on fast ones.  That distinction explains both the
+large FIR, reverse-FIR, and polynomial gains and the weaker recursive and
+median cases.  It also motivates the paper's central methodological rule: the
+proxy may train the policy, but only functional simulation and real EDA may
+evaluate it.
