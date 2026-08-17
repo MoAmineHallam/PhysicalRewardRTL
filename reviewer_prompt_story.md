@@ -30,8 +30,10 @@ It worked, on real EDA and real silicon:
   91.1% → 94.6%; extrapolation **+265%**.
 - **Silicon: 2.3–3.4× measured** on PYNQ-Z2, canary-attributed, run-to-run
   spread 0.0.
-- One GRPO sample ≈ a perfect-selector best-of-48 SFT samples, so the gain is a
-  policy shift, not better sampling.
+- One GRPO sample ≈ **22** perfectly-selected SFT samples in interpolation
+  (~8 in extrapolation). GRPO bo1 at 198.7 MHz **loses** to a perfect
+  best-of-48 at 210.3. A stronger "best-of-48" version of this claim was
+  computed on the old 22-design set and was WITHDRAWN 2026-08-11.
 - VerilogEval control: GRPO adds zero regression beyond SFT.
 - HLS baseline: our NL-spec GRPO reaches 0.96× expert-HLS throughput (geomean),
   20–150× naive HLS.
@@ -62,11 +64,20 @@ assignments that BEGIN A LINE. Written packed as `a0 <= 0; a1 <= 0; a2 <= 0;`
 that scores 1. Split one per line it scores 3. **Identical hardware.** The
 policy found the newline.
 
-**Attribution: 101.2% of the phase-2 reward jump disappears when every candidate
-is re-scored on a layout-canonical form.** And without any modelling at all,
-there are candidate pairs from different checkpoints with **byte-identical token
-streams and materially different rewards** — same tokens, same hardware,
-different score. That is the whole claim with no statistics in it.
+**101.2% of the phase-2 reward jump disappears when every candidate is re-scored
+on a layout-canonical form** — the canonical jump is −3.4 MHz against a measured
+−1.0. **The caveat travels with it:** canonical scores sit at 494–497 for every
+checkpoint from s100 on, i.e. AT the 500 MHz clamp, because the predictor was
+trained on raw-layout rows and saturates on canonical text. This is therefore an
+ATTRIBUTION DIAGNOSTIC, not a demonstration that canonicalisation yields a
+working reward.
+
+The load-bearing number is instead that `nb_assign` on CANONICAL text is flat
+across checkpoints (46.3, 46.0, 46.8, …) while on raw text it climbs ~20. We
+also searched for token-identical cross-checkpoint candidate pairs, which would
+have been assumption-free evidence. **That search returned zero pairs** — a
+committed null result. The policy did not re-emit the same token stream with
+different formatting; it changed formatting as it changed content.
 
 We also have a second, cruder exploit already documented: the surrogate was
 driven to predict **∞** for poly4 (exp overflow) and 441–566 "MHz" for firr8,
@@ -93,9 +104,12 @@ matters* while being essential to *why it is possible*.
 We have four independent instances, and this is the part we think is unusually
 clean:
 
-1. **The reward** passed every offline metric we had — leave-one-design-out
-   Spearman 0.959, top-1 correct on 15 of 17 designs — while being exploited.
-   Detecting it required Vivado.
+1. **The reward** passed the offline metrics we had while being exploited: the
+   deployed surrogate_v3 scores leave-one-design-out Spearman **0.923 ± 0.008**
+   over 229 rows and 5 families. (The stronger 0.959 / top-1 15-of-17 figures
+   circulating in our notes are **v1** diagnostics on a different, smaller
+   dataset and must not be attached to the exploited reward.) Detecting the
+   exploit required Vivado.
 2. **The canonicaliser built to fix it** passed idempotence, metamorphic
    equality across all six mutations, and feature equality — while emitting
    **invalid Verilog**, twice (`'0` → `' 0`; `$signed` → `$ signed`). A

@@ -3014,3 +3014,46 @@ inside a sampled group drives the gradient. A within-design mean of 0.555 with
 several strongly negative designs is a real risk to the prospective run, and the
 preregistration already names the outcome it would produce: `stable_null`, or
 `reward_resolution_failure` if fewer than 20% of eligible groups resolve.
+
+### Correction (2026-08-14): four overstated claims in the narrative prompt
+
+An external audit of `reviewer_prompt_story.md` (reviewer pulled at `ccb8beb`)
+found four claims that the repository does not support. All four were verified
+against the committed record and all four were wrong. They are corrected in the
+file and recorded here so the false versions do not resurface again.
+
+1. **"One GRPO sample ≈ perfect-selector best-of-48."** WITHDRAWN 2026-08-11
+   (RESULTS.md §2b) — computed on the old 22-design set. On the frozen 30-design
+   5-family set the honest figure is ≈ **22** perfectly-selected samples in
+   interpolation, ≈8 in extrapolation, and GRPO bo1 at 198.7 MHz **loses** to a
+   perfect best-of-48 at 210.3. The withdrawn version was reintroduced from
+   memory.
+2. **"Token-identical cross-checkpoint pairs with different rewards."** These do
+   not exist. `MASTER_REFERENCE.md:2672` records **zero pairs** as an explicit
+   NULL RESULT. `analyze_reflow_attribution.py` was built to find them; it found
+   none. The prompt described the script's intent as though it were its output,
+   and called it "the whole claim with no statistics in it." The load-bearing
+   evidence is instead that canonical `nb_assign` is flat across checkpoints
+   (46.3, 46.0, 46.8) while raw `nb_assign` climbs ~20.
+3. **"LODO Spearman 0.959, top-1 15/17" attributed to the exploited reward.**
+   Those are **v1** diagnostics on a smaller dataset. The deployed
+   `surrogate_v3` is **0.923 ± 0.008** (229 rows, 5 families). Old diagnostics
+   were attached to a different artifact.
+4. **101.2% presented as attribution with its caveat dropped.** The committed
+   text says "CAVEAT THAT MUST TRAVEL WITH THE 101.2% -- do not drop it":
+   canonical scores sit at 494–497 from s100 on, i.e. AT the 500 MHz clamp,
+   because the predictor was trained on raw-layout rows and saturates on
+   canonical text. It is an ATTRIBUTION DIAGNOSTIC, not a demonstration that
+   canonicalisation yields a working reward.
+
+Also accepted from the audit: do not call the protocol a "gold standard"
+(sampled equivalence, one FPGA, template-generated specs); and the silicon
+2.3–3.4× figures are selected demonstrations with asymmetric candidate selection
+and two harness-censored results, not policy-level causal estimates.
+
+**This is the paper's own thesis, committed by its authors, inside the document
+arguing for it.** Every one of the four passed an internal check — they were
+consistent with recollection, with the narrative, and with each other. Only
+reading the committed record caught them. The corrective is procedural, not
+attitudinal: no number enters a manuscript, prompt, or figure without a
+`verify_claims.py`-style pointer to the artifact that produced it.
