@@ -3057,3 +3057,66 @@ consistent with recollection, with the narrative, and with each other. Only
 reading the committed record caught them. The corrective is procedural, not
 attitudinal: no number enters a manuscript, prompt, or figure without a
 `verify_claims.py`-style pointer to the artifact that produced it.
+
+### Capability-paper recovery and fail-closed manuscript pipeline (2026-08-17)
+
+User-authorized recovery returned the paper to the frozen `grpo_v8` capability
+result and removed the later reward-repair study from the submission's critical
+path. No new policy experiment was run. `analyze_main_results.py` is now the
+only generator for headline result tables. It requires exactly the three frozen
+five-family chunks, exactly 30 designs (19 interpolation, 11 extrapolation),
+both SFT and GRPO, `n=48` for every policy/design, and a PPA row for every
+manifest candidate. The primary endpoint is per-design equal-sample real
+post-route Fmax: every incorrect sample and implementation failure scores zero.
+
+Recomputed from the committed manifests and `ppa.jsonl` files:
+
+```
+regime          SFT      GRPO     paired gain    95% paired-design bootstrap
+interpolation   79.9     198.7      +118.8        [88.5, 146.6] MHz   18/19 improve
+extrapolation   61.2     138.6       +77.5        [43.5, 109.2] MHz    9/11 improve
+overall         73.0     176.7      +103.7        [80.1, 126.1] MHz   27/30 improve
+```
+
+Bootstrap intervals are explicitly post-hoc descriptive uncertainty, with
+fixed seed 20260817 and 100,000 paired-design resamples. They are not a
+preregistered confirmatory test. Exact empirical perfect-selector curves from
+the same script put one GRPO draw at approximately 21 SFT draws under
+interpolation and 8 under extrapolation. GRPO does not beat perfect SFT
+best-of-48 in either regime.
+
+The script generates `paper/generated/{claims.tex,claims.json,
+claim_provenance.md,main_results.json,table_*.tex}` plus the two headline
+figures. Every claim record contains its method and artifact `file:line` ranges.
+`verify_claims.py` now recomputes the generated outputs, validates every source
+pointer, recursively resolves manuscript inputs, rejects unknown claim IDs, and
+fails if any raw numeric literal appears in authored manuscript prose. The
+current recovery draft passes: 100 ledger claims, 89 used claim IDs, zero raw
+numeric literals. The draft now leads with the penalized endpoint and limits the
+reward-hacking story to the measured `traj_v8` diagnostic: step0 to s100 is a
+real gain (76.4 to 230.5 MHz penalized), whereas s300 to s400 raises proxy reward
+216.6 to 497.9 MHz while conditional measured Fmax is flat (242.2 to 241.2 MHz),
+correctness falls 95.3% to 88.0%, and penalized Fmax falls 230.9 to 212.3 MHz.
+
+#### Symmetric board rerun: prepared, not measured
+
+`gen_symmetric_holdout_bitstream.py` retains the historical five post-hoc design
+picks but removes the policy-side asymmetry. For both policies it selects the
+upper count-weighted median real-Vivado Fmax among functional manifest
+candidates with a compiled PPA row; exact-Fmax ties use larger count then lexical
+module name. `rtl/holdout_silicon_symmetric/selection_manifest.json` records the
+post-hoc-design warning, source hashes, PPA file:line pointers, copied-RTL and
+golden hashes, and frozen board sweep plan. All ten DUTs plus the echo canary
+matched their goldens at 1.0000 under the Icarus preflight.
+
+The laptop build did **not** complete. Standard Vivado run-manager execution
+hung at child launch; after termination, a bounded in-process diagnostic reached
+RTL elaboration but failed because generated `system_la0_0.v` could not resolve
+`la_axi_fast` (`Synth 8-439`, cascading `Synth 8-6156` / `Common 17-69`). The
+PYNQ board at the recorded address also timed out on ping and SSH. Therefore no
+final bitstream/HWH pair and no
+`rtl/holdout_silicon_symmetric/catalog_fmax.json` exist. The recovery draft
+reports no symmetric silicon number and does not reuse the historical
+asymmetric table. `sweep_catalog.py` was extended so a future successful live
+sweep records raw runs, bitstream/HWH/selection hashes, environment provenance,
+per-entry Vivado references, and explicit no-pass rows.

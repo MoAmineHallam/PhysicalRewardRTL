@@ -1,95 +1,33 @@
 \section{Related Work}
 \label{sec:related}
 
-\subsection{Language models for RTL generation}
+\paragraph{RTL generation and functional feedback}
+VerilogEval and RTLLM established executable evaluation for natural-language to
+RTL generation~\cite{liu2023verilogeval,lu2024rtllm}.  VeriGen, RTLCoder, CodeV,
+and CraftRTL improve supervised generation or data construction
+~\cite{thakur2024verigen,liu2024rtlcoder,zhao2024codev,liu2024craftrtl}.
+VeriSeek and VeriReason introduce verification-derived feedback
+~\cite{wang2024veriseek,wang2025verireason}.  These systems motivate our
+correctness oracle, but correctness alone cannot rank equivalent implementations
+by achievable clock.
 
-Benchmarks such as VerilogEval~\cite{liu2023verilogeval} and
-RTLLM~\cite{lu2024rtllm} established pass@$k$ on small module specifications as
-the standard measure, and a series of models has advanced it through
-domain-specific pre-training and instruction tuning:
-VeriGen~\cite{thakur2024verigen}, RTLCoder~\cite{liu2024rtlcoder},
-CodeV~\cite{zhao2024codev} and CraftRTL~\cite{liu2024craftrtl}. Reinforcement
-learning has recently been applied to the same objective, with
-VeriSeek~\cite{wang2024veriseek} using a verification-derived signal and
-VeriReason~\cite{wang2025verireason} combining testbench feedback with
-structured reasoning.
+\paragraph{Physical optimization}
+RTLRewriter optimizes existing RTL through rewriting~\cite{yao2024rtlrewriter},
+while recent evolutionary and agentic systems search for improved power,
+performance, or area at inference time
+~\cite{min2025revolution,poet2026,evolve2026,coevo2026,drrtl2026}.  PPA-RTL and
+RTL-OPT contribute physically evaluated tasks and benchmarks
+~\cite{ppartl2025,lu2026rtlopt}.  Our question is complementary: can training
+change a generator's one-draw distribution so repeated inference-time search is
+less necessary?  The perfect-selector comparison gives an optimistic upper
+bound to any supervised-policy reranker because it assumes the true post-route
+frequency of every draw is already known.
 
-What unites this strand is its objective. In every case the reward or metric is
-functional---does the module compile, and does it match a reference?---and
-physical quality is unmeasured or reported as an afterthought. We adopt the same
-starting point, beginning from RTLCoder~\cite{liu2024rtlcoder} and verifying
-transfer to Qwen2.5-Coder~\cite{hui2024qwen25coder}, but replace the objective
-with a physical one that is gated by, rather than equal to, correctness.
-
-\subsection{Optimising RTL for physical objectives}
-
-A second and very recent strand does target power, performance and area (PPA).
-REvolution~\cite{min2025revolution} couples an LLM with an evolutionary search
-maintaining separate populations for repair and for PPA improvement;
-POET~\cite{poet2026} applies power-oriented evolutionary tuning;
-EvolVE~\cite{evolve2026} searches over generation and optimisation;
-COEVO~\cite{coevo2026} co-evolves correctness and PPA; Dr.~RTL~\cite{drrtl2026}
-performs agentic, tool-grounded self-improvement; and
-RTLRewriter~\cite{yao2024rtlrewriter} approaches the problem from the rewriting
-side. RTL-OPT~\cite{lu2026rtlopt} contributes a benchmark of $36$ designs paired
-with human-optimised references to measure optimisation quality specifically.
-
-Two differences separate these from our work, both consequential. The first is
-\emph{where the optimisation lives}. Evolutionary and agentic methods search at
-inference time, generating many candidates and selecting or mutating among them,
-so the cost of a good design is paid on every invocation. We move the
-optimisation into the policy, so a single sample is already the fast design;
-Section~\ref{sec:bestofn} quantifies this against an idealised best-of-$N$
-selector and shows one sample from our policy exceeding a \emph{perfectly
-selected} best of forty-eight supervised samples. The second is that these
-methods optimise PPA without a hard correctness precondition on the reward,
-which is exactly the configuration in which a physical objective becomes
-exploitable; Section~\ref{sec:hacking} documents what that exploitation looks
-like in practice.
-
-\subsection{High-level synthesis, PPA prediction, and evaluation practice}
-
-Commercial high-level synthesis (HLS) is the established route from an
-algorithmic description to RTL, so we compare against Vitis HLS both without
-directives and with hand-placed pipeline, unroll and partition pragmas
-(Section~\ref{sec:hls}). Learned models predicting post-synthesis quality from
-source-level features have been studied for HLS
-designs~\cite{ustun2020accurate,wu2022highlevel}; our frequency surrogate is a
-deliberately simple member of that family, and its limitations are central to
-Section~\ref{sec:hacking}.
-
-Methodologically, contamination between training and evaluation is a particular
-hazard here because parameterised design families make it easy to train on a
-$16$-tap filter and evaluate on an $18$-tap one that shares an implementation
-template. Reported results in this area are also predominantly synthesis or
-timing-analysis estimates rather than device measurements. We depart from
-prevailing practice in three ways: a held-out split frozen before training and
-enforced programmatically, an explicit separation of interpolation from
-extrapolation, and validation on a physical device with a co-resident canary
-bounding attribution. We do not claim to be first to place LLM-generated RTL on
-an FPGA; we claim the attribution methodology of Section~\ref{sec:silicon} is
-more explicit than what is currently reported.
-
-\begin{table*}[t]
-\centering
-\caption{Position of this work relative to the most closely related
-contributions. ``Physical reward'' indicates whether a physical quantity drives
-\emph{training} rather than inference-time selection; ``correctness gate''
-indicates whether functional correctness is a precondition for that reward.}
-\label{tab:delta}
-\footnotesize
-\begin{tabular}{lccccc}
-\toprule
- & Physical & Correctness & Interp./extrap. & Measured & Optimisation \\
- & reward & gate & held-out split & silicon & located at \\
-\midrule
-RTLCoder~\cite{liu2024rtlcoder}, CodeV~\cite{zhao2024codev} & --- & --- & --- & --- & training (correctness) \\
-VeriReason~\cite{wang2025verireason}, VeriSeek~\cite{wang2024veriseek} & --- & --- & --- & --- & training (correctness) \\
-REvolution~\cite{min2025revolution}, EvolVE~\cite{evolve2026} & \checkmark & --- & --- & --- & inference (search) \\
-POET~\cite{poet2026}, COEVO~\cite{coevo2026} & \checkmark & --- & --- & --- & inference (search) \\
-Dr.~RTL~\cite{drrtl2026} & \checkmark & --- & --- & --- & inference (agentic) \\
-RTL-OPT~\cite{lu2026rtlopt} (benchmark) & n/a & n/a & --- & --- & n/a \\
-\textbf{This work} & \checkmark & \checkmark & \checkmark & \checkmark & \textbf{training (policy)} \\
-\bottomrule
-\end{tabular}
-\end{table*}
+\paragraph{Learned rewards}
+Proxy optimization can exploit errors that are small on the data distribution
+but large where an optimizer concentrates probability~\cite{gao2023scaling}.
+Pre-synthesis predictors are nevertheless useful because implementation is
+expensive~\cite{fang2024presynthesis,ustun2020accurate,wu2022highlevel}.  We use
+such a predictor only inside training.  The paper's reward-hacking analysis is a
+case study of one deployed proxy and one trajectory; it is not evidence that all
+learned physical rewards fail.

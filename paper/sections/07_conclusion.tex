@@ -1,70 +1,20 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-This paper has argued that functional correctness is an insufficient objective
-for machine-generated register-transfer level design, and has proposed a
-correctness-gated reinforcement learning method that optimises a physical
-quantity---maximum operating frequency---while treating correctness as a
-precondition rather than a competing term. The reward of a generated module is
-its surrogate-predicted frequency if an input/output-equivalence oracle certifies
-it correct, and exactly zero otherwise, so that frequency can never be purchased
-with correctness.
+Correctness-gated policy optimization raises the equal-sample, post-route
+frequency of generated accelerator RTL from \claim{OverallSftPenalized} to
+\claim{OverallGrpoPenalized}~MHz across \claim{DesignCount} frozen held-out
+designs.  The gain appears on \claim{OverallImproved} designs, remains positive
+under interpolation and extrapolation bootstrap analyses, and is measured after
+assigning zero frequency to every incorrect or failed sample.  One optimized
+draw also matches many draws from the supervised policy even when the latter is
+given an unattainable perfect selector.
 
-Evaluated on thirty held-out DSP accelerator designs spanning five families and
-three circuit classes, under a split frozen before training and enforced
-programmatically, the method raises mean WNS-derived \fmax{} from $86.5$ to
-$211.3$~MHz under parameter interpolation and from $78.5$ to $174.2$~MHz under
-extrapolation, exceeding a perfect-selector best-of-eight baseline in both
-regimes. A single sample from the optimised policy is worth roughly twenty-two
-perfectly selected supervised samples in the interpolation regime and eight
-under extrapolation---a selector that cannot be built, since it would require
-synthesising every candidate, so the true saving against any realisable
-reranker is larger. Five held-out
-design pairs measured on a Zynq-7020 sustain $2.25$--$3.40\times$ the clock of
-the supervised baseline, with zero spread across repeated sweeps and with a
-co-resident canary bounding attribution. The recipe transfers unmodified to a
-second base model, and both models converge to the same measured frequency
-ceiling, indicating that the optimisation locates a property of the design space
-rather than of the generator.
-
-Per-candidate analysis identifies the mechanism precisely: the method reallocates
-probability mass onto the fastest implementation style the policy already
-possesses, rather than discovering faster hardware. This claim is falsifiable and
-predicts its own limits, correctly identifying the recursive-filter family (where
-the supervised distribution already emitted fast forms frequently, leaving little
-to reallocate) and the comparator-network family (where the style that made the
-family correct is combinational by construction, so no fast alternative exists to
-amplify) as the cases in which the method yields little or no frequency gain.
-
-We further document a caught case of reward hacking: the learned surrogate,
-whose leave-one-design-out correlation falls only from $0.974$ to $0.923$ once
-structurally dissimilar circuit classes are added, reported $188.6$~MHz for
-median filters measuring $36$--$40$~MHz in silicon-bound synthesis, while
-saturating identically on a polynomial family that genuinely reached
-$191$--$193$~MHz. Saturation therefore indicates that the reward has stopped
-carrying information and warrants verification, but---contrary to the more
-attractive hypothesis, which we tested and could not confirm---it does not by
-itself predict correctness degradation. This is the concrete justification for
-the invariant maintained throughout this work, that no surrogate-derived number
-is ever reported as a result.
-
-Finally, the learned capability compresses into a $1.5$~billion-parameter student
-for four of five families in twenty-five minutes of training, using a
-distillation corpus every row of which is oracle-verified; the fifth family fails
-entirely, marking a capability--size frontier that mirrors the capability-class
-ceiling observed for the CORDIC family at $7$~billion parameters on two
-independent base models.
-
-Three directions follow directly from the limits identified here. The first is to
-broaden implementation-style diversity in the supervised corpus, since the
-analysis indicates that the ceiling is set there rather than by the optimiser;
-the pipelined median template that would repair the comparator-network result is
-the immediate instance. The second is to replace text-derived surrogate features
-with structural features extracted from an early synthesis pass, which is the
-principled remedy for the cross-circuit-class degradation reported in
-Section~\ref{sec:hacking} and a prerequisite for extending the method beyond
-datapath-dominated designs. The third is to apply the correctness-gated
-formulation to design families with different admissibility contracts---latency
-insensitive or transaction-equivalent rather than cycle-comparable---which would
-test whether the structure of the method, rather than its present instantiation,
-is what generalises.
+The evidence supports a distribution-shift claim: optimization makes already
+learned fast implementation styles more likely.  It does not support claims of
+open-ended circuit invention, preserved correctness in every regime, or
+universal reward-model collapse.  The bounded trajectory case shows why this
+distinction matters: proxy reward can continue rising after real conditional
+frequency has flattened, so real EDA artifacts must remain the reporting
+authority.  A symmetric silicon sweep and independent policy-training seeds are
+the clearest next validations.

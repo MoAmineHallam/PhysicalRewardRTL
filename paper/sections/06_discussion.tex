@@ -1,85 +1,53 @@
 \section{Discussion}
 \label{sec:discussion}
 
-\subsection{What the results support}
+\subsection{What the evidence supports}
 
-Our results support a narrower claim than Table~\ref{tab:money} alone suggests,
-and we state the narrow version because it is the one that survives scrutiny.
-The method \emph{reliably converts a policy that occasionally writes fast
-hardware into one that almost always does}, for families in which a fast
-implementation style exists within the supervised distribution. It does not
-synthesise styles absent from that distribution, and its ceiling is therefore
-bounded by the corpus rather than the optimiser. Every result here is consistent
-with that statement, including the two families where the gain is small or
-absent and the convergence of two base models to identical absolute
-frequencies.
+Correctness-gated policy optimization changes the one-draw distribution of RTL
+quality.  The central evidence is the equal-sample endpoint: it preserves the
+original probability mass, assigns failures zero, uses real post-route
+measurements, and improves on \claim{OverallImproved} of
+\claim{DesignCount} frozen designs.  The best-of-$N$ analysis further shows that
+the change is practically meaningful for sampling efficiency.
 
-The practical corollary for anyone reproducing the method is that effort spent
-broadening the \emph{style} diversity of the supervised corpus will likely raise
-the ceiling more than effort spent on the reinforcement learning stage, which
-principally governs how reliably that ceiling is reached. The comparator-network
-family is the clean demonstration: no amount of policy optimisation extracts
-frequency from a family whose only reliably-emitted style is combinational.
+The mechanism is best described as probability reallocation.  Supervised
+training teaches multiple implementation styles; policy optimization raises the
+mass on styles that the gate accepts and the proxy ranks highly.  This account
+predicts smaller gains when the supervised support lacks a fast reliable style,
+matching the weaker families in Table~\ref{tab:family-verified}.  We therefore do
+not claim autonomous invention of unseen microarchitectures.
 
 \subsection{Threats to validity}
 
-\textbf{Domain scope.} We evaluate single-input streaming DSP accelerators with a
-uniform interface. This restriction is deliberate and is what makes a per-design
-oracle and a uniform hardware harness feasible; the rigour of the evaluation and
-the narrowness of the domain are not independent choices. We make no claim about
-general RTL generation, and specifically none about control-dominated logic,
-memory interfaces or multi-clock designs.
+\paragraph{Template-bounded generalization}
+The frozen split establishes transfer to unseen parameters and extrapolation
+beyond training ranges within the generator's design system.  It does not test
+free-form industrial specifications, control-dominated systems, memories, or
+multiple clock domains.
 
-\textbf{Template-generated specifications.} Specifications and supervised
-completions are generated programmatically, which guarantees oracle-verifiable
-correctness and eliminates contamination from scraped code, but makes the
-natural-language inputs more uniform than a practitioner's prose. The
-extrapolation regime tests style transfer beyond memorisation; it does not test
-robustness to linguistic variation.
+\paragraph{One device and one main training run}
+Physical measurements target one FPGA family, and the primary policy result
+comes from one training trajectory.  The paired design breadth makes the
+evaluation stronger than a few selected examples, but independent training
+seeds and another device would materially strengthen a journal version.
 
-\textbf{Single device family.} All synthesis and measurement target one FPGA
-(Zynq-7020). Frequency ceilings are device-specific; relative comparisons are
-internally consistent because every policy is measured identically, but we do not
-claim device independence.
+\paragraph{Timing-derived frequency}
+The primary endpoint is derived from worst negative slack after implementation,
+not from repeated timing closure at every candidate clock.  Both policies use
+the same tool flow.  The symmetric board sweep is the planned external check,
+and no historical asymmetric board value is used as evidence in this draft.
 
-\textbf{Sample sizes.} Held-out evaluation uses $n=48$ per design with two oracle
-seeds at length $1024$. The frontier comparison of Section~\ref{sec:frontier}
-uses $n=8$ per arm, where one sample shifts a percentage by $12.5$ points, and
-should be read as indicative. The surrogate's LODO correlation varies by
-approximately $0.07$ between seeds on identical data, so small differences in
-that statistic carry little information.
+\paragraph{Post-hoc uncertainty}
+The bootstrap intervals quantify sensitivity to the held-out design sample.
+They were added after the artifacts existed and should not be interpreted as a
+preregistered confirmatory test.
 
-\textbf{Area and latency.} Optimised designs are generally smaller in look-up
-tables while consuming more flip-flops, since pipelining trades registers for
-frequency; deeper pipelines also increase latency, immaterial for streaming
-throughput but not for latency-sensitive use. Multiplier-bearing designs map to
-DSP blocks, so LUT counts alone understate resource use, and we report DSP counts
-alongside them.
+\subsection{Why the trajectory is a subplot}
 
-\subsection{On surrogate-guided physical optimisation}
-
-The reward hacking of Section~\ref{sec:hacking} is the most transferable finding
-here, because any attempt to optimise a physical objective through a learned
-proxy will meet it. Three observations generalise. First, hacking was
-\emph{detectable without synthesis}: saturation at the clamp boundary separated
-degraded designs from healthy ones, and can be monitored during training at no
-cost. Second, the clamp was necessary but not sufficient---it converted an
-unbounded exploit (numerical overflow, effectively infinite reward) into a
-bounded one, preserving training stability without preventing the policy from
-optimising against a fiction where the surrogate was blind. Third, saturation is
-a signal to verify, not a verdict: the polynomial family saturated the surrogate
-and was genuinely fast, the median family saturated it and was not, and only
-measurement distinguishes them. This is why the invariant that surrogate values
-never appear in results is load-bearing rather than stylistic---a method
-reporting its own reward would have claimed a $4.5\times$ improvement on a
-family that improved by nothing.
-
-\subsection{Cost}
-
-The pipeline for one base model comprises approximately three hours of supervised
-fine-tuning, seven hours of policy optimisation on a single V100-class device,
-and a Vivado pass over the evaluation candidates; distillation into the $1.5$B
-student adds twenty-five minutes. The dominant cost is not the reinforcement
-learning but the EDA runs required to produce trustworthy labels---itself an
-argument for the surrogate, and for re-anchoring it periodically against real
-measurements rather than enlarging it.
+The trajectory reveals an important operational failure, but it is downstream
+of the main capability result.  Early training yields a large real improvement;
+later training inflates proxy reward while measured conditional frequency is
+flat and correctness falls.  This motivates periodic real-EDA audits and early
+stopping criteria.  It does not justify replacing the paper with a general
+reward-model-repair claim, especially because later architecture experiments
+showed that the observed collapse was not universal.

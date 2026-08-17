@@ -1,93 +1,66 @@
-# paper/
+# Paper reproducibility contract
 
-LaTeX source, **IEEE conference format (`IEEEtran`, two-column)** for ICCAD.
-Prose register follows the journal reference the author supplied; only the
-format is IEEE.
+The manuscript is an IEEE-format recovery draft centered on the frozen
+thirty-design `grpo_v8` evaluation. Empirical values are not copied from
+`RESULTS.md` and must not be typed into the TeX source.
 
-## Page budget
+## Regenerate and verify
 
-ICCAD allows **8 pages + references**. Check after compiling:
+From the repository root:
 
-```bash
-pdfinfo main.pdf | grep Pages
+```powershell
+python analyze_main_results.py
+python verify_claims.py
 ```
 
-If over, cut in this order (highest ratio of space saved to value lost):
+`analyze_main_results.py` is the sole generator for headline result tables. It
+requires exactly the three frozen evaluation chunks and fails if they do not
+contain exactly thirty designs, the expected interpolation/extrapolation split,
+both policies, a common sample count, and a PPA row for every manifest
+candidate. The primary endpoint is equal-sample post-route Fmax: incorrect and
+implementation-failed samples score zero.
 
-1. `05_results.tex` §\ref{sec:frontier} frontier comparison → compress to one
-   paragraph + keep the coverage/reliability/cost sentence.
-2. `06_discussion.tex` §Cost → fold into the conclusion as one sentence.
-3. `05_results.tex` §\ref{sec:regression} VerilogEval → keep the table, cut two
-   paragraphs of prose.
-4. `03_method.tex` §\ref{sec:sft} supervised warm start → the style-multiplicity
-   argument can lose a paragraph.
-5. `fig_area` and `fig_bestofn` can become a single two-panel figure.
-6. Last resort: move the three negative results (§\ref{sec:negative}) to a
-   single dense paragraph. Do **not** delete them — they are a contribution.
+Generated files live under `paper/generated/`:
 
-Never cut: the money table, the silicon table, the mechanism figure, or the
-reward-hacking case study.
+- `claims.json`: values, computations, and artifact `file:line` ranges;
+- `claims.tex`: TeX definitions for named `\claim{...}` references;
+- `claim_provenance.md`: human-readable claim ledger;
+- `main_results.json`: design-level and aggregate audit object;
+- `table_*.tex`: generated headline tables.
 
-## Layout
+The canonical script also regenerates `fig_main_verified` and
+`fig_trajectory_verified` in PDF and PNG form.
 
-```
-main.tex            preamble, front matter, \input of sections
-sections/*.tex      01 intro, 02 related, 03 method, 04 setup,
-                    05 results, 06 discussion, 07 conclusion
-refs.bib            bibliography (entries marked VERIFIED were checked
-                    against a live arXiv/publisher record)
-make_figures.py     regenerates every figure from measurement artifacts
-figures/*.pdf       generated — do not edit by hand
-```
+`verify_claims.py` independently reproduces the earlier correctness,
+best-of-N, trajectory, and oracle audits. Its manuscript check additionally:
 
-## Regenerating the figures
+- reruns the canonical generator in stale-check mode;
+- validates every claim source path and line range;
+- recursively resolves the TeX inputs;
+- fails on an unknown `\claim{...}` identifier; and
+- fails on any raw numeric literal in authored title, abstract, or prose.
 
-Every figure is derived from the committed `ppa.jsonl` / manifest / summary
-files, so a figure can never disagree with the results tables. Run wherever
-those artifacts exist (the laptop is convenient — it produced them):
+That last rule is intentional. If a result is not in the generated ledger, it
+does not enter the manuscript.
 
-```bash
-python paper/make_figures.py            # all figures -> paper/figures/
-python paper/make_figures.py --only money,mechanism
-python paper/make_figures.py --png      # also PNG previews for quick viewing
-```
+## Silicon rule
 
-Requires `numpy` and `matplotlib` only. Each figure prints the values it
-plotted so they can be cross-checked against `RESULTS.md` by eye.
+The historical `rtl/holdout_silicon/catalog_fmax.json` comparison is asymmetric
+(SFT median versus GRPO maximum) and is excluded from the recovery draft. Only
+`rtl/holdout_silicon_symmetric/catalog_fmax.json`, produced after symmetric
+median-versus-median selection and a new live sweep, may support a silicon
+number. A generated bitstream is not a measurement.
 
-Then commit:
-```bash
-git add paper/figures && git commit -m "paper figures" && git push
-```
+## Compile
 
-| figure | source data |
-|---|---|
-| `fig_pipeline` | schematic (no data) |
-| `fig_money` | `rtl/holdout_eval_v8_{firfirr,poly,iirmed}/` |
-| `fig_mechanism` | same (per-candidate) |
-| `fig_bestofn` | `rtl/holdout_eval/bestofn.json` |
-| `fig_saturation` | `holdout_summary.json` × 3 chunks |
-| `fig_silicon` | `rtl/holdout_silicon/catalog_fmax.json` |
-| `fig_distill` | probe literals (see docstring) |
-| `fig_area` | `rtl/holdout_eval/bestofn.json` (area block) |
-
-`fig_money`, `fig_mechanism` and `fig_saturation` need the grpo_v8 `ppa.jsonl`
-files; they skip with a message until those are pulled.
-
-## Compiling
-
-```bash
-cd paper && pdflatex main && bibtex main && pdflatex main && pdflatex main
+```powershell
+Set-Location paper
+pdflatex main
+bibtex main
+pdflatex main
+pdflatex main
 ```
 
-Or import the repo into Overleaf (New Project → Import from GitHub) and set
-`paper/main.tex` as the main document.
-
-## Rules
-
-- **Never type a measured number into a `.tex` file by hand.** Take it from
-  `RESULTS.md`, which is derived from the artifacts.
-- **No surrogate-derived frequency is ever reported.** Every \fmax in the paper
-  is WNS-derived Vivado or a measured hardware sweep (invariant #2).
-- Numbers currently in the tables correspond to `RESULTS.md` as of the
-  5-family Vivado pass; re-check §2a, §7, §7b, §2c, §5, §8b after any re-run.
+The local Windows environment used for this recovery did not expose a TeX
+compiler on `PATH`; use a TeX installation or import the repository into
+Overleaf and select `paper/main.tex` as the main document.

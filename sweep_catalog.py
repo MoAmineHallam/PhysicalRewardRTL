@@ -21,6 +21,9 @@ Run on the board (as root):
 import os
 import json
 import argparse
+import hashlib
+import platform
+from datetime import datetime, timezone
 
 import numpy as np
 
@@ -28,6 +31,14 @@ import clock_sweep_fmax as CS
 from capture_waveforms import _init_pynq, capture_one
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+
+
+def file_sha256(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            h.update(block)
+    return h.hexdigest()
 
 
 def main():
@@ -60,8 +71,13 @@ def main():
     goldens = {n: CS.load_golden(n, n_g) for n in names}
     masks = {n: 0xFFFF for n in names}
 
-    # optional Vivado v0 Fmax for the ratio column
-    vivado = {}
+    # Prefer per-entry real-Vivado provenance embedded by newer generators.
+    # Fall back to the historical catalog's optional v0 PPA file.
+    vivado = {
+        name: float(meta["real_vivado_fmax_mhz"])
+        for name, meta in sels_map.items()
+        if meta.get("real_vivado_fmax_mhz") is not None
+    }
     if os.path.exists(args.ppa):
         for line in open(args.ppa):
             try:
@@ -70,9 +86,20 @@ def main():
                 continue
             m = p.get("module", "")
             if m.endswith("__v0") and p.get("compiled"):
-                vivado[m[:-4]] = p.get("fmax_mhz", 0.0)
+                vivado.setdefault(m[:-4], p.get("fmax_mhz", 0.0))
+
+    bit_path = os.path.abspath(args.bit)
+    hwh_path = os.path.splitext(bit_path)[0] + ".hwh"
+    sels_path = os.path.abspath(args.sels)
+    if not os.path.isfile(bit_path):
+        raise SystemExit(f"bitstream not found: {bit_path}")
+    if not os.path.isfile(hwh_path):
+        raise SystemExit(
+            f"matching HWH not found: {hwh_path} (PYNQ requires the same stem)"
+        )
 
     _init_pynq()
+    import pynq
     from pynq import Overlay, MMIO
     print(f"loading {args.bit}")
     Overlay(args.bit)
@@ -86,11 +113,13 @@ def main():
 
     # per design: list of measured Fmax over runs
     fmaxes = {n: [] for n in names}
+    raw_runs = []
     for r in range(args.runs):
         print(f"\n=== run {r + 1}/{args.runs} ({args.lo}-{args.hi} MHz) ===")
         res = CS.sweep_once(mmio, freqs, goldens, masks, sels,
                             args.depth, args.n_score, args.max_shift,
                             args.threshold)
+        raw_runs.append(res)
         for n in names:
             if res[n]["fmax"] is not None:
                 fmaxes[n].append(res[n]["fmax"])
@@ -107,6 +136,9 @@ def main():
     for n in names:
         if not fmaxes[n]:
             print(f"{n:10s}  (never passed/failed in range)")
+            table[n] = {"silicon_fmax": None, "spread": None,
+                        "vivado_v0": vivado.get(n), "ratio": None,
+                        "gate": "NO_PASS_IN_RANGE"}
             continue
         med = float(np.median(fmaxes[n]))
         spread = float(max(fmaxes[n]) - min(fmaxes[n]))
@@ -124,8 +156,45 @@ def main():
         rs = f"{ratio:6.2f}" if ratio else f"{'-':>6s}"
         print(f"{n:10s} {med:9.1f} {spread:7.1f} {vs} {rs}  {gate}")
 
-    json.dump({"args": vars(args), "table": table, "canary_median": can_med},
-              open(args.out, "w"), indent=1)
+    selection_manifest = os.path.join(os.path.dirname(sels_path),
+                                      "selection_manifest.json")
+    provenance = {
+        "measured_utc": datetime.now(timezone.utc).isoformat(),
+        "host": platform.node(),
+        "platform": platform.platform(),
+        "python": platform.python_version(),
+        "pynq": getattr(pynq, "__version__", None),
+        "bitstream": bit_path,
+        "bitstream_sha256": file_sha256(bit_path),
+        "hwh": hwh_path,
+        "hwh_sha256": file_sha256(hwh_path),
+        "sels": sels_path,
+        "sels_sha256": file_sha256(sels_path),
+        "selection_manifest": (selection_manifest
+                               if os.path.isfile(selection_manifest) else None),
+        "selection_manifest_sha256": (
+            file_sha256(selection_manifest)
+            if os.path.isfile(selection_manifest) else None
+        ),
+    }
+    output = {
+        "schema_version": 2,
+        "measurement_kind": "live_pynq_clock_sweep",
+        "args": vars(args),
+        "provenance": provenance,
+        "sels": sels_map,
+        "raw_runs": raw_runs,
+        "table": table,
+        "canary_median": can_med,
+        "summary": {
+            "entries": len(names),
+            "entries_with_fmax": sum(bool(fmaxes[name]) for name in names),
+            "all_entries_have_fmax": all(bool(fmaxes[name]) for name in names),
+        },
+    }
+    out_parent = os.path.dirname(os.path.abspath(args.out))
+    os.makedirs(out_parent, exist_ok=True)
+    json.dump(output, open(args.out, "w"), indent=1)
     print(f"\nfull data -> {args.out}")
     print("Per-design gate OK = silicon Fmax is the DUT's, not the harness.")
 

@@ -1,0 +1,502 @@
+{
+  "schema_version": 1,
+  "purpose": "symmetric policy-side PYNQ-Z2 held-out comparison",
+  "git_head_at_generation": "a1ca180c52df9aa63b95faf931dee6d241f8beb4",
+  "design_selection": {
+    "rule": "historical_fixed_five_from_legacy_silicon_table",
+    "is_preregistered_or_random": false,
+    "warning": "The five designs were historically selected post hoc with high GRPO correctness. Only policy-side candidate selection is symmetric.",
+    "designs": [
+      {
+        "design": "fir26_8b",
+        "regime": "interp",
+        "entry_stub": "fir26"
+      },
+      {
+        "design": "firr26",
+        "regime": "interp",
+        "entry_stub": "firr26"
+      },
+      {
+        "design": "poly7_8b",
+        "regime": "interp",
+        "entry_stub": "poly7"
+      },
+      {
+        "design": "firr36",
+        "regime": "extrap",
+        "entry_stub": "firr36"
+      },
+      {
+        "design": "poly8_v6_8b",
+        "regime": "extrap",
+        "entry_stub": "poly8v6"
+      }
+    ]
+  },
+  "candidate_selection": {
+    "rule": "upper_count_weighted_median_real_vivado_fmax",
+    "identical_for_policies": [
+      "sft",
+      "grpo"
+    ],
+    "detail": "For each policy/design, retain manifest candidates with count > 0 and one compiled ppa.jsonl row. Aggregate sample count at each exact fmax_mhz, choose the first Fmax whose cumulative weight exceeds floor(total_compiled_weight/2), then break exact-Fmax module ties by larger count and lexicographically smaller module name.",
+    "conditioning": "functional candidates represented in fmax_manifest.json that also have a successful real-Vivado ppa.jsonl row"
+  },
+  "board_measurement_plan": {
+    "script": "sweep_catalog.py",
+    "lo_mhz": 20.0,
+    "hi_mhz": 260.0,
+    "step_mhz": 5.0,
+    "runs": 3,
+    "depth": 2048,
+    "n_score": 1024,
+    "max_shift": 8,
+    "similarity_threshold": 0.99,
+    "canary_margin_mhz": 20.0,
+    "primary_pairing": "within-design SFT median versus GRPO median",
+    "result_rule": "Do not create or report catalog_fmax.json unless the live board sweep completes and sweep_catalog.py writes the artifact."
+  },
+  "source_artifacts": [
+    {
+      "eval_dir": "rtl/holdout_eval_v8_firfirr",
+      "fmax_manifest": "rtl/holdout_eval_v8_firfirr/fmax_manifest.json",
+      "fmax_manifest_sha256": "05f2629efdaf2af3bf124636d5976ee808933b056fec429f0ca6ba3be857be65",
+      "ppa_jsonl": "rtl/holdout_eval_v8_firfirr/ppa.jsonl",
+      "ppa_jsonl_sha256": "d34c920725a3783f08c9eb5399f585b6fcd3c42284a08002776a060e6ef19160"
+    },
+    {
+      "eval_dir": "rtl/holdout_eval_v8_iirmed",
+      "fmax_manifest": "rtl/holdout_eval_v8_iirmed/fmax_manifest.json",
+      "fmax_manifest_sha256": "ebf2609a5e37cbfb1d726341135ad2703dde4a1ea72dd9aad1744f23856dd161",
+      "ppa_jsonl": "rtl/holdout_eval_v8_iirmed/ppa.jsonl",
+      "ppa_jsonl_sha256": "8aadcaaedef5231028fdeec1ddb019fb18eddce4d5c6b964353429147ba0e822"
+    },
+    {
+      "eval_dir": "rtl/holdout_eval_v8_poly",
+      "fmax_manifest": "rtl/holdout_eval_v8_poly/fmax_manifest.json",
+      "fmax_manifest_sha256": "688dcc775af522ee64335b09137bf9f53560717ba097e445671801fccb07edf3",
+      "ppa_jsonl": "rtl/holdout_eval_v8_poly/ppa.jsonl",
+      "ppa_jsonl_sha256": "21774584aec7893dcef278941cc1b7ac8f66ccf732c94f7d12a53f3fe221ef21"
+    }
+  ],
+  "selections": [
+    {
+      "sel": 0,
+      "entry": "sft_fir26",
+      "role": "dut",
+      "policy": "sft",
+      "design": "fir26_8b",
+      "regime": "interp",
+      "selection_rule": "upper_count_weighted_median_real_vivado_fmax",
+      "module": "sft__fir26_8b__g3",
+      "sample_count": 10,
+      "real_vivado_fmax_mhz": 32.0666987333654,
+      "population": {
+        "manifest_unique_candidates": 8,
+        "manifest_sample_weight": 38,
+        "vivado_compiled_unique_candidates": 8,
+        "vivado_compiled_sample_weight": 38,
+        "excluded_noncompiled_unique_candidates": 0,
+        "excluded_noncompiled_sample_weight": 0,
+        "upper_median_rank_zero_based": 19,
+        "median_fmax_mhz": 32.0666987333654,
+        "exact_fmax_tie_modules": [
+          "sft__fir26_8b__g1",
+          "sft__fir26_8b__g3",
+          "sft__fir26_8b__g4",
+          "sft__fir26_8b__g6"
+        ]
+      },
+      "provenance": {
+        "eval_dir": "rtl/holdout_eval_v8_firfirr",
+        "manifest": "rtl/holdout_eval_v8_firfirr/fmax_manifest.json",
+        "manifest_json_pointer": "/sft__fir26_8b__g3",
+        "ppa": "rtl/holdout_eval_v8_firfirr/ppa.jsonl",
+        "ppa_line": 99,
+        "rtl": "rtl/holdout_eval_v8_firfirr/sft__fir26_8b__g3.sv",
+        "rtl_sha256": "ffba74efca9fd12f9c294e289b2cbed9036455b2548c529dc2d68824bb22cdb3",
+        "copied_rtl": "rtl/holdout_silicon_symmetric/duts/sft__fir26_8b__g3.v",
+        "copied_rtl_sha256": "ffba74efca9fd12f9c294e289b2cbed9036455b2548c529dc2d68824bb22cdb3",
+        "golden": "rtl_library/sft_fir26/golden.py",
+        "golden_sha256": "b855536d3206ba049cc04fa76d71eb9f6cf30db57d0a2c113fb44dd46610629e"
+      }
+    },
+    {
+      "sel": 1,
+      "entry": "grpo_fir26",
+      "role": "dut",
+      "policy": "grpo",
+      "design": "fir26_8b",
+      "regime": "interp",
+      "selection_rule": "upper_count_weighted_median_real_vivado_fmax",
+      "module": "grpo__fir26_8b__g0",
+      "sample_count": 44,
+      "real_vivado_fmax_mhz": 193.16206297083255,
+      "population": {
+        "manifest_unique_candidates": 3,
+        "manifest_sample_weight": 46,
+        "vivado_compiled_unique_candidates": 3,
+        "vivado_compiled_sample_weight": 46,
+        "excluded_noncompiled_unique_candidates": 0,
+        "excluded_noncompiled_sample_weight": 0,
+        "upper_median_rank_zero_based": 23,
+        "median_fmax_mhz": 193.16206297083255,
+        "exact_fmax_tie_modules": [
+          "grpo__fir26_8b__g0",
+          "grpo__fir26_8b__g2"
+        ]
+      },
+      "provenance": {
+        "eval_dir": "rtl/holdout_eval_v8_firfirr",
+        "manifest": "rtl/holdout_eval_v8_firfirr/fmax_manifest.json",
+        "manifest_json_pointer": "/grpo__fir26_8b__g0",
+        "ppa": "rtl/holdout_eval_v8_firfirr/ppa.jsonl",
+        "ppa_line": 53,
+        "rtl": "rtl/holdout_eval_v8_firfirr/grpo__fir26_8b__g0.sv",
+        "rtl_sha256": "1f555d873f136e90744d3b8674c8f36195820c6773959ff2f54795a1465dc6b0",
+        "copied_rtl": "rtl/holdout_silicon_symmetric/duts/grpo__fir26_8b__g0.v",
+        "copied_rtl_sha256": "1f555d873f136e90744d3b8674c8f36195820c6773959ff2f54795a1465dc6b0",
+        "golden": "rtl_library/grpo_fir26/golden.py",
+        "golden_sha256": "b855536d3206ba049cc04fa76d71eb9f6cf30db57d0a2c113fb44dd46610629e"
+      }
+    },
+    {
+      "sel": 2,
+      "entry": "sft_firr26",
+      "role": "dut",
+      "policy": "sft",
+      "design": "firr26",
+      "regime": "interp",
+      "selection_rule": "upper_count_weighted_median_real_vivado_fmax",
+      "module": "sft__firr26__g2",
+      "sample_count": 9,
+      "real_vivado_fmax_mhz": 31.59158400202186,
+      "population": {
+        "manifest_unique_candidates": 5,
+        "manifest_sample_weight": 45,
+        "vivado_compiled_unique_candidates": 5,
+        "vivado_compiled_sample_weight": 45,
+        "excluded_noncompiled_unique_candidates": 0,
+        "excluded_noncompiled_sample_weight": 0,
+        "upper_median_rank_zero_based": 22,
+        "median_fmax_mhz": 31.59158400202186,
+        "exact_fmax_tie_modules": [
+          "sft__firr26__g2",
+          "sft__firr26__g3"
+        ]
+      },
+      "provenance": {
+        "eval_dir": "rtl/holdout_eval_v8_firfirr",
+        "manifest": "rtl/holdout_eval_v8_firfirr/fmax_manifest.json",
+        "manifest_json_pointer": "/sft__firr26__g2",
+        "ppa": "rtl/holdout_eval_v8_firfirr/ppa.jsonl",
+        "ppa_line": 133,
+        "rtl": "rtl/holdout_eval_v8_firfirr/sft__firr26__g2.sv",
+        "rtl_sha256": "4339eb573f41db7c0eeb3a8e0db13921cca3f9919ed32951388657db2c0b2b5a",
+        "copied_rtl": "rtl/holdout_silicon_symmetric/duts/sft__firr26__g2.v",
+        "copied_rtl_sha256": "4339eb573f41db7c0eeb3a8e0db13921cca3f9919ed32951388657db2c0b2b5a",
+        "golden": "rtl_library/sft_firr26/golden.py",
+        "golden_sha256": "0f3879645d7e86bf69e4f21ee0829161d9870fd92caadb481601d20a6b8c9278"
+      }
+    },
+    {
+      "sel": 3,
+      "entry": "grpo_firr26",
+      "role": "dut",
+      "policy": "grpo",
+      "design": "firr26",
+      "regime": "interp",
+      "selection_rule": "upper_count_weighted_median_real_vivado_fmax",
+      "module": "grpo__firr26__g0",
+      "sample_count": 43,
+      "real_vivado_fmax_mhz": 227.79043280182233,
+      "population": {
+        "manifest_unique_candidates": 4,
+        "manifest_sample_weight": 48,
+        "vivado_compiled_unique_candidates": 4,
+        "vivado_compiled_sample_weight": 48,
+        "excluded_noncompiled_unique_candidates": 0,
+        "excluded_noncompiled_sample_weight": 0,
+        "upper_median_rank_zero_based": 24,
+        "median_fmax_mhz": 227.79043280182233,
+        "exact_fmax_tie_modules": [
+          "grpo__firr26__g0",
+          "grpo__firr26__g1",
+          "grpo__firr26__g2",
+          "grpo__firr26__g3"
+        ]
+      },
+      "provenance": {
+        "eval_dir": "rtl/holdout_eval_v8_firfirr",
+        "manifest": "rtl/holdout_eval_v8_firfirr/fmax_manifest.json",
+        "manifest_json_pointer": "/grpo__firr26__g0",
+        "ppa": "rtl/holdout_eval_v8_firfirr/ppa.jsonl",
+        "ppa_line": 72,
+        "rtl": "rtl/holdout_eval_v8_firfirr/grpo__firr26__g0.sv",
+        "rtl_sha256": "a11938afdd054964ba8fcd16fbdea5309163e7f3854e1b1fad3b58531c839f6e",
+        "copied_rtl": "rtl/holdout_silicon_symmetric/duts/grpo__firr26__g0.v",
+        "copied_rtl_sha256": "a11938afdd054964ba8fcd16fbdea5309163e7f3854e1b1fad3b58531c839f6e",
+        "golden": "rtl_library/grpo_firr26/golden.py",
+        "golden_sha256": "0f3879645d7e86bf69e4f21ee0829161d9870fd92caadb481601d20a6b8c9278"
+      }
+    },
+    {
+      "sel": 4,
+      "entry": "sft_poly7",
+      "role": "dut",
+      "policy": "sft",
+      "design": "poly7_8b",
+      "regime": "interp",
+      "selection_rule": "upper_count_weighted_median_real_vivado_fmax",
+      "module": "sft__poly7_8b__g0",
+      "sample_count": 24,
+      "real_vivado_fmax_mhz": 32.79226102639777,
+      "population": {
+        "manifest_unique_candidates": 6,
+        "manifest_sample_weight": 48,
+        "vivado_compiled_unique_candidates": 6,
+        "vivado_compiled_sample_weight": 48,
+        "excluded_noncompiled_unique_candidates": 0,
+        "excluded_noncompiled_sample_weight": 0,
+        "upper_median_rank_zero_based": 24,
+        "median_fmax_mhz": 32.79226102639777,
+        "exact_fmax_tie_modules": [
+          "sft__poly7_8b__g0",
+          "sft__poly7_8b__g2"
+        ]
+      },
+      "provenance": {
+        "eval_dir": "rtl/holdout_eval_v8_poly",
+        "manifest": "rtl/holdout_eval_v8_poly/fmax_manifest.json",
+        "manifest_json_pointer": "/sft__poly7_8b__g0",
+        "ppa": "rtl/holdout_eval_v8_poly/ppa.jsonl",
+        "ppa_line": 68,
+        "rtl": "rtl/holdout_eval_v8_poly/sft__poly7_8b__g0.sv",
+        "rtl_sha256": "f4a8ecca4aa844edb0833bf727d2f429756d0683ecbaa53b1719715ba4377167",
+        "copied_rtl": "rtl/holdout_silicon_symmetric/duts/sft__poly7_8b__g0.v",
+        "copied_rtl_sha256": "f4a8ecca4aa844edb0833bf727d2f429756d0683ecbaa53b1719715ba4377167",
+        "golden": "rtl_library/sft_poly7/golden.py",
+        "golden_sha256": "686c8179173926e3893064435f3a66352aded1b2adf2d07f436bb58afbb703eb"
+      }
+    },
+    {
+      "sel": 5,
+      "entry": "grpo_poly7",
+      "role": "dut",
+      "policy": "grpo",
+      "design": "poly7_8b",
+      "regime": "interp",
+      "selection_rule": "upper_count_weighted_median_real_vivado_fmax",
+      "module": "grpo__poly7_8b__g0",
+      "sample_count": 25,
+      "real_vivado_fmax_mhz": 192.12295869356387,
+      "population": {
+        "manifest_unique_candidates": 3,
+        "manifest_sample_weight": 48,
+        "vivado_compiled_unique_candidates": 3,
+        "vivado_compiled_sample_weight": 48,
+        "excluded_noncompiled_unique_candidates": 0,
+        "excluded_noncompiled_sample_weight": 0,
+        "upper_median_rank_zero_based": 24,
+        "median_fmax_mhz": 192.12295869356387,
+        "exact_fmax_tie_modules": [
+          "grpo__poly7_8b__g0",
+          "grpo__poly7_8b__g1",
+          "grpo__poly7_8b__g2"
+        ]
+      },
+      "provenance": {
+        "eval_dir": "rtl/holdout_eval_v8_poly",
+        "manifest": "rtl/holdout_eval_v8_poly/fmax_manifest.json",
+        "manifest_json_pointer": "/grpo__poly7_8b__g0",
+        "ppa": "rtl/holdout_eval_v8_poly/ppa.jsonl",
+        "ppa_line": 31,
+        "rtl": "rtl/holdout_eval_v8_poly/grpo__poly7_8b__g0.sv",
+        "rtl_sha256": "30c1abf1ab189ff849d3fbc995c7d43f3d8ea2c491cd602404660f4a3e0bd296",
+        "copied_rtl": "rtl/holdout_silicon_symmetric/duts/grpo__poly7_8b__g0.v",
+        "copied_rtl_sha256": "30c1abf1ab189ff849d3fbc995c7d43f3d8ea2c491cd602404660f4a3e0bd296",
+        "golden": "rtl_library/grpo_poly7/golden.py",
+        "golden_sha256": "686c8179173926e3893064435f3a66352aded1b2adf2d07f436bb58afbb703eb"
+      }
+    },
+    {
+      "sel": 6,
+      "entry": "sft_firr36",
+      "role": "dut",
+      "policy": "sft",
+      "design": "firr36",
+      "regime": "extrap",
+      "selection_rule": "upper_count_weighted_median_real_vivado_fmax",
+      "module": "sft__firr36__g0",
+      "sample_count": 13,
+      "real_vivado_fmax_mhz": 22.978997196562343,
+      "population": {
+        "manifest_unique_candidates": 6,
+        "manifest_sample_weight": 45,
+        "vivado_compiled_unique_candidates": 6,
+        "vivado_compiled_sample_weight": 45,
+        "excluded_noncompiled_unique_candidates": 0,
+        "excluded_noncompiled_sample_weight": 0,
+        "upper_median_rank_zero_based": 22,
+        "median_fmax_mhz": 22.978997196562343,
+        "exact_fmax_tie_modules": [
+          "sft__firr36__g0",
+          "sft__firr36__g1",
+          "sft__firr36__g4",
+          "sft__firr36__g5"
+        ]
+      },
+      "provenance": {
+        "eval_dir": "rtl/holdout_eval_v8_firfirr",
+        "manifest": "rtl/holdout_eval_v8_firfirr/fmax_manifest.json",
+        "manifest_json_pointer": "/sft__firr36__g0",
+        "ppa": "rtl/holdout_eval_v8_firfirr/ppa.jsonl",
+        "ppa_line": 136,
+        "rtl": "rtl/holdout_eval_v8_firfirr/sft__firr36__g0.sv",
+        "rtl_sha256": "add1155b832a28862bef8484a643735ac4ad2cb372f2d8d0e260cc7543b12f4c",
+        "copied_rtl": "rtl/holdout_silicon_symmetric/duts/sft__firr36__g0.v",
+        "copied_rtl_sha256": "add1155b832a28862bef8484a643735ac4ad2cb372f2d8d0e260cc7543b12f4c",
+        "golden": "rtl_library/sft_firr36/golden.py",
+        "golden_sha256": "5b144359fca25ce801e3e9190dde7f96324cd2a8127ad13576a8093197e5cb9b"
+      }
+    },
+    {
+      "sel": 7,
+      "entry": "grpo_firr36",
+      "role": "dut",
+      "policy": "grpo",
+      "design": "firr36",
+      "regime": "extrap",
+      "selection_rule": "upper_count_weighted_median_real_vivado_fmax",
+      "module": "grpo__firr36__g0",
+      "sample_count": 44,
+      "real_vivado_fmax_mhz": 193.72336303758235,
+      "population": {
+        "manifest_unique_candidates": 4,
+        "manifest_sample_weight": 47,
+        "vivado_compiled_unique_candidates": 4,
+        "vivado_compiled_sample_weight": 47,
+        "excluded_noncompiled_unique_candidates": 0,
+        "excluded_noncompiled_sample_weight": 0,
+        "upper_median_rank_zero_based": 23,
+        "median_fmax_mhz": 193.72336303758235,
+        "exact_fmax_tie_modules": [
+          "grpo__firr36__g0",
+          "grpo__firr36__g1",
+          "grpo__firr36__g2",
+          "grpo__firr36__g3"
+        ]
+      },
+      "provenance": {
+        "eval_dir": "rtl/holdout_eval_v8_firfirr",
+        "manifest": "rtl/holdout_eval_v8_firfirr/fmax_manifest.json",
+        "manifest_json_pointer": "/grpo__firr36__g0",
+        "ppa": "rtl/holdout_eval_v8_firfirr/ppa.jsonl",
+        "ppa_line": 76,
+        "rtl": "rtl/holdout_eval_v8_firfirr/grpo__firr36__g0.sv",
+        "rtl_sha256": "3d6f407a9ea5faac02398b3ac28c44340a98ead1cb3bd25bf778b2a3efc679fd",
+        "copied_rtl": "rtl/holdout_silicon_symmetric/duts/grpo__firr36__g0.v",
+        "copied_rtl_sha256": "3d6f407a9ea5faac02398b3ac28c44340a98ead1cb3bd25bf778b2a3efc679fd",
+        "golden": "rtl_library/grpo_firr36/golden.py",
+        "golden_sha256": "5b144359fca25ce801e3e9190dde7f96324cd2a8127ad13576a8093197e5cb9b"
+      }
+    },
+    {
+      "sel": 8,
+      "entry": "sft_poly8v6",
+      "role": "dut",
+      "policy": "sft",
+      "design": "poly8_v6_8b",
+      "regime": "extrap",
+      "selection_rule": "upper_count_weighted_median_real_vivado_fmax",
+      "module": "sft__poly8_v6_8b__g0",
+      "sample_count": 29,
+      "real_vivado_fmax_mhz": 26.267402153926977,
+      "population": {
+        "manifest_unique_candidates": 4,
+        "manifest_sample_weight": 48,
+        "vivado_compiled_unique_candidates": 4,
+        "vivado_compiled_sample_weight": 48,
+        "excluded_noncompiled_unique_candidates": 0,
+        "excluded_noncompiled_sample_weight": 0,
+        "upper_median_rank_zero_based": 24,
+        "median_fmax_mhz": 26.267402153926977,
+        "exact_fmax_tie_modules": [
+          "sft__poly8_v6_8b__g0"
+        ]
+      },
+      "provenance": {
+        "eval_dir": "rtl/holdout_eval_v8_poly",
+        "manifest": "rtl/holdout_eval_v8_poly/fmax_manifest.json",
+        "manifest_json_pointer": "/sft__poly8_v6_8b__g0",
+        "ppa": "rtl/holdout_eval_v8_poly/ppa.jsonl",
+        "ppa_line": 98,
+        "rtl": "rtl/holdout_eval_v8_poly/sft__poly8_v6_8b__g0.sv",
+        "rtl_sha256": "9de8ee90caf45c9ef8288c31d894e3a33dc2ae4c3a0b5fd42c7e7f805c3e4540",
+        "copied_rtl": "rtl/holdout_silicon_symmetric/duts/sft__poly8_v6_8b__g0.v",
+        "copied_rtl_sha256": "9de8ee90caf45c9ef8288c31d894e3a33dc2ae4c3a0b5fd42c7e7f805c3e4540",
+        "golden": "rtl_library/sft_poly8v6/golden.py",
+        "golden_sha256": "0447cd1b461dc8131fadf5cd464d902c5d663d60dd4e1b8bc73050c05f82cfb6"
+      }
+    },
+    {
+      "sel": 9,
+      "entry": "grpo_poly8v6",
+      "role": "dut",
+      "policy": "grpo",
+      "design": "poly8_v6_8b",
+      "regime": "extrap",
+      "selection_rule": "upper_count_weighted_median_real_vivado_fmax",
+      "module": "grpo__poly8_v6_8b__g0",
+      "sample_count": 44,
+      "real_vivado_fmax_mhz": 191.0949742021785,
+      "population": {
+        "manifest_unique_candidates": 2,
+        "manifest_sample_weight": 45,
+        "vivado_compiled_unique_candidates": 2,
+        "vivado_compiled_sample_weight": 45,
+        "excluded_noncompiled_unique_candidates": 0,
+        "excluded_noncompiled_sample_weight": 0,
+        "upper_median_rank_zero_based": 22,
+        "median_fmax_mhz": 191.0949742021785,
+        "exact_fmax_tie_modules": [
+          "grpo__poly8_v6_8b__g0",
+          "grpo__poly8_v6_8b__g1"
+        ]
+      },
+      "provenance": {
+        "eval_dir": "rtl/holdout_eval_v8_poly",
+        "manifest": "rtl/holdout_eval_v8_poly/fmax_manifest.json",
+        "manifest_json_pointer": "/grpo__poly8_v6_8b__g0",
+        "ppa": "rtl/holdout_eval_v8_poly/ppa.jsonl",
+        "ppa_line": 51,
+        "rtl": "rtl/holdout_eval_v8_poly/grpo__poly8_v6_8b__g0.sv",
+        "rtl_sha256": "9fc3ac1fe4439e1750e8f8dc1c0d0896e1d424a8d038c46881047f5209b30967",
+        "copied_rtl": "rtl/holdout_silicon_symmetric/duts/grpo__poly8_v6_8b__g0.v",
+        "copied_rtl_sha256": "9fc3ac1fe4439e1750e8f8dc1c0d0896e1d424a8d038c46881047f5209b30967",
+        "golden": "rtl_library/grpo_poly8v6/golden.py",
+        "golden_sha256": "0447cd1b461dc8131fadf5cd464d902c5d663d60dd4e1b8bc73050c05f82cfb6"
+      }
+    }
+  ],
+  "canary": {
+    "sel": 10,
+    "role": "canary",
+    "module": "echo8b",
+    "provenance": {
+      "rtl": "rtl_library/echo8b/design.v",
+      "rtl_sha256": "70a5d274ca4a01d87e044bf7ebdb9538dff4103a31e07952fb963d30d6604131",
+      "golden": "rtl_library/echo8b/golden.py",
+      "golden_sha256": "189756f9b87714b6594da8d3a6d93e17016bcc1ca432f4fa24ee8f62c9350b48"
+    }
+  },
+  "generated_outputs": {
+    "dut_top": "rtl/holdout_silicon_symmetric/dut_top_holdout.v",
+    "build_tcl": "rtl/holdout_silicon_symmetric/build_holdout_symmetric.tcl",
+    "sels": "rtl/holdout_silicon_symmetric/holdout_sels.json",
+    "bitstream_expected": "rtl/holdout_silicon_symmetric/out/system_holdout_symmetric.bit",
+    "hwh_expected": "rtl/holdout_silicon_symmetric/out/system_holdout_symmetric.hwh",
+    "board_result_reserved": "rtl/holdout_silicon_symmetric/catalog_fmax.json"
+  }
+}

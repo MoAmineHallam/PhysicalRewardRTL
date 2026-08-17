@@ -29,10 +29,16 @@ import argparse
 import subprocess
 import collections
 import statistics
+import pathlib
+import re
+import sys
+import hashlib
 
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = pathlib.Path(HERE)
+PAPER = ROOT / "paper"
 V8 = [os.path.join(HERE, "rtl", d) for d in
       ("holdout_eval_v8_firfirr", "holdout_eval_v8_poly", "holdout_eval_v8_iirmed")]
 EXTRAP_TRAJ = {"fir36_8b", "fir40_8b", "firr36", "firr40"}
@@ -177,8 +183,9 @@ def sec_c():
                     gc += i["count"]
             print(f"      {g:7s} predicted {sum(x['mean_surr_fmax'] for x in sel)/len(sel):7.1f}"
                   f"   measured {gw/gc:7.1f}")
-    print("\n  Expected: v8 predicted ~498 vs measured ~212 (saturated, and")
-    print("  measurement FELL); v9 tracks on interp but is pinned ~490 on extrap.")
+    print("\n  Expected: v8's late proxy rises to ~498 while conditional measured")
+    print("  Fmax stays ~241; penalised Fmax falls to ~212 as correctness falls.")
+    print("  v9 tracks on interpolation but remains pinned on extrapolation.")
     return ok
 
 
@@ -253,6 +260,208 @@ def sec_e(n):
     return True
 
 
+# ------------------------------------------------------------------ F
+def _source_pointer(pointer):
+    """Resolve ``repo/path:line`` or ``repo/path:start-end`` fail-closed."""
+    match = re.fullmatch(r"([^:]+):(\d+)(?:-(\d+))?", pointer)
+    if not match:
+        return False, f"malformed source pointer: {pointer}"
+    path = ROOT / match.group(1)
+    if not path.is_file():
+        return False, f"source does not exist: {pointer}"
+    start = int(match.group(2))
+    end = int(match.group(3) or start)
+    with path.open(encoding="utf-8") as f:
+        lines = sum(1 for _ in f)
+    if start < 1 or end < start or end > lines:
+        return False, f"source line outside file (has {lines} lines): {pointer}"
+    return True, ""
+
+
+def _collect_tex(path, seen=None):
+    """Return the manuscript's recursively included TeX sources."""
+    seen = set() if seen is None else seen
+    path = path.resolve()
+    if path in seen:
+        return seen
+    if not path.is_file():
+        raise FileNotFoundError(path)
+    seen.add(path)
+    text = path.read_text(encoding="utf-8")
+    for name in re.findall(r"\\input\{([^}]+)\}", text):
+        # LaTeX resolves \input relative to the compilation working directory
+        # (paper/), not necessarily relative to the including section file.
+        candidates = [PAPER / name, path.parent / name]
+        children = [p if p.suffix else p.with_suffix(".tex") for p in candidates]
+        child = next((p for p in children if p.is_file()), children[0])
+        _collect_tex(child, seen)
+    return seen
+
+
+def _strip_nonprose_commands(text):
+    """Remove references/paths whose digits are identifiers, not paper claims."""
+    # TeX comments are not rendered.  Escaped percent signs remain intact.
+    text = re.sub(r"(?<!\\)%.*", "", text)
+    # Every rendered empirical number must enter through a named claim.  Remove
+    # those calls before searching for illicit raw numeric literals.
+    text = re.sub(r"\\claim\{[A-Za-z]+\}", "", text)
+    # Digits in citation keys, labels, filenames and URLs are identifiers.
+    one_arg = (
+        "cite", "citep", "citet", "ref", "eqref", "autoref", "label",
+        "input", "includegraphics", "bibliography", "bibliographystyle",
+        "url", "path",
+    )
+    for command in one_arg:
+        text = re.sub(rf"\\{command}(?:\[[^\]]*\])?\{{[^}}]*\}}", "", text)
+    text = re.sub(r"\\href\{[^}]*\}\{[^}]*\}", "", text)
+    text = re.sub(r"\\(?:begin|end)\{[^}]*\}", "", text)
+    return text
+
+
+def sec_f_manuscript():
+    hdr("F. Manuscript provenance: no hand-copied numbers")
+    generator = ROOT / "analyze_main_results.py"
+    ledger_path = PAPER / "generated" / "claims.json"
+    if not generator.is_file() or not ledger_path.is_file():
+        print("  missing canonical generator or claim ledger")
+        return False
+
+    fresh = subprocess.run(
+        [sys.executable, str(generator), "--check", "--no-figures"],
+        cwd=ROOT, capture_output=True, text=True,
+    )
+    if fresh.returncode:
+        print("  generated artifacts are stale:")
+        print(fresh.stderr.rstrip())
+        return False
+    print("  canonical 30-design outputs are current ........ OK")
+
+    ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+    claims = ledger.get("claims", {})
+    bad_sources = []
+    for claim_id, record in claims.items():
+        if not record.get("sources"):
+            bad_sources.append(f"{claim_id}: no sources")
+        for pointer in record.get("sources", []):
+            ok, error = _source_pointer(pointer)
+            if not ok:
+                bad_sources.append(f"{claim_id}: {error}")
+    if bad_sources:
+        print("  invalid claim provenance:")
+        for error in bad_sources:
+            print(f"    {error}")
+        return False
+    print(f"  claim source pointers resolve .................. {len(claims)} claims OK")
+
+    try:
+        tex_paths = _collect_tex(PAPER / "main.tex")
+    except FileNotFoundError as error:
+        print(f"  missing included TeX file: {error}")
+        return False
+    used = set()
+    raw_numbers = []
+    for path in sorted(tex_paths):
+        text = path.read_text(encoding="utf-8")
+        used.update(re.findall(r"\\claim\{([A-Za-z]+)\}", text))
+        # Generated files are checked byte-for-byte above.  The raw-literal
+        # ban applies to authored title/abstract/prose, not generated macros.
+        if "generated" in path.parts:
+            continue
+        if path.name == "main.tex" and r"\begin{abstract}" in text:
+            title = re.search(r"\\title\{(.*?)\}", text, re.S)
+            text = (title.group(1) if title else "") + text.split(r"\begin{abstract}", 1)[1]
+        stripped = _strip_nonprose_commands(text)
+        for lineno, line in enumerate(stripped.splitlines(), 1):
+            if re.search(r"(?<![A-Za-z])(?:\d+(?:\.\d+)?|\.\d+)", line):
+                raw_numbers.append(f"{path.relative_to(ROOT).as_posix()}:{lineno}: {line.strip()}")
+
+    unknown = sorted(used - set(claims))
+    if unknown:
+        print("  manuscript uses unknown generated claims:")
+        for claim_id in unknown:
+            print(f"    {claim_id}")
+    if raw_numbers:
+        print("  raw numeric literals found in authored manuscript prose:")
+        for row in raw_numbers:
+            print(f"    {row}")
+        print("  replace each with a generated \\claim{LettersOnlyId} or remove it")
+    if not unknown and not raw_numbers:
+        print(f"  rendered numeric claims are ledger-backed ........ {len(used)} used IDs OK")
+    return not unknown and not raw_numbers
+
+
+# ------------------------------------------------------------------ G
+def _sha256(path):
+    h = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            h.update(block)
+    return h.hexdigest()
+
+
+def sec_g_symmetric_board():
+    hdr("G. Symmetric board protocol: selection, build, and live-result gate")
+    directory = ROOT / "rtl" / "holdout_silicon_symmetric"
+    manifest_path = directory / "selection_manifest.json"
+    if not manifest_path.is_file():
+        print("  symmetric selection manifest is absent")
+        return False
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    selection_rule = manifest.get("candidate_selection", {}).get("rule")
+    policies = manifest.get("candidate_selection", {}).get("identical_for_policies")
+    selections = manifest.get("selections", [])
+    ok = True
+    if sorted(policies or []) != ["grpo", "sft"]:
+        print(f"  candidate rule is not declared identical: {policies}")
+        ok = False
+    pairs = collections.defaultdict(set)
+    for row in selections:
+        pairs[row.get("design")].add(row.get("policy"))
+        if row.get("selection_rule") != selection_rule:
+            print(f"  selection-rule mismatch for {row.get('entry')}")
+            ok = False
+        provenance = row.get("provenance", {})
+        for field, hash_field in (("rtl", "rtl_sha256"),
+                                  ("copied_rtl", "copied_rtl_sha256"),
+                                  ("golden", "golden_sha256")):
+            path = ROOT / provenance.get(field, "__missing__")
+            if not path.is_file() or _sha256(path) != provenance.get(hash_field):
+                print(f"  missing or hash-mismatched {field} for {row.get('entry')}")
+                ok = False
+    incomplete = {design: policy for design, policy in pairs.items()
+                  if policy != {"sft", "grpo"}}
+    if len(selections) != 10 or len(pairs) != 5 or incomplete:
+        print(f"  expected five complete pairs / ten DUTs; got {len(pairs)} / {len(selections)}")
+        ok = False
+    print(f"  identical candidate rule ....................... {'OK' if ok else 'FAIL'}")
+    print(f"  complete symmetric policy pairs ................ {len(pairs)}")
+
+    bit = directory / "out" / "system_holdout_symmetric.bit"
+    hwh = directory / "out" / "system_holdout_symmetric.hwh"
+    if bit.is_file() != hwh.is_file():
+        print("  build is incomplete: bitstream/HWH pair mismatch")
+        ok = False
+    elif bit.is_file():
+        print("  laptop bitstream and matching HWH ............... present")
+    else:
+        print("  laptop bitstream ................................ pending")
+
+    result = directory / "catalog_fmax.json"
+    if result.is_file():
+        data = json.loads(result.read_text(encoding="utf-8"))
+        if data.get("measurement_kind") != "live_pynq_clock_sweep":
+            print("  reserved result exists but is not marked as a live sweep")
+            ok = False
+        elif data.get("provenance", {}).get("selection_manifest_sha256") != _sha256(manifest_path):
+            print("  live result does not match the selection-manifest hash")
+            ok = False
+        else:
+            print("  live PYNQ result ................................ present and linked")
+    else:
+        print("  live PYNQ result ................................ ABSENT (no silicon claim)")
+    return ok
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--lodo", type=int, default=0,
@@ -260,7 +469,9 @@ def main():
                          "(needs torch; ~1 min per run per arm)")
     args = ap.parse_args()
     results = [("A correctness", sec_a()), ("B best-of-N", sec_b()),
-               ("C trajectory", sec_c()), ("D oracle audit", sec_d())]
+               ("C trajectory", sec_c()), ("D oracle audit", sec_d()),
+               ("F manuscript provenance", sec_f_manuscript()),
+               ("G symmetric board", sec_g_symmetric_board())]
     if args.lodo:
         results.append(("E LODO spread", sec_e(args.lodo)))
     hdr("SUMMARY")
@@ -269,7 +480,8 @@ def main():
     if not args.lodo:
         print("\n  Section E (the LODO figures) NOT run. Add --lodo 10 to test the")
         print("  one correction that rests on a single unseeded draw.")
+    return 0 if all(ok for _, ok in results) else 1
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
