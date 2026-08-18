@@ -3455,3 +3455,39 @@ restarted from update zero on L40S GPU 4 with the same seed, model content,
 adapter, prompts, reward, optimizer, hyperparameters, ceilings, and checkpoints.
 No endpoint, threshold, evaluation sample count, or scientific decision rule is
 changed; the relocation changes hardware and expected wall-clock time only.
+
+**Revision-5 freeze, archive, and actual launch.** The amendment was committed
+and pushed as `9c293a68`, then transferred to the L40S host by a verified Git
+bundle. On that host, `freeze_hashes.py` regenerated `hashes.json` using the
+content-identical model at its new absolute path and immediately verified the
+result: 37 pinned artifacts, zero changed, zero missing, and zero required-but-
+unpinned. Seven GPU-free workflow regression tests, preregistration JSON parsing,
+and Bash syntax validation also passed. The resulting identity commit is
+`c08027b06efd6c05fbe09c4b0087290b706fa95b`; it was transferred back by a
+second verified bundle and pushed to GitHub before the old run was touched.
+
+The V100 correctness process group was then resolved exactly as PGID 8724 and
+terminated. Its final group log contains 856 rows: 107 consecutive complete
+eight-candidate groups, 31 non-flat updates, and 76 flat groups, with maximum
+update 31. The directory and all three external logs were moved recoverably to
+`abandoned_runs/rev4_corr_relocated_l40_20260819/`. Nothing from this partial
+run is resumed, merged, evaluated, or reported as a study result. V100-SXM2 GPU
+1 was verified idle afterward; GPU 0 continues the independent MLP seed-1 job.
+
+Correctness seed 1 restarted from update zero at 2026-08-18 18:06:41 UTC on
+physical L40S GPU 4, process group 3194802, from identity commit `c08027b0`:
+
+```
+FPGA_ENV_BIN=/home/adam/mas/mas/env_fpga/bin \
+RTLCODER_PATH=/home/adam/mas/mas/rtlcoder \
+PYTHONNOUSERSITE=1 ./run_arm.sh correctness 1 4
+```
+
+The launch independently passed all 37 hashes and the functional-oracle canary,
+loaded the intended 6.77B-parameter model, and recorded reward `correctness`,
+seed 1, `torch.float16`, group 8, 1,536 tokens, target 276 updates, ceiling 4,500
+groups, checkpoints 138/276, temperature 1.0, learning rate 1e-5, and KL
+coefficient 0.1 in `run_config.json`. At the post-launch health check it had
+completed seven full groups and four optimizer updates and GPU 4 was actively
+computing. These counts establish execution health only; they are not sealed
+efficacy evidence and no endpoint has been generated or inspected.
