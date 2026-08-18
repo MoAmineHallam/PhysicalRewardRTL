@@ -3366,3 +3366,27 @@ flow, bootstrap rule, or outcome label changed.
 Because the containers could not reach GitHub, a verified complete Git bundle
 was transferred from the laptop. The shared server checkout was fast-forwarded
 without resetting or deleting historical artifacts and now matches `88bfe36`.
+
+**Revision-4 freeze and launch.** After the revision-4 disclosure was committed,
+the canonical server regenerated `hashes.json` over the complete identity set.
+The independent write-then-verify pass reported 37 pinned artifacts, zero
+changed, zero missing, and zero required-but-unpinned. The resulting identity
+commit is `8b71cbcc605a496fd1a1970d24281d2ebabb1887`, transferred back to the
+laptop by a verified Git bundle and pushed to GitHub before progress was
+reported.
+
+The four remaining runs were then launched from update zero in detached,
+per-job process groups with the preregistered commands and balanced allocation:
+
+- V100-SXM2 GPU 0: `grpo_mlp_s1`;
+- V100-SXM2 GPU 1: `grpo_corr_s1`;
+- V100S-PCIe GPU 0: `grpo_rf_s2`;
+- V100S-PCIe GPU 1: `grpo_mlp_s2`.
+
+Every job independently passed the 37-artifact hash check and functional-oracle
+canary, loaded the intended 6.77B-parameter model, and completed its first
+eight-candidate group and first optimizer update. At that confirmation point,
+all four canonical group logs contained eight rows, all update logs contained
+one row, and every assigned GPU was actively computing. These are execution
+health checks only; no sealed evaluation has been generated or inspected and
+no efficacy conclusion is drawn from first-group training rewards.
