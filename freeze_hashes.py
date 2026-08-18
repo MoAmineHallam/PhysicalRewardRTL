@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-freeze_hashes.py  -  compute the identity block for preregistration revision 3.
+freeze_hashes.py  -  compute the identity block for preregistration revision 4.
 
 Revision 1 pinned 16-character prefixes of the scripts only. That is enough to
 notice an accidental edit and not enough to identify the actual experiment: the

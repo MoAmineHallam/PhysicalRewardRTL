@@ -3322,3 +3322,47 @@ any result. To preserve one source of truth, that filename is now only a thin
 compatibility entry point to the stricter `analyze_main_results.py`; it contains
 no independent metric implementation. Both `python regen_tables.py --check`
 and the canonical generator therefore validate the same 30-design artifacts.
+
+### Sealed-study execution recovery and preregistration revision 4 (2026-08-19)
+
+Access was restored through two replacement GPU-container ports after the
+revision-3 commit. The shared checkout was still at `3110c88`, with one complete
+untracked training run and three incomplete active runs. No sealed evaluation
+directory or sealed outcome existed or was inspected. The running processes
+were mapped by exact process group before termination:
+
+- V100-SXM2 box: incomplete `grpo_rf_s2` and `grpo_mlp_s1`;
+- V100S-PCIe box: incomplete `grpo_corr_s1`;
+- all four GPUs were verified afterward at 1 MiB, 0% utilization, with no
+  compute application remaining.
+
+The three incomplete process trees were stopped and their directories, update
+logs, and stdout logs moved recoverably to
+`abandoned_runs/pre_rev3_stopped_20260819/`. They will not be resumed, merged,
+or analysed. This follows the frozen crash policy exactly.
+
+The server also contained a completed `grpo_rf_s1` run from 2026-08-17. It was
+not discarded merely because it was discovered late. A launch-time audit found
+exactly 276 non-flat updates, 419 attempted groups, 143 flat groups, checkpoint
+directories 138 and 276, the intended completion status, and the exact frozen
+training configuration. Its revision-2 `hashes.json` independently passed on
+the canonical server: 27 pinned artifacts, zero changed, zero missing. The
+training implementation, oracle, candidate catalogue, SFT corpus logic, RF
+reward artifact, SFT adapter, and base model are byte-identical between launch
+commit `3110c88` and the revision-3 code. Its launch hash manifest,
+preregistration, and runner were copied beside the checkpoint before the shared
+checkout was updated.
+
+This is a training-completion/provenance fact, not a sealed efficacy result.
+No reward trajectory or sealed performance outcome was used to make the
+decision. Preregistration revision 4 prospectively retains this valid RF seed-1
+checkpoint, archives and restarts the three incomplete arms from update zero,
+and balances the remaining allocation across boxes: RF seed 2 and MLP seed 2
+on V100S-PCIe; MLP seed 1 and correctness seed 1 on V100-SXM2. Each two-seed
+reward arm therefore spans both GPU types. No scientific endpoint, threshold,
+split, reward, model, optimizer setting, evaluation sample count, synthesis
+flow, bootstrap rule, or outcome label changed.
+
+Because the containers could not reach GitHub, a verified complete Git bundle
+was transferred from the laptop. The shared server checkout was fast-forwarded
+without resetting or deleting historical artifacts and now matches `88bfe36`.

@@ -12,7 +12,7 @@
   "documents: a reward that looked fine by every metric we chose after seeing",
   "the data."
  ],
- "revision": 3,
+ "revision": 4,
  "frozen_utc": "2026-08-14",
  "amendments": [
   {
@@ -125,6 +125,43 @@
     "workflow scripts and their regression tests are added to the identity set.",
     "No scientific endpoint, threshold, split member, reward model, training",
     "hyperparameter, synthesis target, bootstrap rule, or outcome label changed."
+   ]
+  },
+  {
+   "revision": 4,
+   "date": "2026-08-19",
+   "type": "pre-sealed-outcome server-state recovery amendment",
+   "summary": "Disclosed and retained one complete revision-2 RF training seed discovered after server access was restored; archived every incomplete run and fixed the balanced hardware allocation for the remaining four jobs.",
+   "detail": [
+    "Revision 3 truthfully reported that no completed arm was present in the",
+    "committed repository and that the server audit endpoint was inaccessible.",
+    "When access to two replacement container ports was supplied on 2026-08-19,",
+    "the shared untracked server state was found to contain one complete",
+    "rf_struct seed-1 run and three incomplete processes (rf_struct seed 2,",
+    "MLP seed 1, and correctness seed 1). No sealed-policy evaluation directory",
+    "or sealed outcome was opened, generated, or inspected before this amendment.",
+    "The complete rf_struct seed-1 run ended at exactly 276 non-flat updates,",
+    "contains checkpoints 138 and 276, and its launch-time revision-2 hash",
+    "manifest verifies 27 pinned artifacts with zero changes and zero missing.",
+    "Its run_config records the frozen seed, group size, token budget, learning",
+    "rate, KL coefficient, reward, attempt ceiling, checkpoint schedule, model,",
+    "adapter, and code hashes. The training implementation, oracle, candidate",
+    "catalogue, SFT corpus logic, RF reward artifact, SFT adapter, and base model",
+    "are byte-identical between launch commit 3110c88 and revision 4. Revision 3",
+    "changed fail-closed launch, evaluation, PPA, and analysis auditing rather",
+    "than the optimizer computation that produced this completed checkpoint.",
+    "The complete rf_struct seed-1 run is therefore retained prospectively and",
+    "its launch hashes, preregistration, and run_arm.sh are copied beside it.",
+    "The three interrupted runs were terminated and moved, with their logs and",
+    "partial adapters, to abandoned_runs/pre_rev3_stopped_20260819. They are not",
+    "resumed, merged, or analysed; each is rerun from update zero as originally",
+    "specified by the crash policy.",
+    "The remaining jobs are balanced across the two available GPU types before",
+    "launch: rf_struct seed 2 and MLP seed 2 on the V100S-PCIe box; MLP seed 1",
+    "and the single-seed correctness control on the V100-SXM2 box. Thus each",
+    "two-seed reward arm spans both boxes rather than confounding arm with box.",
+    "No endpoint, threshold, split member, reward, model, optimizer setting,",
+    "sample count, synthesis flow, bootstrap rule, or outcome label changed."
    ]
   }
  ],
