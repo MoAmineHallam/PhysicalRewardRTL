@@ -3231,3 +3231,94 @@ artifact line pointers, 150 claim IDs used in rendered manuscript sources, zero
 raw numeric literals in authored prose, all primary/replication/context outputs
 current, and no symmetric live-silicon artifact. A rendered PDF and page count
 remain blocked only by the absence of a TeX installation on this laptop.
+
+### TCAD strengthening start: sealed-study revision 3 + primary PPA accounting (2026-08-18)
+
+The user authorized the strengthening plan and required every new result to be
+recorded in this master record. No new policy, sealed-set, Vivado, or live-board
+measurement was produced in this step. The prospective sealed split remains
+unopened in the repository. A read-only audit of the GPU server was attempted
+before stating that the amendment was pre-outcome, but the SSH endpoint closed
+the connection; the launch workflow therefore also refuses every pre-existing
+arm output on the server rather than assuming it is absent.
+
+**Revision-3 pre-outcome workflow repair.** The revision-2 preregistration
+named an evaluator that could only consume the historical 30-design split and
+provided no executable way to audit the actual RF-arm training candidates.
+It also retained an analyzer that could omit zero-correct designs, accept
+partial PPA data, accept manually supplied gate/diagnostic values, and encoded
+the pre-amendment correctness-arm seed count. Before any sealed output was
+generated, `preregistration.json` was advanced to revision 3 with no change to
+the split, reward, endpoint, thresholds, training hyperparameters, synthesis
+target, bootstrap, or outcome taxonomy. The executable chain is now:
+
+1. `run_arm.sh`: only RF seeds 1/2, MLP seeds 1/2, and correctness seed 1;
+   exact 276 non-flat updates and checkpoints 138/276; stale outputs refused;
+   pinned hashes, CUDA, Icarus, VVP, and an oracle canary checked before launch.
+2. `verify_sealed_training.py`: requires all five exact run configurations,
+   consecutive eight-candidate groups, unique updates 1..276, matching summary
+   counts, and both checkpoints before sealed generation.
+3. `materialize_rf_candidates.py` + `canonicalize.py --check-traces`: materialize
+   every distinct non-empty RTL candidate in the two actual RF group logs with
+   source-row/content hashes, then run the frozen compilation/trace gate before
+   opening the split.
+4. `eval_sealed.py` + `run_sealed_server_stage.sh`: consume the stored frozen
+   prompts and per-design token budgets; preserve the full sample denominator,
+   including zero-correct designs; use SFT n=48, two-seed endpoints n=24/seed,
+   correctness n=48 for its single training seed, and RF midpoint n=8/seed.
+5. `run_sealed_laptop_ppa.ps1` + `verify_sealed_ppa.py`: run the identical
+   Zynq-7020 5 ns flow and require one explicit PPA row for every emitted
+   candidate. An interrupted batch is incomplete, not silently scored zero.
+6. `analyze_sealed_v3.py` + `run_sealed_analysis.sh`: derive the frozen endpoint,
+   diagnostics, validity gate, and outcome label only from the evaluation,
+   training-log, contract, and PPA artifacts.
+
+`freeze_hashes.py --verify` was also repaired: it now fails on dependencies
+required by the current identity set but missing from the old `hashes.json`.
+Previously it compared only keys already present in that file, so a newly added
+required script could remain silently unpinned. Seven GPU-free regression
+tests pass, covering multiplicity/failure accounting, zero-correct retention,
+missing zero-correct denominators, stale-output refusal, distinct-candidate
+materialization, explicit one-row-per-candidate PPA coverage, and unique
+optimizer-update accounting. Python compilation, JSON validation, PowerShell
+parsing, and Bash syntax checks also pass. The next server action is to
+regenerate and verify the complete revision-3 hashes on the canonical server;
+no arm may start until that succeeds.
+
+**New primary PPA diagnostic from existing real-Vivado rows (no new run).**
+`analyze_main_results.py` now validates LUT, FF, DSP, BRAM, and vectorless-power
+fields for every compiled primary candidate and generates
+`paper/generated/table_ppa.tex`. Assigning zero area to an incorrect or failed
+sample would perversely reward failure, so resource values are explicitly
+conditioned on oracle-correct, successfully implemented samples: multiplicity-
+weighted within each design, then averaged equally over the 30 designs. This
+is secondary to the unchanged failure-penalized Fmax endpoint.
+
+```
+metric                              SFT         GRPO       GRPO/SFT
+conditional LUTs                  272.34       289.19        1.0619
+conditional flip-flops           133.65       195.91        1.4658
+conditional DSP blocks             4.045        2.167       0.5356
+conditional vectorless power (W)   0.12282      0.12194     0.9929
+```
+
+Seventeen of 30 designs have higher GRPO penalized Fmax with no increase in
+conditional mean LUT count; seventeen also improve with no increase in
+conditional mean DSP count. The honest interpretation is a specific trade-off:
+about 6% more LUTs and 47% more registers (consistent with deeper pipelining),
+about 46% fewer DSPs, and no measured increase in Vivado's vectorless power
+estimate. It is not an activity-based power claim and no arbitrary composite
+"area" proxy is used.
+
+After regeneration, the canonical 30-design result remains exactly unchanged:
+73.0 -> 176.7 MHz overall penalized equal-sample Fmax, +103.7 MHz with the
+post-hoc descriptive interval [80.1, 126.1], and 27/30 designs improved.
+`verify_claims.py` now validates 185 source-backed claim records, 164 used claim
+IDs, zero hand-copied manuscript numbers, and the absent live-board artifact.
+
+During the final pre-commit audit, remote commit `6b14d32` introduced a second,
+smaller `regen_tables.py` calculation path. It was not used to change or select
+any result. To preserve one source of truth, that filename is now only a thin
+compatibility entry point to the stricter `analyze_main_results.py`; it contains
+no independent metric implementation. Both `python regen_tables.py --check`
+and the canonical generator therefore validate the same 30-design artifacts.

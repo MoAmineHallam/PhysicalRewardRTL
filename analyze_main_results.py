@@ -18,6 +18,7 @@ Outputs are generated, never hand edited:
   paper/generated/table_trajectory.tex
   paper/generated/table_replication.tex
   paper/generated/table_context.tex
+  paper/generated/table_ppa.tex
   paper/generated/table_board.tex
   paper/figures/fig_main_verified.{pdf,png}
   paper/figures/fig_mechanism_verified.{pdf,png}
@@ -89,6 +90,11 @@ class Candidate:
     n: int
     fmax: float
     compiled: bool
+    lut: float | None
+    ff: float | None
+    dsp: float | None
+    bram: float | None
+    power_w: float | None
     manifest_source: str
     ppa_source: str
 
@@ -171,6 +177,16 @@ def load_eval_dirs(eval_dirs: tuple[pathlib.Path, ...]) -> tuple[list[Candidate]
             fmax = float(row.get("fmax_mhz", 0.0)) if compiled else 0.0
             if not math.isfinite(fmax) or fmax < 0:
                 raise RuntimeError(f"invalid Fmax for {module}: {fmax}")
+            resources = {}
+            for key in ("lut", "ff", "dsp", "bram", "power_w"):
+                value = row.get(key) if compiled else None
+                if compiled:
+                    if value is None:
+                        raise RuntimeError(f"compiled PPA row lacks {key}: {module}")
+                    value = float(value)
+                    if not math.isfinite(value) or value < 0:
+                        raise RuntimeError(f"invalid {key} for {module}: {value}")
+                resources[key] = value
             candidates.append(
                 Candidate(
                     module=module,
@@ -181,6 +197,11 @@ def load_eval_dirs(eval_dirs: tuple[pathlib.Path, ...]) -> tuple[list[Candidate]
                     n=int(info["n"]),
                     fmax=fmax,
                     compiled=compiled,
+                    lut=resources["lut"],
+                    ff=resources["ff"],
+                    dsp=resources["dsp"],
+                    bram=resources["bram"],
+                    power_w=resources["power_w"],
                     manifest_source=f"{rel(manifest_path)}:{mlines.get(module, 1)}",
                     ppa_source=f"{rel(ppa_path)}:{plines[module]}",
                 )
@@ -229,6 +250,16 @@ def make_design_rows(candidates: list[Candidate]) -> list[dict]:
             if correct > n:
                 raise RuntimeError(f"candidate multiplicities exceed n for {policy}/{design}")
             measured_sum = sum(c.count * c.fmax for c in cs)
+            implemented = sum(c.count for c in cs if c.compiled)
+            if implemented <= 0:
+                raise RuntimeError(
+                    f"no implemented oracle-correct sample for {policy}/{design}; "
+                    "conditional resource diagnostics are undefined")
+            conditional_resources = {
+                key: sum(c.count * float(getattr(c, key)) for c in cs if c.compiled)
+                / implemented
+                for key in ("lut", "ff", "dsp", "bram", "power_w")
+            }
             sources = sorted({c.manifest_source for c in cs} | {c.ppa_source for c in cs})
             policy_rows[policy] = {
                 "n": n,
@@ -237,6 +268,11 @@ def make_design_rows(candidates: list[Candidate]) -> list[dict]:
                 "penalized_fmax": measured_sum / n,
                 "conditional_fmax": measured_sum / correct if correct else 0.0,
                 "correct_pct": 100.0 * correct / n,
+                "conditional_lut": conditional_resources["lut"],
+                "conditional_ff": conditional_resources["ff"],
+                "conditional_dsp": conditional_resources["dsp"],
+                "conditional_bram": conditional_resources["bram"],
+                "conditional_power_w": conditional_resources["power_w"],
                 "sources": sources,
                 "candidates": cs,
             }
@@ -286,6 +322,46 @@ def aggregate(rows: list[dict]) -> dict:
     out["improved"] = int(np.sum(gains > 1e-12))
     out["tied"] = int(np.sum(np.abs(gains) <= 1e-12))
     out["declined"] = int(np.sum(gains < -1e-12))
+    return out
+
+
+def ppa_summary(rows: list[dict]) -> dict:
+    """Equal-design resource diagnostics over implemented, oracle-correct draws.
+
+    Resource means are conditional because assigning zero LUTs or watts to an
+    incorrect/failed sample would reward failure. Vivado power is explicitly
+    the vectorless estimate; no arbitrary cross-resource area proxy is formed.
+    """
+    metrics = (
+        "conditional_lut", "conditional_ff", "conditional_dsp",
+        "conditional_bram", "conditional_power_w",
+    )
+    out = {
+        "conditioning": (
+            "resource means condition on oracle-correct, successfully implemented samples; "
+            "per-design means are averaged equally"
+        )
+    }
+    for policy in EXPECTED_POLICIES:
+        out[policy] = {
+            metric: float(np.mean([row[policy][metric] for row in rows]))
+            for metric in metrics
+        }
+    out["grpo_over_sft"] = {
+        metric: (out["grpo"][metric] / out["sft"][metric]
+                 if out["sft"][metric] != 0 else None)
+        for metric in metrics
+    }
+    out["faster_without_more_lut"] = sum(
+        row["grpo"]["penalized_fmax"] > row["sft"]["penalized_fmax"]
+        and row["grpo"]["conditional_lut"] <= row["sft"]["conditional_lut"]
+        for row in rows
+    )
+    out["faster_without_more_dsp"] = sum(
+        row["grpo"]["penalized_fmax"] > row["sft"]["penalized_fmax"]
+        and row["grpo"]["conditional_dsp"] <= row["sft"]["conditional_dsp"]
+        for row in rows
+    )
     return out
 
 
@@ -856,6 +932,36 @@ def build_claims(rows: list[dict], bestof: dict, trajectory: list[dict],
         claims.add(f"{label}Declined", a["declined"], str(a["declined"]), "designs",
                    "Count designs with strictly negative paired penalized-Fmax difference.", sources)
 
+    ppa = ppa_summary(rows)
+    ppa_specs = (
+        ("Lut", "conditional_lut", "LUTs", 1,
+         "Per-design mean LUT count, multiplicity-weighted among oracle-correct candidates with successful implementation."),
+        ("Ff", "conditional_ff", "flip-flops", 1,
+         "Per-design mean flip-flop count, multiplicity-weighted among oracle-correct candidates with successful implementation."),
+        ("Dsp", "conditional_dsp", "DSP blocks", 2,
+         "Per-design mean DSP count, multiplicity-weighted among oracle-correct candidates with successful implementation."),
+        ("Power", "conditional_power_w", "W", 3,
+         "Per-design mean Vivado vectorless power estimate, multiplicity-weighted among oracle-correct candidates with successful implementation."),
+    )
+    for label, metric, unit, digits, method in ppa_specs:
+        for policy, policy_name in (("sft", "Sft"), ("grpo", "Grpo")):
+            value = ppa[policy][metric]
+            claims.add(f"Ppa{policy_name}{label}", value, fmt(value, digits),
+                       unit, method, primary_sources)
+        ratio = ppa["grpo_over_sft"][metric]
+        if ratio is not None:
+            claims.add(f"Ppa{label}Ratio", ratio, fmt(ratio, 2), "ratio",
+                       f"GRPO divided by SFT for the generated {metric} diagnostic.",
+                       primary_sources)
+    claims.add("PpaFasterNoMoreLut", ppa["faster_without_more_lut"],
+               str(ppa["faster_without_more_lut"]), "designs",
+               "Count designs with higher GRPO penalized Fmax and no increase in conditional mean LUT count.",
+               primary_sources)
+    claims.add("PpaFasterNoMoreDsp", ppa["faster_without_more_dsp"],
+               str(ppa["faster_without_more_dsp"]), "designs",
+               "Count designs with higher GRPO penalized Fmax and no increase in conditional mean DSP count.",
+               primary_sources)
+
     for reg, prefix in (("interp", "Interp"), ("extrap", "Extrap")):
         b = bestof[reg]
         for n, word in ((1, "One"), (8, "Eight"), (16, "Sixteen"),
@@ -897,6 +1003,7 @@ def build_claims(rows: list[dict], bestof: dict, trajectory: list[dict],
         ],
         "aggregates": aggregates,
         "bootstrap_ci": cis,
+        "ppa": ppa,
         "bestof": bestof,
         "trajectory": trajectory,
     }
@@ -1265,6 +1372,29 @@ GRPO & \claim{SamplesPerDesign} & \claim{OverallGrpoPenalized} &
 """
 
 
+def table_ppa() -> str:
+    return r"""% AUTO-GENERATED by analyze_main_results.py. DO NOT EDIT.
+\begin{table}[t]
+\centering
+\caption{Physical-cost diagnostics on the frozen primary samples, conditional
+on oracle-correct, successfully implemented samples. Power is Vivado's
+vectorless estimate.}
+\label{tab:ppa-verified}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Metric & SFT & GRPO & GRPO/SFT \\
+\midrule
+LUTs & \claim{PpaSftLut} & \claim{PpaGrpoLut} & \claim{PpaLutRatio} \\
+Flip-flops & \claim{PpaSftFf} & \claim{PpaGrpoFf} & \claim{PpaFfRatio} \\
+DSP blocks & \claim{PpaSftDsp} & \claim{PpaGrpoDsp} & \claim{PpaDspRatio} \\
+Vectorless power [W] & \claim{PpaSftPower} & \claim{PpaGrpoPower} & \claim{PpaPowerRatio} \\
+\bottomrule
+\end{tabular}
+\end{table}
+"""
+
+
 def table_bestofn() -> str:
     return r"""% AUTO-GENERATED by analyze_main_results.py. DO NOT EDIT.
 \begin{table}[t]
@@ -1589,6 +1719,7 @@ def render_outputs() -> tuple[dict[pathlib.Path, str], list[dict], list[dict], d
         GENERATED / "table_family.tex": family_tex,
         GENERATED / "table_replication.tex": table_replication(),
         GENERATED / "table_context.tex": table_context(),
+        GENERATED / "table_ppa.tex": table_ppa(),
         GENERATED / "table_bestofn.tex": table_bestofn(),
         GENERATED / "table_trajectory.tex": table_trajectory(),
         GENERATED / "table_board.tex": board_tex,

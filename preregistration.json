@@ -12,7 +12,7 @@
   "documents: a reward that looked fine by every metric we chose after seeing",
   "the data."
  ],
- "revision": 2,
+ "revision": 3,
  "frozen_utc": "2026-08-14",
  "amendments": [
   {
@@ -79,6 +79,53 @@
     "single-seed. This reverses part of the external reviewer's cut order, which",
     "assumed all arms cost the same per update."
    ]
+  },
+  {
+   "revision": 3,
+   "date": "2026-08-18",
+   "type": "pre-outcome executability and fail-closed analysis amendment",
+   "summary": "Added the missing sealed evaluator and actual-candidate gate, replaced manual or permissive analysis inputs with artifact-derived checks, and made hash verification cover every required dependency.",
+   "detail": [
+    "No sealed-policy evaluation artifact or completed study arm is present in",
+    "the repository, and no sealed outcome was consulted while making this",
+    "amendment. A direct read-only server audit was attempted on 2026-08-18 but",
+    "the SSH endpoint closed the connection; run_arm.sh therefore additionally",
+    "refuses any pre-existing arm output before a server launch.",
+    "Revision 2 named eval_holdout.py, but that script can evaluate only the old",
+    "30-design split and cannot consume sealed_split.json. eval_sealed.py now",
+    "loads the frozen prompts and per-design token budgets directly, uses the",
+    "fixed generation and oracle seeds, emits only distinct oracle-correct RTL,",
+    "and preserves total sample counts even when a design has zero correct RTL.",
+    "Revision 2 required a pre-open mutation/trace contract over the actual RF",
+    "training candidates but supplied no way to construct that corpus.",
+    "materialize_rf_candidates.py now deterministically extracts every distinct",
+    "non-empty RTL candidate from both complete RF group logs, with source-row",
+    "and content-hash provenance, before canonicalize.py --check-traces runs.",
+    "The frozen revision-2 analyzer could silently omit zero-correct designs,",
+    "accepted missing or partial synthesis inputs, accepted manually entered",
+    "reward-resolution and gate values, did not enforce training completion, and",
+    "encoded the pre-amendment correctness-arm seed count. analyze_sealed_v3.py",
+    "fails on those cases and derives diagnostics from manifests, PPA rows, both",
+    "RF group logs, and the mutation-contract artifact.",
+    "The correctness-only arm has one training seed under amendment 1 but retains",
+    "the frozen 48-draw per-arm evaluation budget. Two-seed arms use 24 draws per",
+    "training seed. If the sole permitted MLP seed-2 budget cut is exercised, its",
+    "remaining seed receives 48 draws. The RF midpoint remains 8 draws per seed.",
+    "Generation batching is fixed at four for all sealed evaluations. It affects",
+    "the deterministic random-number consumption pattern but not an endpoint or",
+    "threshold, and is set before any sealed generation.",
+    "verify_sealed_training.py requires all five declared runs, exact configs,",
+    "updates 1 through 276, and checkpoints 138 and 276 before sealed generation.",
+    "verify_sealed_ppa.py requires one explicit PPA row for every manifest",
+    "candidate; an interrupted or partial Vivado batch cannot be scored as failure.",
+    "run_arm.sh now rejects non-declared arm/seed pairs and every stale output.",
+    "freeze_hashes.py previously verified only keys already present in hashes.json,",
+    "so a newly required script could be silently unpinned. Verification now also",
+    "fails on every required-but-unpinned or unresolved artifact. All revision-3",
+    "workflow scripts and their regression tests are added to the identity set.",
+    "No scientific endpoint, threshold, split member, reward model, training",
+    "hyperparameter, synthesis target, bootstrap rule, or outcome label changed."
+   ]
   }
  ],
  "environment": {
@@ -97,7 +144,7 @@
  "identities": {
   "hash_basis": [
    "SHA-256, full 64 hex characters, recorded in hashes.json.",
-   "text files (.py .tcl .json .jsonl .md .txt .sv .v .bib): SHA-256 of the",
+   "text files (.py .tcl .json .jsonl .md .txt .sv .v .bib .sh .ps1): SHA-256 of the",
    "  file content with CRLF normalised to LF. This is NOT the git blob hash:",
    "  git prepends 'blob <bytelen>\\0' before hashing, giving a different",
    "  digest. LF normalisation is what makes the digest agree between the",
@@ -117,8 +164,13 @@
    "sealed_split.json",
    "canonicalize.py, oracle.py, grpo_oracle.py, gen_accelerator_catalog.py",
    "gen_sft_corpus.py, surrogate_train.py, train_rf_struct.py",
-   "gen_sealed_split.py, analyze_sealed.py, gen_fmax_candidates.py",
-   "eval_holdout.py, run_ppa.py, ppa_synth.tcl"
+   "gen_sealed_split.py, analyze_sealed.py (revision-2 history),",
+   "analyze_sealed_v3.py, eval_sealed.py, materialize_rf_candidates.py,",
+   "verify_sealed_training.py, verify_sealed_ppa.py, run_arm.sh,",
+   "run_sealed_server_stage.sh, run_sealed_laptop_ppa.ps1,",
+   "run_sealed_analysis.sh,",
+   "test_sealed_workflow.py, freeze_hashes.py,",
+   "gen_fmax_candidates.py, eval_holdout.py, run_ppa.py, ppa_synth.tcl"
   ],
   "verification": "freeze_hashes.py --verify hashes.json must pass at the start of every arm and again before the sealed split is opened",
   "legacy_prefixes_revision_1": {
@@ -388,7 +440,7 @@
   ],
   "isolation_mechanism": "gen_sft_corpus.is_holdout() returns True for every design in sealed_split.json and for every fir/firr coefficient-variant name form, so isolation does not depend on the manifest file being present",
   "opened": false,
-  "open_condition": "after BOTH seeds of ALL arms are complete, every configuration is frozen, freeze_hashes.py --verify passes, and the pre-open mutation contract over the rf_struct arm's training candidates has been run",
+  "open_condition": "after every preregistered training seed for all arms is complete, every configuration is frozen, freeze_hashes.py --verify passes, verify_sealed_training.py passes, and the pre-open mutation contract over the rf_struct arm's actual training candidates has passed",
   "_honest_limitation": "These are unseen PARAMETERISATIONS from the same generator families, restricted to designs whose reference is canonicalisable and fits the generation budget. That repairs adaptive reuse of the old 30-design set. It does NOT establish cross-template generalisation, and the paper must say so. External circuits are a TCAD extension."
  },
  "arms": [
@@ -504,6 +556,8 @@
   "samples_per_design_per_seed": 24,
   "samples_per_arm_per_design": 48,
   "sft_samples_per_design": 48,
+  "correctness_single_seed_samples_per_design": 48,
+  "single_mlp_seed_samples_per_design_if_budget_cut": 48,
   "mid_checkpoint_samples_per_design_per_seed": 8,
   "_mid_note": "8 samples/design/seed at update 138 for the rf_struct arm only, generated BEFORE opening and synthesised in the same one-time batch, so late divergence is measurable at more than one checkpoint. If this batch is not affordable, 'late divergence' is dropped and replaced by the weaker measurable statement 'no endpoint reward-reality sign disagreement', and the paper says which was used.",
   "endpoint_checkpoint": "update 276",
@@ -511,6 +565,7 @@
    "do_sample": true,
    "temperature": 1.0,
    "top_p": 1.0,
+   "generation_batch": 4,
    "stop_strings": [
     "endmodule"
    ],
@@ -547,7 +602,7 @@
    "pairing": "identical resampled design indices applied to every arm",
    "seed_handling": "the two training seeds are averaged within design for the combined interval, and each seed is ALSO reported separately; they are never pooled as independent samples"
   },
-  "analysis_script": "analyze_sealed.py, hashed before the split was generated"
+  "analysis_script": "analyze_sealed_v3.py under the revision-3 pre-outcome amendment; the revision-2 analyze_sealed.py is retained and hashed as historical evidence"
  },
  "power": {
   "_note": "planning estimate from the committed v8 design differences, recorded so the resolvable effect size is not decided after the fact",
@@ -562,7 +617,7 @@
   "family_claims": "two designs per family x regime do not support inferential family-specific claims; family results are DESCRIPTIVE only"
  },
  "outcome_taxonomy": {
-  "_note": "Exact invariance is a VALIDITY GATE, not an efficacy criterion. Exactly one label is assigned, by analyze_sealed.py, from the frozen rules below. 'Retains at least 50% of the prospective original-MLP improvement on the same sealed designs' is a HIGH-RETENTION MODIFIER on a successful outcome, not part of the success gate -- otherwise an unexpected failure of the original MLP on the new split would make the repaired reward impossible to classify. If the MLP improvement is non-positive, retention is NOT APPLICABLE.",
+  "_note": "Exact invariance is a VALIDITY GATE, not an efficacy criterion. Exactly one label is assigned by analyze_sealed_v3.py from the frozen rules below. 'Retains at least 50% of the prospective original-MLP improvement on the same sealed designs' is a HIGH-RETENTION MODIFIER on a successful outcome, not part of the success gate -- otherwise an unexpected failure of the original MLP on the new split would make the repaired reward impossible to classify. If the MLP improvement is non-positive, retention is NOT APPLICABLE.",
   "labels": [
    {
     "name": "invalid_repair",

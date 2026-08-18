@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-freeze_hashes.py  -  compute the identity block for preregistration revision 2.
+freeze_hashes.py  -  compute the identity block for preregistration revision 3.
 
 Revision 1 pinned 16-character prefixes of the scripts only. That is enough to
 notice an accidental edit and not enough to identify the actual experiment: the
@@ -38,16 +38,19 @@ import argparse
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 TEXT_EXT = {".py", ".tcl", ".json", ".jsonl", ".md", ".txt", ".sv", ".v",
-            ".bib", ".sh"}
+            ".bib", ".sh", ".ps1"}
 
 # Everything whose identity the experiment depends on. Missing entries are
 # reported as null rather than skipped, so an unpinned object is visible.
 SCRIPTS = [
-    "canonicalize.py", "check_a_orderability.py", "oracle.py", "grpo_oracle.py",
+    "freeze_hashes.py", "canonicalize.py", "check_a_orderability.py", "oracle.py", "grpo_oracle.py",
     "gen_accelerator_catalog.py", "gen_sft_corpus.py", "surrogate_train.py",
     "train_rf_struct.py", "gen_sealed_split.py", "analyze_sealed.py",
+    "analyze_sealed_v3.py", "eval_sealed.py", "materialize_rf_candidates.py",
+    "verify_sealed_training.py", "verify_sealed_ppa.py", "test_sealed_workflow.py",
     "gen_fmax_candidates.py", "eval_holdout.py", "run_ppa.py",
-    "ppa_synth.tcl", "run_arm.sh",
+    "ppa_synth.tcl", "run_arm.sh", "run_sealed_server_stage.sh",
+    "run_sealed_laptop_ppa.ps1", "run_sealed_analysis.sh",
     "reward_invariance_audit.py", "probe_competence.py", "build_dataset.py",
 ]
 DATA = ["sealed_split.json", "rf_rows.json", "preregistration.json"]
@@ -148,20 +151,30 @@ def main():
     if args.verify:
         ref = json.load(open(args.verify))
         old = ref.get("hashes", ref)
-        bad, miss = [], []
-        for k, v in old.items():
+        bad, miss, unpinned = [], [], []
+        for k, v in got.items():
             if k.endswith("::n_files"):
                 continue
-            if k not in got or got[k] is None:
+            if v is None:
                 miss.append(k)
-            elif got[k] != v:
+            elif k not in old:
+                unpinned.append(k)
+            elif old[k] != v:
                 bad.append(k)
+        for k in old:
+            if k.endswith("::n_files"):
+                continue
+            if k not in got and k not in miss:
+                miss.append(k)
         for k in bad:
             print(f"  CHANGED  {k}\n      was {old[k]}\n      now {got[k]}")
         for k in miss:
             print(f"  MISSING  {k}")
-        print(f"\n{len(old)} pinned, {len(bad)} changed, {len(miss)} missing")
-        if bad or miss:
+        for k in unpinned:
+            print(f"  UNPINNED {k}\n      now {got[k]}")
+        print(f"\n{len(old)} pinned, {len(bad)} changed, {len(miss)} missing, "
+              f"{len(unpinned)} required-but-unpinned")
+        if bad or miss or unpinned:
             print("\nThe preregistered artifacts do not match this checkout. "
                   "Either restore them or record an amendment -- do not proceed "
                   "quietly.")

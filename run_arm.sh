@@ -2,7 +2,7 @@
 # run_arm.sh  -  launch ONE preregistered GRPO arm.
 #
 #   ./run_arm.sh rf_struct 1 [gpu]
-#   ./run_arm.sh correctness 2
+#   ./run_arm.sh correctness 1
 #   ./run_arm.sh mlp 1
 #
 # Every hyperparameter below is fixed by preregistration.json (training_protocol)
@@ -14,18 +14,24 @@
 # Arms are matched on NON-FLAT OPTIMIZER UPDATES (276), not attempted groups: a
 # group whose rewards are all equal produces no gradient, and the correctness-only
 # arm goes flat far more often, so step-matching would give it less learning.
-# --max-groups 2000 is the ceiling; a run that hits it ends there and says so in
-# run_summary.json rather than being quietly extended.
+# The attempt ceiling is 2000 for the physical-reward arms and 4500 for the
+# correctness-only arm; a run that hits it reports that stop in run_summary.json
+# rather than being quietly extended.
 set -euo pipefail
 
 REWARD="${1:?usage: run_arm.sh <rf_struct|mlp|correctness> <seed> [gpu]}"
 SEED="${2:?usage: run_arm.sh <rf_struct|mlp|correctness> <seed> [gpu]}"
 GPU="${3:-0}"
+case "$GPU" in
+  0|1) ;;
+  *) echo "REFUSING: gpu must be 0 or 1 on the pinned two-V100 server."; exit 2 ;;
+esac
 
 cd "$(dirname "$0")"
 export PATH=/zeng_gk/Amine/mas/env_mas/bin:$PATH
 export CUDA_VISIBLE_DEVICES="$GPU"
 export TOKENIZERS_PARALLELISM=false
+export HF_HUB_OFFLINE=1
 
 BASE="${RTLCODER_PATH:-/zeng_gk/Amine/mas/rtlcoder}"
 SFT=sft_v6c_out
@@ -46,6 +52,14 @@ case "$REWARD" in
   correctness) TAG=corr ; MAXG=4500 ; EXTRA="--reward correctness" ;;
   *) echo "unknown reward '$REWARD'"; exit 2 ;;
 esac
+case "$REWARD:$SEED" in
+  rf_struct:1|rf_struct:2|mlp:1|mlp:2|correctness:1) ;;
+  *)
+    echo "REFUSING: '$REWARD' seed '$SEED' is not a preregistered arm."
+    echo "Allowed: rf_struct {1,2}; mlp {1,2}; correctness {1}."
+    exit 2
+    ;;
+esac
 OUT="grpo_${TAG}_s${SEED}"
 
 # The preregistration requires this to pass at the START of every arm. If an
@@ -53,14 +67,21 @@ OUT="grpo_${TAG}_s${SEED}"
 echo "== verifying pinned artifacts =="
 python freeze_hashes.py --verify hashes.json
 
+echo "== verifying GPU and functional oracle =="
+command -v iverilog >/dev/null
+command -v vvp >/dev/null
+python -c 'import torch; assert torch.cuda.is_available(); print(torch.cuda.get_device_name(0))'
+python -c 'import oracle, gen_accelerator_catalog as G; r=oracle.score(G.fir_ref("fir8_8b", G.fir_coeffs(8)), "fir8_8b", n=64); assert r["correct"], r; print("oracle canary PASS")'
+
 # Crash policy: a dead run is DISCARDED and restarted from step 0 with the same
 # seed; partial runs are never resumed or merged. grpo_oracle.py refuses to start
 # if a group log already exists, so a stale directory must be moved aside
 # deliberately -- never silently reused.
-if [ -e "$OUT/group_log.jsonl" ]; then
-  echo "REFUSING: $OUT/group_log.jsonl exists."
+if [ -e "$OUT" ] || [ -e "${OUT}_log.jsonl" ] || [ -e "${OUT}_stdout.log" ]; then
+  echo "REFUSING: output from $OUT already exists."
   echo "A crashed run is discarded, not resumed. Move it aside on purpose:"
-  echo "    mv $OUT ${OUT}.abandoned.\$(date +%s)"
+  echo "    mv $OUT ${OUT}.abandoned.TIMESTAMP"
+  echo "and move ${OUT}_log.jsonl / ${OUT}_stdout.log if either exists."
   exit 3
 fi
 
@@ -80,4 +101,4 @@ cat "$OUT/run_summary.json"
 echo
 echo "Check 'ended': 'target updates reached (276)' is the intended stop."
 echo "'attempt ceiling reached' means the reward went flat too often to reach"
-echo "276 updates in 2000 groups -- report it, do not raise the ceiling."
+echo "276 updates within its frozen ceiling -- report it, do not raise the ceiling."

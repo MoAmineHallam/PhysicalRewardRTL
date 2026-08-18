@@ -35,6 +35,23 @@ extrapolation falls from \claim{ExtrapSftCorrectness}\% to
 \claim{ExtrapGrpoCorrectness}\%.  Those losses already score zero in the
 headline endpoint.
 
+\subsection{Physical-cost trade-off}
+
+\input{generated/table_ppa}
+
+The frequency gain carries a specific resource trade-off rather than an
+across-the-board expansion.
+Relative to SFT, GRPO's conditional mean LUT count changes by a factor of
+\claim{PpaLutRatio} and its flip-flop count by \claim{PpaFfRatio}; the latter is
+consistent with selecting more deeply registered implementations.  DSP use
+changes by \claim{PpaDspRatio}, while the vectorless power estimate changes by
+\claim{PpaPowerRatio}.  On \claim{PpaFasterNoMoreLut} of the
+\claim{DesignCount} designs, penalized frequency improves without increasing
+conditional mean LUT count; \claim{PpaFasterNoMoreDsp} designs improve without
+increasing conditional mean DSP use.  These are descriptive resource
+diagnostics conditioned on successful implementations, not substitutes for the
+failure-penalized primary endpoint or activity-based power measurements.
+
 \subsection{Variation across circuit families}
 
 \input{generated/table_family}
