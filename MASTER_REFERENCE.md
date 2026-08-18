@@ -3390,3 +3390,68 @@ all four canonical group logs contained eight rows, all update logs contained
 one row, and every assigned GPU was actively computing. These are execution
 health checks only; no sealed evaluation has been generated or inspected and
 no efficacy conclusion is drawn from first-group training rewards.
+
+### Correctness-control L40S relocation: isolated environment and revision 5 (2026-08-19)
+
+The correctness-only seed-1 run is the long pole because its binary reward is
+flat for most eight-candidate groups. A scheduling snapshot of the active
+V100-SXM2 run showed 84 attempted groups and 22 non-flat optimizer updates. No
+sealed-policy evaluation exists, and no sealed candidate, Fmax, resource, or
+power result was generated or inspected. The attempted/update counts were read
+only to estimate completion time; this partial run will be archived and will
+contribute no study result.
+
+The user authorised physical GPUs 4--7 on the eight-L40S host and restricted
+all changes there to `/home/adam/mas/mas`. Existing environments were not used:
+with user-site packages disabled they were either missing core dependencies or
+had incompatible major package versions. A fresh isolated environment was
+therefore created at `/home/adam/mas/mas/env_fpga`, with every Conda, package,
+cache, temporary, repository, model, and output path kept below the authorised
+directory and `PYTHONNOUSERSITE=1`. Its study-relevant versions are:
+
+```
+Python             3.10.20
+torch              2.4.1+cu121
+transformers       4.46.3
+peft               0.13.2
+accelerate         1.0.1
+numpy              2.2.6
+scipy              1.15.3
+scikit-learn       1.7.2
+joblib              1.5.3
+iverilog / vvp     12.0
+```
+
+CUDA 12.1 in that environment detects the L40S (compute capability 8.9), and
+Icarus compilation/simulation passes. Because GitHub SSH was unavailable from
+the host, commit `a757bd37` was transferred in a verified Git bundle. The base
+model and SFT adapter were copied directly between the authorised servers and
+then checked by the same directory-manifest hash used by `freeze_hashes.py`:
+
+```
+artifact       source digest                                                    L40S digest
+base model     c29348b7a8ee7fbd73a31a215942d51d5490574d080305a15ca12f7fd396e256  identical
+sft_v6c_out    9ce91891c911b73f3f636b21ffb9f1769ce2b7ef2fbe40a8d1d68a874d56e2e8  identical
+```
+
+All other 37 revision-4 artifact digests matched as well, and the functional
+oracle canary passed. Two explicitly non-study canaries tested the new machine:
+seed 999 completed one FP16 inference group in 25 seconds, and seed 998 reached
+a real non-flat update on attempted group 13 and successfully executed backward,
+optimizer, and checkpoint saving without an out-of-memory error. These outputs
+(`l40_fp16_canary_seed999` and `l40_fp16_update_canary_seed998`) are operational
+tests only. Their undeclared seeds and candidates are not study arms, are not
+opened for efficacy analysis, and cannot enter a paper table.
+
+The key reproducibility hazard found during this check was dtype: the old
+automatic rule selects FP16 on V100 but BF16 on L40S. Revision 5 therefore
+passes `--dtype fp16` explicitly for every arm, makes
+`verify_sealed_training.py` reject any non-FP16 run, allows only the declared
+L40S physical GPU 4 in addition to the two V100 indices, and permits an explicit
+environment-bin path while disabling user-site packages. The correctness arm
+will move only after this amendment is committed, transferred, re-hashed on the
+L40S host, and independently verified. It will then be archived on V100 and
+restarted from update zero on L40S GPU 4 with the same seed, model content,
+adapter, prompts, reward, optimizer, hyperparameters, ceilings, and checkpoints.
+No endpoint, threshold, evaluation sample count, or scientific decision rule is
+changed; the relocation changes hardware and expected wall-clock time only.

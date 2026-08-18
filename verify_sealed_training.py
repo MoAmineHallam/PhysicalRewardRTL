@@ -124,6 +124,10 @@ def audit_run(root: str, name: str, expected: dict) -> dict:
         if config.get(key) != wanted:
             raise TrainingAuditError(
                 f"{name} run_config {key}: expected {wanted!r}, got {config.get(key)!r}")
+    if config.get("dtype") != "torch.float16":
+        raise TrainingAuditError(
+            f"{name} run_config dtype: expected 'torch.float16', "
+            f"got {config.get('dtype')!r}")
     same_float(config.get("temp"), 1.0, f"{name} temperature")
     same_float(config.get("lr"), 1e-5, f"{name} learning rate")
     same_float(config.get("kl_coef"), 0.1, f"{name} KL coefficient")

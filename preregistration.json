@@ -12,7 +12,7 @@
   "documents: a reward that looked fine by every metric we chose after seeing",
   "the data."
  ],
- "revision": 4,
+ "revision": 5,
  "frozen_utc": "2026-08-14",
  "amendments": [
   {
@@ -163,11 +163,47 @@
     "No endpoint, threshold, split member, reward, model, optimizer setting,",
     "sample count, synthesis flow, bootstrap rule, or outcome label changed."
    ]
+  },
+  {
+   "revision": 5,
+   "date": "2026-08-19",
+   "type": "pre-sealed-outcome hardware-relocation and dtype-control amendment",
+   "summary": "Relocated the incomplete correctness control from a V100-SXM2 to one L40S GPU after an isolated, version-matched environment and content-identical model copy passed inference and optimizer-update canaries; fixed FP16 explicitly for every arm.",
+   "detail": [
+    "No sealed split was opened for policy evaluation, no sealed candidate was",
+    "generated or synthesised, and no efficacy outcome was available or consulted",
+    "before this amendment. Active-run attempted-group and update counts were",
+    "viewed only to estimate completion time; the partial correctness run is",
+    "discarded under the existing crash/restart rule and contributes no result.",
+    "The L40S host is restricted to /home/adam/mas/mas. A new isolated environment",
+    "there uses Python 3.10.20, torch 2.4.1+cu121, transformers 4.46.3, PEFT",
+    "0.13.2, accelerate 1.0.1, NumPy 2.2.6, SciPy 1.15.3, scikit-learn 1.7.2,",
+    "joblib 1.5.3, and Icarus Verilog 12.0, with PYTHONNOUSERSITE=1 and every",
+    "environment, cache, temporary, model, repository, and output path kept under",
+    "that permitted directory.",
+    "The copied base model and SFT adapter have the same full manifest digests as",
+    "the frozen server objects. All other required artifacts match the frozen",
+    "identity set, and both the functional-oracle canary and hash verification pass.",
+    "Two non-study operational canaries used undeclared seeds 999 and 998 solely",
+    "to test inference and one complete backward/optimizer/checkpoint path. They",
+    "are never treated as study arms, efficacy evidence, or selectable results.",
+    "Because automatic dtype selection would choose BF16 on L40S but FP16 on V100,",
+    "run_arm.sh now passes --dtype fp16 explicitly and the completion audit rejects",
+    "any other dtype. The already completed RF seed 1 and every active V100 job",
+    "record FP16, so this prevents hardware from changing training precision.",
+    "run_arm.sh also accepts the prospectively allocated physical GPU 4 and an",
+    "explicit environment-bin path. The correctness seed-1 arm restarts from update",
+    "zero on that GPU with the same seed, model, adapter, prompts, reward, optimizer,",
+    "hyperparameters, update target, attempt ceiling, checkpoints, and crash policy.",
+    "No endpoint, threshold, split member, reward, model content, optimizer setting,",
+    "sample count, synthesis flow, bootstrap rule, or outcome label changed. The",
+    "relocation changes only host hardware and wall-clock time."
+   ]
   }
  ],
  "environment": {
-  "_note": "canonical machine for every number that reaches the paper. Numbers from other machines are not mixed into a table; knn12 rho differed 0.543 vs 0.604 between machines on identical deterministic code, which is why this is pinned.",
-  "host": "GPU server, /zeng_gk/Amine/mas/fpga",
+  "_note": "Canonical package and artifact identities for every number that reaches the paper. Training host and GPU are recorded per run; sealed generation artifacts are never pooled across alternate reruns. The sole revision-5 relocation uses the version-matched isolated L40S environment declared in amendment 5.",
+  "host": "V100 servers under /zeng_gk/Amine/mas/fpga, except correctness seed 1 on L40S under /home/adam/mas/mas/fpga per revision 5",
   "python": "3.10.20",
   "numpy": "2.2.6",
   "sklearn": "1.7.2",
@@ -175,8 +211,8 @@
   "torch": "2.4.1+cu121",
   "iverilog": "12.0",
   "vivado": "2023.1 (laptop, xc7z020clg400-1)",
-  "gpu": "recorded per run in <out>/run_config.json",
-  "dtype": "recorded per run in <out>/run_config.json (pick_dtype auto)"
+  "gpu": "recorded per run in <out>/run_config.json; correctness seed 1 is prospectively allocated to physical L40S GPU 4",
+  "dtype": "torch.float16 for every arm, passed explicitly and verified from <out>/run_config.json"
  },
  "identities": {
   "hash_basis": [

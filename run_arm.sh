@@ -23,12 +23,18 @@ REWARD="${1:?usage: run_arm.sh <rf_struct|mlp|correctness> <seed> [gpu]}"
 SEED="${2:?usage: run_arm.sh <rf_struct|mlp|correctness> <seed> [gpu]}"
 GPU="${3:-0}"
 case "$GPU" in
-  0|1) ;;
-  *) echo "REFUSING: gpu must be 0 or 1 on the pinned two-V100 server."; exit 2 ;;
+  0|1|4) ;;
+  *) echo "REFUSING: gpu must be 0, 1, or the preregistered L40S GPU 4."; exit 2 ;;
 esac
 
 cd "$(dirname "$0")"
-export PATH=/zeng_gk/Amine/mas/env_mas/bin:$PATH
+FPGA_ENV_BIN="${FPGA_ENV_BIN:-/zeng_gk/Amine/mas/env_mas/bin}"
+if [ ! -x "$FPGA_ENV_BIN/python" ]; then
+  echo "REFUSING: expected isolated Python at $FPGA_ENV_BIN/python"
+  exit 2
+fi
+export PATH="$FPGA_ENV_BIN:$PATH"
+export PYTHONNOUSERSITE=1
 export CUDA_VISIBLE_DEVICES="$GPU"
 export TOKENIZERS_PARALLELISM=false
 export HF_HUB_OFFLINE=1
@@ -88,6 +94,7 @@ fi
 echo "== arm=$REWARD seed=$SEED gpu=$GPU out=$OUT =="
 python -u grpo_oracle.py \
   --base "$BASE" --sft "$SFT" $EXTRA \
+  --dtype fp16 \
   --seed "$SEED" \
   --steps "$MAXG" --max-updates 276 --max-groups "$MAXG" \
   --save-at-updates 138,276 \
