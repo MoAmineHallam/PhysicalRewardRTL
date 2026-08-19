@@ -3514,3 +3514,35 @@ correctness seed-1 process remained active at 835 complete attempted groups and
 these are training-completion and execution-progress facts, not efficacy
 results. The full fail-closed `verify_sealed_training.py` audit remains blocked
 by design until correctness seed 1 reaches its declared stopping condition.
+
+### Historical generated-RTL token-length audit (2026-08-19)
+
+`audit_generated_token_lengths.py` measures output length using the exact frozen
+RTLCoder tokenizer rather than whitespace or a generic lexical proxy. Its
+machine-readable output is `token_length_audit_v8.json`, generated from the
+committed `rtl/holdout_eval_v8_{firfirr,iirmed,poly}` manifests and candidate
+RTL. The output records the tokenizer-file hashes and a combined SHA-256 over
+every input manifest, summary, and retained RTL file.
+
+The historical v8 evaluator retained only oracle-correct candidates, so this
+audit is explicitly **conditional on correctness**. It cannot recover the token
+lengths of incorrect or extraction-failed draws and must not be described as an
+all-generation mean. With candidate multiplicity preserved, each policy had
+1,440 total draws and the retained correct RTL had these tokenizer lengths:
+
+```
+policy   retained correct draws   mean tokens   median tokens
+base                         41         455.76             387
+SFT                       1,277         503.07             394
+GRPO                      1,252         689.67             662
+```
+
+Thus the historical GRPO model did **not** produce shorter correct code: its
+mean was 1.371 times SFT and 1.513 times base. Base had correct retained outputs
+for only 16 of 30 designs, but restricting the design-balanced comparison to
+those 16 common designs gives the same ordering: 483.36 base, 521.17 SFT, and
+667.28 GRPO tokens. This is an LLM inference-cost/verbosity diagnostic, not a
+hardware-area result: all policies use the same 6.77B backbone and prompt, while
+FPGA resources and Fmax depend on the synthesized circuit rather than source
+token count. The new sealed RF/MLP/correctness policies require their own frozen
+evaluation before any current-model token-length claim is made.
