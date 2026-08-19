@@ -3546,3 +3546,106 @@ hardware-area result: all policies use the same 6.77B backbone and prompt, while
 FPGA resources and Fmax depend on the synthesized circuit rather than source
 token count. The new sealed RF/MLP/correctness policies require their own frozen
 evaluation before any current-model token-length claim is made.
+
+### Post-correctness pipeline staged without opening the sealed split (2026-08-19)
+
+The four completed physical-reward runs were copied from the V100 host into the
+authorised L40S study checkout before the correctness run finished. This was a
+byte-for-byte operational relocation only; no candidate efficacy was inspected.
+Directory manifests computed independently at the source and destination
+matched exactly:
+
+```
+run          files  directory-manifest SHA-256
+grpo_rf_s1      18  c2109c91cf969f51ef555cd9525db0ed2f627c1d7c2e4795cff918e89985c3be
+grpo_rf_s2      15  7b3be67365c8284cab01db5d51288243b5df02b7b0ac1ac8f29aa99104719fae
+grpo_mlp_s1     15  6a763688187109e6e54a8f5044be1a2971aad431eb210e4b0132c2bc315ed80f
+grpo_mlp_s2     15  f28fab4dab237be78567cd50ea1c893b95d030aa50cc0b1f113c1471d21411df
+```
+
+All four staged runs pass the frozen `verify_sealed_training.audit_run` checks.
+Their group-log SHA-256 values are, respectively,
+`609b5fd0a98cec67bb7281e9fde6a881f37fc40f297936627e54bccac6fe8a04`,
+`b4737450595e5ab38b5d8852d18ade27d81ebd2386cad2ac3fb892262ae84979`,
+`5fe011edb634cf280674597d1d482686d52e4d48221d597d83b4591e62c20053`,
+and `32198a1c28f84f33c1ddba4bd71a590fb18b2fa24eb8e24d1003892878f4b631`.
+The L40S checkout still verifies all 37 frozen pre-outcome hashes with zero
+changed, missing, or unpinned artifacts. It had 44 GiB free, and all eight
+sealed evaluation destinations were absent.
+
+`/home/adam/mas/mas/start_sealed_after_correctness.sh` is an operational,
+non-study launcher installed outside the frozen checkout. It invokes the exact
+hashed `run_sealed_server_stage.sh` on physical L40S GPU 4 and refuses to start
+unless the correctness summary ends exactly with target update 276, process
+group 3194802 has exited, the checkout is identity `c08027b0`, every sealed
+destination and launch log is absent, GPU 4 is idle, and at least 10 GiB is
+free. A pre-completion dry invocation refused with no output or log side
+effects. The exact post-notification command is:
+
+```
+ssh adam@10.249.42.229 /home/adam/mas/mas/start_sealed_after_correctness.sh
+```
+
+The frozen server evaluator remains serial on one GPU. Its scheduling was not
+silently rewritten to use four GPUs during an active preregistered study.
+`run_sealed_handoff.ps1` makes the later boundaries one-command and fail-closed:
+`-Stage Fetch` requires the remote completion marker, downloads the eight
+evaluation directories plus audit manifests through a temporary directory,
+and compares a full remote/local SHA-256 manifest before installing anything;
+`-Stage Ppa` invokes the unchanged `run_sealed_laptop_ppa.ps1`; and
+`-Stage ReturnAndAnalyze` refuses pre-existing remote PPA/results, returns the
+eight complete PPA files, invokes the frozen analysis, and retrieves its sole
+result. PowerShell parsing passed, and a live dry test before server completion
+refused with no staging residue or local transfer artifact.
+
+At 2026-08-19 07:38:47 UTC, the still-blind correctness run was healthy at
+1,428 complete groups and 144 updates, leaving 132 updates before target or
+3,072 groups before the ceiling. Non-flat rates were 6/100, 14/200, 16/350,
+29/500, and 46/800 most-recent groups; the remaining run needs 4.2969%. GPU 4
+was active at 61% sampled utilization with 14,841 MiB allocated. These are
+execution-progress values only, not policy-efficacy results.
+
+### Symmetric PYNQ build repaired and staged; live sweep still pending (2026-08-19)
+
+The symmetric five-pair board selection was regenerated and all ten DUTs plus
+the echo canary again passed the Icarus/golden self-check at 1.0000. The prior
+same-process Vivado failure was isolated: after block-design module-reference
+generation, Vivado 2023.1 could leave `la_axi_fast.v` auto-disabled for direct
+top synthesis even though it appeared in the project. Reopening the generated
+project restored the source to the synthesis compile order. The generator and
+its emitted Tcl now enforce that close/reopen/update-order boundary. An
+existing-project probe then synthesized with zero errors, zero critical
+warnings, and no black boxes. The first clean-build attempt encountered a
+transient Vivado design-assist `rules.tcl` read/initialisation error before block
+design creation; one immediate clean retry completed synthesis, placement,
+routing, and bitstream generation.
+
+The resulting local generated pair is:
+
+```
+artifact                                                        bytes    SHA-256
+rtl/holdout_silicon_symmetric/out/system_holdout_symmetric.bit  4045674  f8502d94d988308caf13f018477f45ff16b6dfc078f9ec7ca55aac76432d8605
+rtl/holdout_silicon_symmetric/out/system_holdout_symmetric.hwh    142044  25125897a74874dc51579ce2a134039da70e856cdf342f91f8352bd9ef246834
+```
+
+All 7,184 routable nets are fully routed and none has a routing error
+(`rtl/holdout_silicon_symmetric/out/route_status.rpt:9-10`). This is **not** a
+200 MHz timing-closure claim: routed WNS is -38.448 ns
+(`rtl/holdout_silicon_symmetric/out/timing_summary_routed.rpt:140`) because the
+image deliberately includes slow SFT candidates and the live protocol lowers
+and sweeps FCLK0 from 20 through 260 MHz. A separate exact-flow laptop canary
+completed in about 136 seconds and reproduced 70.8014726706 MHz, 199 LUTs,
+96 FFs, 0 DSPs, 0 BRAMs, and 0.111 W
+(`rtl/holdout_eval_v8_firfirr/ppa.jsonl:1`), establishing that the laptop Vivado
+PPA path is operational; it is not a sealed outcome.
+
+`run_symmetric_board_handoff.ps1` now checks the bit/HWH, selection manifest,
+eleven design-derived goldens, and board scripts; refuses pre-existing local or
+remote results; uploads the fixed bundle; runs the declared 3 x 20--260 MHz
+sweep; retrieves `catalog_fmax.json`; and verifies its schema plus bitstream,
+HWH, selection, and manifest hashes. Its parser test passed and, with the board
+offline, its live dry test timed out fail-closed without creating a false result.
+The PYNQ-Z2 at 192.168.2.99 still does not answer ping or SSH, so there is still
+no live symmetric-silicon artifact or board claim. The exact bit/HWH pair and
+the routed timing, utilization, and route-status reports are retained in Git;
+the much larger regenerable Vivado project and checkpoints remain ignored.
