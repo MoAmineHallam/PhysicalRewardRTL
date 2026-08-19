@@ -3583,7 +3583,7 @@ free. A pre-completion dry invocation refused with no output or log side
 effects. The exact post-notification command is:
 
 ```
-ssh adam@10.249.42.229 /home/adam/mas/mas/start_sealed_after_correctness.sh
+ssh adam40 /home/adam/mas/mas/start_sealed_after_correctness.sh
 ```
 
 The frozen server evaluator remains serial on one GPU. Its scheduling was not
