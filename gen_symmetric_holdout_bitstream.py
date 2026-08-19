@@ -405,6 +405,12 @@ set_property top system_wrapper [current_fileset]
 
 # Run in this Vivado process. The Windows run-manager launcher uses WSH child
 # processes, which can stall in managed sessions before synthesis starts.
+# Reopen the project after generating module-reference wrappers. Without this
+# boundary Vivado 2023.1 may auto-disable the referenced RTL in the same process,
+# leaving the generated wrapper unable to resolve la_axi_fast during synthesis.
+close_project
+open_project [file join $OUT proj sys_holdout_symmetric.xpr]
+update_compile_order -fileset sources_1
 synth_design -top system_wrapper -part $PART -flatten_hierarchy rebuilt
 write_checkpoint -force [file join $OUT post_synth.dcp]
 report_utilization -file [file join $OUT utilization_post_synth.rpt]
