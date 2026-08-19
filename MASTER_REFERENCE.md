@@ -3491,3 +3491,26 @@ coefficient 0.1 in `run_config.json`. At the post-launch health check it had
 completed seven full groups and four optimizer updates and GPU 4 was actively
 computing. These counts establish execution health only; they are not sealed
 efficacy evidence and no endpoint has been generated or inspected.
+
+### Four of five sealed training arms complete (2026-08-19)
+
+The three remaining physical-reward jobs completed normally and wrote their
+frozen update-276 checkpoints and `run_summary.json` files. Combined with the
+previously retained RF seed-1 run, four of the five preregistered training arms
+are now complete:
+
+```
+arm / seed       attempted groups   non-flat updates   flat groups   ended
+rf_struct / 1                 419                276           143   target updates reached (276)
+rf_struct / 2                 465                276           189   target updates reached (276)
+mlp / 1                       414                276           138   target updates reached (276)
+mlp / 2                       497                276           221   target updates reached (276)
+```
+
+Every completed run reports checkpoints 138 and 276 with an empty
+`missed_checkpoints` list. At the same read-only status check, the L40S
+correctness seed-1 process remained active at 835 complete attempted groups and
+113 non-flat updates. No sealed-policy generation or evaluation has started;
+these are training-completion and execution-progress facts, not efficacy
+results. The full fail-closed `verify_sealed_training.py` audit remains blocked
+by design until correctness seed 1 reaches its declared stopping condition.
