@@ -114,6 +114,19 @@ class AnalysisInputTests(unittest.TestCase):
 
 
 class TrainingAuditTests(unittest.TestCase):
+    def test_revision6_correctness_ceiling_is_synchronized(self):
+        with open(os.path.join(HERE, "preregistration.json"), encoding="utf-8") as handle:
+            prereg = json.load(handle)
+        self.assertEqual(prereg["revision"], 6)
+        self.assertEqual(prereg["training_protocol"]["max_attempted_groups"], {
+            "rf_struct": 2000, "mlp": 2000, "correctness": 15000})
+        self.assertEqual(training.EXPECTED["grpo_corr_s1"]["max_groups"], 15000)
+        with open(os.path.join(HERE, "run_arm.sh"), encoding="utf-8") as handle:
+            launcher = " ".join(handle.read().split())
+        self.assertIn(
+            'correctness) TAG=corr ; MAXG=15000 ; EXTRA="--reward correctness" ;;',
+            launcher)
+
     def test_complete_group_log_requires_unique_updates(self):
         with tempfile.TemporaryDirectory(dir=HERE) as root:
             path = os.path.join(root, "groups.jsonl")

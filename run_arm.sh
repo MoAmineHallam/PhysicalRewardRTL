@@ -14,17 +14,17 @@
 # Arms are matched on NON-FLAT OPTIMIZER UPDATES (276), not attempted groups: a
 # group whose rewards are all equal produces no gradient, and the correctness-only
 # arm goes flat far more often, so step-matching would give it less learning.
-# The attempt ceiling is 2000 for the physical-reward arms and 4500 for the
-# correctness-only arm; a run that hits it reports that stop in run_summary.json
-# rather than being quietly extended.
+# The attempt ceiling is 2000 for the physical-reward arms and, after the
+# disclosed revision-6 feasibility amendment, 15000 for the correctness-only
+# arm; a run that hits it reports that stop in run_summary.json.
 set -euo pipefail
 
 REWARD="${1:?usage: run_arm.sh <rf_struct|mlp|correctness> <seed> [gpu]}"
 SEED="${2:?usage: run_arm.sh <rf_struct|mlp|correctness> <seed> [gpu]}"
 GPU="${3:-0}"
 case "$GPU" in
-  0|1|4) ;;
-  *) echo "REFUSING: gpu must be 0, 1, or the preregistered L40S GPU 4."; exit 2 ;;
+  0|1|4|7) ;;
+  *) echo "REFUSING: gpu must be 0, 1, 4, or the preregistered revision-6 L40S GPU 7."; exit 2 ;;
 esac
 
 cd "$(dirname "$0")"
@@ -42,20 +42,23 @@ export HF_HUB_OFFLINE=1
 BASE="${RTLCODER_PATH:-/zeng_gk/Amine/mas/rtlcoder}"
 SFT=sft_v6c_out
 
-# PER-ARM attempt ceiling (preregistration revision 2, amendment 1). A SHARED
+# PER-ARM attempt ceiling (preregistration revision 2 amendment 1, with the
+# disclosed revision-6 correctness feasibility amendment). A SHARED
 # ceiling silently reintroduces step-matching, which the protocol explicitly
 # rejects: a flat group yields no gradient, and the flat RATE differs by arm by
 # construction. Measured on an existing log, grpo_ablate_const_matched_log.jsonl,
 # the binary-correctness reward went non-flat on only 159 of 1997 groups (0.080),
 # because a group is flat when all 8 candidates are correct OR all 8 are wrong and
 # sft_v6c is ~95% correct on train designs (0.95^8 = 0.66 all-correct). Reaching
-# 276 updates therefore needs ~3450 groups, so its ceiling is 4500. The MATCHED
-# QUANTITY -- 276 non-flat updates -- is identical across arms; only the number of
-# attempts differs, which is exactly what matching on updates means.
+# historical 0.080 estimate did not hold in revision 5: that run produced 215
+# updates in 4500 groups, with only 25 updates in its last 1500 groups. Revision 6
+# therefore permits one clean restart from update zero with a 15000-group safety
+# ceiling. It still stops immediately at 276 updates and may not be extended
+# again. The MATCHED QUANTITY -- 276 non-flat updates -- remains unchanged.
 case "$REWARD" in
   rf_struct)   TAG=rf   ; MAXG=2000 ; EXTRA="--reward rf_struct --rf rf_struct.joblib" ;;
   mlp)         TAG=mlp  ; MAXG=2000 ; EXTRA="--reward mlp --surrogate surrogate_v3.pt" ;;
-  correctness) TAG=corr ; MAXG=4500 ; EXTRA="--reward correctness" ;;
+  correctness) TAG=corr ; MAXG=15000 ; EXTRA="--reward correctness" ;;
   *) echo "unknown reward '$REWARD'"; exit 2 ;;
 esac
 case "$REWARD:$SEED" in

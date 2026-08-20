@@ -22,7 +22,7 @@ EXPECTED = {
     "grpo_rf_s2": {"reward": "rf_struct", "seed": 2, "max_groups": 2000},
     "grpo_mlp_s1": {"reward": "mlp", "seed": 1, "max_groups": 2000},
     "grpo_mlp_s2": {"reward": "mlp", "seed": 2, "max_groups": 2000},
-    "grpo_corr_s1": {"reward": "correctness", "seed": 1, "max_groups": 4500},
+    "grpo_corr_s1": {"reward": "correctness", "seed": 1, "max_groups": 15000},
 }
 TARGET_UPDATES = 276
 CHECKPOINTS = [138, 276]

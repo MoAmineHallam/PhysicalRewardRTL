@@ -12,8 +12,8 @@
   "documents: a reward that looked fine by every metric we chose after seeing",
   "the data."
  ],
- "revision": 5,
- "frozen_utc": "2026-08-14",
+ "revision": 6,
+ "frozen_utc": "2026-08-20",
  "amendments": [
   {
    "revision": 2,
@@ -199,11 +199,42 @@
     "sample count, synthesis flow, bootstrap rule, or outcome label changed. The",
     "relocation changes only host hardware and wall-clock time."
    ]
+  },
+  {
+   "revision": 6,
+   "date": "2026-08-20",
+   "type": "post-training, pre-sealed-outcome compute-feasibility amendment",
+   "summary": "Preserved the revision-5 correctness run that exhausted 4500 attempted groups before its fixed update target, then authorized one clean update-zero rerun with only its attempt safety ceiling raised to 15000 and physical L40S GPU 7 prospectively allocated.",
+   "detail": [
+    "No sealed-policy candidate was generated, evaluated, synthesised, or viewed",
+    "before this amendment. Only correctness-arm training feasibility was viewed:",
+    "the revision-5 run exhausted exactly 4500 attempted groups with 215 non-flat",
+    "optimizer updates and 4285 flat groups, without a CUDA or runtime error. It",
+    "contains checkpoint 138 but not the target checkpoint 276.",
+    "That failed run is retained with a machine-generated audit, full raw-file",
+    "hashes, its launch identity, logs, adapters, and checkpoints. It is never",
+    "resumed, merged, evaluated as an endpoint, or pooled with the revision-6 run.",
+    "The historical 0.080 non-flat-rate estimate used to set 4500 attempts was",
+    "not stationary in this training run: only 25 of its last 1500 groups were",
+    "non-flat (0.0167). The prior ceiling was therefore a bad feasibility bound,",
+    "not evidence that the scientific update target should change.",
+    "Revision 6 changes only correctness seed 1 max_attempted_groups from 4500",
+    "to 15000. It restarts from the frozen SFT adapter at update zero with the",
+    "same seed, prompts, correctness reward, model, dtype, optimizer, learning",
+    "rate, KL coefficient, group size, temperature, token budget, update target,",
+    "checkpoint schedule, and crash policy. It stops immediately at update 276.",
+    "If 15000 groups still do not reach update 276, the ceiling stop is reported",
+    "and there is no further extension or substituted checkpoint.",
+    "Physical L40S GPU 7 was selected before launch at the user's direction and",
+    "confirmed idle. GPU selection changes wall-clock placement, not computation.",
+    "No endpoint, sealed split member, reward, model content, optimizer setting,",
+    "matched sample count, synthesis flow, bootstrap rule, or outcome label changed."
+   ]
   }
  ],
  "environment": {
-  "_note": "Canonical package and artifact identities for every number that reaches the paper. Training host and GPU are recorded per run; sealed generation artifacts are never pooled across alternate reruns. The sole revision-5 relocation uses the version-matched isolated L40S environment declared in amendment 5.",
-  "host": "V100 servers under /zeng_gk/Amine/mas/fpga, except correctness seed 1 on L40S under /home/adam/mas/mas/fpga per revision 5",
+  "_note": "Canonical package and artifact identities for every number that reaches the paper. Training host and GPU are recorded per run; sealed generation artifacts are never pooled across alternate reruns. The revision-6 correctness rerun uses the version-matched isolated L40S environment declared in amendments 5 and 6.",
+  "host": "V100 servers under /zeng_gk/Amine/mas/fpga, except correctness seed 1 on L40S under /home/adam/mas/mas/fpga per revisions 5 and 6",
   "python": "3.10.20",
   "numpy": "2.2.6",
   "sklearn": "1.7.2",
@@ -211,7 +242,7 @@
   "torch": "2.4.1+cu121",
   "iverilog": "12.0",
   "vivado": "2023.1 (laptop, xc7z020clg400-1)",
-  "gpu": "recorded per run in <out>/run_config.json; correctness seed 1 is prospectively allocated to physical L40S GPU 4",
+  "gpu": "recorded per run in <out>/run_config.json; the revision-6 correctness seed-1 rerun is prospectively allocated to physical L40S GPU 7",
   "dtype": "torch.float16 for every arm, passed explicitly and verified from <out>/run_config.json"
  },
  "identities": {
@@ -567,9 +598,9 @@
   "max_attempted_groups": {
    "rf_struct": 2000,
    "mlp": 2000,
-   "correctness": 4500
+   "correctness": 15000
   },
-  "_ceiling_rationale": "a run that reaches the attempt ceiling before the target ends there and is REPORTED as having ended on the ceiling; it is never silently extended",
+  "_ceiling_rationale": "revision 6 raises only the correctness-arm feasibility ceiling after the disclosed 4500-group failure; a run that reaches 15000 before the target ends there and is REPORTED as having ended on the ceiling, with no further extension",
   "checkpoints_at_updates": [
    138,
    276

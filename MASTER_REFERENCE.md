@@ -3649,3 +3649,40 @@ The PYNQ-Z2 at 192.168.2.99 still does not answer ping or SSH, so there is still
 no live symmetric-silicon artifact or board claim. The exact bit/HWH pair and
 the routed timing, utilization, and route-status reports are retained in Git;
 the much larger regenerable Vivado project and checkpoints remain ignored.
+
+### Correctness ceiling failure preserved; revision 6 frozen (2026-08-20)
+
+The revision-5 correctness seed-1 run ended normally at its preregistered
+4,500-attempt ceiling without reaching the matched update target. This is a
+compute-feasibility failure, not a sealed efficacy result: no sealed-policy RTL
+has been generated, evaluated, synthesised, or viewed. A new deterministic
+audit reads the complete server artifacts rather than transcribing counters by
+hand. It verifies 36,000 candidate rows in exactly 4,500 consecutive groups,
+215 unique non-flat updates numbered 1 through 215, 4,285 flat groups,
+checkpoint 138 present, checkpoint 276 absent, and the last update at group
+4,484. The run reported `steps exhausted` and no CUDA or runtime error.
+
+The non-flat rate fell during training. In the final 1,500 groups there were
+25 updates (1.6667%); in the final 1,000, 16 (1.6%); and in the final 500,
+7 (1.4%). These exact values and every 250-group bin are in
+`failed_training_runs/rev5_corr_ceiling4500.json`, whose raw SHA-256 is
+`6109d4c98a4312933be2d77a742c495fe47b5162edb497a0bc37371e41b60c50`.
+That artifact also records raw SHA-256 and byte counts for the run directory,
+all external logs, and the revision-5 launch identity.
+
+The complete 182 MiB failed run was moved recoverably, not deleted, to
+`/home/adam/mas/mas/failed_runs/rev5_corr_ceiling4500_20260820/`. It is never
+resumed, merged, evaluated as an endpoint, or pooled with a later run.
+
+Preregistration revision 6 discloses this post-training but pre-sealed-outcome
+change. Only correctness seed 1's safety ceiling changes, from 4,500 to 15,000
+attempted groups. The arm restarts from the frozen SFT adapter at update zero
+with the same seed, reward, model, FP16 dtype, optimizer, learning rate, KL,
+group size, temperature, token budget, target of 276 updates, checkpoints, and
+crash policy, and it still stops immediately at update 276. If 15,000 attempts
+are insufficient, the failure is reported and there is no further extension.
+Physical L40S GPU 7 was prospectively assigned at the user's direction and all
+eight L40S GPUs, including GPU 7, were verified idle before the revision was
+frozen. A synchronization regression test now fails if the preregistration,
+launcher, and completion auditor disagree on the ceiling; all eight workflow
+tests pass locally.
