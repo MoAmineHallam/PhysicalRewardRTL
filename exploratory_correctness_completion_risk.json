@@ -1,0 +1,318 @@
+{
+  "classification": "exploratory CPU-only training-feasibility sensitivity analysis; not sealed efficacy evidence and not a primary-study endpoint",
+  "environment": {
+    "compute": "CPU only; CUDA_VISIBLE_DEVICES was empty at invocation",
+    "numpy": "2.2.6",
+    "python": "3.10.20",
+    "scipy": "1.15.3"
+  },
+  "fixed_rate_scenarios": [
+    {
+      "assumption": "future groups are independent with one fixed non-flat probability",
+      "attempts_to_needed_updates_quantiles_untruncated": {
+        "0.1": 3664,
+        "0.5": 4334,
+        "0.9": 5081
+      },
+      "description": "Holds the empirical final-500 non-flat rate fixed.",
+      "exact_probability_fail_to_reach_target": 2.200684820953457e-16,
+      "exact_probability_reach_target_before_ceiling": 0.9999999999999998,
+      "expected_future_updates_before_ceiling": 147.0,
+      "name": "stationary_final_500_groups",
+      "natural_log_probability_fail_to_reach_target": -36.05259289372716,
+      "nonflat_probability": 0.014
+    },
+    {
+      "assumption": "future groups are independent with one fixed non-flat probability",
+      "attempts_to_needed_updates_quantiles_untruncated": {
+        "0.1": 3207,
+        "0.5": 3792,
+        "0.9": 4445
+      },
+      "description": "Holds the empirical final-1000 non-flat rate fixed.",
+      "exact_probability_fail_to_reach_target": 3.811751761997513e-22,
+      "exact_probability_reach_target_before_ceiling": 1.0,
+      "expected_future_updates_before_ceiling": 168.0,
+      "name": "stationary_final_1000_groups",
+      "natural_log_probability_fail_to_reach_target": -49.318783182345015,
+      "nonflat_probability": 0.016
+    },
+    {
+      "assumption": "future groups are independent with one fixed non-flat probability",
+      "attempts_to_needed_updates_quantiles_untruncated": {
+        "0.1": 3079,
+        "0.5": 3640,
+        "0.9": 4267
+      },
+      "description": "Holds the empirical final-1500 non-flat rate fixed.",
+      "exact_probability_fail_to_reach_target": 3.653202251301936e-24,
+      "exact_probability_reach_target_before_ceiling": 1.0,
+      "expected_future_updates_before_ceiling": 175.0,
+      "name": "stationary_final_1500_groups",
+      "natural_log_probability_fail_to_reach_target": -53.966438119767126,
+      "nonflat_probability": 0.016666666666666666
+    },
+    {
+      "assumption": "future groups are independent with one fixed non-flat probability",
+      "attempts_to_needed_updates_quantiles_untruncated": {
+        "0.1": 2701,
+        "0.5": 3193,
+        "0.9": 3742
+      },
+      "description": "Holds the empirical final-2000 non-flat rate fixed.",
+      "exact_probability_fail_to_reach_target": 1.5103645271151712e-31,
+      "exact_probability_reach_target_before_ceiling": 1.0,
+      "expected_future_updates_before_ceiling": 199.5,
+      "name": "stationary_final_2000_groups",
+      "natural_log_probability_fail_to_reach_target": -70.96778685243743,
+      "nonflat_probability": 0.019
+    },
+    {
+      "assumption": "future groups are independent with one fixed non-flat probability",
+      "attempts_to_needed_updates_quantiles_untruncated": {
+        "0.1": 5292,
+        "0.5": 6261,
+        "0.9": 7343
+      },
+      "description": "Applies the preceding-to-final 1500-group rate ratio once more, then holds that lower rate fixed.",
+      "exact_probability_fail_to_reach_target": 4.781766785967465e-06,
+      "exact_probability_reach_target_before_ceiling": 0.999995218233214,
+      "expected_future_updates_before_ceiling": 101.74418604651163,
+      "name": "one_more_recent_ratio_drop_then_stationary",
+      "natural_log_probability_fail_to_reach_target": -12.250700459258452,
+      "nonflat_probability": 0.009689922480620155
+    },
+    {
+      "assumption": "future groups are independent with one fixed non-flat probability",
+      "attempts_to_needed_updates_quantiles_untruncated": {
+        "0.1": 7323,
+        "0.5": 8667,
+        "0.9": 10166
+      },
+      "description": "Immediately halves the final-500 rate, then holds it fixed.",
+      "exact_probability_fail_to_reach_target": 0.060573494172761685,
+      "exact_probability_reach_target_before_ceiling": 0.9394265058272383,
+      "expected_future_updates_before_ceiling": 73.5,
+      "name": "half_final_500_rate_then_stationary",
+      "natural_log_probability_fail_to_reach_target": -2.803897871478148,
+      "nonflat_probability": 0.007
+    },
+    {
+      "assumption": "future groups are independent with one fixed non-flat probability",
+      "attempts_to_needed_updates_quantiles_untruncated": {
+        "0.1": 8823,
+        "0.5": 10443,
+        "0.9": 12250
+      },
+      "description": "Uses the rate at which expected future updates equal the 61 updates needed; this is not a safety threshold.",
+      "exact_probability_fail_to_reach_target": 0.4828233918033112,
+      "exact_probability_reach_target_before_ceiling": 0.5171766081966889,
+      "expected_future_updates_before_ceiling": 61.0,
+      "name": "break_even_expected_rate",
+      "natural_log_probability_fail_to_reach_target": -0.7281043406356049,
+      "nonflat_probability": 0.0058095238095238096
+    },
+    {
+      "assumption": "future groups are independent with one fixed non-flat probability",
+      "attempts_to_needed_updates_quantiles_untruncated": {
+        "0.1": 10251,
+        "0.5": 12134,
+        "0.9": 14235
+      },
+      "description": "Stress case below the break-even expected rate.",
+      "exact_probability_fail_to_reach_target": 0.8649580530554465,
+      "exact_probability_reach_target_before_ceiling": 0.13504194694455354,
+      "expected_future_updates_before_ceiling": 52.5,
+      "name": "fixed_rate_0_5_percent",
+      "natural_log_probability_fail_to_reach_target": -0.14507426680362778,
+      "nonflat_probability": 0.005
+    }
+  ],
+  "generated_utc": "2026-08-20T13:56:32.507469+00:00",
+  "interpretation": {
+    "decision": "Do not alter, stop, or extend the active revision-6 run based on this exploratory analysis.",
+    "identified_single_failure_probability": false,
+    "optional_next_diagnostic": "A separately labelled inference-only probe at the archived update-215 adapter can estimate its current independent-seed flat rate, but cannot prove how another 61 optimizer updates will change that rate.",
+    "reason": "Only one trajectory is available and its non-flat probability is non-stationary; scenario probabilities answer conditional questions, not the unconditional chance that the live run succeeds.",
+    "result": "The 15000-group ceiling is ample if the late rate plateaus, repeats recent-bin variability, or drops once more and then plateaus. It can still fail if the preceding-to-final multiplicative decline continues compounding across future 1500-group windows."
+  },
+  "late_trend_test": {
+    "chi_square_1df_p_value": 0.5156221957461912,
+    "counts": [
+      5,
+      4,
+      6,
+      3,
+      3,
+      4
+    ],
+    "fitted_log_odds_slope_per_250_groups": -0.0769811394574456,
+    "fitted_odds_ratio_per_250_groups": 0.9259073165561599,
+    "interpretation_rule": "p >= 0.05 means these six bins do not establish a continuing late slope; it does not prove stationarity",
+    "likelihood_ratio_statistic": 0.4226409477035702,
+    "model": "binomial logistic slope over the final six 250-group bins",
+    "source_group_range": [
+      3001,
+      4500
+    ]
+  },
+  "monte_carlo_draws_per_scenario": 1000000,
+  "monte_carlo_scenarios": [
+    {
+      "assumption": "one future probability drawn from the Jeffreys posterior and held fixed for all remaining groups",
+      "description": "Propagates finite-sample uncertainty in the final-1500 rate but assumes that rate remains stationary.",
+      "future_updates_quantiles": {
+        "0.01": 102.0,
+        "0.05": 121.0,
+        "0.5": 176.0,
+        "0.95": 244.0,
+        "0.99": 276.0
+      },
+      "monte_carlo_reach_target": {
+        "draws": 1000000,
+        "exact_95_percent_interval_for_monte_carlo_error_only": [
+          0.9999666919239424,
+          0.9999862126674055
+        ],
+        "probability": 0.999978,
+        "successes": 999978
+      },
+      "name": "stationary_jeffreys_posterior_final_1500",
+      "posterior": {
+        "alpha": 25.5,
+        "beta": 1475.5
+      }
+    },
+    {
+      "assumption": "the final six bins are exchangeable and future regimes repeat their empirical variability without systematic decay",
+      "description": "Resamples the six final observed 250-group rates for each future 250-group block.",
+      "future_blocks": 42,
+      "future_updates_quantiles": {
+        "0.01": 142.0,
+        "0.05": 151.0,
+        "0.5": 175.0,
+        "0.95": 200.0,
+        "0.99": 211.0
+      },
+      "monte_carlo_reach_target": {
+        "draws": 1000000,
+        "exact_95_percent_interval_for_monte_carlo_error_only": [
+          0.9999963111273498,
+          1.0
+        ],
+        "probability": 1.0,
+        "successes": 1000000
+      },
+      "name": "last_six_bins_exchangeable_block_bootstrap",
+      "source_rates": [
+        0.02,
+        0.016,
+        0.024,
+        0.012,
+        0.012,
+        0.016
+      ]
+    },
+    {
+      "assumption": "the recent multiplicative decline compounds indefinitely; this is a stress scenario, not an identified forecast",
+      "decay_ratio_per_1500_groups": 0.5813953488372093,
+      "description": "Stress test that repeats the observed preceding-to-final 1500-group rate ratio in every future 1500-group block.",
+      "expected_future_updates_before_ceiling": 33.94255660254679,
+      "future_block_probabilities": [
+        0.009689922480620155,
+        0.0056336758608256715,
+        0.003275392942340507,
+        0.0019042982222909927,
+        0.0011071501292389493,
+        0.0006436919356040404,
+        0.00037423949744420953
+      ],
+      "future_updates_quantiles": {
+        "0.01": 21.0,
+        "0.05": 25.0,
+        "0.5": 34.0,
+        "0.95": 44.0,
+        "0.99": 48.0
+      },
+      "monte_carlo_reach_target": {
+        "draws": 1000000,
+        "exact_95_percent_interval_for_monte_carlo_error_only": [
+          9.903156658857424e-06,
+          2.721850774684384e-05
+        ],
+        "probability": 1.7e-05,
+        "successes": 17
+      },
+      "name": "continued_compounding_1500_group_decay"
+    }
+  ],
+  "monte_carlo_seed": 20260820,
+  "observed_recent_windows": {
+    "1000": {
+      "groups": 1000,
+      "nonflat_rate": 0.016,
+      "source_group_range": [
+        3501,
+        4500
+      ],
+      "updates": 16
+    },
+    "1500": {
+      "groups": 1500,
+      "nonflat_rate": 0.016666666666666666,
+      "source_group_range": [
+        3001,
+        4500
+      ],
+      "updates": 25
+    },
+    "2000": {
+      "groups": 2000,
+      "nonflat_rate": 0.019,
+      "source_group_range": [
+        2501,
+        4500
+      ],
+      "updates": 38
+    },
+    "500": {
+      "groups": 500,
+      "nonflat_rate": 0.014,
+      "source_group_range": [
+        4001,
+        4500
+      ],
+      "updates": 7
+    }
+  },
+  "preceding_1500": {
+    "groups": [
+      1501,
+      3000
+    ],
+    "nonflat_rate": 0.028666666666666667,
+    "updates": 43
+  },
+  "preceding_to_final_1500_rate_ratio": 0.5813953488372093,
+  "question": {
+    "break_even_expected_nonflat_rate": 0.0058095238095238096,
+    "ceiling_groups": 15000,
+    "groups_remaining_after_archived_stop": 10500,
+    "observed_groups": 4500,
+    "observed_updates": 215,
+    "target_updates": 276,
+    "updates_needed_after_archived_stop": 61
+  },
+  "schema": "exploratory-correctness-completion-risk/1",
+  "source": {
+    "audit_path": "/home/adam/mas/mas/fpga/failed_training_runs/rev5_corr_ceiling4500.json",
+    "audit_sha256_raw": "6109d4c98a4312933be2d77a742c495fe47b5162edb497a0bc37371e41b60c50",
+    "script_path": "/home/adam/mas/mas/exploratory_correctness_completion_risk.py",
+    "script_sha256_raw": "b103acc252212183eef0f8745a97c4838868ab489345795e95dd642e159a8289",
+    "source_fields": [
+      "/group_log_audit/attempted_groups",
+      "/group_log_audit/optimizer_updates",
+      "/group_log_audit/bins_250_groups"
+    ]
+  }
+}

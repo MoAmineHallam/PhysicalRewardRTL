@@ -3721,3 +3721,50 @@ state, absent sealed outputs, free disk, and idle GPU 7, then invoke the hashed
 `run_sealed_server_stage.sh` unchanged on that GPU. It also notifies when the
 server evaluation starts and when it succeeds or fails. A pre-completion dry
 invocation refused without creating a sealed log, status, or output artifact.
+
+### Exploratory CPU completion-risk sensitivity analysis (2026-08-20)
+
+`exploratory_correctness_completion_risk.py` ran on the L40 host's CPU with
+`CUDA_VISIBLE_DEVICES` empty, one million Monte Carlo draws, and seed 20260820.
+The active revision-6 GPU-7 process remained healthy at 96% utilisation during
+the analysis. This diagnostic is explicitly outside the frozen primary
+workflow: it consumes only aggregate 250-group counts from the archived
+revision-5 audit, never candidate RTL or sealed efficacy output, and cannot
+change the active run, its 15,000-group ceiling, or any reporting rule.
+
+The input audit SHA-256 is
+`6109d4c98a4312933be2d77a742c495fe47b5162edb497a0bc37371e41b60c50`,
+the diagnostic script SHA-256 is
+`b103acc252212183eef0f8745a97c4838868ab489345795e95dd642e159a8289`,
+and the complete machine-readable output `exploratory_correctness_completion_risk.json`
+has SHA-256
+`de40c245576b8eaa1f2e942a244a4c63dd4efd2a42e9350d71b08239d9d6982f`.
+
+After the archived stop, 61 further updates are required within 10,500 groups,
+so the break-even expected non-flat rate is 0.58095%. The final six observed
+250-group bins contain `[5, 4, 6, 3, 3, 4]` updates. A binomial logistic slope
+test over those bins gives an odds ratio of 0.92591 per bin and p=0.51562: these
+six bins do not establish continuing late decline, although this does not prove
+stationarity.
+
+The result is intentionally a sensitivity table, not one invented probability:
+
+```
+future assumption                                      completion result
+final-1500 rate (1.6667%) remains fixed                exact failure 3.65e-24
+stationary Jeffreys uncertainty from final 1500        999,978 / 1,000,000 complete
+resample the last six 250-group rates                  1,000,000 / 1,000,000 complete
+one more 0.5814 rate-ratio drop, then plateau          99.99952% complete
+halve the final-500 rate to 0.7%, then plateau         93.94265% complete
+break-even 0.58095% fixed rate                         51.71766% complete
+fixed 0.5% rate                                        13.50419% complete
+repeat the 0.5814 decay every future 1500 groups       17 / 1,000,000 complete
+```
+
+Thus recent-rate and plateau models say the new ceiling is ample, and the late
+bins contain no statistically detected continuing slope. The run can still fail
+under a harsh compounding-saturation model, which expects only 33.94 of the 61
+needed future updates. Since one non-stationary trajectory cannot identify
+which future model is true, no unconditional success probability is claimed.
+The scientifically valid decision remains to leave revision 6 untouched and
+report its actual stopping condition.
