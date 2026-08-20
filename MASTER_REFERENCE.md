@@ -3686,3 +3686,38 @@ eight L40S GPUs, including GPU 7, were verified idle before the revision was
 frozen. A synchronization regression test now fails if the preregistration,
 launcher, and completion auditor disagree on the ceiling; all eight workflow
 tests pass locally.
+
+The revision-6 identity was frozen and pushed as commit `bb9d6811`. On the L40
+host, `freeze_hashes.py --verify` recomputed the 13 GB base-model manifest plus
+all code, adapter, reward, split, and failure-audit identities: 39 pinned,
+0 changed, 0 missing, and 0 required-but-unpinned. The same eight workflow tests
+passed in the isolated L40 environment, the tracked checkout was clean, and the
+launch-time machine checks found 41 GiB free and physical GPU 7 idle at 19 MiB
+with no compute process.
+
+Correctness seed 1 then started from update zero at
+2026-08-20 11:22:58 UTC on physical L40S GPU 7, process group 3696880:
+
+```
+FPGA_ENV_BIN=/home/adam/mas/mas/env_fpga/bin \
+RTLCODER_PATH=/home/adam/mas/mas/rtlcoder \
+PYTHONNOUSERSITE=1 ./run_arm.sh correctness 1 7
+```
+
+The emitted `run_config.json` independently records correctness reward, seed 1,
+group 8, temperature 1.0, 1,536 tokens, learning rate 1e-5, KL 0.1, FP16,
+target 276 updates, checkpoints 138/276, and the sole amended value: a maximum
+of 15,000 groups. The launcher again passed all 39 hashes and the functional
+oracle canary before loading 6.77B parameters. The first complete group was
+7/8 correct, non-flat, and produced update 1 in 60 seconds; GPU 7 was then
+active at 27.9 GiB, 97% utilisation, and 222.83 W. This establishes launch
+health only and is not sealed efficacy evidence.
+
+A detached completion monitor is active outside the tracked study checkout. It
+sends the already-tested iPhone notification on correctness success or failure.
+Only after a clean `276|target updates reached (276)` summary and process-group
+exit will its fail-closed launcher verify the frozen Git identity, clean tracked
+state, absent sealed outputs, free disk, and idle GPU 7, then invoke the hashed
+`run_sealed_server_stage.sh` unchanged on that GPU. It also notifies when the
+server evaluation starts and when it succeeds or fails. A pre-completion dry
+invocation refused without creating a sealed log, status, or output artifact.
