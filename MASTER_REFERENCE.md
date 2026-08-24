@@ -3768,3 +3768,73 @@ needed future updates. Since one non-stationary trajectory cannot identify
 which future model is true, no unconditional success probability is claimed.
 The scientifically valid decision remains to leave revision 6 untouched and
 report its actual stopping condition.
+
+### Correctness control completed; frozen pre-open contract stopped the repair study (2026-08-24)
+
+The revision-6 correctness-only control reached its frozen target normally at
+2026-08-24 17:23 China time. The server `run_summary.json` records exactly 276
+optimizer updates in 12,054 attempted groups, 11,778 flat groups, checkpoints
+138 and 276 present, no missed checkpoint, and `target updates reached (276)`.
+Its SHA-256 is
+`444d5e15218ca30d4107423ac74a25422a79f7fa45e7f1cea87c4df4c1c9183b`.
+This completes all five declared training arms; it is still a training-
+completion fact, not an efficacy result.
+
+The first automatic sealed-stage handoff then failed operationally with exit
+126 because the untracked wrapper executed tracked
+`run_sealed_server_stage.sh` directly even though Git records that file as mode
+100644. The failed wrapper and log/status were preserved under
+`/home/adam/mas/mas/failed_handoffs/rev6_permission_20260824T172435/`.
+Only the untracked wrapper was changed to invoke the byte-identical frozen
+script through `bash`; the tracked checkout remained clean at frozen identity
+`bb9d68115555317ba968c62f96308ec321606918`. This operational repair did not
+open the sealed split or alter any study code, model, checkpoint, reward, or
+decision rule.
+
+On the repaired launch, all 39 frozen hashes matched and
+`verify_sealed_training.py` passed all five runs. Materialisation then produced
+1,217 distinct non-empty RF-training candidates from 7,047 logged occurrences.
+The mandatory pre-open canonicalisation/compilation/trace contract stopped on
+exactly one candidate before any sealed evaluation began:
+
+```
+file: rtl/sealed_rf_training_candidates/
+      rftrain__iir6_v3__a5194f1b83f187c5.sv
+source: grpo_rf_s2/group_log.jsonl:3083
+training location: group 386, candidate 2, update 244
+oracle/reward: incorrect, reward 0.0, structural features not evaluated
+exception: Unsupported: ambiguous statement: multiple top-level '<='
+           (cannot separate assignment from comparison)
+```
+
+The emitted candidate SHA-256 is
+`296772a50469a79ef709c6273c1547ec1c5fc7c6412a6a40bb286b9f08cb358c`.
+Its reset branch places eight nonblocking assignments on one source line; the
+candidate is also malformed later by an incomplete ternary. An independent
+read-only pass over all 1,217 materialised files found this one exception and
+no other `verify_contract` exception. The candidate had already been rejected
+by the functional gate during training, which is why its structural reward was
+never read. Nevertheless, the frozen preregistration deliberately requires the
+mutation contract over **every distinct RF-arm training candidate**, and says
+that any new failure classifies the experiment `invalid_repair` and must not be
+patched and rerun. That conservative rule cannot be weakened after observing
+this failure merely because the offending candidate was incorrect.
+
+The contract process exited before writing `rf_training_contract.json` and
+before the first `eval_sealed.py` command. All eight efficacy destinations
+(`sealed_sft`, RF endpoints and midpoints, MLP controls, and correctness
+control) remain absent, GPU 7 is idle, and no sealed member, candidate, oracle
+result, or PPA outcome has been generated or inspected. Therefore the sealed
+efficacy split remains unopened, but this preregistered repair attempt has met
+its frozen `invalid_repair` stop condition. Any later evaluation would have to
+be labelled exploratory or preregistered as a new study; it cannot be presented
+as continuation of this confirmatory attempt.
+
+Additional preserved remote hashes:
+
+```
+sealed_training_audit.json     106ab3b73ae8b3e8b369a741d1d1feb04cbb236f6b5dc8f7dfec22f75cd13ff7
+rf_training_candidates.json    49f16cf5ce31bd8c5661697418c1b41b9088b441246cb397991ff45351257828
+RF seed-2 group log            b4737450595e5ab38b5d8852d18ade27d81ebd2386cad2ac3fb892262ae84979
+failed pre-open launch log     d8868795b699b4459d7b3e3f368e43436581f7214b6a8769472e548bc459f7b2
+```
