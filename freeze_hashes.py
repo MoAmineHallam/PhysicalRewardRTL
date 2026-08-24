@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-freeze_hashes.py  -  compute the identity block for preregistration revision 6.
+freeze_hashes.py  -  compute a fail-closed sealed-study identity block.
 
 Revision 1 pinned 16-character prefixes of the scripts only. That is enough to
 notice an accidental edit and not enough to identify the actual experiment: the
@@ -52,9 +52,13 @@ SCRIPTS = [
     "gen_fmax_candidates.py", "eval_holdout.py", "run_ppa.py",
     "ppa_synth.tcl", "run_arm.sh", "run_sealed_server_stage.sh",
     "run_sealed_laptop_ppa.ps1", "run_sealed_analysis.sh",
+    "audit_rf_reward_eligible.py", "run_sealed_server_stage_study2.sh",
+    "run_sealed_laptop_ppa_study2.ps1", "run_sealed_handoff_study2.ps1",
+    "run_sealed_analysis_study2.sh",
     "reward_invariance_audit.py", "probe_competence.py", "build_dataset.py",
 ]
 DATA = ["sealed_split.json", "rf_rows.json", "preregistration.json",
+        "preregistration_study2.json",
         "failed_training_runs/rev5_corr_ceiling4500.json"]
 BINARIES = ["surrogate_v3.pt", "rf_struct.joblib"]
 DIRS = ["sft_v6c_out"]          # + --model and --adapters from the command line

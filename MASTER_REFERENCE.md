@@ -3838,3 +3838,43 @@ rf_training_candidates.json    49f16cf5ce31bd8c5661697418c1b41b9088b441246cb3979
 RF seed-2 group log            b4737450595e5ab38b5d8852d18ade27d81ebd2386cad2ac3fb892262ae84979
 failed pre-open launch log     d8868795b699b4459d7b3e3f368e43436581f7214b6a8769472e548bc459f7b2
 ```
+
+### Separate reward-eligible Study 2 frozen before sealed efficacy (2026-08-24)
+
+Study 1 remains `invalid_repair` under its frozen all-candidate rule. It is not
+renamed, amended, or erased. Because it stopped before any sealed generation,
+a separately labelled Study 2 was frozen at 2026-08-24 10:57:53 UTC to test the
+already-trained checkpoints on the still-unopened efficacy split. This is a
+prospective efficacy test, but not an independent validation of the gate scope:
+the reward-eligible scope was specified after diagnosing the Study 1 failure,
+and the paper must say so.
+
+The Study 2 gate follows the causal training path. Every row whose functional
+oracle allowed the RF structural reward to be used must have non-empty RTL,
+`correct=true`, `gate="ok"`, a finite positive reward, a canonical hash, and a
+structural-feature dictionary. Every correct row must satisfy all of those
+conditions. Every non-correct row must retain reward 0.0 and is counted by its
+exclusion reason rather than deleted. A distinct RTL string may not mix design
+or eligibility identities. Thus the malformed incorrect candidate at RF seed-2
+line 3083 remains visible in the exclusion ledger but cannot invalidate a
+structural-reward implementation path that it never entered.
+
+The training-log facts observed during the Study 1 diagnosis, and frozen before
+any efficacy output, are 7,072 total rows, 7,047 non-empty RTL occurrences,
+6,534 reward-eligible occurrences, and 801 distinct reward-eligible RTL
+contents. All 801 must pass the lexical mutation contract, reproduce the exact
+reward-time canonical hash and feature vector, compile, match original versus
+canonical traces under both oracle seeds with 256 vectors, and have zero
+cross-design canonical collisions. A count mismatch or any failure stops Study
+2 before sealed generation, with no patch-and-rerun.
+
+The frozen scientific declaration is `preregistration_study2.json`. The
+implementation is `audit_rf_reward_eligible.py`, with separate server, laptop
+Vivado, handoff, and final-analysis wrappers carrying the `_study2` suffix.
+`analyze_sealed_v3.py` retains the Study 1 all-nonempty scope as its default and
+requires an explicit `--mutation-scope reward_eligible` for Study 2. Local
+GPU-free regression tests cover malformed incorrect exclusion, missing metadata
+failure, structured contract exceptions, and analyzer fail-closed handling;
+all 12 tests pass. At this freeze point no sealed efficacy directory or result
+exists. The complete byte identity is recorded separately in
+`hashes_study2.json` before the Study 2 gate is executed.

@@ -9,6 +9,7 @@ import tempfile
 import unittest
 
 import analyze_sealed_v3 as analysis
+import audit_rf_reward_eligible as reward_gate
 import eval_sealed
 import materialize_rf_candidates as materialize
 import verify_sealed_training as training
@@ -75,6 +76,101 @@ class MaterializationTests(unittest.TestCase):
             self.assertEqual(len([p for p in os.listdir(out) if p.endswith(".sv")]), 1)
 
 
+class RewardEligibleGateTests(unittest.TestCase):
+    @staticmethod
+    def make_inputs(root, *, correct_metadata=True):
+        logs = []
+        canon = "canonical form"
+        logged_features = {"n_stmts": 1}
+        for seed in (1, 2):
+            path = os.path.join(root, f"s{seed}.jsonl")
+            with open(path, "w", encoding="utf-8") as handle:
+                for cand in range(8):
+                    correct = cand == 0
+                    row = {
+                        "group_index": 1,
+                        "cand": cand,
+                        "design": "d",
+                        "rtl": ("module d; good endmodule" if correct else
+                                "module d; a<=b; c<=d; broken ? endmodule"),
+                        "correct": correct,
+                        "reward": 10.0 if correct else 0.0,
+                        "gate": "ok" if correct else "incorrect",
+                        "canon_hash": (reward_gate.canon_hash(canon)
+                                       if correct and correct_metadata else None),
+                        "struct_features": (logged_features
+                                            if correct and correct_metadata else None),
+                    }
+                    handle.write(json.dumps(row) + "\n")
+            logs.append(path)
+        prereg = {
+            "study2": {
+                "study_id": "rf_reward_eligible_study2",
+                "training_inputs": {"rf_group_logs": [
+                    {"sha256": reward_gate.sha256_file(reward_gate.Path(path))}
+                    for path in logs
+                ]},
+                "reward_eligible_gate": {
+                    "trace_vectors": 256,
+                    "trace_seeds": [1, 2],
+                    "frozen_expected_counts": {
+                        "total_occurrences": 16,
+                        "nonempty_rtl_occurrences": 16,
+                        "reward_eligible_occurrences": 2,
+                        "reward_eligible_distinct": 1,
+                    },
+                },
+            }
+        }
+        prereg_path = os.path.join(root, "prereg.json")
+        with open(prereg_path, "w", encoding="utf-8") as handle:
+            json.dump(prereg, handle)
+        return logs, prereg_path, canon, logged_features
+
+    def run_gate(self, root, *, correct_metadata=True, verify_fn=None):
+        logs, prereg, canon, features = self.make_inputs(
+            root, correct_metadata=correct_metadata)
+        return reward_gate.audit(
+            [reward_gate.Path(path) for path in logs],
+            reward_gate.Path(prereg),
+            reward_gate.Path(os.path.join(root, "out")),
+            reward_gate.Path(os.path.join(root, "manifest.json")),
+            reward_gate.Path(os.path.join(root, "contract.json")),
+            verify_fn=(verify_fn or (lambda _rtl, **_kwargs: {"ok": True})),
+            canonicalize_fn=lambda _rtl, **_kwargs: (canon, "lexical"),
+            features_fn=lambda _canon: features,
+            trace_fn=lambda *_args, **_kwargs: (True, "identical"),
+        )
+
+    def test_incorrect_malformed_candidate_is_counted_but_not_contracted(self):
+        with tempfile.TemporaryDirectory(dir=HERE) as root:
+            result = self.run_gate(root)
+            self.assertEqual(result["n"], 1)
+            self.assertEqual(result["passed"], 1)
+            self.assertEqual(result["rejected"], 0)
+            with open(os.path.join(root, "manifest.json"), encoding="utf-8") as handle:
+                manifest = json.load(handle)
+            self.assertEqual(manifest["gate_counts"]["reward_eligible"], 2)
+            self.assertEqual(manifest["gate_counts"]["excluded:incorrect"], 14)
+
+    def test_correct_row_missing_reward_metadata_fails_closed(self):
+        with tempfile.TemporaryDirectory(dir=HERE) as root:
+            result = self.run_gate(root, correct_metadata=False)
+            self.assertTrue(result["pre_contract_errors"])
+            self.assertEqual(result["n"], 0)
+
+    def test_contract_exception_is_preserved_as_structured_failure(self):
+        def explode(_rtl, **_kwargs):
+            raise RuntimeError("synthetic contract failure")
+
+        with tempfile.TemporaryDirectory(dir=HERE) as root:
+            result = self.run_gate(root, verify_fn=explode)
+            self.assertEqual(result["passed"], 0)
+            self.assertEqual(result["rejected"], 1)
+            self.assertEqual(result["failures"]["RuntimeError"], 1)
+            self.assertEqual(result["failure_details"][0]["type"], "RuntimeError")
+
+
 class AnalysisInputTests(unittest.TestCase):
     def make_eval(self, root, include_zero_summary=True):
         manifest = {
@@ -111,6 +207,29 @@ class AnalysisInputTests(unittest.TestCase):
                     root, ["d1", "d2"],
                     {"d1": ("fir", "interp"), "d2": ("fir", "extrap")},
                     expected_n=4, require_reward=True)
+
+    def test_study2_contract_schema_and_precontract_errors(self):
+        with tempfile.TemporaryDirectory(dir=HERE) as root:
+            path = os.path.join(root, "contract.json")
+            contract = {
+                "n": 1,
+                "passed": 1,
+                "rejected": 0,
+                "collisions": 0,
+                "failures": {},
+                "pre_contract_errors": [],
+                "per_file": [
+                    {"file": "x.sv", "ok": True, "rejected": False,
+                     "trace_equal": True}
+                ],
+            }
+            with open(path, "w", encoding="utf-8") as handle:
+                json.dump(contract, handle)
+            self.assertTrue(analysis.load_mutation_contract(path, 1)["ok"])
+            contract["pre_contract_errors"] = ["synthetic ledger mismatch"]
+            with open(path, "w", encoding="utf-8") as handle:
+                json.dump(contract, handle)
+            self.assertFalse(analysis.load_mutation_contract(path, 1)["ok"])
 
 
 class TrainingAuditTests(unittest.TestCase):

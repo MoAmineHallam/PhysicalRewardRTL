@@ -515,6 +515,7 @@ def load_group_logs(paths: Sequence[str]) -> dict:
         raise AnalysisInputError("exactly two distinct rf_struct group logs are required")
     eligible = resolved = attempted = flat = 0
     distinct_rtl = set()
+    reward_eligible_rtl = set()
     seed_summaries = []
     gates = collections.Counter()
     for path in paths:
@@ -534,7 +535,17 @@ def load_group_logs(paths: Sequence[str]) -> dict:
                 groups[gi].append(row)
                 gates[str(row.get("gate"))] += 1
                 if isinstance(row.get("rtl"), str) and row["rtl"]:
-                    distinct_rtl.add(row["rtl"].replace("\r\n", "\n"))
+                    normalized = row["rtl"].replace("\r\n", "\n").replace("\r", "\n")
+                    distinct_rtl.add(normalized)
+                    reward = row.get("reward")
+                    if (row.get("correct") is True and row.get("gate") == "ok"
+                            and isinstance(row.get("struct_features"), dict)
+                            and isinstance(row.get("canon_hash"), str)
+                            and bool(row["canon_hash"])
+                            and isinstance(reward, (int, float))
+                            and not isinstance(reward, bool)
+                            and math.isfinite(float(reward)) and float(reward) > 0):
+                        reward_eligible_rtl.add(normalized.strip())
         if not groups:
             raise AnalysisInputError(f"empty rf_struct group log: {path}")
         update_ids = set()
@@ -585,6 +596,7 @@ def load_group_logs(paths: Sequence[str]) -> dict:
         "resolved_fraction": fraction, "attempted_groups": attempted,
         "flat_groups": flat, "gate_counts": dict(sorted(gates.items())),
         "distinct_rtl_candidates": len(distinct_rtl),
+        "reward_eligible_distinct_candidates": len(reward_eligible_rtl),
         "seed_summaries": seed_summaries,
     }
 
@@ -599,6 +611,7 @@ def load_mutation_contract(path: str, expected_candidates: int) -> dict:
     collisions = int(raw.get("collisions", -1))
     failures = raw.get("failures")
     per_file = raw.get("per_file")
+    pre_contract_errors = raw.get("pre_contract_errors", [])
     reasons = []
     if n != expected_candidates:
         reasons.append(f"audited {n} candidates; group logs contain {expected_candidates}")
@@ -612,6 +625,8 @@ def load_mutation_contract(path: str, expected_candidates: int) -> dict:
         reasons.append(f"{collisions} cross-design canonical collisions")
     if not isinstance(failures, dict) or any(int(v) for v in failures.values()):
         reasons.append(f"contract failures present: {failures!r}")
+    if not isinstance(pre_contract_errors, list) or pre_contract_errors:
+        reasons.append(f"pre-contract audit errors present: {pre_contract_errors!r}")
     if not isinstance(per_file, list) or len(per_file) != n:
         reasons.append("per-file contract evidence is missing or incomplete")
     else:
@@ -761,6 +776,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap.add_argument("--mutation-contract", required=True,
                     help="canonicalize.py --check-traces JSON over every distinct "
                          "rf_struct training candidate")
+    ap.add_argument(
+        "--mutation-scope",
+        choices=("all_nonempty", "reward_eligible"),
+        default="all_nonempty",
+        help="candidate population covered by --mutation-contract; the default "
+             "preserves Study 1 behavior",
+    )
     ap.add_argument("--out", default=os.path.join(HERE, "sealed_results_v3.json"))
     args = ap.parse_args(argv)
 
@@ -845,8 +867,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                        require_reward=True)
 
     group_stats = load_group_logs(args.rf_group_log)
+    expected_contract_candidates = (
+        group_stats["reward_eligible_distinct_candidates"]
+        if args.mutation_scope == "reward_eligible"
+        else group_stats["distinct_rtl_candidates"]
+    )
     gate = load_mutation_contract(args.mutation_contract,
-                                  group_stats["distinct_rtl_candidates"])
+                                  expected_contract_candidates)
     plans = make_bootstrap_plans(designs, meta)
     reports = {name: report_arm(arm, sft, designs, meta, plans)
                for name, arm in arms.items()}
@@ -873,6 +900,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "arms": {name: arm.combined for name, arm in arms.items()},
         "report": reports,
         "rf_group_diagnostics": group_stats,
+        "mutation_scope": args.mutation_scope,
         "mutation_contract": gate,
         "endpoint_reward_change": reward_delta,
         "late_divergence": late,

@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "frozen_utc": "2026-08-24T10:57:53Z",
+  "study2": {
+    "study_id": "rf_reward_eligible_study2",
+    "status_at_freeze": "all training complete; sealed efficacy split unopened",
+    "purpose": "Prospective sealed efficacy evaluation of the already-trained checkpoints under a reward-eligible implementation contract.",
+    "relationship_to_study1": {
+      "study1_preregistration": "preregistration.json",
+      "study1_preregistration_sha256_lf": "947affc88373098232dfde2d6ce37f5efdcba43f2cbb470063cdac9e7be0a198",
+      "study1_outcome": "invalid_repair",
+      "not_an_amendment": true,
+      "disclosure": [
+        "Study 1 is preserved and remains invalid under its all-distinct-candidate pre-open gate.",
+        "Study 1 stopped before rf_training_contract.json and before any eval_sealed.py invocation.",
+        "No sealed member, policy candidate, oracle outcome, PPA result, or efficacy endpoint existed or was inspected before this Study 2 freeze.",
+        "Study 2 reuses the five already-trained checkpoints without retraining, checkpoint selection, seed addition, or hyperparameter change.",
+        "Study 2 is prospective for sealed efficacy but is not an independent validation of the gate population, which was specified after diagnosing the Study 1 failure."
+      ],
+      "failed_gate_artifacts": {
+        "sealed_training_audit_sha256_raw": "106ab3b73ae8b3e8b369a741d1d1feb04cbb236f6b5dc8f7dfec22f75cd13ff7",
+        "all_candidate_manifest_sha256_raw": "49f16cf5ce31bd8c5661697418c1b41b9088b441246cb397991ff45351257828",
+        "failed_preopen_log_sha256_raw": "d8868795b699b4459d7b3e3f368e43436581f7214b6a8769472e548bc459f7b2",
+        "offending_emitted_rtl_sha256_raw": "296772a50469a79ef709c6273c1547ec1c5fc7c6412a6a40bb286b9f08cb358c",
+        "offender_source": "grpo_rf_s2/group_log.jsonl:3083; group 386; candidate 2; update 244",
+        "offender_training_state": {
+          "correct": false,
+          "reward": 0.0,
+          "gate": "incorrect",
+          "canon_hash": null,
+          "struct_features": null
+        },
+        "failure": "Unsupported: ambiguous statement: multiple top-level '<='"
+      }
+    },
+    "inherited_unchanged_from_study1": {
+      "sealed_split_sha256_lf": "2fa2890e534231f811e9f770bb549128731f2dc043cc061dae4f7bf333ac4553",
+      "sections": [
+        "environment",
+        "identities.hash_basis",
+        "training except the now-complete historical execution record",
+        "evaluation",
+        "power",
+        "outcome_taxonomy except Study 1's all-candidate gate",
+        "all endpoint, bootstrap, synthesis, sample-count, seed, checkpoint, decoding, and failure-scoring rules"
+      ],
+      "efficacy_outputs": [
+        "rtl/sealed_sft",
+        "rtl/sealed_rf_s1",
+        "rtl/sealed_rf_s2",
+        "rtl/sealed_rf_mid_s1",
+        "rtl/sealed_rf_mid_s2",
+        "rtl/sealed_mlp_s1",
+        "rtl/sealed_mlp_s2",
+        "rtl/sealed_corr_s1"
+      ]
+    },
+    "training_inputs": {
+      "checkpoint_rule": "Use only the already-declared update-138 RF midpoints and update-276 endpoints; no model selection.",
+      "rf_group_logs": [
+        {
+          "arm": "rf_struct",
+          "training_seed": 1,
+          "path": "grpo_rf_s1/group_log.jsonl",
+          "sha256": "609b5fd0a98cec67bb7281e9fde6a881f37fc40f297936627e54bccac6fe8a04"
+        },
+        {
+          "arm": "rf_struct",
+          "training_seed": 2,
+          "path": "grpo_rf_s2/group_log.jsonl",
+          "sha256": "b4737450595e5ab38b5d8852d18ade27d81ebd2386cad2ac3fb892262ae84979"
+        }
+      ]
+    },
+    "reward_eligible_gate": {
+      "scientific_scope": "The implementation contract covers exactly the candidates whose correctness gate allowed the RF structural reward to be evaluated during training.",
+      "eligibility": "A row is reward-eligible iff RTL is non-empty, correct is exactly true, gate is exactly 'ok', reward is finite and positive, struct_features is a dictionary, and canon_hash is non-empty.",
+      "mandatory_row_checks": [
+        "Every correct row must be reward-eligible; a missing gate, canonical hash, feature dictionary, or positive finite reward invalidates Study 2.",
+        "Every non-correct row must have reward exactly 0.0.",
+        "Every source group must contain exactly candidate ids 0 through 7.",
+        "A distinct normalized RTL content may not mix eligibility status or design identity.",
+        "Every excluded row remains counted by reason and source; no row is deleted from the audit ledger."
+      ],
+      "eligible_candidate_contract": [
+        "Materialize every distinct eligible normalized RTL content from both complete RF logs.",
+        "Require the lexical canonicalization contract to accept it.",
+        "Recompute its canonical hash and structural features and require exact equality to reward-time logged values for every occurrence.",
+        "Compile and run original-versus-canonical trace equivalence with both oracle seeds through canonicalize.py trace_equal.",
+        "Reject canonical collisions that merge different design identities."
+      ],
+      "trace_seeds": [
+        1,
+        2
+      ],
+      "trace_vectors": 256,
+      "frozen_expected_counts": {
+        "total_occurrences": 7072,
+        "nonempty_rtl_occurrences": 7047,
+        "reward_eligible_occurrences": 6534,
+        "reward_eligible_distinct": 801
+      },
+      "count_disclosure": "These training-log counts were observed during the read-only diagnosis of Study 1's gate failure and are frozen before any sealed efficacy generation. They are validation inputs, not efficacy outcomes.",
+      "failure_rule": "Any count mismatch, row error, mixed identity, eligible rejection, exception, reward-time metadata mismatch, compile/trace failure, or cross-design collision invalidates Study 2 and stops before sealed generation. There is no patch-and-rerun within Study 2."
+    },
+    "execution_order": [
+      "Verify hashes_study2.json.",
+      "Re-verify all five training runs and checkpoints.",
+      "Run the reward-eligible audit and write its complete manifest and contract, including exclusions and failures.",
+      "Open the sealed split only if the gate passes exactly.",
+      "Generate every inherited frozen evaluation arm once.",
+      "Run the inherited single laptop Vivado flow over every distinct correct candidate.",
+      "Run the inherited fail-closed analysis with the Study 2 contract artifact."
+    ],
+    "stop_rules": [
+      "No retraining, resumption, checkpoint selection, new seed, reward change, corpus change, or evaluation change.",
+      "No efficacy output may pre-exist the Study 2 server launch.",
+      "No sealed candidate or endpoint may be inspected before the complete reward-eligible gate passes.",
+      "If the gate fails, preserve it and stop; do not repair and rerun Study 2.",
+      "After sealed generation starts, preserve and report the inherited outcome exactly; do not tune or add samples after viewing results."
+    ]
+  }
+}
