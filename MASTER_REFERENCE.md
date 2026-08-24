@@ -3888,3 +3888,25 @@ digests/file counts. The pinned base-model digest is
 `c29348b7a8ee7fbd73a31a215942d51d5490574d080305a15ca12f7fd396e256`,
 and the pinned SFT-adapter digest is
 `9ce91891c911b73f3f636b21ffb9f1769ce2b7ef2fbe40a8d1d68a874d56e2e8`.
+
+The frozen Study 2 pre-open gate then passed exactly. The repeated training
+audit again passed all five arms. The reward-eligible ledger contains the
+frozen 7,072 rows: 6,534 eligible occurrences, 513 non-empty oracle-incorrect
+occurrences, and 25 no-module occurrences, yielding exactly 801 distinct
+eligible RTL contents. All 801 passed the mutation, reward-time hash/feature,
+compile, and two-seed trace checks; there were zero rejects, zero contract
+failures, zero pre-contract errors, and zero cross-design collisions. This is a
+validity result, not an efficacy result.
+
+Preserved Study 2 gate hashes:
+
+```
+sealed_training_audit_study2.json          106ab3b73ae8b3e8b369a741d1d1feb04cbb236f6b5dc8f7dfec22f75cd13ff7
+rf_reward_eligible_manifest_study2.json    eb14e0ef867723b8caafb45009c8791a305393dedca4723354220a3ac2c1cd66
+rf_reward_eligible_contract_study2.json    6582cc0ee8f5ce4d5970891f47e1fff5a21d8484578e0b56ad638b85ed3c4aca
+```
+
+Only after that exact pass did the runner invoke the first sealed command,
+the frozen 48-sample-per-design SFT evaluation. At the time this entry was
+written the SFT generation was still running and no policy-level efficacy or
+PPA result had been inspected.
