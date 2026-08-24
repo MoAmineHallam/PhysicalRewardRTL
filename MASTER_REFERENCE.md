@@ -3878,3 +3878,13 @@ failure, structured contract exceptions, and analyzer fail-closed handling;
 all 12 tests pass. At this freeze point no sealed efficacy directory or result
 exists. The complete byte identity is recorded separately in
 `hashes_study2.json` before the Study 2 gate is executed.
+
+The identity manifest was generated on the L40 host against commit `0749a7e2`
+and resolves all 45 entries with zero missing objects. Its raw-file SHA-256 is
+`ae6eba02b205c3b628ce1fa0025b7071c1a3b973a427a93f256c4fb2ca08b623`.
+All 41 ordinary file entries independently match the laptop checkout; the four
+remaining entries are the server-only SFT-adapter and base-model manifest
+digests/file counts. The pinned base-model digest is
+`c29348b7a8ee7fbd73a31a215942d51d5490574d080305a15ca12f7fd396e256`,
+and the pinned SFT-adapter digest is
+`9ce91891c911b73f3f636b21ffb9f1769ce2b7ef2fbe40a8d1d68a874d56e2e8`.
