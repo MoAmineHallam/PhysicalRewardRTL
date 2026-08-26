@@ -1,0 +1,585 @@
+{
+  "schema": "study2_board_selection/1",
+  "status": "post-primary bounded silicon feasibility study; protocol amended after a recorded zero-correct-candidate feasibility stop; not independent confirmatory evidence",
+  "git_head_at_generation": "f60dc0f8b45ab436beafc6ea1b9df35a7d189f44",
+  "spec": "study2_board_spec.json",
+  "spec_sha256_lf": "6b8b929c4f6de09479cad244ae329912b7d0b316a0ec1ac1d626ae0c74eaf7de",
+  "protocol_amendment": "study2_board_protocol_amendment.json",
+  "protocol_amendment_sha256": "1d22dfa1872013b5976fd872cb9f71ddb59647d16f756ca42b8a14b34a31474c",
+  "primary_outcome_unchanged": "full_two_regime_repair",
+  "design_selection": {
+    "rule": "For each family independently, among correctness-eligible designs choose the sealed design with the lexicographically smallest SHA-256 of sealed_split_sha256_lf + ':' + family + ':' + design.",
+    "eligibility": "A design must have at least one oracle-correct emitted candidate in the SFT arm and at least one across the pooled two-seed RF arm. This is necessary to instantiate both sides of a functional board pair.",
+    "uses_policy_or_ppa_outcomes": true,
+    "outcome_use_limited_to": "binary correctness eligibility only",
+    "uses_reward_fmax_resource_or_power": false,
+    "designs": [
+      {
+        "design": "fir34_v1_8b",
+        "family": "fir",
+        "regime": "extrap",
+        "selection_digest": "3cd7983f9b39269243b9b1fccefe198e36102b0d71a9ca9eb7e440f11258e2a7",
+        "correctness_eligibility": {
+          "sft": {
+            "n": 48,
+            "n_correct": 26
+          },
+          "rf": {
+            "n": 48,
+            "n_correct": 11
+          }
+        }
+      },
+      {
+        "design": "firr20_v6",
+        "family": "firr",
+        "regime": "interp",
+        "selection_digest": "b17acf7b5a1d627d53357ed108c475fc10dbc01755a180b58b91124a8a7c6362",
+        "correctness_eligibility": {
+          "sft": {
+            "n": 48,
+            "n_correct": 22
+          },
+          "rf": {
+            "n": 48,
+            "n_correct": 32
+          }
+        }
+      },
+      {
+        "design": "poly16_v13_8b",
+        "family": "poly",
+        "regime": "extrap",
+        "selection_digest": "5f4e34fa82314bc1009ab68b3f434675bd1fa4a16ecfcfec42a46448feb6aed0",
+        "correctness_eligibility": {
+          "sft": {
+            "n": 48,
+            "n_correct": 38
+          },
+          "rf": {
+            "n": 48,
+            "n_correct": 1
+          }
+        }
+      },
+      {
+        "design": "iir18_v7",
+        "family": "iir",
+        "regime": "extrap",
+        "selection_digest": "69592f46bba4cbc4719391e2aae04ca906a60447e97b0b8b12b9d2482a69ee59",
+        "correctness_eligibility": {
+          "sft": {
+            "n": 48,
+            "n_correct": 25
+          },
+          "rf": {
+            "n": 48,
+            "n_correct": 43
+          }
+        }
+      },
+      {
+        "design": "med19",
+        "family": "med",
+        "regime": "extrap",
+        "selection_digest": "20f056e3b3fe6061cf030a788187274e442e2a217a51273a595a94c86e67cb2a",
+        "correctness_eligibility": {
+          "sft": {
+            "n": 48,
+            "n_correct": 32
+          },
+          "rf": {
+            "n": 48,
+            "n_correct": 27
+          }
+        }
+      }
+    ]
+  },
+  "candidate_selection": {
+    "arms": [
+      "sft",
+      "rf"
+    ],
+    "samples_per_arm_design": 48,
+    "rule": "Within each arm/design, group oracle-correct candidates by emitted RTL SHA-256, sum sample multiplicity across that arm's frozen endpoint seed directories, choose the largest total multiplicity, then the lexicographically smallest RTL SHA-256; use the lexicographically smallest source module as representative.",
+    "uses_reward_fmax_or_resource_values": false,
+    "post_selection_gate": "The selected representative must have a successful row in the already-complete Vivado PPA audit; failure stops the board study and does not trigger reselection.",
+    "identical_for_arms": true
+  },
+  "source_artifacts": [
+    {
+      "arm": "rf",
+      "directory": "rtl/sealed_rf_s1",
+      "generation_config": "rtl/sealed_rf_s1/generation_config.json",
+      "generation_config_sha256": "51831a633c09f010a1000e1361dc74dc7981458e746c83fb3d3a783b79698ddc",
+      "holdout_summary": "rtl/sealed_rf_s1/holdout_summary.json",
+      "holdout_summary_sha256": "766b11feb773f50f8a141166700f311ed00809ad253ebd63aa00db1668518aa2"
+    },
+    {
+      "arm": "rf",
+      "directory": "rtl/sealed_rf_s1",
+      "manifest": "rtl/sealed_rf_s1/fmax_manifest.json",
+      "manifest_sha256": "f6afb79dc0a022b143bceba218e8a4f50831a41e030faf848b3177702b4bb6f8",
+      "ppa": "rtl/sealed_rf_s1/ppa.jsonl",
+      "ppa_sha256": "87ff4a9567d04b2e908826bc34e94a33b0a66b4cebc6d6f9c0784fa0625daad2"
+    },
+    {
+      "arm": "rf",
+      "directory": "rtl/sealed_rf_s2",
+      "generation_config": "rtl/sealed_rf_s2/generation_config.json",
+      "generation_config_sha256": "a101cf7fee2c1803b0c0b4ecdf812782e789c2dfcee159c2ab6fa625b6d53c60",
+      "holdout_summary": "rtl/sealed_rf_s2/holdout_summary.json",
+      "holdout_summary_sha256": "e470d4cfbc4b2529c5b8c72fabeb141e737945f91a1c8f51d55c7b3d34ea159b"
+    },
+    {
+      "arm": "rf",
+      "directory": "rtl/sealed_rf_s2",
+      "manifest": "rtl/sealed_rf_s2/fmax_manifest.json",
+      "manifest_sha256": "ffae877ca1c8ea66e6740595c7bd9183713362e13d0dbba16661b178a76f0c63",
+      "ppa": "rtl/sealed_rf_s2/ppa.jsonl",
+      "ppa_sha256": "b43b79477970593b443d91338405d17912f8fa271a12d5f3c234c2e20de08130"
+    },
+    {
+      "arm": "sft",
+      "directory": "rtl/sealed_sft",
+      "generation_config": "rtl/sealed_sft/generation_config.json",
+      "generation_config_sha256": "d5e05aaf50fdc56aeb909b53169e16bd8b2425c713d2b6a3fb86b3aeda47f9de",
+      "holdout_summary": "rtl/sealed_sft/holdout_summary.json",
+      "holdout_summary_sha256": "1a7f715d33c6bfe57074974abd9d395f3dfcd8c93386809113b9531617f7d2d9"
+    },
+    {
+      "arm": "sft",
+      "directory": "rtl/sealed_sft",
+      "manifest": "rtl/sealed_sft/fmax_manifest.json",
+      "manifest_sha256": "50481ed35c0a9711cef7db5318a122fb506ab9d4a125feb999f9c7cdca6f4a9b",
+      "ppa": "rtl/sealed_sft/ppa.jsonl",
+      "ppa_sha256": "270f9385527025fd99457a6a8a1a05a8a78e85c282935288e7f4af4e34f86a8d"
+    }
+  ],
+  "selections": [
+    {
+      "sel": 0,
+      "entry": "sft_fir34v1",
+      "role": "dut",
+      "arm": "sft",
+      "design": "fir34_v1_8b",
+      "family": "fir",
+      "regime": "extrap",
+      "selection_rule": "Within each arm/design, group oracle-correct candidates by emitted RTL SHA-256, sum sample multiplicity across that arm's frozen endpoint seed directories, choose the largest total multiplicity, then the lexicographically smallest RTL SHA-256; use the lexicographically smallest source module as representative.",
+      "total_arm_samples": 48,
+      "total_arm_correct": 26,
+      "selected_rtl_occurrences": 13,
+      "selected_emitted_sha256": "1df61161ba11a1932d7751e61144347e6848091fd0177f3286b81bc45d91a4ac",
+      "population_unique_rtl": 4,
+      "representative_module": "sft__fir34_v1_8b__g0",
+      "identity_group_members": [
+        {
+          "module": "sft__fir34_v1_8b__g0",
+          "count": 13,
+          "rtl": "rtl/sealed_sft/sft__fir34_v1_8b__g0.sv",
+          "rtl_sha256": "1df61161ba11a1932d7751e61144347e6848091fd0177f3286b81bc45d91a4ac"
+        }
+      ],
+      "post_selection_ppa_gate": {
+        "compiled": true,
+        "fmax_mhz": 17.72012829372885,
+        "path": "rtl/sealed_sft/ppa.jsonl",
+        "line": 19
+      },
+      "provenance": {
+        "rtl": "rtl/sealed_sft/sft__fir34_v1_8b__g0.sv",
+        "rtl_sha256": "1df61161ba11a1932d7751e61144347e6848091fd0177f3286b81bc45d91a4ac",
+        "copied_rtl": "rtl/sealed_study2_board/duts/sft__fir34_v1_8b__g0.v",
+        "copied_rtl_sha256": "1df61161ba11a1932d7751e61144347e6848091fd0177f3286b81bc45d91a4ac",
+        "golden": "rtl/sealed_study2_board/goldens/sft_fir34v1/golden.py",
+        "golden_sha256": "54cc7224c542a03b4aa7a726f514eecf0de5fc588812f54147dedd7e811783f7"
+      }
+    },
+    {
+      "sel": 1,
+      "entry": "rf_fir34v1",
+      "role": "dut",
+      "arm": "rf",
+      "design": "fir34_v1_8b",
+      "family": "fir",
+      "regime": "extrap",
+      "selection_rule": "Within each arm/design, group oracle-correct candidates by emitted RTL SHA-256, sum sample multiplicity across that arm's frozen endpoint seed directories, choose the largest total multiplicity, then the lexicographically smallest RTL SHA-256; use the lexicographically smallest source module as representative.",
+      "total_arm_samples": 48,
+      "total_arm_correct": 11,
+      "selected_rtl_occurrences": 11,
+      "selected_emitted_sha256": "88f1fac87e12e6e8c906d75898b477e8a099b771bd36fd5f5feca6b567b5e3ef",
+      "population_unique_rtl": 1,
+      "representative_module": "rf_s2__fir34_v1_8b__g0",
+      "identity_group_members": [
+        {
+          "module": "rf_s2__fir34_v1_8b__g0",
+          "count": 11,
+          "rtl": "rtl/sealed_rf_s2/rf_s2__fir34_v1_8b__g0.sv",
+          "rtl_sha256": "88f1fac87e12e6e8c906d75898b477e8a099b771bd36fd5f5feca6b567b5e3ef"
+        }
+      ],
+      "post_selection_ppa_gate": {
+        "compiled": true,
+        "fmax_mhz": 196.65683382497542,
+        "path": "rtl/sealed_rf_s2/ppa.jsonl",
+        "line": 10
+      },
+      "provenance": {
+        "rtl": "rtl/sealed_rf_s2/rf_s2__fir34_v1_8b__g0.sv",
+        "rtl_sha256": "88f1fac87e12e6e8c906d75898b477e8a099b771bd36fd5f5feca6b567b5e3ef",
+        "copied_rtl": "rtl/sealed_study2_board/duts/rf_s2__fir34_v1_8b__g0.v",
+        "copied_rtl_sha256": "88f1fac87e12e6e8c906d75898b477e8a099b771bd36fd5f5feca6b567b5e3ef",
+        "golden": "rtl/sealed_study2_board/goldens/rf_fir34v1/golden.py",
+        "golden_sha256": "54cc7224c542a03b4aa7a726f514eecf0de5fc588812f54147dedd7e811783f7"
+      }
+    },
+    {
+      "sel": 2,
+      "entry": "sft_firr20v6",
+      "role": "dut",
+      "arm": "sft",
+      "design": "firr20_v6",
+      "family": "firr",
+      "regime": "interp",
+      "selection_rule": "Within each arm/design, group oracle-correct candidates by emitted RTL SHA-256, sum sample multiplicity across that arm's frozen endpoint seed directories, choose the largest total multiplicity, then the lexicographically smallest RTL SHA-256; use the lexicographically smallest source module as representative.",
+      "total_arm_samples": 48,
+      "total_arm_correct": 22,
+      "selected_rtl_occurrences": 15,
+      "selected_emitted_sha256": "c6b9fda575035bc14fb4519ea78c4c9a69a2451ff3ec135efbad9e0ca436ffce",
+      "population_unique_rtl": 4,
+      "representative_module": "sft__firr20_v6__g0",
+      "identity_group_members": [
+        {
+          "module": "sft__firr20_v6__g0",
+          "count": 15,
+          "rtl": "rtl/sealed_sft/sft__firr20_v6__g0.sv",
+          "rtl_sha256": "c6b9fda575035bc14fb4519ea78c4c9a69a2451ff3ec135efbad9e0ca436ffce"
+        }
+      ],
+      "post_selection_ppa_gate": {
+        "compiled": true,
+        "fmax_mhz": 40.92155338216639,
+        "path": "rtl/sealed_sft/ppa.jsonl",
+        "line": 33
+      },
+      "provenance": {
+        "rtl": "rtl/sealed_sft/sft__firr20_v6__g0.sv",
+        "rtl_sha256": "c6b9fda575035bc14fb4519ea78c4c9a69a2451ff3ec135efbad9e0ca436ffce",
+        "copied_rtl": "rtl/sealed_study2_board/duts/sft__firr20_v6__g0.v",
+        "copied_rtl_sha256": "c6b9fda575035bc14fb4519ea78c4c9a69a2451ff3ec135efbad9e0ca436ffce",
+        "golden": "rtl/sealed_study2_board/goldens/sft_firr20v6/golden.py",
+        "golden_sha256": "d2efcf40d2a95ba2f0f6f179b01b97a05b6f43c84d4da4c495a417bb2cc23479"
+      }
+    },
+    {
+      "sel": 3,
+      "entry": "rf_firr20v6",
+      "role": "dut",
+      "arm": "rf",
+      "design": "firr20_v6",
+      "family": "firr",
+      "regime": "interp",
+      "selection_rule": "Within each arm/design, group oracle-correct candidates by emitted RTL SHA-256, sum sample multiplicity across that arm's frozen endpoint seed directories, choose the largest total multiplicity, then the lexicographically smallest RTL SHA-256; use the lexicographically smallest source module as representative.",
+      "total_arm_samples": 48,
+      "total_arm_correct": 32,
+      "selected_rtl_occurrences": 17,
+      "selected_emitted_sha256": "8feea76c591c1c2155b41c288c4a3fb073ce5b8975f580ef57f8ef4c75805059",
+      "population_unique_rtl": 4,
+      "representative_module": "rf_s2__firr20_v6__g0",
+      "identity_group_members": [
+        {
+          "module": "rf_s2__firr20_v6__g0",
+          "count": 17,
+          "rtl": "rtl/sealed_rf_s2/rf_s2__firr20_v6__g0.sv",
+          "rtl_sha256": "8feea76c591c1c2155b41c288c4a3fb073ce5b8975f580ef57f8ef4c75805059"
+        }
+      ],
+      "post_selection_ppa_gate": {
+        "compiled": true,
+        "fmax_mhz": 211.19324181626186,
+        "path": "rtl/sealed_rf_s2/ppa.jsonl",
+        "line": 15
+      },
+      "provenance": {
+        "rtl": "rtl/sealed_rf_s2/rf_s2__firr20_v6__g0.sv",
+        "rtl_sha256": "8feea76c591c1c2155b41c288c4a3fb073ce5b8975f580ef57f8ef4c75805059",
+        "copied_rtl": "rtl/sealed_study2_board/duts/rf_s2__firr20_v6__g0.v",
+        "copied_rtl_sha256": "8feea76c591c1c2155b41c288c4a3fb073ce5b8975f580ef57f8ef4c75805059",
+        "golden": "rtl/sealed_study2_board/goldens/rf_firr20v6/golden.py",
+        "golden_sha256": "d2efcf40d2a95ba2f0f6f179b01b97a05b6f43c84d4da4c495a417bb2cc23479"
+      }
+    },
+    {
+      "sel": 4,
+      "entry": "sft_poly16v13",
+      "role": "dut",
+      "arm": "sft",
+      "design": "poly16_v13_8b",
+      "family": "poly",
+      "regime": "extrap",
+      "selection_rule": "Within each arm/design, group oracle-correct candidates by emitted RTL SHA-256, sum sample multiplicity across that arm's frozen endpoint seed directories, choose the largest total multiplicity, then the lexicographically smallest RTL SHA-256; use the lexicographically smallest source module as representative.",
+      "total_arm_samples": 48,
+      "total_arm_correct": 38,
+      "selected_rtl_occurrences": 33,
+      "selected_emitted_sha256": "8e73a92e738fc381c71f59aec90a06616721ff4e12f9bccfd5e98ab2960f374b",
+      "population_unique_rtl": 2,
+      "representative_module": "sft__poly16_v13_8b__g0",
+      "identity_group_members": [
+        {
+          "module": "sft__poly16_v13_8b__g0",
+          "count": 33,
+          "rtl": "rtl/sealed_sft/sft__poly16_v13_8b__g0.sv",
+          "rtl_sha256": "8e73a92e738fc381c71f59aec90a06616721ff4e12f9bccfd5e98ab2960f374b"
+        }
+      ],
+      "post_selection_ppa_gate": {
+        "compiled": true,
+        "fmax_mhz": 13.031013812874642,
+        "path": "rtl/sealed_sft/ppa.jsonl",
+        "line": 100
+      },
+      "provenance": {
+        "rtl": "rtl/sealed_sft/sft__poly16_v13_8b__g0.sv",
+        "rtl_sha256": "8e73a92e738fc381c71f59aec90a06616721ff4e12f9bccfd5e98ab2960f374b",
+        "copied_rtl": "rtl/sealed_study2_board/duts/sft__poly16_v13_8b__g0.v",
+        "copied_rtl_sha256": "8e73a92e738fc381c71f59aec90a06616721ff4e12f9bccfd5e98ab2960f374b",
+        "golden": "rtl/sealed_study2_board/goldens/sft_poly16v13/golden.py",
+        "golden_sha256": "3d7f04c30a4715eb0f3cf0faf6cbd1a998230fcc134fe2b11a1223806da81ee1"
+      }
+    },
+    {
+      "sel": 5,
+      "entry": "rf_poly16v13",
+      "role": "dut",
+      "arm": "rf",
+      "design": "poly16_v13_8b",
+      "family": "poly",
+      "regime": "extrap",
+      "selection_rule": "Within each arm/design, group oracle-correct candidates by emitted RTL SHA-256, sum sample multiplicity across that arm's frozen endpoint seed directories, choose the largest total multiplicity, then the lexicographically smallest RTL SHA-256; use the lexicographically smallest source module as representative.",
+      "total_arm_samples": 48,
+      "total_arm_correct": 1,
+      "selected_rtl_occurrences": 1,
+      "selected_emitted_sha256": "f1d67a71e87f6b2a85c76243c7d61537d04423d4dc7efca9acfa2b494c9439a2",
+      "population_unique_rtl": 1,
+      "representative_module": "rf_s2__poly16_v13_8b__g0",
+      "identity_group_members": [
+        {
+          "module": "rf_s2__poly16_v13_8b__g0",
+          "count": 1,
+          "rtl": "rtl/sealed_rf_s2/rf_s2__poly16_v13_8b__g0.sv",
+          "rtl_sha256": "f1d67a71e87f6b2a85c76243c7d61537d04423d4dc7efca9acfa2b494c9439a2"
+        }
+      ],
+      "post_selection_ppa_gate": {
+        "compiled": true,
+        "fmax_mhz": 13.031013812874642,
+        "path": "rtl/sealed_rf_s2/ppa.jsonl",
+        "line": 47
+      },
+      "provenance": {
+        "rtl": "rtl/sealed_rf_s2/rf_s2__poly16_v13_8b__g0.sv",
+        "rtl_sha256": "f1d67a71e87f6b2a85c76243c7d61537d04423d4dc7efca9acfa2b494c9439a2",
+        "copied_rtl": "rtl/sealed_study2_board/duts/rf_s2__poly16_v13_8b__g0.v",
+        "copied_rtl_sha256": "f1d67a71e87f6b2a85c76243c7d61537d04423d4dc7efca9acfa2b494c9439a2",
+        "golden": "rtl/sealed_study2_board/goldens/rf_poly16v13/golden.py",
+        "golden_sha256": "3d7f04c30a4715eb0f3cf0faf6cbd1a998230fcc134fe2b11a1223806da81ee1"
+      }
+    },
+    {
+      "sel": 6,
+      "entry": "sft_iir18v7",
+      "role": "dut",
+      "arm": "sft",
+      "design": "iir18_v7",
+      "family": "iir",
+      "regime": "extrap",
+      "selection_rule": "Within each arm/design, group oracle-correct candidates by emitted RTL SHA-256, sum sample multiplicity across that arm's frozen endpoint seed directories, choose the largest total multiplicity, then the lexicographically smallest RTL SHA-256; use the lexicographically smallest source module as representative.",
+      "total_arm_samples": 48,
+      "total_arm_correct": 25,
+      "selected_rtl_occurrences": 12,
+      "selected_emitted_sha256": "56079a22adb102b2f4a3124bf2de07facdf33944bb56f4e6ae00054636f4adb5",
+      "population_unique_rtl": 7,
+      "representative_module": "sft__iir18_v7__g0",
+      "identity_group_members": [
+        {
+          "module": "sft__iir18_v7__g0",
+          "count": 12,
+          "rtl": "rtl/sealed_sft/sft__iir18_v7__g0.sv",
+          "rtl_sha256": "56079a22adb102b2f4a3124bf2de07facdf33944bb56f4e6ae00054636f4adb5"
+        }
+      ],
+      "post_selection_ppa_gate": {
+        "compiled": true,
+        "fmax_mhz": 184.84288354898337,
+        "path": "rtl/sealed_sft/ppa.jsonl",
+        "line": 39
+      },
+      "provenance": {
+        "rtl": "rtl/sealed_sft/sft__iir18_v7__g0.sv",
+        "rtl_sha256": "56079a22adb102b2f4a3124bf2de07facdf33944bb56f4e6ae00054636f4adb5",
+        "copied_rtl": "rtl/sealed_study2_board/duts/sft__iir18_v7__g0.v",
+        "copied_rtl_sha256": "56079a22adb102b2f4a3124bf2de07facdf33944bb56f4e6ae00054636f4adb5",
+        "golden": "rtl/sealed_study2_board/goldens/sft_iir18v7/golden.py",
+        "golden_sha256": "00ae1950188f92722f6934c2063ab30e5a535c0c4b773354bdf9bfdeec9d7fa2"
+      }
+    },
+    {
+      "sel": 7,
+      "entry": "rf_iir18v7",
+      "role": "dut",
+      "arm": "rf",
+      "design": "iir18_v7",
+      "family": "iir",
+      "regime": "extrap",
+      "selection_rule": "Within each arm/design, group oracle-correct candidates by emitted RTL SHA-256, sum sample multiplicity across that arm's frozen endpoint seed directories, choose the largest total multiplicity, then the lexicographically smallest RTL SHA-256; use the lexicographically smallest source module as representative.",
+      "total_arm_samples": 48,
+      "total_arm_correct": 43,
+      "selected_rtl_occurrences": 16,
+      "selected_emitted_sha256": "1e12b7bdf184378f94a0f0b09382e456ebb7037ddbfcb1afbc060a87b32756a8",
+      "population_unique_rtl": 10,
+      "representative_module": "rf_s1__iir18_v7__g1",
+      "identity_group_members": [
+        {
+          "module": "rf_s1__iir18_v7__g1",
+          "count": 16,
+          "rtl": "rtl/sealed_rf_s1/rf_s1__iir18_v7__g1.sv",
+          "rtl_sha256": "1e12b7bdf184378f94a0f0b09382e456ebb7037ddbfcb1afbc060a87b32756a8"
+        }
+      ],
+      "post_selection_ppa_gate": {
+        "compiled": true,
+        "fmax_mhz": 184.84288354898337,
+        "path": "rtl/sealed_rf_s1/ppa.jsonl",
+        "line": 12
+      },
+      "provenance": {
+        "rtl": "rtl/sealed_rf_s1/rf_s1__iir18_v7__g1.sv",
+        "rtl_sha256": "1e12b7bdf184378f94a0f0b09382e456ebb7037ddbfcb1afbc060a87b32756a8",
+        "copied_rtl": "rtl/sealed_study2_board/duts/rf_s1__iir18_v7__g1.v",
+        "copied_rtl_sha256": "1e12b7bdf184378f94a0f0b09382e456ebb7037ddbfcb1afbc060a87b32756a8",
+        "golden": "rtl/sealed_study2_board/goldens/rf_iir18v7/golden.py",
+        "golden_sha256": "00ae1950188f92722f6934c2063ab30e5a535c0c4b773354bdf9bfdeec9d7fa2"
+      }
+    },
+    {
+      "sel": 8,
+      "entry": "sft_med19",
+      "role": "dut",
+      "arm": "sft",
+      "design": "med19",
+      "family": "med",
+      "regime": "extrap",
+      "selection_rule": "Within each arm/design, group oracle-correct candidates by emitted RTL SHA-256, sum sample multiplicity across that arm's frozen endpoint seed directories, choose the largest total multiplicity, then the lexicographically smallest RTL SHA-256; use the lexicographically smallest source module as representative.",
+      "total_arm_samples": 48,
+      "total_arm_correct": 32,
+      "selected_rtl_occurrences": 5,
+      "selected_emitted_sha256": "491cc8943a99a237a7764eb5b37088e51b0b6c7909f9900414a3564fe7e4ea57",
+      "population_unique_rtl": 18,
+      "representative_module": "sft__med19__g0",
+      "identity_group_members": [
+        {
+          "module": "sft__med19__g0",
+          "count": 5,
+          "rtl": "rtl/sealed_sft/sft__med19__g0.sv",
+          "rtl_sha256": "491cc8943a99a237a7764eb5b37088e51b0b6c7909f9900414a3564fe7e4ea57"
+        }
+      ],
+      "post_selection_ppa_gate": {
+        "compiled": true,
+        "fmax_mhz": 12.361245024598878,
+        "path": "rtl/sealed_sft/ppa.jsonl",
+        "line": 60
+      },
+      "provenance": {
+        "rtl": "rtl/sealed_sft/sft__med19__g0.sv",
+        "rtl_sha256": "491cc8943a99a237a7764eb5b37088e51b0b6c7909f9900414a3564fe7e4ea57",
+        "copied_rtl": "rtl/sealed_study2_board/duts/sft__med19__g0.v",
+        "copied_rtl_sha256": "491cc8943a99a237a7764eb5b37088e51b0b6c7909f9900414a3564fe7e4ea57",
+        "golden": "rtl/sealed_study2_board/goldens/sft_med19/golden.py",
+        "golden_sha256": "39abeed5dbf54da4e887b9c28ace36efef571570be59d87678200feb56356589"
+      }
+    },
+    {
+      "sel": 9,
+      "entry": "rf_med19",
+      "role": "dut",
+      "arm": "rf",
+      "design": "med19",
+      "family": "med",
+      "regime": "extrap",
+      "selection_rule": "Within each arm/design, group oracle-correct candidates by emitted RTL SHA-256, sum sample multiplicity across that arm's frozen endpoint seed directories, choose the largest total multiplicity, then the lexicographically smallest RTL SHA-256; use the lexicographically smallest source module as representative.",
+      "total_arm_samples": 48,
+      "total_arm_correct": 27,
+      "selected_rtl_occurrences": 4,
+      "selected_emitted_sha256": "ff12a4dae508f8e9b47c8225bb6946da1b247b5b03c1c9b6c2db45b0e8f919a8",
+      "population_unique_rtl": 18,
+      "representative_module": "rf_s2__med19__g6",
+      "identity_group_members": [
+        {
+          "module": "rf_s2__med19__g6",
+          "count": 4,
+          "rtl": "rtl/sealed_rf_s2/rf_s2__med19__g6.sv",
+          "rtl_sha256": "ff12a4dae508f8e9b47c8225bb6946da1b247b5b03c1c9b6c2db45b0e8f919a8"
+        }
+      ],
+      "post_selection_ppa_gate": {
+        "compiled": true,
+        "fmax_mhz": 12.209564973200004,
+        "path": "rtl/sealed_rf_s2/ppa.jsonl",
+        "line": 36
+      },
+      "provenance": {
+        "rtl": "rtl/sealed_rf_s2/rf_s2__med19__g6.sv",
+        "rtl_sha256": "ff12a4dae508f8e9b47c8225bb6946da1b247b5b03c1c9b6c2db45b0e8f919a8",
+        "copied_rtl": "rtl/sealed_study2_board/duts/rf_s2__med19__g6.v",
+        "copied_rtl_sha256": "ff12a4dae508f8e9b47c8225bb6946da1b247b5b03c1c9b6c2db45b0e8f919a8",
+        "golden": "rtl/sealed_study2_board/goldens/rf_med19/golden.py",
+        "golden_sha256": "39abeed5dbf54da4e887b9c28ace36efef571570be59d87678200feb56356589"
+      }
+    }
+  ],
+  "canary": {
+    "sel": 10,
+    "role": "canary",
+    "module": "echo8b",
+    "arm": null,
+    "design": "echo8b",
+    "family": "canary",
+    "regime": null,
+    "golden": "rtl_library/echo8b/golden.py",
+    "golden_sha256": "189756f9b87714b6594da8d3a6d93e17016bcc1ca432f4fa24ee8f62c9350b48"
+  },
+  "measurement": {
+    "board": "PYNQ-Z2",
+    "script": "sweep_catalog.py",
+    "lo_mhz": 20.0,
+    "hi_mhz": 260.0,
+    "step_mhz": 5.0,
+    "runs": 3,
+    "depth": 2048,
+    "n_score": 1024,
+    "max_shift": 8,
+    "similarity_threshold": 0.99,
+    "canary_margin_mhz": 20.0,
+    "pairing": "within-design SFT versus RF under identical selection and sweep rules",
+    "reserved_result": "rtl/sealed_study2_board/catalog_fmax.json"
+  },
+  "generated_outputs": {
+    "dut_top": {
+      "path": "rtl/sealed_study2_board/dut_top.v",
+      "sha256": "0cb6769cc79c776e292980074b1f5c5551d3f0c0e5e31b3d8828dcc090bc1655"
+    },
+    "build_tcl": {
+      "path": "rtl/sealed_study2_board/build_study2_board.tcl",
+      "sha256": "2e05447d114405e96621b144e0eb608aa7d0ccece8244fbc903958d0ee7fb279"
+    },
+    "sels": {
+      "path": "rtl/sealed_study2_board/study2_board_sels.json",
+      "sha256": "debf947690eec1f9a127292463e521a636343b24302085fb5071d58452186822"
+    },
+    "bitstream_expected": "rtl/sealed_study2_board/out/system_study2_board.bit",
+    "hwh_expected": "rtl/sealed_study2_board/out/system_study2_board.hwh",
+    "live_result_reserved": "rtl/sealed_study2_board/catalog_fmax.json"
+  }
+}
