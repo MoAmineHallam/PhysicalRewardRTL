@@ -3910,3 +3910,52 @@ Only after that exact pass did the runner invoke the first sealed command,
 the frozen 48-sample-per-design SFT evaluation. At the time this entry was
 written the SFT generation was still running and no policy-level efficacy or
 PPA result had been inspected.
+
+### Study 2 sealed efficacy outcome (2026-08-26)
+
+The server stage completed without error, and the frozen laptop Vivado audit
+then covered all eight arms. The per-arm audit contains 112, 39, 51, 24, 29,
+103, 64, and 67 candidate rows; 488 synthesized and the single explicit
+failure was retained for penalized scoring
+(`sealed_ppa_audit_study2.json:14-72`). The audit is marked complete and pins
+the unchanged `run_ppa.py` and `ppa_synth.tcl` hashes
+(`sealed_ppa_audit_study2.json:3-7`).
+
+On the preregistered primary penalized equal-sample endpoint over all 20 sealed
+designs, RF raised mean Fmax from 35.3752 to 93.0133 MHz: a +57.6382 MHz paired
+effect with 95% stratified-bootstrap CI [+37.6927, +77.2049]
+(`sealed_results_study2.json:803-813`). Both independent training seeds were
+positive overall, at +49.5161 and +65.7603 MHz
+(`sealed_results_study2.json:817-827`). The interpolation effect was +77.8878
+MHz [48.3661, 107.1789], and the extrapolation effect was +37.3886 MHz
+[13.8897, 60.8875] (`sealed_results_study2.json:773-799`).
+
+Correctness did not collapse: combined RF correctness was 0.5385 versus 0.5625
+for SFT (`sealed_results_study2.json:810-813`). The original MLP-reward control
+also improved over SFT, but its all-design point estimate was 66.1401 MHz and
+its SFT-relative effect was +30.7650 MHz, below RF's 93.0133 MHz point estimate
+(`sealed_results_study2.json:803-808`,
+`sealed_results_study2.json:864-869`). This output does not contain a direct
+RF-minus-MLP confidence interval, so direct statistical superiority must not be
+claimed from these point estimates alone.
+
+The correctness-only control increased all-design correctness to 0.6740 but
+reduced penalized Fmax by 10.6969 MHz relative to SFT
+(`sealed_results_study2.json:925-935`). This separates the hardware-grounded
+physical-quality effect from merely optimizing functional pass rate. The RF
+midpoint-to-end check found no late divergence: interpolation stayed 125.4967
+to 125.3674 MHz while extrapolation rose 51.9107 to 60.6593 MHz
+(`sealed_results_study2.json:1008-1025`).
+
+The reward-eligible mutation/trace contract remained 801/801 with zero
+rejections and collisions (`sealed_results_study2.json:975-986`), and reward
+resolution was 114/147 eligible groups, or 0.7755
+(`sealed_results_study2.json:948-952`). The frozen final classification is
+`full_two_regime_repair`, because both seeds improved in both regimes and both
+combined confidence intervals excluded zero
+(`sealed_results_study2.json:1030-1031`). The complete result artifact has raw
+SHA-256 `03c746a87de291613cc1c32a867ab40fce512af50eb40fd39c0b76ce441802f9`.
+
+This is the main sealed efficacy result. It does not by itself complete the
+separately planned resource/power summary or PYNQ-Z2 board confirmation; those
+must remain bounded follow-up evidence and must not change this frozen outcome.
