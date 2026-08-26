@@ -10,12 +10,11 @@ penalizes incorrect or implementation-failed samples with zero frequency.
 
 ## Project status
 
-- The completed primary study covers 30 held-out designs across five accelerator
-  families. Its paper tables and claims are generated from committed artifacts.
-- A separately preregistered sealed reward-repair study is in progress. Its
-  validity gate passed 801/801 reward-eligible training implementations, but no
-  efficacy claim should be made until sealed generation, Vivado evaluation, and
-  frozen analysis all finish.
+- The completed sealed Study 2 covers 20 unseen designs, two independent RF
+  training seeds, matched MLP and correctness controls, and 489 Vivado PPA rows.
+  Its frozen outcome is `full_two_regime_repair`.
+- The earlier 30-design, five-family result is retained as supporting evidence;
+  it is not pooled with or substituted for sealed Study 2.
 - The historical board comparison is excluded because its policy-selection
   rules were asymmetric. No symmetric silicon result exists until a live sweep
   produces and validates `rtl/holdout_silicon_symmetric/catalog_fmax.json`.
@@ -31,7 +30,8 @@ reproducibility contract, see [`paper/README.md`](paper/README.md).
 | `paper/` | IEEE TCAD manuscript, generated tables, figures, and claim ledger |
 | `rtl/` | Generated evaluation candidates, manifests, and committed PPA rows |
 | `rtl_library/` | Parameterized RTL catalogue, specifications, and golden models |
-| `analyze_main_results.py` | Sole generator for empirical manuscript values and headline tables |
+| `analyze_main_results.py` | Generator for the earlier 30-design supporting analysis |
+| `analyze_study2_secondary.py` | Fail-closed generator for sealed Study 2 comparison and conditional-PPA tables |
 | `verify_claims.py` | Fails closed on stale artifacts, unresolved pointers, or untracked prose numbers |
 | `oracle.py` | Icarus-based functional equivalence oracle |
 | `canonicalize.py` | Lexical canonicalizer and mutation/trace contract |
@@ -50,21 +50,24 @@ From the repository root, run:
 ```powershell
 python gen_symmetric_holdout_bitstream.py --check
 python analyze_main_results.py
+python analyze_study2_secondary.py
 python verify_claims.py
 python -m unittest -v test_sealed_workflow.py
 ```
 
-The first command validates the symmetric board-selection preflight. The second
-regenerates empirical manuscript values, tables, and verified figures. The third
-recomputes the claim ledger and checks every manuscript number against an
-artifact source pointer. The final command exercises the sealed-workflow
-contracts without requiring a GPU.
+The first command validates the symmetric board-selection preflight. The two
+analysis commands regenerate the supporting 30-design outputs and the sealed
+Study 2 tables. `verify_claims.py` then checks both ledgers and every manuscript
+number against artifact source pointers. The unit tests exercise the sealed
+workflow contracts without requiring a GPU.
 
 Generated paper artifacts are written under `paper/generated/`. In particular:
 
 - `claims.json` records values, methods, and source line ranges;
 - `claim_provenance.md` is the human-readable provenance ledger;
 - `main_results.json` contains the complete primary and secondary audit object;
+- `study2_claims.json` and `study2_secondary_results.json` contain the sealed
+  Study 2 closure and its bounded post-primary comparisons;
 - `table_*.tex` and verified figures are regenerated rather than hand-copied.
 
 ## Environment

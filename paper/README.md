@@ -1,9 +1,10 @@
 # TCAD paper reproducibility contract
 
-This is the TCAD-first integrated capability paper. Its primary result remains the frozen
-30-design, five-family `grpo_v8` evaluation; strong secondary results are
-included under explicit evidence labels rather than being omitted or silently
-pooled with the primary set.
+This is the TCAD-first integrated capability paper. The strongest headline
+evidence is the separately frozen 20-design sealed Study 2; the earlier
+30-design, five-family `grpo_v8` evaluation remains supporting evidence and is
+never silently pooled with the sealed result. The manuscript migration to this
+ordering must retain the explicit evidence labels in both generated ledgers.
 
 ## Regenerate and verify
 
@@ -12,19 +13,27 @@ From the repository root:
 ```powershell
 python gen_symmetric_holdout_bitstream.py --check
 python analyze_main_results.py
+python analyze_study2_secondary.py
 python verify_claims.py
 ```
 
 Keep this order. The symmetric-board preflight refreshes its selection manifest;
-the canonical paper generator then consumes that manifest, and the verifier
-finally checks that every generated artifact is current.
+the two artifact generators rebuild the earlier supporting analysis and sealed
+Study 2 closure, and the verifier finally checks both ledgers.
 
 `analyze_main_results.py` is the sole generator for empirical manuscript
-values, headline tables, and verified figures. It fails closed if the primary
+values and verified figures for the earlier 30-design analysis. It fails closed if that
 evaluation is not exactly 30 designs (19 interpolation, 11 extrapolation), if
 either policy lacks its 48-sample denominator, or if a manifest candidate lacks
 a PPA row. The primary endpoint is mean per-design equal-sample post-route
 Fmax: incorrect and implementation-failed samples score zero.
+
+`analyze_study2_secondary.py` is the sole generator for the sealed Study 2
+direct RF--MLP table, conditional resource/power table, and their separate
+claim ledger. It first verifies the immutable sealed outcome, all 489 PPA rows,
+the frozen resample-plan hashes, and the post-primary secondary-analysis
+specification. The preregistered RF--SFT result remains the primary endpoint;
+direct RF--MLP and resource/power comparisons are bounded secondary evidence.
 
 The same script independently validates each secondary artifact before adding
 claims:
@@ -45,6 +54,10 @@ Generated files live under `paper/generated/`:
 - `claim_provenance.md`: human-readable claim ledger;
 - `main_results.json`: primary and secondary audit object; and
 - `table_*.tex`: generated manuscript tables.
+- `study2_claims.json`, `study2_claims.tex`, and
+  `study2_claim_provenance.md`: the sealed Study 2 ledger; and
+- `study2_table_comparison.tex` and `study2_table_ppa.tex`: generated Study 2
+  comparison and conditional-PPA tables.
 
 Verified figures are `fig_main_verified`, `fig_mechanism_verified`, and
 `fig_trajectory_verified` in PDF and PNG form.
@@ -58,8 +71,13 @@ not in the generated ledger, it does not enter the paper.
 
 The manuscript labels evidence by what it can support:
 
-- **Primary causal comparison:** frozen 30-design RTLCoder SFT-versus-GRPO
-  evaluation, equal sample cost, real post-route measurements.
+- **Primary causal comparison:** frozen 20-design sealed Study 2 SFT-versus-RF
+  evaluation, equal sample cost, two independent RF seeds, real post-route
+  measurements, and incorrect/failed samples scored at zero.
+- **Supporting comparison:** the earlier 30-design RTLCoder SFT-versus-GRPO
+  result, kept separate from Study 2.
+- **Bounded secondary evidence:** direct RF-versus-MLP paired intervals and
+  conditional resource/power trade-offs on fixed common support.
 - **Replication:** Qwen-Coder repeats the complete SFT-to-GRPO pipeline on the
   earlier 22-design scope.
 - **Mechanism:** candidate-level real-Fmax distributions and multiplicities.

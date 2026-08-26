@@ -304,7 +304,7 @@ def _strip_nonprose_commands(text):
     text = re.sub(r"(?<!\\)%.*", "", text)
     # Every rendered empirical number must enter through a named claim.  Remove
     # those calls before searching for illicit raw numeric literals.
-    text = re.sub(r"\\claim\{[A-Za-z]+\}", "", text)
+    text = re.sub(r"\\(?:claim|studyclaim)\{[A-Za-z]+\}", "", text)
     # Digits in citation keys, labels, filenames and URLs are identifiers.
     one_arg = (
         "cite", "citep", "citet", "ref", "eqref", "autoref", "label",
@@ -322,7 +322,10 @@ def sec_f_manuscript():
     hdr("F. Manuscript provenance: no hand-copied numbers")
     generator = ROOT / "analyze_main_results.py"
     ledger_path = PAPER / "generated" / "claims.json"
-    if not generator.is_file() or not ledger_path.is_file():
+    study_generator = ROOT / "analyze_study2_secondary.py"
+    study_ledger_path = PAPER / "generated" / "study2_claims.json"
+    if not all(path.is_file() for path in (
+            generator, ledger_path, study_generator, study_ledger_path)):
         print("  missing canonical generator or claim ledger")
         return False
 
@@ -334,10 +337,25 @@ def sec_f_manuscript():
         print("  generated artifacts are stale:")
         print(fresh.stderr.rstrip())
         return False
-    print("  canonical 30-design outputs are current ........ OK")
+    study_fresh = subprocess.run(
+        [sys.executable, str(study_generator), "--check"],
+        cwd=ROOT, capture_output=True, text=True,
+    )
+    if study_fresh.returncode:
+        print("  generated Study 2 artifacts are stale:")
+        print((study_fresh.stderr or study_fresh.stdout).rstrip())
+        return False
+    print("  legacy 30-design support outputs are current ... OK")
+    print("  sealed Study 2 headline outputs are current .... OK")
 
     ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
-    claims = ledger.get("claims", {})
+    study_ledger = json.loads(study_ledger_path.read_text(encoding="utf-8"))
+    claims = dict(ledger.get("claims", {}))
+    for claim_id, record in study_ledger.get("claims", {}).items():
+        if claim_id in claims:
+            print(f"  duplicate claim ID across ledgers: {claim_id}")
+            return False
+        claims[claim_id] = record
     bad_sources = []
     for claim_id, record in claims.items():
         if not record.get("sources"):
@@ -362,7 +380,7 @@ def sec_f_manuscript():
     raw_numbers = []
     for path in sorted(tex_paths):
         text = path.read_text(encoding="utf-8")
-        used.update(re.findall(r"\\claim\{([A-Za-z]+)\}", text))
+        used.update(re.findall(r"\\(?:claim|studyclaim)\{([A-Za-z]+)\}", text))
         # Generated files are checked byte-for-byte above.  The raw-literal
         # ban applies to authored title/abstract/prose, not generated macros.
         if "generated" in path.parts:
@@ -388,6 +406,90 @@ def sec_f_manuscript():
     if not unknown and not raw_numbers:
         print(f"  rendered numeric claims are ledger-backed ........ {len(used)} used IDs OK")
     return not unknown and not raw_numbers
+
+
+# ------------------------------------------------------------------ H
+def sec_h_study2_secondary():
+    hdr("H. Sealed Study 2 secondary closure")
+    result_path = ROOT / "study2_secondary_results.json"
+    primary_path = ROOT / "sealed_results_study2.json"
+    audit_path = ROOT / "sealed_ppa_audit_study2.json"
+    ledger_path = PAPER / "generated" / "study2_claims.json"
+    table_paths = (
+        PAPER / "generated" / "study2_table_comparison.tex",
+        PAPER / "generated" / "study2_table_ppa.tex",
+    )
+    required = (result_path, primary_path, audit_path, ledger_path) + table_paths
+    missing = [str(path.relative_to(ROOT)) for path in required if not path.is_file()]
+    if missing:
+        print("  missing Study 2 secondary artifacts:")
+        for path in missing:
+            print(f"    {path}")
+        return False
+
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+    primary = json.loads(primary_path.read_text(encoding="utf-8"))
+    audit = json.loads(audit_path.read_text(encoding="utf-8"))
+    ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+    ok = True
+    if result.get("primary_outcome_unchanged") != primary.get("outcome"):
+        print("  secondary result changed or detached from the primary outcome")
+        ok = False
+    direct = result.get("direct_rf_mlp", {})
+    primary_plans = primary.get("bootstrap", {}).get("plan_sha256", {})
+    for scope in ("interp", "extrap", "all"):
+        row = direct.get(scope, {})
+        if row.get("bootstrap_plan_sha256") != primary_plans.get(scope):
+            print(f"  {scope} RF-MLP comparison did not reuse the primary plan")
+            ok = False
+        if row.get("n_designs") != primary.get("report", {}).get("rf", {}).get(
+                "combined", {}).get(scope, {}).get("n_designs"):
+            print(f"  {scope} RF-MLP design universe changed")
+            ok = False
+    audit_rows = audit.get("directories", [])
+    expected = (
+        sum(row.get("n_candidates", 0) for row in audit_rows),
+        sum(row.get("n_compiled", 0) for row in audit_rows),
+        sum(row.get("n_failed", 0) for row in audit_rows),
+    )
+    got = result.get("ppa_audit", {})
+    if expected != (got.get("total"), got.get("compiled"), got.get("failed")):
+        print(f"  PPA audit totals disagree: {expected} != "
+              f"{(got.get('total'), got.get('compiled'), got.get('failed'))}")
+        ok = False
+
+    claims = ledger.get("claims", {})
+    bad_sources = []
+    for claim_id, record in claims.items():
+        if not record.get("sources"):
+            bad_sources.append(f"{claim_id}: no sources")
+        for pointer in record.get("sources", []):
+            valid, error = _source_pointer(pointer)
+            if not valid:
+                bad_sources.append(f"{claim_id}: {error}")
+    if bad_sources:
+        print("  invalid Study 2 claim provenance:")
+        for error in bad_sources:
+            print(f"    {error}")
+        ok = False
+
+    used = set()
+    for path in table_paths:
+        used.update(re.findall(
+            r"\\studyclaim\{([A-Za-z]+)\}", path.read_text(encoding="utf-8")
+        ))
+    unknown = used - set(claims)
+    if unknown:
+        print("  Study 2 tables use unknown claims:")
+        for claim_id in sorted(unknown):
+            print(f"    {claim_id}")
+        ok = False
+    print(f"  immutable primary outcome ...................... {primary.get('outcome')}")
+    print(f"  direct RF-MLP scopes use frozen plans .......... "
+          f"{'OK' if not any(direct.get(s, {}).get('bootstrap_plan_sha256') != primary_plans.get(s) for s in ('interp','extrap','all')) else 'FAIL'}")
+    print(f"  Study 2 claim pointers resolve ................. {len(claims)} claims")
+    print(f"  generated Study 2 table claims resolve ......... {len(used)} used IDs")
+    return ok
 
 
 # ------------------------------------------------------------------ G
@@ -471,7 +573,8 @@ def main():
     results = [("A correctness", sec_a()), ("B best-of-N", sec_b()),
                ("C trajectory", sec_c()), ("D oracle audit", sec_d()),
                ("F manuscript provenance", sec_f_manuscript()),
-               ("G symmetric board", sec_g_symmetric_board())]
+               ("G symmetric board", sec_g_symmetric_board()),
+               ("H Study 2 closure", sec_h_study2_secondary())]
     if args.lodo:
         results.append(("E LODO spread", sec_e(args.lodo)))
     hdr("SUMMARY")

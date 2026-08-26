@@ -3959,3 +3959,55 @@ SHA-256 `03c746a87de291613cc1c32a867ab40fce512af50eb40fd39c0b76ce441802f9`.
 This is the main sealed efficacy result. It does not by itself complete the
 separately planned resource/power summary or PYNQ-Z2 board confirmation; those
 must remain bounded follow-up evidence and must not change this frozen outcome.
+
+### Bounded Study 2 secondary closure (2026-08-26)
+
+After the primary outcome was opened, a secondary-analysis specification was
+frozen before calculating the direct RF--MLP interval or aggregate resource
+trade-offs. It forbids new generation, checkpoint selection, sample changes,
+or any change to the `full_two_regime_repair` primary classification
+(`study2_secondary_analysis_spec.json:1-45`). These analyses are explicitly
+post-primary secondary evidence, not a retroactive preregistration
+(`study2_secondary_results.json:2-10`).
+
+The direct paired comparison reuses the exact primary family-by-regime
+bootstrap resamples. RF exceeds MLP by +27.4368 MHz [20.7440, 34.4775] under
+interpolation, +26.3096 MHz [6.0028, 46.6165] under extrapolation, and +26.8732
+MHz [16.2151, 37.4835] across all 20 designs
+(`study2_secondary_results.json:108-153`). Thus the direct interval excludes
+zero in each frozen scope; unlike the earlier point-estimate-only comparison,
+statistical superiority over MLP is supported for this sealed evaluation.
+
+All three endpoint arms contribute 960 samples across the 20 designs. SFT, RF,
+and MLP correctness are 0.5625, 0.5385, and 0.4990; their implementation rates
+are 0.5625, 0.5385, and 0.4979, respectively
+(`study2_secondary_results.json:81-106`). The complete PPA audit remains
+489 rows, 488 successful implementations, and one explicit failure
+(`study2_secondary_results.json:11-14`).
+
+Resource and power values condition on compiled oracle-correct draws and use
+the 15 designs with such support in SFT, RF, and MLP; designs are then weighted
+equally (`study2_secondary_results.json:155-176`). Relative to SFT on this
+common support, RF averages 754.93 versus 689.23 LUTs, a +65.70 difference
+[47.25, 84.15] (`study2_secondary_results.json:231-250`), and 236.20 versus
+161.45 flip-flops, a +74.75 difference [66.15, 83.36]
+(`study2_secondary_results.json:305-324`). Conversely, RF averages 2.73 versus
+5.00 DSP blocks, a -2.26 difference [-2.82, -1.70]
+(`study2_secondary_results.json:379-398`). BRAM use is zero in all three arms
+on this support (`study2_secondary_results.json:453-472`).
+
+Vivado vectorless power is 0.16225 W for RF versus 0.15968 W for SFT, a
++0.00257 W paired difference [0.00170, 0.00345]
+(`study2_secondary_results.json:527-546`). This is an estimated-power trade-off,
+not measured board power. The defensible paper statement is therefore that RF
+buys much higher penalized Fmax with more LUT/FF use and a small vectorless
+power increase, while using substantially fewer DSPs; it is not a free PPA
+improvement in every dimension.
+
+`analyze_study2_secondary.py` is the sole generator for the secondary JSON,
+claim ledger, and two Study 2 TeX tables. `verify_claims.py` independently
+checks that the primary outcome is unchanged, all three direct comparisons use
+the frozen resample-plan hashes, the 489-row PPA totals agree, all 59 secondary
+claim pointers resolve, and every generated table macro names a ledger claim.
+The complete secondary result has raw SHA-256
+`db65bced7c7a1052101764f221eec67407c85f3cba4f56d215a4493c94b31d15`.
