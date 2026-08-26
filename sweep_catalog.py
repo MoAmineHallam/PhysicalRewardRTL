@@ -22,6 +22,7 @@ import os
 import json
 import argparse
 import hashlib
+import importlib.util
 import platform
 from datetime import datetime, timezone
 
@@ -39,6 +40,29 @@ def file_sha256(path):
         for block in iter(lambda: stream.read(1024 * 1024), b""):
             h.update(block)
     return h.hexdigest()
+
+
+def load_entry_golden(name, meta, n):
+    """Load a frozen per-entry golden, falling back for legacy catalogs."""
+    golden = meta.get("golden")
+    if not golden:
+        return CS.load_golden(name, n)
+    path = golden if os.path.isabs(golden) else os.path.join(HERE, golden)
+    path = os.path.abspath(path)
+    if not os.path.isfile(path):
+        raise SystemExit(f"golden model not found for {name}: {path}")
+    expected = meta.get("golden_sha256")
+    actual = file_sha256(path)
+    if expected and actual != expected:
+        raise SystemExit(
+            f"golden model hash mismatch for {name}: expected {expected}, got {actual}"
+        )
+    spec = importlib.util.spec_from_file_location(f"catalog_golden_{name}", path)
+    if spec is None or spec.loader is None:
+        raise SystemExit(f"cannot load golden model for {name}: {path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.compute_golden(n).astype(np.uint16)
 
 
 def main():
@@ -68,7 +92,9 @@ def main():
     canary = next((n for n in names if sels_map[n]["role"] == "canary"), None)
 
     n_g = args.n_score + args.max_shift + CS.HEAD_SKIP + 4
-    goldens = {n: CS.load_golden(n, n_g) for n in names}
+    goldens = {
+        name: load_entry_golden(name, sels_map[name], n_g) for name in names
+    }
     masks = {n: 0xFFFF for n in names}
 
     # Prefer per-entry real-Vivado provenance embedded by newer generators.
