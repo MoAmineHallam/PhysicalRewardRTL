@@ -1,0 +1,45 @@
+{
+  "schema": "study2_secondary_analysis_spec/1",
+  "frozen_utc": "2026-08-26T07:50:23Z",
+  "status": "post-primary bounded secondary analysis; not preregistered confirmatory evidence",
+  "immutable_primary_outcome": "full_two_regime_repair",
+  "inputs": {
+    "sealed_results_study2.json": "03c746a87de291613cc1c32a867ab40fce512af50eb40fd39c0b76ce441802f9",
+    "sealed_ppa_audit_study2.json": "b4c9d57b7b368ff76ef3631aa344f9be8357b0faa90dae50508be68f520093cd",
+    "sealed_split.json": "feb34aee6a56df67f61dfd524bdefa60057b0df9751c5589c49a8d289a286e04"
+  },
+  "invariants": {
+    "designs": 20,
+    "total_ppa_rows": 489,
+    "primary_endpoint": "mean per-design equal-sample post-route Fmax; incorrect samples and implementation failures score 0 MHz",
+    "no_new_generation": true,
+    "no_checkpoint_or_sample_selection": true,
+    "no_primary_outcome_change": true
+  },
+  "direct_rf_mlp": {
+    "scope": "all sealed designs, plus frozen interpolation and extrapolation regimes",
+    "effect": "paired per-design RF minus MLP penalized equal-sample Fmax",
+    "bootstrap_replicates": 100000,
+    "bootstrap_seed": 20260813,
+    "strata": "family x regime",
+    "resample_plan": "reuse the immutable Study 2 primary plan"
+  },
+  "resource_power": {
+    "arms": ["sft", "rf", "mlp"],
+    "metrics": ["lut", "ff", "dsp", "bram", "power_w"],
+    "conditioning": "within each design and arm, multiplicity-weighted over oracle-correct candidates that compiled successfully",
+    "common_support": "include a design in the three-arm resource table only when all three arms have at least one compiled correct sample",
+    "design_weighting": "equal weight per common-support design",
+    "comparisons": ["rf_minus_sft", "rf_minus_mlp"],
+    "uncertainty": "paired family-by-regime stratified bootstrap absolute differences using the frozen Study 2 plan restricted to common support",
+    "power_limitation": "Vivado vectorless estimate, not measured board power",
+    "failure_rule": "never assign zero area or power to an incorrect or failed sample; report correctness and synthesis coverage beside conditional PPA"
+  },
+  "reporting_rules": [
+    "The preregistered RF-versus-SFT endpoint remains the only primary claim.",
+    "Direct RF-versus-MLP and conditional resource/power results are secondary.",
+    "A direct RF-versus-MLP superiority claim requires its paired confidence interval to exclude zero.",
+    "Conditional PPA claims must state their common-support design count and vectorless-power limitation.",
+    "No further training, seeds, checkpoint selection, or sealed-sample additions are authorized by this analysis."
+  ]
+}
