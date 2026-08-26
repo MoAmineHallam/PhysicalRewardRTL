@@ -1,0 +1,47 @@
+{
+  "schema": "study2_board_spec/1",
+  "frozen_utc": "2026-08-26T08:15:48Z",
+  "status": "post-primary bounded silicon feasibility study; not independent confirmatory evidence",
+  "primary_outcome_unchanged": "full_two_regime_repair",
+  "inputs_sha256_lf": {
+    "sealed_split.json": "2fa2890e534231f811e9f770bb549128731f2dc043cc061dae4f7bf333ac4553",
+    "sealed_results_study2.json": "03c746a87de291613cc1c32a867ab40fce512af50eb40fd39c0b76ce441802f9",
+    "sealed_ppa_audit_study2.json": "b4c9d57b7b368ff76ef3631aa344f9be8357b0faa90dae50508be68f520093cd"
+  },
+  "design_selection": {
+    "families": ["fir", "firr", "poly", "iir", "med"],
+    "count": 5,
+    "rule": "For each family independently, choose the sealed design with the lexicographically smallest SHA-256 of sealed_split_sha256_lf + ':' + family + ':' + design.",
+    "uses_policy_or_ppa_outcomes": false
+  },
+  "candidate_selection": {
+    "arms": ["sft", "rf"],
+    "samples_per_arm_design": 48,
+    "rule": "Within each arm/design, group oracle-correct candidates by emitted RTL SHA-256, sum sample multiplicity across that arm's frozen endpoint seed directories, choose the largest total multiplicity, then the lexicographically smallest RTL SHA-256; use the lexicographically smallest source module as representative.",
+    "uses_reward_fmax_or_resource_values": false,
+    "post_selection_gate": "The selected representative must have a successful row in the already-complete Vivado PPA audit; failure stops the board study and does not trigger reselection.",
+    "identical_for_arms": true
+  },
+  "measurement": {
+    "board": "PYNQ-Z2",
+    "script": "sweep_catalog.py",
+    "lo_mhz": 20.0,
+    "hi_mhz": 260.0,
+    "step_mhz": 5.0,
+    "runs": 3,
+    "depth": 2048,
+    "n_score": 1024,
+    "max_shift": 8,
+    "similarity_threshold": 0.99,
+    "canary_margin_mhz": 20.0,
+    "pairing": "within-design SFT versus RF under identical selection and sweep rules",
+    "reserved_result": "rtl/sealed_study2_board/catalog_fmax.json"
+  },
+  "stop_rules": [
+    "Do not change designs or candidates after generation or board inspection.",
+    "Do not create a silicon result unless all ten DUT/golden self-checks and the canary pass before bitstream construction.",
+    "Do not report a DUT Fmax when it is within the frozen canary margin.",
+    "A missing, incomplete, or unreachable board remains no silicon claim.",
+    "The board result cannot change the sealed Study 2 primary outcome."
+  ]
+}
