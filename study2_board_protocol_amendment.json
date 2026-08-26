@@ -1,0 +1,41 @@
+{
+  "schema": "study2_board_protocol_amendment/1",
+  "recorded_utc": "2026-08-26T08:26:42Z",
+  "initial_protocol": {
+    "commit": "170c3a58",
+    "spec_sha256_lf": "8fe489e34c0878bcd46835caafcd4bdd4dc693438f1d4f9550e5c61c0643c67c",
+    "implementation_commit": "cc4dee43"
+  },
+  "failed_attempt": {
+    "command": "python gen_study2_board.py --check",
+    "error": "sft/firr18_v5 does not have its frozen 48-sample arm budget",
+    "cause": "The initial outcome-independent family hash selected firr18_v5, for which SFT, RF seed 1, and RF seed 2 each had zero oracle-correct candidates.",
+    "evidence": [
+      "rtl/sealed_sft/holdout_summary.json:42",
+      "rtl/sealed_rf_s1/holdout_summary.json:42",
+      "rtl/sealed_rf_s2/holdout_summary.json:42"
+    ],
+    "board_outputs_created": false,
+    "silicon_result_created": false
+  },
+  "amendment": {
+    "reason": "A paired board experiment cannot instantiate an arm with no functional candidate.",
+    "eligibility": "Require at least one oracle-correct candidate in SFT and at least one across the pooled two-seed RF arm, then apply the original family hash rule.",
+    "allowed_selection_fields": [
+      "sealed family",
+      "sealed design name",
+      "binary correctness availability",
+      "frozen hash salt"
+    ],
+    "forbidden_selection_fields": [
+      "reward",
+      "Fmax",
+      "LUT",
+      "FF",
+      "DSP",
+      "BRAM",
+      "power"
+    ],
+    "scientific_status": "Transparent post-failure feasibility amendment. Any resulting silicon comparison is descriptive support and is not independent confirmatory evidence."
+  }
+}

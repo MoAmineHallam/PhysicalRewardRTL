@@ -1,7 +1,9 @@
 {
   "schema": "study2_board_spec/1",
   "frozen_utc": "2026-08-26T08:15:48Z",
-  "status": "post-primary bounded silicon feasibility study; not independent confirmatory evidence",
+  "amended_utc": "2026-08-26T08:26:42Z",
+  "amendment_record": "study2_board_protocol_amendment.json",
+  "status": "post-primary bounded silicon feasibility study; protocol amended after a recorded zero-correct-candidate feasibility stop; not independent confirmatory evidence",
   "primary_outcome_unchanged": "full_two_regime_repair",
   "inputs_sha256_lf": {
     "sealed_split.json": "2fa2890e534231f811e9f770bb549128731f2dc043cc061dae4f7bf333ac4553",
@@ -11,8 +13,11 @@
   "design_selection": {
     "families": ["fir", "firr", "poly", "iir", "med"],
     "count": 5,
-    "rule": "For each family independently, choose the sealed design with the lexicographically smallest SHA-256 of sealed_split_sha256_lf + ':' + family + ':' + design.",
-    "uses_policy_or_ppa_outcomes": false
+    "eligibility": "A design must have at least one oracle-correct emitted candidate in the SFT arm and at least one across the pooled two-seed RF arm. This is necessary to instantiate both sides of a functional board pair.",
+    "rule": "For each family independently, among correctness-eligible designs choose the sealed design with the lexicographically smallest SHA-256 of sealed_split_sha256_lf + ':' + family + ':' + design.",
+    "uses_policy_or_ppa_outcomes": true,
+    "outcome_use_limited_to": "binary correctness eligibility only",
+    "uses_reward_fmax_resource_or_power": false
   },
   "candidate_selection": {
     "arms": ["sft", "rf"],
@@ -38,6 +43,7 @@
     "reserved_result": "rtl/sealed_study2_board/catalog_fmax.json"
   },
   "stop_rules": [
+    "The original outcome-independent design-selection attempt and its zero-correct-candidate stop remain recorded; do not describe the amended board subset as independently selected.",
     "Do not change designs or candidates after generation or board inspection.",
     "Do not create a silicon result unless all ten DUT/golden self-checks and the canary pass before bitstream construction.",
     "Do not report a DUT Fmax when it is within the frozen canary margin.",

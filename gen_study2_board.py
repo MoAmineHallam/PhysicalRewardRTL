@@ -29,6 +29,7 @@ import oracle
 
 ROOT = pathlib.Path(__file__).resolve().parent
 SPEC_PATH = ROOT / "study2_board_spec.json"
+AMENDMENT_PATH = ROOT / "study2_board_protocol_amendment.json"
 SEALED_PATH = ROOT / "sealed_split.json"
 PPA_AUDIT_PATH = ROOT / "sealed_ppa_audit_study2.json"
 OUT = ROOT / "rtl" / "sealed_study2_board"
@@ -83,8 +84,18 @@ def verify_spec(spec: dict) -> None:
             raise BoardInputError(f"frozen board input mismatch: {name}")
     if spec.get("primary_outcome_unchanged") != "full_two_regime_repair":
         raise BoardInputError("board specification changed the primary outcome")
-    if spec.get("design_selection", {}).get("uses_policy_or_ppa_outcomes") is not False:
-        raise BoardInputError("design selection is not outcome-independent")
+    design = spec.get("design_selection", {})
+    if spec.get("amendment_record") != rel(AMENDMENT_PATH):
+        raise BoardInputError("missing frozen board protocol amendment record")
+    amendment = read_json(AMENDMENT_PATH)
+    if amendment.get("schema") != "study2_board_protocol_amendment/1":
+        raise BoardInputError("unexpected board amendment schema")
+    if design.get("uses_policy_or_ppa_outcomes") is not True:
+        raise BoardInputError("amended correctness eligibility is not disclosed")
+    if design.get("outcome_use_limited_to") != "binary correctness eligibility only":
+        raise BoardInputError("amended design eligibility is not bounded to correctness")
+    if design.get("uses_reward_fmax_resource_or_power") is not False:
+        raise BoardInputError("design selection uses a forbidden optimization outcome")
     candidate = spec.get("candidate_selection", {})
     if candidate.get("uses_reward_fmax_or_resource_values") is not False:
         raise BoardInputError("candidate selection uses forbidden outcome fields")
@@ -92,16 +103,61 @@ def verify_spec(spec: dict) -> None:
         raise BoardInputError("candidate selection is not identical for both arms")
 
 
-def select_designs(spec: dict, sealed: dict) -> list[dict]:
+def load_arm_stats(sealed: dict) -> tuple[dict, list[dict]]:
+    universe = {row["design"] for row in sealed.get("designs", [])}
+    stats = {
+        arm: {design: {"n": 0, "n_correct": 0} for design in universe}
+        for arm in ARMS
+    }
+    sources = []
+    for arm, directories in ARMS.items():
+        for directory in directories:
+            config_path = directory / "generation_config.json"
+            summary_path = directory / "holdout_summary.json"
+            config = read_json(config_path)
+            summary = read_json(summary_path)
+            policy = config.get("policy")
+            rows = summary.get(policy)
+            if not isinstance(rows, dict) or set(rows) != universe:
+                raise BoardInputError(f"invalid design universe in {rel(summary_path)}")
+            n_per_design = int(config.get("n_per_design", 0))
+            for design in universe:
+                row = rows[design]
+                n = int(row.get("n", -1))
+                n_correct = int(row.get("n_correct", -1))
+                if n != n_per_design or not 0 <= n_correct <= n:
+                    raise BoardInputError(f"invalid counts for {design} in {rel(summary_path)}")
+                stats[arm][design]["n"] += n
+                stats[arm][design]["n_correct"] += n_correct
+            sources.append(
+                {
+                    "arm": arm,
+                    "directory": rel(directory),
+                    "generation_config": rel(config_path),
+                    "generation_config_sha256": sha256(config_path),
+                    "holdout_summary": rel(summary_path),
+                    "holdout_summary_sha256": sha256(summary_path),
+                }
+            )
+    return stats, sources
+
+
+def select_designs(spec: dict, sealed: dict, arm_stats: dict) -> list[dict]:
     rows = sealed.get("designs")
     if not isinstance(rows, list) or len(rows) != 20:
         raise BoardInputError("sealed design universe is not exactly 20 rows")
     salt = spec["inputs_sha256_lf"]["sealed_split.json"]
     selected = []
     for family in FAMILIES:
-        candidates = [row for row in rows if row.get("family") == family]
+        candidates = [
+            row
+            for row in rows
+            if row.get("family") == family
+            and arm_stats["sft"][row["design"]]["n_correct"] > 0
+            and arm_stats["rf"][row["design"]]["n_correct"] > 0
+        ]
         if not candidates:
-            raise BoardInputError(f"sealed split has no {family} design")
+            raise BoardInputError(f"sealed split has no correctness-eligible {family} design")
         ranked = sorted(
             candidates,
             key=lambda row: hashlib.sha256(
@@ -112,6 +168,9 @@ def select_designs(spec: dict, sealed: dict) -> list[dict]:
         chosen["selection_digest"] = hashlib.sha256(
             f"{salt}:{family}:{chosen['design']}".encode("utf-8")
         ).hexdigest()
+        chosen["correctness_eligibility"] = {
+            arm: dict(arm_stats[arm][chosen["design"]]) for arm in ARMS
+        }
         selected.append(chosen)
     if len(selected) != spec["design_selection"]["count"]:
         raise BoardInputError("design selection count differs from frozen specification")
@@ -141,17 +200,21 @@ def load_compiled_rows() -> dict[str, dict]:
     return rows
 
 
-def select_candidates(selected_designs: list[dict], ppa_rows: dict[str, dict]):
+def select_candidates(
+    spec: dict,
+    selected_designs: list[dict],
+    arm_stats: dict,
+    ppa_rows: dict[str, dict],
+    sources: list[dict],
+):
     wanted = {row["design"] for row in selected_designs}
     chosen = {}
-    sources = []
     for arm, directories in ARMS.items():
         by_design_hash: dict[str, dict[str, dict]] = collections.defaultdict(
             lambda: collections.defaultdict(
                 lambda: {"count": 0, "members": [], "emitted_hash": None}
             )
         )
-        arm_total_n: dict[str, int] = collections.Counter()
         for directory in directories:
             manifest_path = directory / "fmax_manifest.json"
             manifest = read_json(manifest_path)
@@ -167,7 +230,7 @@ def select_candidates(selected_designs: list[dict], ppa_rows: dict[str, dict]):
                     "ppa_sha256": sha256(directory / "ppa.jsonl"),
                 }
             )
-            seen_design_n = {}
+            manifest_counts: dict[str, int] = collections.Counter()
             for module, info in manifest.items():
                 design = info.get("design")
                 if design not in wanted:
@@ -177,9 +240,7 @@ def select_candidates(selected_designs: list[dict], ppa_rows: dict[str, dict]):
                 emitted_hash = info.get("emitted_sha256")
                 if count <= 0 or n <= 0 or not isinstance(emitted_hash, str):
                     raise BoardInputError(f"invalid candidate identity for {module}")
-                previous_n = seen_design_n.setdefault(design, n)
-                if previous_n != n:
-                    raise BoardInputError(f"mixed n in {rel(manifest_path)} for {design}")
+                manifest_counts[design] += count
                 rtl_path = directory / f"{module}.sv"
                 if not rtl_path.is_file():
                     raise BoardInputError(f"candidate RTL is missing: {rel(rtl_path)}")
@@ -198,12 +259,19 @@ def select_candidates(selected_designs: list[dict], ppa_rows: dict[str, dict]):
                         "manifest": manifest_path,
                     }
                 )
-            for design, n in seen_design_n.items():
-                arm_total_n[design] += n
+            config = read_json(directory / "generation_config.json")
+            summary = read_json(directory / "holdout_summary.json")[config["policy"]]
+            for design in wanted:
+                if manifest_counts[design] != int(summary[design]["n_correct"]):
+                    raise BoardInputError(
+                        f"correct-candidate multiplicity mismatch for {design} in "
+                        f"{rel(manifest_path)}"
+                    )
 
         for design in wanted:
             groups = by_design_hash.get(design)
-            if not groups or arm_total_n[design] != 48:
+            total_n = arm_stats[arm][design]["n"]
+            if not groups or total_n != spec["candidate_selection"]["samples_per_arm_design"]:
                 raise BoardInputError(
                     f"{arm}/{design} does not have its frozen 48-sample arm budget"
                 )
@@ -222,7 +290,8 @@ def select_candidates(selected_designs: list[dict], ppa_rows: dict[str, dict]):
             chosen[(arm, design)] = {
                 "arm": arm,
                 "design": design,
-                "total_arm_samples": arm_total_n[design],
+                "total_arm_samples": total_n,
+                "total_arm_correct": arm_stats[arm][design]["n_correct"],
                 "selected_rtl_occurrences": winner["count"],
                 "selected_emitted_sha256": winner["emitted_hash"],
                 "representative": representative,
@@ -412,6 +481,7 @@ def write_outputs(spec: dict, selected_designs: list[dict], chosen: dict, source
                     "regime": design_row["regime"],
                     "selection_rule": spec["candidate_selection"]["rule"],
                     "total_arm_samples": pick["total_arm_samples"],
+                    "total_arm_correct": pick["total_arm_correct"],
                     "selected_rtl_occurrences": pick["selected_rtl_occurrences"],
                     "selected_emitted_sha256": pick["selected_emitted_sha256"],
                     "population_unique_rtl": pick["population_unique_rtl"],
@@ -519,15 +589,21 @@ endmodule
         "git_head_at_generation": git_head(),
         "spec": rel(SPEC_PATH),
         "spec_sha256_lf": sha256_lf(SPEC_PATH),
+        "protocol_amendment": rel(AMENDMENT_PATH),
+        "protocol_amendment_sha256": sha256(AMENDMENT_PATH),
         "primary_outcome_unchanged": spec["primary_outcome_unchanged"],
         "design_selection": {
             "rule": spec["design_selection"]["rule"],
-            "uses_policy_or_ppa_outcomes": False,
+            "eligibility": spec["design_selection"]["eligibility"],
+            "uses_policy_or_ppa_outcomes": True,
+            "outcome_use_limited_to": "binary correctness eligibility only",
+            "uses_reward_fmax_resource_or_power": False,
             "designs": [
                 {
                     "design": row["design"], "family": row["family"],
                     "regime": row["regime"],
                     "selection_digest": row["selection_digest"],
+                    "correctness_eligibility": row["correctness_eligibility"],
                 }
                 for row in selected_designs
             ],
@@ -611,9 +687,12 @@ def main() -> int:
     spec = read_json(SPEC_PATH)
     verify_spec(spec)
     sealed = read_json(SEALED_PATH)
-    designs = select_designs(spec, sealed)
+    arm_stats, sources = load_arm_stats(sealed)
+    designs = select_designs(spec, sealed, arm_stats)
     ppa_rows = load_compiled_rows()
-    chosen, sources = select_candidates(designs, ppa_rows)
+    chosen, sources = select_candidates(
+        spec, designs, arm_stats, ppa_rows, sources
+    )
     entries, manifest = write_outputs(spec, designs, chosen, sources)
     print("Study 2 board selection:")
     for row in manifest["selections"]:
