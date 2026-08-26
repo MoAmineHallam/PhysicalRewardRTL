@@ -15,9 +15,12 @@ penalizes incorrect or implementation-failed samples with zero frequency.
   Its frozen outcome is `full_two_regime_repair`.
 - The earlier 30-design, five-family result is retained as supporting evidence;
   it is not pooled with or substituted for sealed Study 2.
-- The historical board comparison is excluded because its policy-selection
-  rules were asymmetric. No symmetric silicon result exists until a live sweep
-  produces and validates `rtl/holdout_silicon_symmetric/catalog_fmax.json`.
+- A new provenance-bound Study 2 PYNQ-Z2 sweep covers five paired designs. It
+  shows two RF wins, two ties, and one loss with zero Fmax spread across three
+  runs. Because correctness eligibility was added after an explicitly recorded
+  infeasible first selection, this is descriptive support rather than an
+  independent confirmatory result. The historical asymmetric comparison stays
+  excluded.
 
 For timestamped experimental history and negative results, see
 [`MASTER_REFERENCE.md`](MASTER_REFERENCE.md). For the paper-specific
@@ -32,6 +35,7 @@ reproducibility contract, see [`paper/README.md`](paper/README.md).
 | `rtl_library/` | Parameterized RTL catalogue, specifications, and golden models |
 | `analyze_main_results.py` | Generator for the earlier 30-design supporting analysis |
 | `analyze_study2_secondary.py` | Fail-closed generator for sealed Study 2 comparison and conditional-PPA tables |
+| `analyze_study2_board.py` | Raw-trace and provenance verifier plus generator for the Study 2 silicon table |
 | `verify_claims.py` | Fails closed on stale artifacts, unresolved pointers, or untracked prose numbers |
 | `oracle.py` | Icarus-based functional equivalence oracle |
 | `canonicalize.py` | Lexical canonicalizer and mutation/trace contract |
@@ -48,17 +52,18 @@ primary comparisons, replications, controls, diagnostics, and context.
 From the repository root, run:
 
 ```powershell
-python gen_symmetric_holdout_bitstream.py --check
+python gen_study2_board.py --check
 python analyze_main_results.py
 python analyze_study2_secondary.py
+python analyze_study2_board.py
 python verify_claims.py
 python -m unittest -v test_sealed_workflow.py
 ```
 
-The first command validates the symmetric board-selection preflight. The two
-analysis commands regenerate the supporting 30-design outputs and the sealed
-Study 2 tables. `verify_claims.py` then checks both ledgers and every manuscript
-number against artifact source pointers. The unit tests exercise the sealed
+The first command validates the paired Study 2 board inputs. The analysis
+commands regenerate the supporting 30-design outputs, sealed Study 2 tables,
+and descriptive silicon table. `verify_claims.py` checks all three ledgers and
+every manuscript number against artifact source pointers. The unit tests exercise the sealed
 workflow contracts without requiring a GPU.
 
 Generated paper artifacts are written under `paper/generated/`. In particular:
@@ -68,6 +73,8 @@ Generated paper artifacts are written under `paper/generated/`. In particular:
 - `main_results.json` contains the complete primary and secondary audit object;
 - `study2_claims.json` and `study2_secondary_results.json` contain the sealed
   Study 2 closure and its bounded post-primary comparisons;
+- `study2_board_claims.json` and `study2_board_results.json` contain the
+  provenance-checked, explicitly descriptive live-silicon summary;
 - `table_*.tex` and verified figures are regenerated rather than hand-copied.
 
 ## Environment

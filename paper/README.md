@@ -11,15 +11,16 @@ ordering must retain the explicit evidence labels in both generated ledgers.
 From the repository root:
 
 ```powershell
-python gen_symmetric_holdout_bitstream.py --check
+python gen_study2_board.py --check
 python analyze_main_results.py
 python analyze_study2_secondary.py
+python analyze_study2_board.py
 python verify_claims.py
 ```
 
-Keep this order. The symmetric-board preflight refreshes its selection manifest;
-the two artifact generators rebuild the earlier supporting analysis and sealed
-Study 2 closure, and the verifier finally checks both ledgers.
+Keep this order. The Study 2 board generator validates the fixed paired inputs;
+the artifact generators rebuild the earlier support, sealed Study 2 closure,
+and descriptive silicon table, and the verifier finally checks all ledgers.
 
 `analyze_main_results.py` is the sole generator for empirical manuscript
 values and verified figures for the earlier 30-design analysis. It fails closed if that
@@ -34,6 +35,12 @@ claim ledger. It first verifies the immutable sealed outcome, all 489 PPA rows,
 the frozen resample-plan hashes, and the post-primary secondary-analysis
 specification. The preregistered RF--SFT result remains the primary endpoint;
 direct RF--MLP and resource/power comparisons are bounded secondary evidence.
+
+`analyze_study2_board.py` independently recomputes every live clock boundary
+from the raw three-run PYNQ-Z2 traces and verifies the bitstream, HWH, selector,
+and selection-manifest hashes. Its five-pair result is explicitly descriptive:
+the initial outcome-independent selection was infeasible and correctness
+eligibility was added in a recorded amendment before the live sweep.
 
 The same script independently validates each secondary artifact before adding
 claims:
@@ -58,6 +65,8 @@ Generated files live under `paper/generated/`:
   `study2_claim_provenance.md`: the sealed Study 2 ledger; and
 - `study2_table_comparison.tex` and `study2_table_ppa.tex`: generated Study 2
   comparison and conditional-PPA tables.
+- `study2_board_claims.json`, `study2_board_claims.tex`, and
+  `study2_table_board.tex`: generated provenance-bound silicon claims and table.
 
 Verified figures are `fig_main_verified`, `fig_mechanism_verified`, and
 `fig_trajectory_verified` in PDF and PNG form.
@@ -78,6 +87,8 @@ The manuscript labels evidence by what it can support:
   result, kept separate from Study 2.
 - **Bounded secondary evidence:** direct RF-versus-MLP paired intervals and
   conditional resource/power trade-offs on fixed common support.
+- **Descriptive silicon support:** five paired PYNQ-Z2 clock sweeps, with the
+  feasibility amendment and one RF loss reported rather than hidden.
 - **Replication:** Qwen-Coder repeats the complete SFT-to-GRPO pipeline on the
   earlier 22-design scope.
 - **Mechanism:** candidate-level real-Fmax distributions and multiplicities.
@@ -94,10 +105,10 @@ because its SFT and GRPO selection rules were asymmetric.
 
 ## Silicon rule
 
-Only `rtl/holdout_silicon_symmetric/catalog_fmax.json`, produced by a live sweep
-after symmetric candidate selection, may create a silicon table. A generated
-bitstream is not a measurement. Until that file exists and its hashes validate,
-the generated paper states that no symmetric silicon result is available.
+Only `rtl/sealed_study2_board/catalog_fmax.json`, produced by the live sweep
+and validated against its exact bitstream, HWH, selectors, and amended selection
+manifest, may create the Study 2 silicon table. The older asymmetric board table
+remains excluded.
 
 ## Compile
 

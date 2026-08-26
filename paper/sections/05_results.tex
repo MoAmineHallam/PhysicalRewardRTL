@@ -1,68 +1,99 @@
 \section{Results}
 \label{sec:results}
 
-\subsection{End-to-end capability and primary result}
+\subsection{Sealed primary result}
 
-The raw model is not already solving this physical-design problem: its held-out
-correctness is \claim{BaseCorrectness}\%, and its zero-penalized frequency is
-\claim{BasePenalized}~MHz.  Supervision raises correctness to
-\claim{OverallSftCorrectness}\%, creating the functional support needed for
-physical policy optimization.
+\input{generated/study2_table_comparison}
+
+The separately frozen study is the primary result.  Across
+\studyclaim{StudyTwoDesignCount} held-out designs, the RF-reward arm raises
+penalized equal-sample Fmax from \studyclaim{StudyTwoOverallSftPenalized} to
+\studyclaim{StudyTwoOverallRfPenalized}~MHz.  The paired gain is
+\studyclaim{StudyTwoOverallRfSftGain}~MHz with frozen interval
+[\studyclaim{StudyTwoOverallRfSftCiLow},
+\studyclaim{StudyTwoOverallRfSftCiHigh}]~MHz.  Interpolation improves by
+\studyclaim{StudyTwoInterpRfSftGain}~MHz
+[\studyclaim{StudyTwoInterpRfSftCiLow},
+\studyclaim{StudyTwoInterpRfSftCiHigh}], while extrapolation improves by
+\studyclaim{StudyTwoExtrapRfSftGain}~MHz
+[\studyclaim{StudyTwoExtrapRfSftCiLow},
+\studyclaim{StudyTwoExtrapRfSftCiHigh}].
+
+Both independently trained RF policies improve overall, by
+\studyclaim{StudyTwoRfSeedOneOverallGain} and
+\studyclaim{StudyTwoRfSeedTwoOverallGain}~MHz.  Functional validity remains
+close rather than collapsing: correctness is
+\studyclaim{StudyTwoSftCorrectness}\% for SFT and
+\studyclaim{StudyTwoRfCorrectness}\% for RF.  Because incorrect and failed
+samples remain zeros, this small decline is already paid for in the headline
+endpoint.
+
+The matched MLP reward improves on SFT but remains below RF.  The bounded direct
+comparison gives an overall RF-minus-MLP effect of
+\studyclaim{StudyTwoOverallRfMlpGain}~MHz with interval
+[\studyclaim{StudyTwoOverallRfMlpCiLow},
+\studyclaim{StudyTwoOverallRfMlpCiHigh}].  Its interpolation and extrapolation
+intervals also exclude zero (Table~\ref{tab:study2-comparison}).  A matched
+correctness-only policy increases functional yield but does not reproduce the
+physical endpoint gain, separating hardware-directed optimization from simply
+rewarding validity.
+
+\subsection{Conditional physical-cost trade-off}
+
+\input{generated/study2_table_ppa}
+
+The speed gain is not free.  On the
+\studyclaim{StudyTwoPpaCommonSupport}-design three-arm common support, RF uses
+\studyclaim{StudyTwoPpaRfLut} versus \studyclaim{StudyTwoPpaSftLut} LUTs and
+\studyclaim{StudyTwoPpaRfFf} versus \studyclaim{StudyTwoPpaSftFf} flip-flops.
+Conversely, it uses \studyclaim{StudyTwoPpaRfDsp} versus
+\studyclaim{StudyTwoPpaSftDsp} DSP blocks.  Vectorless power rises from
+\studyclaim{StudyTwoPpaSftPower} to \studyclaim{StudyTwoPpaRfPower}~W.  These
+figures condition on compiled correct draws and estimate tool power rather than
+board power; they characterize implementation cost but do not replace the
+failure-penalized primary endpoint.
+
+\subsection{Live PYNQ-Z2 support}
+
+\input{generated/study2_table_board}
+
+All paired DUTs pass the canary-separation gate by at least
+\boardclaim{BoardMinimumCanaryMargin}~MHz, and the maximum Fmax spread over
+\boardclaim{BoardRunCount} full sweeps is \boardclaim{BoardMaximumSpread}~MHz.
+The descriptive mean rises from \boardclaim{BoardSftMean} to
+\boardclaim{BoardRfMean}~MHz, a \boardclaim{BoardMeanDifference}-MHz paired
+difference.  The family rows are heterogeneous: \boardclaim{BoardRfWins} RF
+wins, \boardclaim{BoardTies} ties, and \boardclaim{BoardRfLosses} loss, with a
+median difference of \boardclaim{BoardMedianDifference}~MHz.  The two large
+feed-forward gains therefore support the main direction on physical silicon,
+but the amended feasibility subset and the median-filter loss forbid a blanket
+cross-family or independent-confirmatory claim.
+
+\subsection{Earlier five-family supporting evaluation}
 
 \input{generated/table_main}
 
-Table~\ref{tab:main-verified} is the primary policy result.  Under interpolation,
-penalized frequency rises from \claim{InterpSftPenalized} to
-\claim{InterpGrpoPenalized}~MHz, a paired gain of \claim{InterpGain}~MHz.  Under
-extrapolation it rises from \claim{ExtrapSftPenalized} to
-\claim{ExtrapGrpoPenalized}~MHz, a gain of \claim{ExtrapGain}~MHz.  The
-descriptive paired-design intervals remain above zero in both regimes.  Overall,
-\claim{OverallImproved} designs improve and \claim{OverallDeclined} decline.
+The earlier \claim{DesignCount}-design evaluation is retained separately.  Its
+penalized endpoint rises from \claim{OverallSftPenalized} to
+\claim{OverallGrpoPenalized}~MHz and improves on
+\claim{OverallImproved} designs.  This larger historical result supports breadth
+and the candidate-level mechanism below, but it is neither pooled with nor
+substituted for the sealed primary study.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{fig_main_verified}
-\caption{Per-design primary endpoint.  Each segment joins supervised and
-optimized equal-sample results for one frozen held-out design.}
+\caption{Per-design endpoint in the earlier supporting evaluation.  Each
+segment joins supervised and optimized equal-sample results.}
 \label{fig:main-verified}
 \end{figure}
 
-The gain does not come from filtering failures out of the denominator.
-Supervised and optimized correctness are \claim{OverallSftCorrectness}\% and
-\claim{OverallGrpoCorrectness}\% overall.  Interpolation correctness changes
-from \claim{InterpSftCorrectness}\% to \claim{InterpGrpoCorrectness}\%, while
-extrapolation falls from \claim{ExtrapSftCorrectness}\% to
-\claim{ExtrapGrpoCorrectness}\%.  Those losses already score zero in the
-headline endpoint.
-
-\subsection{Physical-cost trade-off}
-
-\input{generated/table_ppa}
-
-The frequency gain carries a specific resource trade-off rather than an
-across-the-board expansion.
-Relative to SFT, GRPO's conditional mean LUT count changes by a factor of
-\claim{PpaLutRatio} and its flip-flop count by \claim{PpaFfRatio}; the latter is
-consistent with selecting more deeply registered implementations.  DSP use
-changes by \claim{PpaDspRatio}, while the vectorless power estimate changes by
-\claim{PpaPowerRatio}.  On \claim{PpaFasterNoMoreLut} of the
-\claim{DesignCount} designs, penalized frequency improves without increasing
-conditional mean LUT count; \claim{PpaFasterNoMoreDsp} designs improve without
-increasing conditional mean DSP use.  These are descriptive resource
-diagnostics conditioned on successful implementations, not substitutes for the
-failure-penalized primary endpoint or activity-based power measurements.
-
-\subsection{Variation across circuit families}
-
 \input{generated/table_family}
 
-The improvement is broad but heterogeneous.  Every FIR, reverse-FIR, and
-polynomial design improves.  Recursive filters improve on
-\claim{FamilyIirImproved} of \claim{FamilyIirCount} designs, reflecting a mix of
-faster implementations and correctness losses.  Both median designs improve in
-the penalized endpoint, but their absolute frequencies remain far below the
-feed-forward families.  Keeping these difficult cases prevents the aggregate
-from becoming a curated success set.
+The supporting evaluation is also heterogeneous.  Its FIR, reverse-FIR, and
+polynomial rows improve consistently, whereas recursive and median families
+show the boundary of the learned distribution shift.  These difficult families
+remain in the generated table rather than being curated away.
 
 \subsection{Second-backbone replication}
 
@@ -86,7 +117,7 @@ recipe is not specific to RTLCoder, while the narrower
 \centering
 \includegraphics[width=\textwidth]{fig_mechanism_verified}
 \caption{Real post-route frequency of every distinct oracle-correct candidate
-in the frozen primary evaluation.  Marker area preserves original sample
+in the earlier supporting evaluation.  Marker area preserves original sample
 multiplicity.  GRPO concentrates probability on fewer high-frequency
 implementations for the feed-forward families; recursive and median designs
 show the boundary of that pattern.}
@@ -195,11 +226,3 @@ themselves clamp-saturated, and the search found only
 \claim{ReflowTokenPairCount} token-identical cross-checkpoint pairs.  We
 therefore treat this as bounded attribution evidence, not a validated repaired
 reward or assumption-free causal proof.
-
-\subsection{Silicon status}
-
-The symmetric candidate map is generated with the same median rule for both
-policies, and every paired DUT passes the shared-golden preflight.  The
-historical asymmetric board numbers are not reused.
-
-\input{generated/table_board}

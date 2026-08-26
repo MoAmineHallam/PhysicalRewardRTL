@@ -512,6 +512,7 @@ def fmt(value: float, digits: int = 1) -> str:
 
 
 def build_claims(
+    primary: dict,
     direct: dict,
     resources: dict,
     cov: dict,
@@ -533,6 +534,42 @@ def build_claims(
     claims.add("StudyTwoPpaFailed", ppa["failed"], str(ppa["failed"]), "candidates",
                "Count explicit Vivado implementation failures in the complete audit.",
                [span(PPA_AUDIT_PATH)])
+
+    primary_source = [span(PRIMARY_RESULT_PATH)]
+    primary_prefixes = {"interp": "Interp", "extrap": "Extrap", "all": "Overall"}
+    for scope, prefix in primary_prefixes.items():
+        row = primary["report"]["rf"]["combined"][scope]
+        claims.add(f"StudyTwo{prefix}RfSftGain", row["mean_diff"],
+                   fmt(row["mean_diff"]), "MHz",
+                   "Preregistered paired RF-minus-SFT penalized equal-sample Fmax effect.",
+                   primary_source)
+        claims.add(f"StudyTwo{prefix}RfSftCiLow", row["ci_lo"],
+                   fmt(row["ci_lo"]), "MHz",
+                   "Preregistered stratified paired-bootstrap lower bound for RF minus SFT.",
+                   primary_source)
+        claims.add(f"StudyTwo{prefix}RfSftCiHigh", row["ci_hi"],
+                   fmt(row["ci_hi"]), "MHz",
+                   "Preregistered stratified paired-bootstrap upper bound for RF minus SFT.",
+                   primary_source)
+        claims.add(f"StudyTwo{prefix}DesignCount", row["n_designs"],
+                   str(row["n_designs"]), "designs",
+                   "Count designs in the frozen primary scope.", primary_source)
+    for index, value in enumerate(primary["report"]["rf"]["per_seed"], 1):
+        word = "One" if index == 1 else "Two"
+        claims.add(f"StudyTwoRfSeed{word}OverallGain", value["all"],
+                   fmt(value["all"]), "MHz",
+                   "Independent RF training seed's overall RF-minus-SFT penalized Fmax effect.",
+                   primary_source)
+    late = primary["late_divergence"]["by_regime"]
+    for scope, prefix in (("interp", "Interp"), ("extrap", "Extrap")):
+        claims.add(f"StudyTwo{prefix}MidFmax", late[scope]["mid_equal_fmax"],
+                   fmt(late[scope]["mid_equal_fmax"]), "MHz",
+                   "Penalized equal-sample RF Fmax at the frozen midpoint checkpoint.",
+                   primary_source)
+        claims.add(f"StudyTwo{prefix}EndFmax", late[scope]["end_equal_fmax"],
+                   fmt(late[scope]["end_equal_fmax"]), "MHz",
+                   "Penalized equal-sample RF Fmax at the frozen endpoint checkpoint.",
+                   primary_source)
 
     prefixes = {"interp": "Interp", "extrap": "Extrap", "all": "Overall"}
     for scope, prefix in prefixes.items():
@@ -719,7 +756,7 @@ def render() -> tuple[dict[pathlib.Path, str], dict]:
     direct = direct_comparison(arms, designs, meta, primary)
     resources = resource_summary(arms, designs, meta)
     cov = coverage(arms, designs)
-    claims = build_claims(direct, resources, cov, ppa, arm_sources)
+    claims = build_claims(primary, direct, resources, cov, ppa, arm_sources)
     result = {
         "schema": "study2_secondary_results/1",
         "status": spec["status"],

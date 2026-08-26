@@ -1,22 +1,31 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-Correctness-gated policy optimization raises equal-sample post-route frequency
-from \claim{OverallSftPenalized} to \claim{OverallGrpoPenalized}~MHz across
-\claim{DesignCount} frozen held-out designs.  The gain occurs under both
-interpolation and extrapolation, appears on \claim{OverallImproved} individual
-designs, and survives assigning zero frequency to every incorrect or failed
-sample.  A second backbone independently improves all
-\claim{QwenDesignCount} designs in its narrower replication.
+Correctness-gated policy optimization with the RF physical reward raises
+equal-sample post-route frequency from
+\studyclaim{StudyTwoOverallSftPenalized} to
+\studyclaim{StudyTwoOverallRfPenalized}~MHz across
+\studyclaim{StudyTwoDesignCount} frozen held-out designs.  Both independent
+training seeds improve, the paired intervals exclude zero under interpolation
+and extrapolation, and the gain survives assigning zero frequency to every
+incorrect or failed sample.  RF also exceeds the matched MLP reward, while the
+correctness-only control does not reproduce the physical gain.
 
-Candidate-level evidence supports a distribution-shift account: optimization
+The improvement carries a defensible physical trade-off: more LUTs and
+flip-flops, fewer DSP blocks, and a small vectorless power increase on common
+support.  A live PYNQ-Z2 sweep supplies heterogeneous descriptive support with
+two RF wins, two ties, one loss, and exactly repeatable Fmax boundaries; its
+feasibility amendments prevent treating that small subset as independent
+confirmation.
+
+Earlier candidate-level evidence supports a distribution-shift account: optimization
 increases mass on a smaller set of fast correct implementations that supervised
 sampling often already contains.  The perfect-selector analysis quantifies the
 resulting sampling efficiency, while the API, HLS, and VerilogEval controls
 separate one-draw utility, selected implementation quality, and general-RTL
 regression.
 
-The late reward trajectory supplies the necessary warning.  Proxy reward can
+The bounded late reward trajectory supplies the necessary warning.  Proxy reward can
 continue rising after measured conditional frequency has flattened and
 equal-sample performance has fallen.  The strongest conclusion is therefore
 neither open-ended circuit invention nor trust in the proxy: correctness-gated

@@ -4,14 +4,17 @@
 \subsection{What the evidence supports}
 
 Correctness-gated policy optimization changes the one-draw distribution of RTL
-quality.  The central evidence is the equal-sample endpoint: it preserves the
-original probability mass, assigns every failure zero, uses real post-route
-measurements, and improves on \claim{OverallImproved} of
-\claim{DesignCount} frozen designs.  The Qwen-Coder result supplies an
-independent backbone and training run, while the perfect-selector curve shows
-that the distribution change has practical sampling value.
+quality.  The central evidence is the sealed equal-sample endpoint: it preserves
+the original probability mass, assigns every failure zero, uses real post-route
+measurements, and raises mean Fmax by
+\studyclaim{StudyTwoOverallRfSftGain}~MHz over
+\studyclaim{StudyTwoDesignCount} frozen designs.  Both independent RF seeds are
+positive, both regime intervals exclude zero, and a direct secondary comparison
+favors RF over the matched MLP reward.  The earlier Qwen-Coder result and
+perfect-selector curve broaden the evidence without entering the primary
+estimand.
 
-The candidate analysis sharpens the mechanism.  SFT often contains a fast
+The earlier candidate analysis sharpens a plausible mechanism.  SFT often contains a fast
 implementation but assigns it little mass; GRPO concentrates on fewer correct
 implementations and makes the fast forms common.  This is a learned generation
 policy, not merely a post-hoc reranker, but it is also not evidence of autonomous
@@ -38,16 +41,19 @@ multiple clock domains, or cross-template synthesis.
 \paragraph{Backbones, runs, and scope}
 The second backbone materially reduces a model-specific explanation, but it
 uses the earlier \claim{QwenFamilyCount}-family split rather than the complete
-primary set.  The primary result still comes from one optimized training
-trajectory.  Independent seeds on the full frozen evaluation remain the most
-important missing statistical validation.
+primary set.  The sealed result addresses training variance with two RF seeds,
+but they share one supervised checkpoint, benchmark generator, and reward-data
+construction.  More supervised initializations and reward-model fits would be
+needed for a broad variance-components claim.
 
 \paragraph{One target and timing-derived frequency}
-All physical measurements target one FPGA part.  Frequency is derived from
+All post-route and silicon measurements target one FPGA part.  Candidate
+frequency is derived from
 worst negative slack after a single implementation flow rather than repeated
 timing closure at candidate-specific clocks.  This is symmetric across policies
-but is not device-independent ground truth.  The pending symmetric board sweep
-is the appropriate external check.
+but is not device-independent ground truth.  The live PYNQ-Z2 sweep supplies an
+external physical check, yet its small feasibility-amended subset and shared
+bitstream remain insufficient for device-independent generalization.
 
 \paragraph{Secondary-baseline comparability}
 The API arms have a smaller sampling budget and represent one prompt and model
@@ -57,12 +63,12 @@ claim.  They answer whether fast candidates exist under alternative workflows,
 not why the policy distribution changed.
 
 \paragraph{Post-hoc uncertainty and mechanism}
-The paired bootstrap intervals and concentration summaries were computed after
-the artifacts existed.  They quantify the frozen result but are not
-preregistered confirmation.  Candidate identity and similar frequency also do
-not establish semantic microarchitecture equivalence; the mechanism is a
-distribution-level explanation supported by measured support and
-concentration.
+The sealed RF-minus-SFT interval plan was frozen before opening the primary
+result.  Direct RF-minus-MLP, resource, concentration, and historical trajectory
+analyses are post-primary or supporting evidence and are labeled accordingly.
+Candidate identity and similar frequency also do not establish semantic
+microarchitecture equivalence; the mechanism is a distribution-level
+explanation supported by measured support and concentration.
 
 \subsection{Why the reward-hacking result is a subplot}
 
@@ -90,16 +96,17 @@ judgment, but it makes disagreements traceable to a declared computation and
 prevents tables from drifting independently of the underlying artifacts.
 
 The repository also distinguishes prepared experiments from completed
-measurements.  In particular, a symmetric board-selection manifest and shared-
-golden preflight do not become silicon evidence until the reserved live-sweep
-artifact exists.  The same rule keeps exploratory student-model evidence and
-the historical asymmetric board comparison outside the quantitative claim set.
+measurements.  The new board result enters only because the reserved live-sweep
+artifact binds the exact bitstream, HWH, selector map, and amended selection
+manifest.  Its failed first selection, range amendment, and one RF loss remain
+published.  The same rule keeps exploratory student-model evidence and the
+historical asymmetric board comparison outside the quantitative claim set.
 
 \subsection{Evidence intentionally outside the claim set}
 
 Two attractive results remain outside the quantitative manuscript claims.  The
-historical silicon sweep uses asymmetric SFT-versus-GRPO selection and can only
-serve as engineering feasibility until the symmetric rerun finishes.  The
+historical silicon sweep uses asymmetric SFT-versus-GRPO selection and is
+superseded by the provenance-bound Study~\ref{tab:study2-board} protocol.  The
 small-student distillation study has functional training-side evidence but no
 complete held-out physical evaluation.  Excluding them is not a judgment that
 they are uninteresting; it prevents selected or exploratory observations from

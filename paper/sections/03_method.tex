@@ -60,10 +60,13 @@ policy, rather than the raw base model.  This matters because anchoring to the
 base would pull the policy away from the functional competence established by
 supervision.
 
-The primary run uses an RTL-specialized backbone.  The replication repeats the
-same stages with Qwen-Coder; it is not merely inference from a different base
-model using the first model's adapter.  Both evaluations preserve the original
-sample counts after deduplicating identical correct candidates.
+The sealed primary study trains two independent policy seeds from the same
+RTL-specialized supervised checkpoint.  Its main physical reward is a random-
+forest predictor; matched arms replace it with a multilayer perceptron or with
+correctness alone.  An earlier replication repeats the supervised and policy-
+optimization stages with Qwen-Coder; it is not merely inference from a different
+base model using the first model's adapter.  Every evaluation preserves the
+original sample counts after deduplicating identical correct candidates.
 
 \subsection{Training proxy and reporting boundary}
 
@@ -102,12 +105,13 @@ usually fails.  Averaging candidates directly would instead overweight designs
 whose policy happens to produce more distinct implementations.  The chosen
 endpoint avoids both changes of estimand.
 
-For paired uncertainty, the analysis first computes the GRPO-minus-SFT
+For paired uncertainty, the analysis first computes the optimized-minus-SFT
 difference for every design and then resamples those differences within each
-frozen regime.  The intervals are descriptive summaries of the committed
-artifacts.  Designs, rather than individual completions, are resampled because
-both policies answer the same specification and because samples within a design
-share a task-specific physical scale.
+frozen family-by-regime stratum.  The sealed primary study fixes the resampling
+seed and plan before opening the result; the direct RF-minus-MLP comparison
+reuses those exact plans as a bounded post-primary analysis.  Designs, rather
+than individual completions, are resampled because all policies answer the same
+specification and samples within a design share a task-specific physical scale.
 
 \subsection{Perfect-selector upper bound}
 
@@ -142,12 +146,15 @@ implementation absent from supervised sampling.
 
 \subsection{Fail-closed result generation}
 
-The canonical analysis requires exactly \claim{DesignCount} distinct primary
-designs, the frozen regime counts, both policies, and a common sample budget of
-\claim{SamplesPerDesign}.  Every manifest candidate must have a PPA row.
-Secondary evidence has its own explicit shape checks and never silently expands
-the primary set.  The script emits named TeX claims, tables, plots, a JSON
-result object, and a ledger containing the computation and artifact line ranges
-for every claim.  The verifier recomputes the outputs, validates every source
-pointer, resolves every claim used by the manuscript, and rejects raw numeric
-literals in authored prose.
+The sealed analysis requires exactly \studyclaim{StudyTwoDesignCount} distinct
+primary designs, the frozen regime counts, every declared arm and seed, and a
+common policy-level sample budget.  Every distinct correct manifest candidate
+must have a PPA row; the complete audit contains
+\studyclaim{StudyTwoPpaCandidates} rows with
+\studyclaim{StudyTwoPpaCompiled} successful implementations and
+\studyclaim{StudyTwoPpaFailed} retained failure.  Secondary evidence has its own
+explicit shape checks and never silently expands the primary set.  The analysis
+scripts emit named TeX claims, tables, plots, JSON results, and ledgers containing
+the computation and artifact line ranges for every number.  The verifier
+recomputes the outputs, validates every source pointer, resolves every claim used
+by the manuscript, and rejects raw numeric literals in authored prose.

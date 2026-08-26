@@ -304,7 +304,7 @@ def _strip_nonprose_commands(text):
     text = re.sub(r"(?<!\\)%.*", "", text)
     # Every rendered empirical number must enter through a named claim.  Remove
     # those calls before searching for illicit raw numeric literals.
-    text = re.sub(r"\\(?:claim|studyclaim)\{[A-Za-z]+\}", "", text)
+    text = re.sub(r"\\(?:claim|studyclaim|boardclaim)\{[A-Za-z]+\}", "", text)
     # Digits in citation keys, labels, filenames and URLs are identifiers.
     one_arg = (
         "cite", "citep", "citet", "ref", "eqref", "autoref", "label",
@@ -324,8 +324,11 @@ def sec_f_manuscript():
     ledger_path = PAPER / "generated" / "claims.json"
     study_generator = ROOT / "analyze_study2_secondary.py"
     study_ledger_path = PAPER / "generated" / "study2_claims.json"
+    board_generator = ROOT / "analyze_study2_board.py"
+    board_ledger_path = PAPER / "generated" / "study2_board_claims.json"
     if not all(path.is_file() for path in (
-            generator, ledger_path, study_generator, study_ledger_path)):
+            generator, ledger_path, study_generator, study_ledger_path,
+            board_generator, board_ledger_path)):
         print("  missing canonical generator or claim ledger")
         return False
 
@@ -345,17 +348,28 @@ def sec_f_manuscript():
         print("  generated Study 2 artifacts are stale:")
         print((study_fresh.stderr or study_fresh.stdout).rstrip())
         return False
+    board_fresh = subprocess.run(
+        [sys.executable, str(board_generator), "--check"],
+        cwd=ROOT, capture_output=True, text=True,
+    )
+    if board_fresh.returncode:
+        print("  generated Study 2 board artifacts are stale:")
+        print((board_fresh.stderr or board_fresh.stdout).rstrip())
+        return False
     print("  legacy 30-design support outputs are current ... OK")
     print("  sealed Study 2 headline outputs are current .... OK")
+    print("  live Study 2 board outputs are current ......... OK")
 
     ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
     study_ledger = json.loads(study_ledger_path.read_text(encoding="utf-8"))
+    board_ledger = json.loads(board_ledger_path.read_text(encoding="utf-8"))
     claims = dict(ledger.get("claims", {}))
-    for claim_id, record in study_ledger.get("claims", {}).items():
-        if claim_id in claims:
-            print(f"  duplicate claim ID across ledgers: {claim_id}")
-            return False
-        claims[claim_id] = record
+    for extra in (study_ledger, board_ledger):
+        for claim_id, record in extra.get("claims", {}).items():
+            if claim_id in claims:
+                print(f"  duplicate claim ID across ledgers: {claim_id}")
+                return False
+            claims[claim_id] = record
     bad_sources = []
     for claim_id, record in claims.items():
         if not record.get("sources"):
@@ -380,7 +394,9 @@ def sec_f_manuscript():
     raw_numbers = []
     for path in sorted(tex_paths):
         text = path.read_text(encoding="utf-8")
-        used.update(re.findall(r"\\(?:claim|studyclaim)\{([A-Za-z]+)\}", text))
+        used.update(re.findall(
+            r"\\(?:claim|studyclaim|boardclaim)\{([A-Za-z]+)\}", text
+        ))
         # Generated files are checked byte-for-byte above.  The raw-literal
         # ban applies to authored title/abstract/prose, not generated macros.
         if "generated" in path.parts:
@@ -492,6 +508,103 @@ def sec_h_study2_secondary():
     return ok
 
 
+# ------------------------------------------------------------------ I
+def sec_i_study2_live_board():
+    hdr("I. Live Study 2 board result: raw traces, provenance, and scope")
+    generator = ROOT / "analyze_study2_board.py"
+    result_path = ROOT / "study2_board_results.json"
+    raw_path = ROOT / "rtl" / "sealed_study2_board" / "catalog_fmax.json"
+    manifest_path = ROOT / "rtl" / "sealed_study2_board" / "selection_manifest.json"
+    amendment_path = ROOT / "study2_board_protocol_amendment.json"
+    ledger_path = PAPER / "generated" / "study2_board_claims.json"
+    table_path = PAPER / "generated" / "study2_table_board.tex"
+    required = (
+        generator, result_path, raw_path, manifest_path, amendment_path,
+        ledger_path, table_path,
+    )
+    missing = [rel for path in required if not path.is_file()
+               for rel in [path.relative_to(ROOT).as_posix()]]
+    if missing:
+        print("  missing live Study 2 board artifacts:")
+        for path in missing:
+            print(f"    {path}")
+        return False
+
+    fresh = subprocess.run(
+        [sys.executable, str(generator), "--check"],
+        cwd=ROOT, capture_output=True, text=True,
+    )
+    if fresh.returncode:
+        print((fresh.stderr or fresh.stdout).rstrip())
+        return False
+
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+    raw = json.loads(raw_path.read_text(encoding="utf-8"))
+    ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+    aggregate = result.get("descriptive_aggregate", {})
+    pairs = result.get("pairs", {})
+    integrity = result.get("raw_integrity", {})
+    canary = result.get("canary", {})
+    ok = True
+    if result.get("protocol_amended") is not True:
+        print("  board result does not disclose its protocol amendment")
+        ok = False
+    if "descriptive" not in result.get("status", "") or "no inferential" not in result.get("status", ""):
+        print("  board result overstates its scientific scope")
+        ok = False
+    if raw.get("measurement_kind") != "live_pynq_clock_sweep":
+        print("  raw artifact is not marked as a live PYNQ sweep")
+        ok = False
+    if len(pairs) != 5 or aggregate.get("n_pairs") != 5:
+        print("  live board subset is not five complete pairs")
+        ok = False
+    if (aggregate.get("rf_wins"), aggregate.get("ties"),
+            aggregate.get("rf_losses")) != (2, 2, 1):
+        print("  paired win/tie/loss summary does not reproduce")
+        ok = False
+    spreads = integrity.get("all_entry_fmax_spreads_mhz", {})
+    if len(spreads) != 11 or any(value != 0.0 for value in spreads.values()):
+        print("  repeated Fmax boundaries are not all exactly stable")
+        ok = False
+    if not integrity.get("all_boundaries_recomputed") or not integrity.get(
+            "no_pass_after_first_failure"):
+        print("  raw-trace boundary audit is incomplete")
+        ok = False
+    if canary.get("all_dut_gates_ok") is not True:
+        print("  one or more DUTs failed the canary-separation gate")
+        ok = False
+
+    claims = ledger.get("claims", {})
+    bad_sources = []
+    for claim_id, record in claims.items():
+        if not record.get("sources"):
+            bad_sources.append(f"{claim_id}: no sources")
+        for pointer in record.get("sources", []):
+            valid, error = _source_pointer(pointer)
+            if not valid:
+                bad_sources.append(f"{claim_id}: {error}")
+    if bad_sources:
+        print("  invalid board-claim provenance:")
+        for error in bad_sources:
+            print(f"    {error}")
+        ok = False
+    used = set(re.findall(
+        r"\\boardclaim\{([A-Za-z]+)\}", table_path.read_text(encoding="utf-8")
+    ))
+    unknown = used - set(claims)
+    if unknown:
+        print("  generated board table uses unknown claims: " + ", ".join(sorted(unknown)))
+        ok = False
+    print("  four live-input hashes and raw boundaries ........ OK")
+    print(f"  paired silicon outcomes ......................... "
+          f"{aggregate.get('rf_wins')} wins / {aggregate.get('ties')} ties / "
+          f"{aggregate.get('rf_losses')} loss")
+    print(f"  repeatability and canary gates .................. "
+          f"0 MHz max spread; {canary.get('minimum_canary_margin_mhz'):.2f} MHz min margin")
+    print(f"  descriptive board claim pointers resolve ....... {len(claims)} claims")
+    return ok
+
+
 # ------------------------------------------------------------------ G
 def _sha256(path):
     h = hashlib.sha256()
@@ -502,7 +615,7 @@ def _sha256(path):
 
 
 def sec_g_symmetric_board():
-    hdr("G. Symmetric board protocol: selection, build, and live-result gate")
+    hdr("G. Historical holdout board preflight (excluded from paper)")
     directory = ROOT / "rtl" / "holdout_silicon_symmetric"
     manifest_path = directory / "selection_manifest.json"
     if not manifest_path.is_file():
@@ -560,7 +673,7 @@ def sec_g_symmetric_board():
         else:
             print("  live PYNQ result ................................ present and linked")
     else:
-        print("  live PYNQ result ................................ ABSENT (no silicon claim)")
+        print("  historical live result .......................... ABSENT (excluded)")
     return ok
 
 
@@ -573,8 +686,9 @@ def main():
     results = [("A correctness", sec_a()), ("B best-of-N", sec_b()),
                ("C trajectory", sec_c()), ("D oracle audit", sec_d()),
                ("F manuscript provenance", sec_f_manuscript()),
-               ("G symmetric board", sec_g_symmetric_board()),
-               ("H Study 2 closure", sec_h_study2_secondary())]
+               ("G historical board", sec_g_symmetric_board()),
+               ("H Study 2 closure", sec_h_study2_secondary()),
+               ("I Study 2 board", sec_i_study2_live_board())]
     if args.lodo:
         results.append(("E LODO spread", sec_e(args.lodo)))
     hdr("SUMMARY")

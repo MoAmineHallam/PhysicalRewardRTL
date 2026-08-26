@@ -4011,3 +4011,65 @@ the frozen resample-plan hashes, the 489-row PPA totals agree, all 59 secondary
 claim pointers resolve, and every generated table macro names a ledger claim.
 The complete secondary result has raw SHA-256
 `db65bced7c7a1052101764f221eec67407c85f3cba4f56d215a4493c94b31d15`.
+
+### Study 2 live PYNQ-Z2 confirmation (2026-08-26)
+
+This is the new Study 2 board result, not the older asymmetric historical
+comparison. The original outcome-independent family hash stopped before
+creating any board output because it selected `firr18_v5`, for which SFT and
+both RF seeds had zero oracle-correct candidates. That failure remains recorded
+with its three source summaries in
+`study2_board_protocol_amendment.json:9-22`; it was not hidden or replaced
+silently. The amended feasibility rule requires at least one correct candidate
+in each paired arm, then applies the same design hash without using reward,
+Fmax, area, resource, or power values. Consequently this board subset is
+descriptive supporting evidence, not an independently selected confirmation
+(`study2_board_results.json:3-5`).
+
+After selection and before any upload or live result, the frozen sweep floor
+was lowered symmetrically from 20 to 5 MHz because already-sealed Vivado rows
+put valid selected DUTs below the old floor. The high end, step, three repeats,
+trace depth, scoring threshold, and canary margin were unchanged, and no
+silicon outcome had been observed (`study2_board_protocol_amendment.json:41-62`).
+All ten selected DUTs plus the echo canary passed their Icarus/golden self-check
+at 1.0000 before the fresh Vivado build.
+
+The live PYNQ-Z2 sweep contains 52 frequency points for each entry in each of
+three complete runs (`study2_board_results.json:21-35`). Every boundary was
+recomputed from the raw scores, no trace returned to passing after its first
+failure, and every DUT/canary Fmax spread was 0 MHz
+(`study2_board_results.json:31-48`). The echo canary was 200.0 MHz; the minimum
+canary-to-DUT margin was 57.14 MHz, so all ten DUT gates passed
+(`study2_board_results.json:50-53`).
+
+The paired live-silicon medians were:
+
+| Family/design | SFT [MHz] | RF [MHz] | RF--SFT [MHz] |
+|---|---:|---:|---:|
+| FIR / `fir34_v1_8b` | 40.00 | 125.00 | +85.00 |
+| FIRR / `firr20_v6` | 58.82 | 142.86 | +84.04 |
+| polynomial / `poly16_v13_8b` | 30.30 | 30.30 | 0.00 |
+| IIR / `iir18_v7` | 125.00 | 125.00 | 0.00 |
+| median / `med19` | 40.00 | 30.30 | -9.70 |
+
+These rows are generated from `study2_board_results.json:55-110`, not copied
+into the paper by hand. Across the five pairs, RF has two wins, two exact ties,
+and one loss; the descriptive means are 58.824 MHz for SFT and 90.692 MHz for
+RF, a +31.868 MHz mean paired difference, while the median difference is 0 MHz
+(`study2_board_results.json:112-121`). Therefore the honest silicon conclusion
+is heterogeneous directional support: two large FIR-family gains, no change
+on polynomial and IIR, and a median-filter regression. Five amended pairs do
+not justify a population CI or a claim that RF wins every family.
+
+The raw live artifact is
+`rtl/sealed_study2_board/catalog_fmax.json` (SHA-256
+`0bf79d8ba9393622e813f85a4068d27e2e19a105131ec70f9b82501aac4e1443`).
+It identifies itself as `live_pynq_clock_sweep` and binds the exact bitstream,
+HWH, selector map, and selection-manifest hashes
+(`rtl/sealed_study2_board/catalog_fmax.json:3-33`). The exact committed
+bitstream SHA-256 is
+`eca6ea6dde9f855d4f1c058827fbcdf45a2c80e16223dd9ab8e9ceeba66cb91f`.
+`analyze_study2_board.py` is the sole generator for the descriptive board JSON,
+27-claim ledger, and TeX table. `verify_claims.py` independently checks all raw
+boundaries, hashes, repetitions, canary gates, scope language, source pointers,
+and generated table macros.
