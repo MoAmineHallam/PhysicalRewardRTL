@@ -1,0 +1,2044 @@
+{
+  "candidate_slots": 229,
+  "eligible_train_prompts": 145,
+  "family_counts": {
+    "fir": 8,
+    "firr": 8,
+    "iir": 14,
+    "med": 1,
+    "poly": 15
+  },
+  "four_candidate_prompt": "poly10_v4_8b",
+  "prohibitions": [
+    "no generation performed",
+    "no oracle executed",
+    "no Vivado/EDA executed",
+    "no training performed"
+  ],
+  "prompts": [
+    {
+      "candidate_slots": 5,
+      "design": "fir17_8b",
+      "family": "fir",
+      "prompt": "Write a Verilog module named `fir17_8b`, a 17-tap direct-form FIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Keep a 17-element delay line of past samples and each cycle output the low 16 bits of the sum of products of the taps with the fixed coefficients [3, 5, 7, 9, 11, 13, 15, 17, 19, 17, 15, 13, 11, 9, 7, 5, 3]. Clear state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule fir17_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "0a5443f510767e3fa6942ae49fee847e503805e478af6e6db519800ca984d0ab",
+      "reference_rtl": "// 17-tap direct-form FIR, 8-bit samples, unpipelined MAC cone (the long\n// register-to-register path -> lower Fmax; pipeline it to go faster).\nmodule fir17_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    reg  [7:0]  xs [0:16];\n    integer     i;\n    reg  [23:0] acc;\n    always @(*) acc = 8'd3 * xs[0] + 8'd5 * xs[1] + 8'd7 * xs[2] + 8'd9 * xs[3] + 8'd11 * xs[4] + 8'd13 * xs[5] + 8'd15 * xs[6] + 8'd17 * xs[7] + 8'd19 * xs[8] + 8'd17 * xs[9] + 8'd15 * xs[10] + 8'd13 * xs[11] + 8'd11 * xs[12] + 8'd9 * xs[13] + 8'd7 * xs[14] + 8'd5 * xs[15] + 8'd3 * xs[16];\n    always @(posedge clk) begin\n        if (!rst_n) begin\n            for (i = 0; i < 17; i = i + 1) xs[i] <= 8'd0;\n            y <= 16'd0;\n        end else begin\n            xs[0] <= x;\n            for (i = 1; i < 17; i = i + 1) xs[i] <= xs[i-1];\n            y <= acc[15:0];\n        end\n    end\nendmodule\n",
+      "reference_sha256": "d05ee35c56d2b5282d71625c05eead385e6ee8c7b359783cb29bca2b7b17b669"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "fir20_8b",
+      "family": "fir",
+      "prompt": "Write a Verilog module named `fir20_8b`, a 20-tap direct-form FIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Keep a 20-element delay line of past samples and each cycle output the low 16 bits of the sum of products of the taps with the fixed coefficients [3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 21, 19, 17, 15, 13, 11, 9, 7, 5, 3]. Clear state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule fir20_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "6655ee10cd55c6f9eb470eab207d5b88b54972aeff1955503a6cf660887016b8",
+      "reference_rtl": "// 20-tap direct-form FIR, 8-bit samples, unpipelined MAC cone (the long\n// register-to-register path -> lower Fmax; pipeline it to go faster).\nmodule fir20_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    reg  [7:0]  xs [0:19];\n    integer     i;\n    reg  [23:0] acc;\n    always @(*) acc = 8'd3 * xs[0] + 8'd5 * xs[1] + 8'd7 * xs[2] + 8'd9 * xs[3] + 8'd11 * xs[4] + 8'd13 * xs[5] + 8'd15 * xs[6] + 8'd17 * xs[7] + 8'd19 * xs[8] + 8'd21 * xs[9] + 8'd21 * xs[10] + 8'd19 * xs[11] + 8'd17 * xs[12] + 8'd15 * xs[13] + 8'd13 * xs[14] + 8'd11 * xs[15] + 8'd9 * xs[16] + 8'd7 * xs[17] + 8'd5 * xs[18] + 8'd3 * xs[19];\n    always @(posedge clk) begin\n        if (!rst_n) begin\n            for (i = 0; i < 20; i = i + 1) xs[i] <= 8'd0;\n            y <= 16'd0;\n        end else begin\n            xs[0] <= x;\n            for (i = 1; i < 20; i = i + 1) xs[i] <= xs[i-1];\n            y <= acc[15:0];\n        end\n    end\nendmodule\n",
+      "reference_sha256": "b6bfb7529d097adb2fd42749259b787020bd77324cf45ba3f97744d9a0430022"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "fir23_8b",
+      "family": "fir",
+      "prompt": "Write a Verilog module named `fir23_8b`, a 23-tap direct-form FIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Keep a 23-element delay line of past samples and each cycle output the low 16 bits of the sum of products of the taps with the fixed coefficients [3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 23, 21, 19, 17, 15, 13, 11, 9, 7, 5, 3]. Clear state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule fir23_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "d6f4c0a9cc58023c8e15624df65a51cffe2fb33dbd92b0ce94c0653076d30c42",
+      "reference_rtl": "// 23-tap direct-form FIR, 8-bit samples, unpipelined MAC cone (the long\n// register-to-register path -> lower Fmax; pipeline it to go faster).\nmodule fir23_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    reg  [7:0]  xs [0:22];\n    integer     i;\n    reg  [23:0] acc;\n    always @(*) acc = 8'd3 * xs[0] + 8'd5 * xs[1] + 8'd7 * xs[2] + 8'd9 * xs[3] + 8'd11 * xs[4] + 8'd13 * xs[5] + 8'd15 * xs[6] + 8'd17 * xs[7] + 8'd19 * xs[8] + 8'd21 * xs[9] + 8'd23 * xs[10] + 8'd25 * xs[11] + 8'd23 * xs[12] + 8'd21 * xs[13] + 8'd19 * xs[14] + 8'd17 * xs[15] + 8'd15 * xs[16] + 8'd13 * xs[17] + 8'd11 * xs[18] + 8'd9 * xs[19] + 8'd7 * xs[20] + 8'd5 * xs[21] + 8'd3 * xs[22];\n    always @(posedge clk) begin\n        if (!rst_n) begin\n            for (i = 0; i < 23; i = i + 1) xs[i] <= 8'd0;\n            y <= 16'd0;\n        end else begin\n            xs[0] <= x;\n            for (i = 1; i < 23; i = i + 1) xs[i] <= xs[i-1];\n            y <= acc[15:0];\n        end\n    end\nendmodule\n",
+      "reference_sha256": "ab017be362ab5f510a1a993c93084a3f1cf1c72a09fbbf452549391cd70d151c"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "fir32_8b",
+      "family": "fir",
+      "prompt": "Write a Verilog module named `fir32_8b`, a 32-tap direct-form FIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Keep a 32-element delay line of past samples and each cycle output the low 16 bits of the sum of products of the taps with the fixed coefficients [3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 33, 31, 29, 27, 25, 23, 21, 19, 17, 15, 13, 11, 9, 7, 5, 3]. Clear state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule fir32_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "0da74a9c77a5817373c50e00aff0a788cadf1a565c6b2be2a953a1ae9888ee8a",
+      "reference_rtl": "// 32-tap direct-form FIR, 8-bit samples, unpipelined MAC cone (the long\n// register-to-register path -> lower Fmax; pipeline it to go faster).\nmodule fir32_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    reg  [7:0]  xs [0:31];\n    integer     i;\n    reg  [23:0] acc;\n    always @(*) acc = 8'd3 * xs[0] + 8'd5 * xs[1] + 8'd7 * xs[2] + 8'd9 * xs[3] + 8'd11 * xs[4] + 8'd13 * xs[5] + 8'd15 * xs[6] + 8'd17 * xs[7] + 8'd19 * xs[8] + 8'd21 * xs[9] + 8'd23 * xs[10] + 8'd25 * xs[11] + 8'd27 * xs[12] + 8'd29 * xs[13] + 8'd31 * xs[14] + 8'd33 * xs[15] + 8'd33 * xs[16] + 8'd31 * xs[17] + 8'd29 * xs[18] + 8'd27 * xs[19] + 8'd25 * xs[20] + 8'd23 * xs[21] + 8'd21 * xs[22] + 8'd19 * xs[23] + 8'd17 * xs[24] + 8'd15 * xs[25] + 8'd13 * xs[26] + 8'd11 * xs[27] + 8'd9 * xs[28] + 8'd7 * xs[29] + 8'd5 * xs[30] + 8'd3 * xs[31];\n    always @(posedge clk) begin\n        if (!rst_n) begin\n            for (i = 0; i < 32; i = i + 1) xs[i] <= 8'd0;\n            y <= 16'd0;\n        end else begin\n            xs[0] <= x;\n            for (i = 1; i < 32; i = i + 1) xs[i] <= xs[i-1];\n            y <= acc[15:0];\n        end\n    end\nendmodule\n",
+      "reference_sha256": "dff947b06d681bf5fce396dfd0ea8729ff41241f6af2b376725e09488c8d0c20"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "fir5_8b",
+      "family": "fir",
+      "prompt": "Write a Verilog module named `fir5_8b`, a 5-tap direct-form FIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Keep a 5-element delay line of past samples and each cycle output the low 16 bits of the sum of products of the taps with the fixed coefficients [3, 5, 7, 5, 3]. Clear state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule fir5_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "ecf4f5d8e63bd732a65d378804db7719ce96179130fb6281fb6998105394309b",
+      "reference_rtl": "// 5-tap direct-form FIR, 8-bit samples, unpipelined MAC cone (the long\n// register-to-register path -> lower Fmax; pipeline it to go faster).\nmodule fir5_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    reg  [7:0]  xs [0:4];\n    integer     i;\n    reg  [23:0] acc;\n    always @(*) acc = 8'd3 * xs[0] + 8'd5 * xs[1] + 8'd7 * xs[2] + 8'd5 * xs[3] + 8'd3 * xs[4];\n    always @(posedge clk) begin\n        if (!rst_n) begin\n            for (i = 0; i < 5; i = i + 1) xs[i] <= 8'd0;\n            y <= 16'd0;\n        end else begin\n            xs[0] <= x;\n            for (i = 1; i < 5; i = i + 1) xs[i] <= xs[i-1];\n            y <= acc[15:0];\n        end\n    end\nendmodule\n",
+      "reference_sha256": "d5111c8a58d5e98a2ef289710bf00145a1aaeee6ce646820a97cac7208bd0ecc"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "fir7_8b",
+      "family": "fir",
+      "prompt": "Write a Verilog module named `fir7_8b`, a 7-tap direct-form FIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Keep a 7-element delay line of past samples and each cycle output the low 16 bits of the sum of products of the taps with the fixed coefficients [3, 5, 7, 9, 7, 5, 3]. Clear state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule fir7_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "0b2e18cea318e00405347f0821cf72f780275ef74c920c6a84b52a88db1ea306",
+      "reference_rtl": "// 7-tap direct-form FIR, 8-bit samples, unpipelined MAC cone (the long\n// register-to-register path -> lower Fmax; pipeline it to go faster).\nmodule fir7_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    reg  [7:0]  xs [0:6];\n    integer     i;\n    reg  [23:0] acc;\n    always @(*) acc = 8'd3 * xs[0] + 8'd5 * xs[1] + 8'd7 * xs[2] + 8'd9 * xs[3] + 8'd7 * xs[4] + 8'd5 * xs[5] + 8'd3 * xs[6];\n    always @(posedge clk) begin\n        if (!rst_n) begin\n            for (i = 0; i < 7; i = i + 1) xs[i] <= 8'd0;\n            y <= 16'd0;\n        end else begin\n            xs[0] <= x;\n            for (i = 1; i < 7; i = i + 1) xs[i] <= xs[i-1];\n            y <= acc[15:0];\n        end\n    end\nendmodule\n",
+      "reference_sha256": "3b98c7f494552abfd3be0e1b2b6b56a5d1538e93b72e7ce28bea23f7ac2adc53"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "fir8_8b",
+      "family": "fir",
+      "prompt": "Write a Verilog module named `fir8_8b`, a 8-tap direct-form FIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Keep a 8-element delay line of past samples and each cycle output the low 16 bits of the sum of products of the taps with the fixed coefficients [3, 5, 7, 9, 9, 7, 5, 3]. Clear state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule fir8_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "c5a00646c49a56c69b27321924cd78220b99a751df7d1548a28812f42d43f123",
+      "reference_rtl": "// 8-tap direct-form FIR, 8-bit samples, unpipelined MAC cone (the long\n// register-to-register path -> lower Fmax; pipeline it to go faster).\nmodule fir8_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    reg  [7:0]  xs [0:7];\n    integer     i;\n    reg  [23:0] acc;\n    always @(*) acc = 8'd3 * xs[0] + 8'd5 * xs[1] + 8'd7 * xs[2] + 8'd9 * xs[3] + 8'd9 * xs[4] + 8'd7 * xs[5] + 8'd5 * xs[6] + 8'd3 * xs[7];\n    always @(posedge clk) begin\n        if (!rst_n) begin\n            for (i = 0; i < 8; i = i + 1) xs[i] <= 8'd0;\n            y <= 16'd0;\n        end else begin\n            xs[0] <= x;\n            for (i = 1; i < 8; i = i + 1) xs[i] <= xs[i-1];\n            y <= acc[15:0];\n        end\n    end\nendmodule\n",
+      "reference_sha256": "3395b3784b1879b645913729fccea8ea1140d43f9a02c5efd83991fefb2976fa"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "fir9_8b",
+      "family": "fir",
+      "prompt": "Write a Verilog module named `fir9_8b`, a 9-tap direct-form FIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Keep a 9-element delay line of past samples and each cycle output the low 16 bits of the sum of products of the taps with the fixed coefficients [3, 5, 7, 9, 11, 9, 7, 5, 3]. Clear state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule fir9_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "bcca28beeb7285843554bce9af5bb9ffb3db296296f3a7b6241135d70919a37e",
+      "reference_rtl": "// 9-tap direct-form FIR, 8-bit samples, unpipelined MAC cone (the long\n// register-to-register path -> lower Fmax; pipeline it to go faster).\nmodule fir9_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    reg  [7:0]  xs [0:8];\n    integer     i;\n    reg  [23:0] acc;\n    always @(*) acc = 8'd3 * xs[0] + 8'd5 * xs[1] + 8'd7 * xs[2] + 8'd9 * xs[3] + 8'd11 * xs[4] + 8'd9 * xs[5] + 8'd7 * xs[6] + 8'd5 * xs[7] + 8'd3 * xs[8];\n    always @(posedge clk) begin\n        if (!rst_n) begin\n            for (i = 0; i < 9; i = i + 1) xs[i] <= 8'd0;\n            y <= 16'd0;\n        end else begin\n            xs[0] <= x;\n            for (i = 1; i < 9; i = i + 1) xs[i] <= xs[i-1];\n            y <= acc[15:0];\n        end\n    end\nendmodule\n",
+      "reference_sha256": "0b0cc20663bcc5695da504965b68af925cb7861811287a3efe3d17f4cd1a61ac"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "firr11",
+      "family": "firr",
+      "prompt": "Write a Verilog module named `firr11`, a 11-tap direct-form FIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Maintain a 11-element delay line of past samples (tap 0 = newest = current `x`). The coefficient for tap k is simply (k+1) -- there is no coefficient table; compute it from the index. Each cycle set `y` to the low 16 bits of the sum over k=0..10 of (k+1)*tap[k]. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule firr11 (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "c4e5e244a03d39e9ce2dffebec59ed3c95d38841c780b0ca5433f0e98241485c",
+      "reference_rtl": "// 11-tap direct-form FIR, 8-bit samples, unpipelined MAC cone (the long\n// register-to-register path -> lower Fmax; pipeline it to go faster).\nmodule firr11 (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    reg  [7:0]  xs [0:10];\n    integer     i;\n    reg  [23:0] acc;\n    always @(*) acc = 8'd1 * xs[0] + 8'd2 * xs[1] + 8'd3 * xs[2] + 8'd4 * xs[3] + 8'd5 * xs[4] + 8'd6 * xs[5] + 8'd7 * xs[6] + 8'd8 * xs[7] + 8'd9 * xs[8] + 8'd10 * xs[9] + 8'd11 * xs[10];\n    always @(posedge clk) begin\n        if (!rst_n) begin\n            for (i = 0; i < 11; i = i + 1) xs[i] <= 8'd0;\n            y <= 16'd0;\n        end else begin\n            xs[0] <= x;\n            for (i = 1; i < 11; i = i + 1) xs[i] <= xs[i-1];\n            y <= acc[15:0];\n        end\n    end\nendmodule\n",
+      "reference_sha256": "b387b0da7a519797595119693718d4313bce7e3d03e0c3fef7b44cea36a4c9a0"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "firr13",
+      "family": "firr",
+      "prompt": "Write a Verilog module named `firr13`, a 13-tap direct-form FIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Maintain a 13-element delay line of past samples (tap 0 = newest = current `x`). The coefficient for tap k is simply (k+1) -- there is no coefficient table; compute it from the index. Each cycle set `y` to the low 16 bits of the sum over k=0..12 of (k+1)*tap[k]. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule firr13 (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "587724dcc5e610a2a71ea942acc7e92b260f9f9875646a7bf6190f9ba884eaa5",
+      "reference_rtl": "// 13-tap direct-form FIR, 8-bit samples, unpipelined MAC cone (the long\n// register-to-register path -> lower Fmax; pipeline it to go faster).\nmodule firr13 (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    reg  [7:0]  xs [0:12];\n    integer     i;\n    reg  [23:0] acc;\n    always @(*) acc = 8'd1 * xs[0] + 8'd2 * xs[1] + 8'd3 * xs[2] + 8'd4 * xs[3] + 8'd5 * xs[4] + 8'd6 * xs[5] + 8'd7 * xs[6] + 8'd8 * xs[7] + 8'd9 * xs[8] + 8'd10 * xs[9] + 8'd11 * xs[10] + 8'd12 * xs[11] + 8'd13 * xs[12];\n    always @(posedge clk) begin\n        if (!rst_n) begin\n            for (i = 0; i < 13; i = i + 1) xs[i] <= 8'd0;\n            y <= 16'd0;\n        end else begin\n            xs[0] <= x;\n            for (i = 1; i < 13; i = i + 1) xs[i] <= xs[i-1];\n            y <= acc[15:0];\n        end\n    end\nendmodule\n",
+      "reference_sha256": "29f177c6151d58d8b369173c1c1de4fdae111f1b642be0c1f0c1db353239ac86"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "firr25",
+      "family": "firr",
+      "prompt": "Write a Verilog module named `firr25`, a 25-tap direct-form FIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Maintain a 25-element delay line of past samples (tap 0 = newest = current `x`). The coefficient for tap k is simply (k+1) -- there is no coefficient table; compute it from the index. Each cycle set `y` to the low 16 bits of the sum over k=0..24 of (k+1)*tap[k]. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule firr25 (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "7da5f88a718e9388a674ca35b352651eaee5e9360d9479b6cf0e289807fd4c1d",
+      "reference_rtl": "// 25-tap direct-form FIR, 8-bit samples, unpipelined MAC cone (the long\n// register-to-register path -> lower Fmax; pipeline it to go faster).\nmodule firr25 (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    reg  [7:0]  xs [0:24];\n    integer     i;\n    reg  [23:0] acc;\n    always @(*) acc = 8'd1 * xs[0] + 8'd2 * xs[1] + 8'd3 * xs[2] + 8'd4 * xs[3] + 8'd5 * xs[4] + 8'd6 * xs[5] + 8'd7 * xs[6] + 8'd8 * xs[7] + 8'd9 * xs[8] + 8'd10 * xs[9] + 8'd11 * xs[10] + 8'd12 * xs[11] + 8'd13 * xs[12] + 8'd14 * xs[13] + 8'd15 * xs[14] + 8'd16 * xs[15] + 8'd17 * xs[16] + 8'd18 * xs[17] + 8'd19 * xs[18] + 8'd20 * xs[19] + 8'd21 * xs[20] + 8'd22 * xs[21] + 8'd23 * xs[22] + 8'd24 * xs[23] + 8'd25 * xs[24];\n    always @(posedge clk) begin\n        if (!rst_n) begin\n            for (i = 0; i < 25; i = i + 1) xs[i] <= 8'd0;\n            y <= 16'd0;\n        end else begin\n            xs[0] <= x;\n            for (i = 1; i < 25; i = i + 1) xs[i] <= xs[i-1];\n            y <= acc[15:0];\n        end\n    end\nendmodule\n",
+      "reference_sha256": "3eaa80b2b0be3604e3c67896d273ffb2537ee5f695cfe0de388c8bb70c53923d"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "firr30",
+      "family": "firr",
+      "prompt": "Write a Verilog module named `firr30`, a 30-tap direct-form FIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Maintain a 30-element delay line of past samples (tap 0 = newest = current `x`). The coefficient for tap k is simply (k+1) -- there is no coefficient table; compute it from the index. Each cycle set `y` to the low 16 bits of the sum over k=0..29 of (k+1)*tap[k]. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule firr30 (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "0758b90d250dc04164f62b36e494a675d04daa959ff433fe21db6eb0d7788a80",
+      "reference_rtl": "// 30-tap direct-form FIR, 8-bit samples, unpipelined MAC cone (the long\n// register-to-register path -> lower Fmax; pipeline it to go faster).\nmodule firr30 (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    reg  [7:0]  xs [0:29];\n    integer     i;\n    reg  [23:0] acc;\n    always @(*) acc = 8'd1 * xs[0] + 8'd2 * xs[1] + 8'd3 * xs[2] + 8'd4 * xs[3] + 8'd5 * xs[4] + 8'd6 * xs[5] + 8'd7 * xs[6] + 8'd8 * xs[7] + 8'd9 * xs[8] + 8'd10 * xs[9] + 8'd11 * xs[10] + 8'd12 * xs[11] + 8'd13 * xs[12] + 8'd14 * xs[13] + 8'd15 * xs[14] + 8'd16 * xs[15] + 8'd17 * xs[16] + 8'd18 * xs[17] + 8'd19 * xs[18] + 8'd20 * xs[19] + 8'd21 * xs[20] + 8'd22 * xs[21] + 8'd23 * xs[22] + 8'd24 * xs[23] + 8'd25 * xs[24] + 8'd26 * xs[25] + 8'd27 * xs[26] + 8'd28 * xs[27] + 8'd29 * xs[28] + 8'd30 * xs[29];\n    always @(posedge clk) begin\n        if (!rst_n) begin\n            for (i = 0; i < 30; i = i + 1) xs[i] <= 8'd0;\n            y <= 16'd0;\n        end else begin\n            xs[0] <= x;\n            for (i = 1; i < 30; i = i + 1) xs[i] <= xs[i-1];\n            y <= acc[15:0];\n        end\n    end\nendmodule\n",
+      "reference_sha256": "d0f04da071d7063538054d0c5fd2d3c63644a59e81fad3ec9a6e2a712716615c"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "firr32",
+      "family": "firr",
+      "prompt": "Write a Verilog module named `firr32`, a 32-tap direct-form FIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Maintain a 32-element delay line of past samples (tap 0 = newest = current `x`). The coefficient for tap k is simply (k+1) -- there is no coefficient table; compute it from the index. Each cycle set `y` to the low 16 bits of the sum over k=0..31 of (k+1)*tap[k]. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule firr32 (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "e5f3c3b277db963b3038c98fcf55bc39528fc0c47f137a4732771730a40bc54b",
+      "reference_rtl": "// 32-tap direct-form FIR, 8-bit samples, unpipelined MAC cone (the long\n// register-to-register path -> lower Fmax; pipeline it to go faster).\nmodule firr32 (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    reg  [7:0]  xs [0:31];\n    integer     i;\n    reg  [23:0] acc;\n    always @(*) acc = 8'd1 * xs[0] + 8'd2 * xs[1] + 8'd3 * xs[2] + 8'd4 * xs[3] + 8'd5 * xs[4] + 8'd6 * xs[5] + 8'd7 * xs[6] + 8'd8 * xs[7] + 8'd9 * xs[8] + 8'd10 * xs[9] + 8'd11 * xs[10] + 8'd12 * xs[11] + 8'd13 * xs[12] + 8'd14 * xs[13] + 8'd15 * xs[14] + 8'd16 * xs[15] + 8'd17 * xs[16] + 8'd18 * xs[17] + 8'd19 * xs[18] + 8'd20 * xs[19] + 8'd21 * xs[20] + 8'd22 * xs[21] + 8'd23 * xs[22] + 8'd24 * xs[23] + 8'd25 * xs[24] + 8'd26 * xs[25] + 8'd27 * xs[26] + 8'd28 * xs[27] + 8'd29 * xs[28] + 8'd30 * xs[29] + 8'd31 * xs[30] + 8'd32 * xs[31];\n    always @(posedge clk) begin\n        if (!rst_n) begin\n            for (i = 0; i < 32; i = i + 1) xs[i] <= 8'd0;\n            y <= 16'd0;\n        end else begin\n            xs[0] <= x;\n            for (i = 1; i < 32; i = i + 1) xs[i] <= xs[i-1];\n            y <= acc[15:0];\n        end\n    end\nendmodule\n",
+      "reference_sha256": "fdc0017be2bf075f593a2254518efde08a4989779ae563f839de169a3ac6b78b"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "firr4",
+      "family": "firr",
+      "prompt": "Write a Verilog module named `firr4`, a 4-tap direct-form FIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Maintain a 4-element delay line of past samples (tap 0 = newest = current `x`). The coefficient for tap k is simply (k+1) -- there is no coefficient table; compute it from the index. Each cycle set `y` to the low 16 bits of the sum over k=0..3 of (k+1)*tap[k]. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule firr4 (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "375d1f20e8a20ac837e07502891509cadc74f6f3af4e402f14798641d79338f5",
+      "reference_rtl": "// 4-tap direct-form FIR, 8-bit samples, unpipelined MAC cone (the long\n// register-to-register path -> lower Fmax; pipeline it to go faster).\nmodule firr4 (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    reg  [7:0]  xs [0:3];\n    integer     i;\n    reg  [23:0] acc;\n    always @(*) acc = 8'd1 * xs[0] + 8'd2 * xs[1] + 8'd3 * xs[2] + 8'd4 * xs[3];\n    always @(posedge clk) begin\n        if (!rst_n) begin\n            for (i = 0; i < 4; i = i + 1) xs[i] <= 8'd0;\n            y <= 16'd0;\n        end else begin\n            xs[0] <= x;\n            for (i = 1; i < 4; i = i + 1) xs[i] <= xs[i-1];\n            y <= acc[15:0];\n        end\n    end\nendmodule\n",
+      "reference_sha256": "32a35d8a2a92640d1f3bd80d233f0f3c4507d1d5858169f95a90b9f67ba982de"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "firr5",
+      "family": "firr",
+      "prompt": "Write a Verilog module named `firr5`, a 5-tap direct-form FIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Maintain a 5-element delay line of past samples (tap 0 = newest = current `x`). The coefficient for tap k is simply (k+1) -- there is no coefficient table; compute it from the index. Each cycle set `y` to the low 16 bits of the sum over k=0..4 of (k+1)*tap[k]. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule firr5 (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "68427a1d0718a0054f5b286b5ee45d04097dac4f5c369d43e5f32f32443b1e9b",
+      "reference_rtl": "// 5-tap direct-form FIR, 8-bit samples, unpipelined MAC cone (the long\n// register-to-register path -> lower Fmax; pipeline it to go faster).\nmodule firr5 (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    reg  [7:0]  xs [0:4];\n    integer     i;\n    reg  [23:0] acc;\n    always @(*) acc = 8'd1 * xs[0] + 8'd2 * xs[1] + 8'd3 * xs[2] + 8'd4 * xs[3] + 8'd5 * xs[4];\n    always @(posedge clk) begin\n        if (!rst_n) begin\n            for (i = 0; i < 5; i = i + 1) xs[i] <= 8'd0;\n            y <= 16'd0;\n        end else begin\n            xs[0] <= x;\n            for (i = 1; i < 5; i = i + 1) xs[i] <= xs[i-1];\n            y <= acc[15:0];\n        end\n    end\nendmodule\n",
+      "reference_sha256": "e07a6315bbf530c8ee1f275d1e0207eb36ffc65bd9b54e374ff996378b923af5"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "firr9",
+      "family": "firr",
+      "prompt": "Write a Verilog module named `firr9`, a 9-tap direct-form FIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Maintain a 9-element delay line of past samples (tap 0 = newest = current `x`). The coefficient for tap k is simply (k+1) -- there is no coefficient table; compute it from the index. Each cycle set `y` to the low 16 bits of the sum over k=0..8 of (k+1)*tap[k]. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule firr9 (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "64887414bbaedb01d8463c0e53d61d7e4f815d0dcf20344c13c1b52ded5a0f93",
+      "reference_rtl": "// 9-tap direct-form FIR, 8-bit samples, unpipelined MAC cone (the long\n// register-to-register path -> lower Fmax; pipeline it to go faster).\nmodule firr9 (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    reg  [7:0]  xs [0:8];\n    integer     i;\n    reg  [23:0] acc;\n    always @(*) acc = 8'd1 * xs[0] + 8'd2 * xs[1] + 8'd3 * xs[2] + 8'd4 * xs[3] + 8'd5 * xs[4] + 8'd6 * xs[5] + 8'd7 * xs[6] + 8'd8 * xs[7] + 8'd9 * xs[8];\n    always @(posedge clk) begin\n        if (!rst_n) begin\n            for (i = 0; i < 9; i = i + 1) xs[i] <= 8'd0;\n            y <= 16'd0;\n        end else begin\n            xs[0] <= x;\n            for (i = 1; i < 9; i = i + 1) xs[i] <= xs[i-1];\n            y <= acc[15:0];\n        end\n    end\nendmodule\n",
+      "reference_sha256": "cd59703048b29f383e8b14689903cdd87ec81b1cba6bd15ae8a268737d118f6a"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "iir10_v2",
+      "family": "iir",
+      "prompt": "Write a Verilog module named `iir10_v2`, an order-10 IIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Each cycle compute y[n] = (sum over k=0..10 of B[k]*x[n-k]) + ((9*y[n-1])>>4) + ((5*y[n-2])>>4), keeping only the low 16 bits (mod 2^16), where the feedforward coefficients are B = [20, 38, 62, 60, 30, 6, 18, 43, 22, 30, 45] (B[0] applies to the current sample) and y[n-1], y[n-2] are the previous two outputs. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule iir10_v2 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "bf621927e1f2565b4705f5922251d2add81432168adadcbfac4d0ca79d7e5c07",
+      "reference_rtl": "// Order-10 IIR, ONE combinational sum over all taps + feedback (the long\n// path grows with the order -> lower Fmax; restructure to go faster).\nmodule iir10_v2 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n  reg [7:0] xd1;\n  reg [7:0] xd2;\n  reg [7:0] xd3;\n  reg [7:0] xd4;\n  reg [7:0] xd5;\n  reg [7:0] xd6;\n  reg [7:0] xd7;\n  reg [7:0] xd8;\n  reg [7:0] xd9;\n  reg [7:0] xd10;\n  reg [15:0] y2;\n  wire [31:0] acc = 20*x + 38*xd1 + 62*xd2 + 60*xd3 + 30*xd4 + 6*xd5 + 18*xd6 + 43*xd7 + 22*xd8 + 30*xd9 + 45*xd10 + ((9*y)>>4) + ((5*y2)>>4);\n  always @(posedge clk) begin\n    if (!rst_n) begin y<=0; y2<=0; xd1<=0; xd2<=0; xd3<=0; xd4<=0; xd5<=0; xd6<=0; xd7<=0; xd8<=0; xd9<=0; xd10<=0; end\n    else begin\n      y <= acc[15:0];\n      y2 <= y;\n      xd10<=xd9; xd9<=xd8; xd8<=xd7; xd7<=xd6; xd6<=xd5; xd5<=xd4; xd4<=xd3; xd3<=xd2; xd2<=xd1; xd1 <= x;\n    end\n  end\nendmodule\n",
+      "reference_sha256": "d8c384ca23c631c2298e021818cc013156d880b9bfd59a04cb89651d3faaa23f"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "iir11_v1",
+      "family": "iir",
+      "prompt": "Write a Verilog module named `iir11_v1`, an order-11 IIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Each cycle compute y[n] = (sum over k=0..11 of B[k]*x[n-k]) + ((9*y[n-1])>>4) + ((5*y[n-2])>>4), keeping only the low 16 bits (mod 2^16), where the feedforward coefficients are B = [7, 27, 62, 25, 56, 16, 22, 62, 34, 4, 6, 50] (B[0] applies to the current sample) and y[n-1], y[n-2] are the previous two outputs. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule iir11_v1 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "5b6d9b7a6b80e89423d00f0eaafa691c1f24540fe26ea6af3c63fdda1d9e7e38",
+      "reference_rtl": "// Order-11 IIR, ONE combinational sum over all taps + feedback (the long\n// path grows with the order -> lower Fmax; restructure to go faster).\nmodule iir11_v1 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n  reg [7:0] xd1;\n  reg [7:0] xd2;\n  reg [7:0] xd3;\n  reg [7:0] xd4;\n  reg [7:0] xd5;\n  reg [7:0] xd6;\n  reg [7:0] xd7;\n  reg [7:0] xd8;\n  reg [7:0] xd9;\n  reg [7:0] xd10;\n  reg [7:0] xd11;\n  reg [15:0] y2;\n  wire [31:0] acc = 7*x + 27*xd1 + 62*xd2 + 25*xd3 + 56*xd4 + 16*xd5 + 22*xd6 + 62*xd7 + 34*xd8 + 4*xd9 + 6*xd10 + 50*xd11 + ((9*y)>>4) + ((5*y2)>>4);\n  always @(posedge clk) begin\n    if (!rst_n) begin y<=0; y2<=0; xd1<=0; xd2<=0; xd3<=0; xd4<=0; xd5<=0; xd6<=0; xd7<=0; xd8<=0; xd9<=0; xd10<=0; xd11<=0; end\n    else begin\n      y <= acc[15:0];\n      y2 <= y;\n      xd11<=xd10; xd10<=xd9; xd9<=xd8; xd8<=xd7; xd7<=xd6; xd6<=xd5; xd5<=xd4; xd4<=xd3; xd3<=xd2; xd2<=xd1; xd1 <= x;\n    end\n  end\nendmodule\n",
+      "reference_sha256": "808e593a527935fb0f17037498fce05c02eeb974156129244d39deb5b63fa936"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "iir11_v2",
+      "family": "iir",
+      "prompt": "Write a Verilog module named `iir11_v2`, an order-11 IIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Each cycle compute y[n] = (sum over k=0..11 of B[k]*x[n-k]) + ((9*y[n-1])>>4) + ((5*y[n-2])>>4), keeping only the low 16 bits (mod 2^16), where the feedforward coefficients are B = [6, 11, 35, 35, 39, 61, 21, 1, 35, 32, 32, 4] (B[0] applies to the current sample) and y[n-1], y[n-2] are the previous two outputs. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule iir11_v2 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "1e9740fce39720a6587d43ce4e7f9178b652a5666a891b1a6d2abd02b0b1dd6f",
+      "reference_rtl": "// Order-11 IIR, ONE combinational sum over all taps + feedback (the long\n// path grows with the order -> lower Fmax; restructure to go faster).\nmodule iir11_v2 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n  reg [7:0] xd1;\n  reg [7:0] xd2;\n  reg [7:0] xd3;\n  reg [7:0] xd4;\n  reg [7:0] xd5;\n  reg [7:0] xd6;\n  reg [7:0] xd7;\n  reg [7:0] xd8;\n  reg [7:0] xd9;\n  reg [7:0] xd10;\n  reg [7:0] xd11;\n  reg [15:0] y2;\n  wire [31:0] acc = 6*x + 11*xd1 + 35*xd2 + 35*xd3 + 39*xd4 + 61*xd5 + 21*xd6 + 1*xd7 + 35*xd8 + 32*xd9 + 32*xd10 + 4*xd11 + ((9*y)>>4) + ((5*y2)>>4);\n  always @(posedge clk) begin\n    if (!rst_n) begin y<=0; y2<=0; xd1<=0; xd2<=0; xd3<=0; xd4<=0; xd5<=0; xd6<=0; xd7<=0; xd8<=0; xd9<=0; xd10<=0; xd11<=0; end\n    else begin\n      y <= acc[15:0];\n      y2 <= y;\n      xd11<=xd10; xd10<=xd9; xd9<=xd8; xd8<=xd7; xd7<=xd6; xd6<=xd5; xd5<=xd4; xd4<=xd3; xd3<=xd2; xd2<=xd1; xd1 <= x;\n    end\n  end\nendmodule\n",
+      "reference_sha256": "69570805fa532fc2e73b45a573a92982c9f90eeb74a3f3f28831d4210b2c7c56"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "iir12_v1",
+      "family": "iir",
+      "prompt": "Write a Verilog module named `iir12_v1`, an order-12 IIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Each cycle compute y[n] = (sum over k=0..12 of B[k]*x[n-k]) + ((9*y[n-1])>>4) + ((5*y[n-2])>>4), keeping only the low 16 bits (mod 2^16), where the feedforward coefficients are B = [11, 53, 30, 4, 40, 38, 46, 58, 31, 57, 1, 13, 14] (B[0] applies to the current sample) and y[n-1], y[n-2] are the previous two outputs. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule iir12_v1 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "7b0be0d348733077299039bcd9bb5ce07548e940b22fa999062c33a3aa0a39f0",
+      "reference_rtl": "// Order-12 IIR, ONE combinational sum over all taps + feedback (the long\n// path grows with the order -> lower Fmax; restructure to go faster).\nmodule iir12_v1 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n  reg [7:0] xd1;\n  reg [7:0] xd2;\n  reg [7:0] xd3;\n  reg [7:0] xd4;\n  reg [7:0] xd5;\n  reg [7:0] xd6;\n  reg [7:0] xd7;\n  reg [7:0] xd8;\n  reg [7:0] xd9;\n  reg [7:0] xd10;\n  reg [7:0] xd11;\n  reg [7:0] xd12;\n  reg [15:0] y2;\n  wire [31:0] acc = 11*x + 53*xd1 + 30*xd2 + 4*xd3 + 40*xd4 + 38*xd5 + 46*xd6 + 58*xd7 + 31*xd8 + 57*xd9 + 1*xd10 + 13*xd11 + 14*xd12 + ((9*y)>>4) + ((5*y2)>>4);\n  always @(posedge clk) begin\n    if (!rst_n) begin y<=0; y2<=0; xd1<=0; xd2<=0; xd3<=0; xd4<=0; xd5<=0; xd6<=0; xd7<=0; xd8<=0; xd9<=0; xd10<=0; xd11<=0; xd12<=0; end\n    else begin\n      y <= acc[15:0];\n      y2 <= y;\n      xd12<=xd11; xd11<=xd10; xd10<=xd9; xd9<=xd8; xd8<=xd7; xd7<=xd6; xd6<=xd5; xd5<=xd4; xd4<=xd3; xd3<=xd2; xd2<=xd1; xd1 <= x;\n    end\n  end\nendmodule\n",
+      "reference_sha256": "59af631fd88bff65481e1780f0a9be43c6f2769639166b407ff4038902852134"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "iir12_v3",
+      "family": "iir",
+      "prompt": "Write a Verilog module named `iir12_v3`, an order-12 IIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Each cycle compute y[n] = (sum over k=0..12 of B[k]*x[n-k]) + ((9*y[n-1])>>4) + ((5*y[n-2])>>4), keeping only the low 16 bits (mod 2^16), where the feedforward coefficients are B = [49, 14, 16, 46, 52, 47, 59, 14, 40, 13, 20, 46, 57] (B[0] applies to the current sample) and y[n-1], y[n-2] are the previous two outputs. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule iir12_v3 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "c67c08771b04190c17e33e72078a20106e7b1371ac00c83e3b5e852c95af888f",
+      "reference_rtl": "// Order-12 IIR, ONE combinational sum over all taps + feedback (the long\n// path grows with the order -> lower Fmax; restructure to go faster).\nmodule iir12_v3 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n  reg [7:0] xd1;\n  reg [7:0] xd2;\n  reg [7:0] xd3;\n  reg [7:0] xd4;\n  reg [7:0] xd5;\n  reg [7:0] xd6;\n  reg [7:0] xd7;\n  reg [7:0] xd8;\n  reg [7:0] xd9;\n  reg [7:0] xd10;\n  reg [7:0] xd11;\n  reg [7:0] xd12;\n  reg [15:0] y2;\n  wire [31:0] acc = 49*x + 14*xd1 + 16*xd2 + 46*xd3 + 52*xd4 + 47*xd5 + 59*xd6 + 14*xd7 + 40*xd8 + 13*xd9 + 20*xd10 + 46*xd11 + 57*xd12 + ((9*y)>>4) + ((5*y2)>>4);\n  always @(posedge clk) begin\n    if (!rst_n) begin y<=0; y2<=0; xd1<=0; xd2<=0; xd3<=0; xd4<=0; xd5<=0; xd6<=0; xd7<=0; xd8<=0; xd9<=0; xd10<=0; xd11<=0; xd12<=0; end\n    else begin\n      y <= acc[15:0];\n      y2 <= y;\n      xd12<=xd11; xd11<=xd10; xd10<=xd9; xd9<=xd8; xd8<=xd7; xd7<=xd6; xd6<=xd5; xd5<=xd4; xd4<=xd3; xd3<=xd2; xd2<=xd1; xd1 <= x;\n    end\n  end\nendmodule\n",
+      "reference_sha256": "3d1486e0c1ffa13cec1ef89eb848de0389c1a4bd2c010c8ce75ff5bc00ae59c5"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "iir13",
+      "family": "iir",
+      "prompt": "Write a Verilog module named `iir13`, an order-13 IIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Each cycle compute y[n] = (sum over k=0..13 of B[k]*x[n-k]) + ((9*y[n-1])>>4) + ((5*y[n-2])>>4), keeping only the low 16 bits (mod 2^16), where the feedforward coefficients are B = [3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29] (B[0] applies to the current sample) and y[n-1], y[n-2] are the previous two outputs. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule iir13 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "b69e9185bf2a6229664f5e286473b6eb0b17a5346ffbf7b3dd491f52433099d2",
+      "reference_rtl": "// Order-13 IIR, ONE combinational sum over all taps + feedback (the long\n// path grows with the order -> lower Fmax; restructure to go faster).\nmodule iir13 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n  reg [7:0] xd1;\n  reg [7:0] xd2;\n  reg [7:0] xd3;\n  reg [7:0] xd4;\n  reg [7:0] xd5;\n  reg [7:0] xd6;\n  reg [7:0] xd7;\n  reg [7:0] xd8;\n  reg [7:0] xd9;\n  reg [7:0] xd10;\n  reg [7:0] xd11;\n  reg [7:0] xd12;\n  reg [7:0] xd13;\n  reg [15:0] y2;\n  wire [31:0] acc = 3*x + 5*xd1 + 7*xd2 + 9*xd3 + 11*xd4 + 13*xd5 + 15*xd6 + 17*xd7 + 19*xd8 + 21*xd9 + 23*xd10 + 25*xd11 + 27*xd12 + 29*xd13 + ((9*y)>>4) + ((5*y2)>>4);\n  always @(posedge clk) begin\n    if (!rst_n) begin y<=0; y2<=0; xd1<=0; xd2<=0; xd3<=0; xd4<=0; xd5<=0; xd6<=0; xd7<=0; xd8<=0; xd9<=0; xd10<=0; xd11<=0; xd12<=0; xd13<=0; end\n    else begin\n      y <= acc[15:0];\n      y2 <= y;\n      xd13<=xd12; xd12<=xd11; xd11<=xd10; xd10<=xd9; xd9<=xd8; xd8<=xd7; xd7<=xd6; xd6<=xd5; xd5<=xd4; xd4<=xd3; xd3<=xd2; xd2<=xd1; xd1 <= x;\n    end\n  end\nendmodule\n",
+      "reference_sha256": "195f9a51dab22ebf5c29b7a3b1698914058085c50d6276d22c7454357f9c4733"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "iir3_v1",
+      "family": "iir",
+      "prompt": "Write a Verilog module named `iir3_v1`, an order-3 IIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Each cycle compute y[n] = (sum over k=0..3 of B[k]*x[n-k]) + ((9*y[n-1])>>4) + ((5*y[n-2])>>4), keeping only the low 16 bits (mod 2^16), where the feedforward coefficients are B = [59, 22, 48, 36] (B[0] applies to the current sample) and y[n-1], y[n-2] are the previous two outputs. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule iir3_v1 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "af3e87c23a61329a0e3b303fabe24a446f3dfda02fb3f92a758cc62404a1677b",
+      "reference_rtl": "// Order-3 IIR, ONE combinational sum over all taps + feedback (the long\n// path grows with the order -> lower Fmax; restructure to go faster).\nmodule iir3_v1 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n  reg [7:0] xd1;\n  reg [7:0] xd2;\n  reg [7:0] xd3;\n  reg [15:0] y2;\n  wire [31:0] acc = 59*x + 22*xd1 + 48*xd2 + 36*xd3 + ((9*y)>>4) + ((5*y2)>>4);\n  always @(posedge clk) begin\n    if (!rst_n) begin y<=0; y2<=0; xd1<=0; xd2<=0; xd3<=0; end\n    else begin\n      y <= acc[15:0];\n      y2 <= y;\n      xd3<=xd2; xd2<=xd1; xd1 <= x;\n    end\n  end\nendmodule\n",
+      "reference_sha256": "4cb9ec910b12623b6a3741f90d8ec9e0972cbce4f98c848ff4b3612d1d1a9021"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "iir3_v2",
+      "family": "iir",
+      "prompt": "Write a Verilog module named `iir3_v2`, an order-3 IIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Each cycle compute y[n] = (sum over k=0..3 of B[k]*x[n-k]) + ((9*y[n-1])>>4) + ((5*y[n-2])>>4), keeping only the low 16 bits (mod 2^16), where the feedforward coefficients are B = [50, 12, 8, 34] (B[0] applies to the current sample) and y[n-1], y[n-2] are the previous two outputs. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule iir3_v2 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "42bd753ab55a0bd41bc5cd2185b7d3cfa109cbea93769d52028c79146abef34f",
+      "reference_rtl": "// Order-3 IIR, ONE combinational sum over all taps + feedback (the long\n// path grows with the order -> lower Fmax; restructure to go faster).\nmodule iir3_v2 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n  reg [7:0] xd1;\n  reg [7:0] xd2;\n  reg [7:0] xd3;\n  reg [15:0] y2;\n  wire [31:0] acc = 50*x + 12*xd1 + 8*xd2 + 34*xd3 + ((9*y)>>4) + ((5*y2)>>4);\n  always @(posedge clk) begin\n    if (!rst_n) begin y<=0; y2<=0; xd1<=0; xd2<=0; xd3<=0; end\n    else begin\n      y <= acc[15:0];\n      y2 <= y;\n      xd3<=xd2; xd2<=xd1; xd1 <= x;\n    end\n  end\nendmodule\n",
+      "reference_sha256": "3510a526ac86fd9d6c326318bb2cf1a8d4b62ecb66ad1d77705028d5a86cad50"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "iir3_v3",
+      "family": "iir",
+      "prompt": "Write a Verilog module named `iir3_v3`, an order-3 IIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Each cycle compute y[n] = (sum over k=0..3 of B[k]*x[n-k]) + ((9*y[n-1])>>4) + ((5*y[n-2])>>4), keeping only the low 16 bits (mod 2^16), where the feedforward coefficients are B = [59, 19, 59, 19] (B[0] applies to the current sample) and y[n-1], y[n-2] are the previous two outputs. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule iir3_v3 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "8ccee5861567175d86abe12155e99d6f8e8f30893b1a7b8b1258772bae9481fe",
+      "reference_rtl": "// Order-3 IIR, ONE combinational sum over all taps + feedback (the long\n// path grows with the order -> lower Fmax; restructure to go faster).\nmodule iir3_v3 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n  reg [7:0] xd1;\n  reg [7:0] xd2;\n  reg [7:0] xd3;\n  reg [15:0] y2;\n  wire [31:0] acc = 59*x + 19*xd1 + 59*xd2 + 19*xd3 + ((9*y)>>4) + ((5*y2)>>4);\n  always @(posedge clk) begin\n    if (!rst_n) begin y<=0; y2<=0; xd1<=0; xd2<=0; xd3<=0; end\n    else begin\n      y <= acc[15:0];\n      y2 <= y;\n      xd3<=xd2; xd2<=xd1; xd1 <= x;\n    end\n  end\nendmodule\n",
+      "reference_sha256": "3da9e4809b42cd3737007418468242ea4fc473d8156aab4b1f51996876694f31"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "iir4_v1",
+      "family": "iir",
+      "prompt": "Write a Verilog module named `iir4_v1`, an order-4 IIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Each cycle compute y[n] = (sum over k=0..4 of B[k]*x[n-k]) + ((9*y[n-1])>>4) + ((5*y[n-2])>>4), keeping only the low 16 bits (mod 2^16), where the feedforward coefficients are B = [38, 52, 54, 39, 48] (B[0] applies to the current sample) and y[n-1], y[n-2] are the previous two outputs. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule iir4_v1 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "770263aeca38fa59fa033c00ebbe6093e3edb98acb80735bd53960f41e0ed71c",
+      "reference_rtl": "// Order-4 IIR, ONE combinational sum over all taps + feedback (the long\n// path grows with the order -> lower Fmax; restructure to go faster).\nmodule iir4_v1 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n  reg [7:0] xd1;\n  reg [7:0] xd2;\n  reg [7:0] xd3;\n  reg [7:0] xd4;\n  reg [15:0] y2;\n  wire [31:0] acc = 38*x + 52*xd1 + 54*xd2 + 39*xd3 + 48*xd4 + ((9*y)>>4) + ((5*y2)>>4);\n  always @(posedge clk) begin\n    if (!rst_n) begin y<=0; y2<=0; xd1<=0; xd2<=0; xd3<=0; xd4<=0; end\n    else begin\n      y <= acc[15:0];\n      y2 <= y;\n      xd4<=xd3; xd3<=xd2; xd2<=xd1; xd1 <= x;\n    end\n  end\nendmodule\n",
+      "reference_sha256": "0ee84c806b90be3941363030847f35c152e6ecad565a55c74279fad9423788f0"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "iir6_v1",
+      "family": "iir",
+      "prompt": "Write a Verilog module named `iir6_v1`, an order-6 IIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Each cycle compute y[n] = (sum over k=0..6 of B[k]*x[n-k]) + ((9*y[n-1])>>4) + ((5*y[n-2])>>4), keeping only the low 16 bits (mod 2^16), where the feedforward coefficients are B = [52, 44, 9, 47, 27, 1, 1] (B[0] applies to the current sample) and y[n-1], y[n-2] are the previous two outputs. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule iir6_v1 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "71aafac774721e9ddf11c24932b536ebe387fa9f10ed640ee363b41bb69c30e5",
+      "reference_rtl": "// Order-6 IIR, ONE combinational sum over all taps + feedback (the long\n// path grows with the order -> lower Fmax; restructure to go faster).\nmodule iir6_v1 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n  reg [7:0] xd1;\n  reg [7:0] xd2;\n  reg [7:0] xd3;\n  reg [7:0] xd4;\n  reg [7:0] xd5;\n  reg [7:0] xd6;\n  reg [15:0] y2;\n  wire [31:0] acc = 52*x + 44*xd1 + 9*xd2 + 47*xd3 + 27*xd4 + 1*xd5 + 1*xd6 + ((9*y)>>4) + ((5*y2)>>4);\n  always @(posedge clk) begin\n    if (!rst_n) begin y<=0; y2<=0; xd1<=0; xd2<=0; xd3<=0; xd4<=0; xd5<=0; xd6<=0; end\n    else begin\n      y <= acc[15:0];\n      y2 <= y;\n      xd6<=xd5; xd5<=xd4; xd4<=xd3; xd3<=xd2; xd2<=xd1; xd1 <= x;\n    end\n  end\nendmodule\n",
+      "reference_sha256": "52b1583e6297e08b045fc0f4538130a251ae3eccc9c1b000f80619610ac48a6b"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "iir7",
+      "family": "iir",
+      "prompt": "Write a Verilog module named `iir7`, an order-7 IIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Each cycle compute y[n] = (sum over k=0..7 of B[k]*x[n-k]) + ((9*y[n-1])>>4) + ((5*y[n-2])>>4), keeping only the low 16 bits (mod 2^16), where the feedforward coefficients are B = [3, 5, 7, 9, 11, 13, 15, 17] (B[0] applies to the current sample) and y[n-1], y[n-2] are the previous two outputs. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule iir7 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "43cec4169c2bc9dbc292fe6e3ffa92a35c62fcdb5bdfb72c7ff72971fcbd1044",
+      "reference_rtl": "// Order-7 IIR, ONE combinational sum over all taps + feedback (the long\n// path grows with the order -> lower Fmax; restructure to go faster).\nmodule iir7 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n  reg [7:0] xd1;\n  reg [7:0] xd2;\n  reg [7:0] xd3;\n  reg [7:0] xd4;\n  reg [7:0] xd5;\n  reg [7:0] xd6;\n  reg [7:0] xd7;\n  reg [15:0] y2;\n  wire [31:0] acc = 3*x + 5*xd1 + 7*xd2 + 9*xd3 + 11*xd4 + 13*xd5 + 15*xd6 + 17*xd7 + ((9*y)>>4) + ((5*y2)>>4);\n  always @(posedge clk) begin\n    if (!rst_n) begin y<=0; y2<=0; xd1<=0; xd2<=0; xd3<=0; xd4<=0; xd5<=0; xd6<=0; xd7<=0; end\n    else begin\n      y <= acc[15:0];\n      y2 <= y;\n      xd7<=xd6; xd6<=xd5; xd5<=xd4; xd4<=xd3; xd3<=xd2; xd2<=xd1; xd1 <= x;\n    end\n  end\nendmodule\n",
+      "reference_sha256": "bff0923c8cf2245fd7aecf438466e69f177dcea8808f999c38f96cf048e979c6"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "iir7_v2",
+      "family": "iir",
+      "prompt": "Write a Verilog module named `iir7_v2`, an order-7 IIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Each cycle compute y[n] = (sum over k=0..7 of B[k]*x[n-k]) + ((9*y[n-1])>>4) + ((5*y[n-2])>>4), keeping only the low 16 bits (mod 2^16), where the feedforward coefficients are B = [1, 27, 52, 10, 13, 34, 27, 14] (B[0] applies to the current sample) and y[n-1], y[n-2] are the previous two outputs. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule iir7_v2 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "16517cc84baa80037725daa67758b72867588a579593aa2b32b76b280b70adb9",
+      "reference_rtl": "// Order-7 IIR, ONE combinational sum over all taps + feedback (the long\n// path grows with the order -> lower Fmax; restructure to go faster).\nmodule iir7_v2 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n  reg [7:0] xd1;\n  reg [7:0] xd2;\n  reg [7:0] xd3;\n  reg [7:0] xd4;\n  reg [7:0] xd5;\n  reg [7:0] xd6;\n  reg [7:0] xd7;\n  reg [15:0] y2;\n  wire [31:0] acc = 1*x + 27*xd1 + 52*xd2 + 10*xd3 + 13*xd4 + 34*xd5 + 27*xd6 + 14*xd7 + ((9*y)>>4) + ((5*y2)>>4);\n  always @(posedge clk) begin\n    if (!rst_n) begin y<=0; y2<=0; xd1<=0; xd2<=0; xd3<=0; xd4<=0; xd5<=0; xd6<=0; xd7<=0; end\n    else begin\n      y <= acc[15:0];\n      y2 <= y;\n      xd7<=xd6; xd6<=xd5; xd5<=xd4; xd4<=xd3; xd3<=xd2; xd2<=xd1; xd1 <= x;\n    end\n  end\nendmodule\n",
+      "reference_sha256": "0c29dfd3a8b2d880f85d5c7ceaf2c2a50190c15e0cd1d5e20f3c90b53fe78db6"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "iir8_v3",
+      "family": "iir",
+      "prompt": "Write a Verilog module named `iir8_v3`, an order-8 IIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Each cycle compute y[n] = (sum over k=0..8 of B[k]*x[n-k]) + ((9*y[n-1])>>4) + ((5*y[n-2])>>4), keeping only the low 16 bits (mod 2^16), where the feedforward coefficients are B = [46, 57, 62, 22, 61, 25, 43, 46, 31] (B[0] applies to the current sample) and y[n-1], y[n-2] are the previous two outputs. Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule iir8_v3 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "b49ae3e9c66904f5a01e3bbae89e517bda3ff153d3eb78df2399fdbc154ec10e",
+      "reference_rtl": "// Order-8 IIR, ONE combinational sum over all taps + feedback (the long\n// path grows with the order -> lower Fmax; restructure to go faster).\nmodule iir8_v3 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n  reg [7:0] xd1;\n  reg [7:0] xd2;\n  reg [7:0] xd3;\n  reg [7:0] xd4;\n  reg [7:0] xd5;\n  reg [7:0] xd6;\n  reg [7:0] xd7;\n  reg [7:0] xd8;\n  reg [15:0] y2;\n  wire [31:0] acc = 46*x + 57*xd1 + 62*xd2 + 22*xd3 + 61*xd4 + 25*xd5 + 43*xd6 + 46*xd7 + 31*xd8 + ((9*y)>>4) + ((5*y2)>>4);\n  always @(posedge clk) begin\n    if (!rst_n) begin y<=0; y2<=0; xd1<=0; xd2<=0; xd3<=0; xd4<=0; xd5<=0; xd6<=0; xd7<=0; xd8<=0; end\n    else begin\n      y <= acc[15:0];\n      y2 <= y;\n      xd8<=xd7; xd7<=xd6; xd6<=xd5; xd5<=xd4; xd4<=xd3; xd3<=xd2; xd2<=xd1; xd1 <= x;\n    end\n  end\nendmodule\n",
+      "reference_sha256": "41c2dcab4ca24749800ffc230a1fc3cc29a9b0be49faf851d8f5629bc73e1957"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "med9",
+      "family": "med",
+      "prompt": "Write a Verilog module named `med9`, a streaming median-of-9 filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Each cycle output the median of a 9-sample window consisting of the current sample `x` and the previous 8 samples (window initialised to 0), zero-extended to 16 bits. Use only comparisons (no multiplies). Clear all state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule med9 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "e726d7ccb257c5b052eafcefb6b887966fd3c880feb6a22cb9b64f4c058b461a",
+      "reference_rtl": "module med9 (\n  input clk, input rst_n, input [7:0] x, output reg [15:0] y\n);\n  reg [7:0] w0;\n  reg [7:0] w1;\n  reg [7:0] w2;\n  reg [7:0] w3;\n  reg [7:0] w4;\n  reg [7:0] w5;\n  reg [7:0] w6;\n  reg [7:0] w7;\n  wire [7:0] l0_0 = x;\n  wire [7:0] l0_1 = w0;\n  wire [7:0] l0_2 = w1;\n  wire [7:0] l0_3 = w2;\n  wire [7:0] l0_4 = w3;\n  wire [7:0] l0_5 = w4;\n  wire [7:0] l0_6 = w5;\n  wire [7:0] l0_7 = w6;\n  wire [7:0] l0_8 = w7;\n  wire [7:0] l1_0 = (l0_0 <= l0_1) ? l0_0 : l0_1;\n  wire [7:0] l1_1 = (l0_0 <= l0_1) ? l0_1 : l0_0;\n  wire [7:0] l1_2 = (l0_2 <= l0_3) ? l0_2 : l0_3;\n  wire [7:0] l1_3 = (l0_2 <= l0_3) ? l0_3 : l0_2;\n  wire [7:0] l1_4 = (l0_4 <= l0_5) ? l0_4 : l0_5;\n  wire [7:0] l1_5 = (l0_4 <= l0_5) ? l0_5 : l0_4;\n  wire [7:0] l1_6 = (l0_6 <= l0_7) ? l0_6 : l0_7;\n  wire [7:0] l1_7 = (l0_6 <= l0_7) ? l0_7 : l0_6;\n  wire [7:0] l1_8 = l0_8;\n  wire [7:0] l2_1 = (l1_1 <= l1_2) ? l1_1 : l1_2;\n  wire [7:0] l2_2 = (l1_1 <= l1_2) ? l1_2 : l1_1;\n  wire [7:0] l2_3 = (l1_3 <= l1_4) ? l1_3 : l1_4;\n  wire [7:0] l2_4 = (l1_3 <= l1_4) ? l1_4 : l1_3;\n  wire [7:0] l2_5 = (l1_5 <= l1_6) ? l1_5 : l1_6;\n  wire [7:0] l2_6 = (l1_5 <= l1_6) ? l1_6 : l1_5;\n  wire [7:0] l2_7 = (l1_7 <= l1_8) ? l1_7 : l1_8;\n  wire [7:0] l2_8 = (l1_7 <= l1_8) ? l1_8 : l1_7;\n  wire [7:0] l2_0 = l1_0;\n  wire [7:0] l3_0 = (l2_0 <= l2_1) ? l2_0 : l2_1;\n  wire [7:0] l3_1 = (l2_0 <= l2_1) ? l2_1 : l2_0;\n  wire [7:0] l3_2 = (l2_2 <= l2_3) ? l2_2 : l2_3;\n  wire [7:0] l3_3 = (l2_2 <= l2_3) ? l2_3 : l2_2;\n  wire [7:0] l3_4 = (l2_4 <= l2_5) ? l2_4 : l2_5;\n  wire [7:0] l3_5 = (l2_4 <= l2_5) ? l2_5 : l2_4;\n  wire [7:0] l3_6 = (l2_6 <= l2_7) ? l2_6 : l2_7;\n  wire [7:0] l3_7 = (l2_6 <= l2_7) ? l2_7 : l2_6;\n  wire [7:0] l3_8 = l2_8;\n  wire [7:0] l4_1 = (l3_1 <= l3_2) ? l3_1 : l3_2;\n  wire [7:0] l4_2 = (l3_1 <= l3_2) ? l3_2 : l3_1;\n  wire [7:0] l4_3 = (l3_3 <= l3_4) ? l3_3 : l3_4;\n  wire [7:0] l4_4 = (l3_3 <= l3_4) ? l3_4 : l3_3;\n  wire [7:0] l4_5 = (l3_5 <= l3_6) ? l3_5 : l3_6;\n  wire [7:0] l4_6 = (l3_5 <= l3_6) ? l3_6 : l3_5;\n  wire [7:0] l4_7 = (l3_7 <= l3_8) ? l3_7 : l3_8;\n  wire [7:0] l4_8 = (l3_7 <= l3_8) ? l3_8 : l3_7;\n  wire [7:0] l4_0 = l3_0;\n  wire [7:0] l5_0 = (l4_0 <= l4_1) ? l4_0 : l4_1;\n  wire [7:0] l5_1 = (l4_0 <= l4_1) ? l4_1 : l4_0;\n  wire [7:0] l5_2 = (l4_2 <= l4_3) ? l4_2 : l4_3;\n  wire [7:0] l5_3 = (l4_2 <= l4_3) ? l4_3 : l4_2;\n  wire [7:0] l5_4 = (l4_4 <= l4_5) ? l4_4 : l4_5;\n  wire [7:0] l5_5 = (l4_4 <= l4_5) ? l4_5 : l4_4;\n  wire [7:0] l5_6 = (l4_6 <= l4_7) ? l4_6 : l4_7;\n  wire [7:0] l5_7 = (l4_6 <= l4_7) ? l4_7 : l4_6;\n  wire [7:0] l5_8 = l4_8;\n  wire [7:0] l6_1 = (l5_1 <= l5_2) ? l5_1 : l5_2;\n  wire [7:0] l6_2 = (l5_1 <= l5_2) ? l5_2 : l5_1;\n  wire [7:0] l6_3 = (l5_3 <= l5_4) ? l5_3 : l5_4;\n  wire [7:0] l6_4 = (l5_3 <= l5_4) ? l5_4 : l5_3;\n  wire [7:0] l6_5 = (l5_5 <= l5_6) ? l5_5 : l5_6;\n  wire [7:0] l6_6 = (l5_5 <= l5_6) ? l5_6 : l5_5;\n  wire [7:0] l6_7 = (l5_7 <= l5_8) ? l5_7 : l5_8;\n  wire [7:0] l6_8 = (l5_7 <= l5_8) ? l5_8 : l5_7;\n  wire [7:0] l6_0 = l5_0;\n  wire [7:0] l7_0 = (l6_0 <= l6_1) ? l6_0 : l6_1;\n  wire [7:0] l7_1 = (l6_0 <= l6_1) ? l6_1 : l6_0;\n  wire [7:0] l7_2 = (l6_2 <= l6_3) ? l6_2 : l6_3;\n  wire [7:0] l7_3 = (l6_2 <= l6_3) ? l6_3 : l6_2;\n  wire [7:0] l7_4 = (l6_4 <= l6_5) ? l6_4 : l6_5;\n  wire [7:0] l7_5 = (l6_4 <= l6_5) ? l6_5 : l6_4;\n  wire [7:0] l7_6 = (l6_6 <= l6_7) ? l6_6 : l6_7;\n  wire [7:0] l7_7 = (l6_6 <= l6_7) ? l6_7 : l6_6;\n  wire [7:0] l7_8 = l6_8;\n  wire [7:0] l8_1 = (l7_1 <= l7_2) ? l7_1 : l7_2;\n  wire [7:0] l8_2 = (l7_1 <= l7_2) ? l7_2 : l7_1;\n  wire [7:0] l8_3 = (l7_3 <= l7_4) ? l7_3 : l7_4;\n  wire [7:0] l8_4 = (l7_3 <= l7_4) ? l7_4 : l7_3;\n  wire [7:0] l8_5 = (l7_5 <= l7_6) ? l7_5 : l7_6;\n  wire [7:0] l8_6 = (l7_5 <= l7_6) ? l7_6 : l7_5;\n  wire [7:0] l8_7 = (l7_7 <= l7_8) ? l7_7 : l7_8;\n  wire [7:0] l8_8 = (l7_7 <= l7_8) ? l7_8 : l7_7;\n  wire [7:0] l8_0 = l7_0;\n  wire [7:0] l9_0 = (l8_0 <= l8_1) ? l8_0 : l8_1;\n  wire [7:0] l9_1 = (l8_0 <= l8_1) ? l8_1 : l8_0;\n  wire [7:0] l9_2 = (l8_2 <= l8_3) ? l8_2 : l8_3;\n  wire [7:0] l9_3 = (l8_2 <= l8_3) ? l8_3 : l8_2;\n  wire [7:0] l9_4 = (l8_4 <= l8_5) ? l8_4 : l8_5;\n  wire [7:0] l9_5 = (l8_4 <= l8_5) ? l8_5 : l8_4;\n  wire [7:0] l9_6 = (l8_6 <= l8_7) ? l8_6 : l8_7;\n  wire [7:0] l9_7 = (l8_6 <= l8_7) ? l8_7 : l8_6;\n  wire [7:0] l9_8 = l8_8;\n  always @(posedge clk) begin\n    if (!rst_n) begin\n      y<=0; w0<=0; w1<=0; w2<=0; w3<=0; w4<=0; w5<=0; w6<=0; w7<=0;\n    end else begin\n      y <= {8'b0, l9_4};\n      w7<=w6; w6<=w5; w5<=w4; w4<=w3; w3<=w2; w2<=w1; w1<=w0; w0<=x;\n    end\n  end\nendmodule\n",
+      "reference_sha256": "5dd46d169e38b80b295a44c7a6d4735b0df2b0f3398f24bd9d801ac9503cd9ec"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "poly10_v1_8b",
+      "family": "poly",
+      "prompt": "Write a Verilog module named `poly10_v1_8b` with inputs `clk`, active-low `rst_n`, an 8-bit input `x`, and a 16-bit registered output `y`. Evaluate the degree-10 polynomial with coefficients [46, 9, 16, 54, 75, 53, 83, 10, 72, 35, 18] (c0 first) at `x` using Horner's method, keeping only the low 16 bits (mod 2^16), and register the result into `y`. Clear `y` to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule poly10_v1_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "68223753eb83e2416ac0683e90bdff4554b418eeb163fdbd823b942cfe0d9ebb",
+      "reference_rtl": "// Degree-10 Horner polynomial, mod 2^16, FULL combinational mult-add chain\n// (the long path -> lower Fmax; pipeline the stages to go faster).\nmodule poly10_v1_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    wire [15:0] t0 = 16'd46;\n    wire [15:0] t1 = t0 * x + 16'd9;\n    wire [15:0] t2 = t1 * x + 16'd16;\n    wire [15:0] t3 = t2 * x + 16'd54;\n    wire [15:0] t4 = t3 * x + 16'd75;\n    wire [15:0] t5 = t4 * x + 16'd53;\n    wire [15:0] t6 = t5 * x + 16'd83;\n    wire [15:0] t7 = t6 * x + 16'd10;\n    wire [15:0] t8 = t7 * x + 16'd72;\n    wire [15:0] t9 = t8 * x + 16'd35;\n    wire [15:0] t10 = t9 * x + 16'd18;\n    always @(posedge clk) begin\n        if (!rst_n) y <= 16'd0;\n        else        y <= t10;\n    end\nendmodule\n",
+      "reference_sha256": "b8ff76f35eca82477bbe0370358c4a654f9694863df89587a049c375bd235283"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "poly10_v2_8b",
+      "family": "poly",
+      "prompt": "Write a Verilog module named `poly10_v2_8b` with inputs `clk`, active-low `rst_n`, an 8-bit input `x`, and a 16-bit registered output `y`. Evaluate the degree-10 polynomial with coefficients [50, 30, 14, 77, 5, 90, 41, 2, 65, 35, 93] (c0 first) at `x` using Horner's method, keeping only the low 16 bits (mod 2^16), and register the result into `y`. Clear `y` to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule poly10_v2_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "db38627b2a24f6c26e49dd05d9a95621661c3578f920ada57d287546930bd980",
+      "reference_rtl": "// Degree-10 Horner polynomial, mod 2^16, FULL combinational mult-add chain\n// (the long path -> lower Fmax; pipeline the stages to go faster).\nmodule poly10_v2_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    wire [15:0] t0 = 16'd50;\n    wire [15:0] t1 = t0 * x + 16'd30;\n    wire [15:0] t2 = t1 * x + 16'd14;\n    wire [15:0] t3 = t2 * x + 16'd77;\n    wire [15:0] t4 = t3 * x + 16'd5;\n    wire [15:0] t5 = t4 * x + 16'd90;\n    wire [15:0] t6 = t5 * x + 16'd41;\n    wire [15:0] t7 = t6 * x + 16'd2;\n    wire [15:0] t8 = t7 * x + 16'd65;\n    wire [15:0] t9 = t8 * x + 16'd35;\n    wire [15:0] t10 = t9 * x + 16'd93;\n    always @(posedge clk) begin\n        if (!rst_n) y <= 16'd0;\n        else        y <= t10;\n    end\nendmodule\n",
+      "reference_sha256": "ed874a984f3e404d361f40363cf93b91b6feb23b561f6ea9c7f0cedbfe7d2df0"
+    },
+    {
+      "candidate_slots": 4,
+      "design": "poly10_v4_8b",
+      "family": "poly",
+      "prompt": "Write a Verilog module named `poly10_v4_8b` with inputs `clk`, active-low `rst_n`, an 8-bit input `x`, and a 16-bit registered output `y`. Evaluate the degree-10 polynomial with coefficients [78, 62, 82, 12, 93, 68, 37, 89, 91, 49, 5] (c0 first) at `x` using Horner's method, keeping only the low 16 bits (mod 2^16), and register the result into `y`. Clear `y` to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule poly10_v4_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "c35f88e940b546a2b9d2361b748c0650d7c0c1181d1f5618aeeef99f71035e56",
+      "reference_rtl": "// Degree-10 Horner polynomial, mod 2^16, FULL combinational mult-add chain\n// (the long path -> lower Fmax; pipeline the stages to go faster).\nmodule poly10_v4_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    wire [15:0] t0 = 16'd78;\n    wire [15:0] t1 = t0 * x + 16'd62;\n    wire [15:0] t2 = t1 * x + 16'd82;\n    wire [15:0] t3 = t2 * x + 16'd12;\n    wire [15:0] t4 = t3 * x + 16'd93;\n    wire [15:0] t5 = t4 * x + 16'd68;\n    wire [15:0] t6 = t5 * x + 16'd37;\n    wire [15:0] t7 = t6 * x + 16'd89;\n    wire [15:0] t8 = t7 * x + 16'd91;\n    wire [15:0] t9 = t8 * x + 16'd49;\n    wire [15:0] t10 = t9 * x + 16'd5;\n    always @(posedge clk) begin\n        if (!rst_n) y <= 16'd0;\n        else        y <= t10;\n    end\nendmodule\n",
+      "reference_sha256": "aa575ff9b753b70bb825cf4376176624705dbc3faa0d39ccccacbd4dc4f4d6e0"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "poly2_v1_8b",
+      "family": "poly",
+      "prompt": "Write a Verilog module named `poly2_v1_8b` with inputs `clk`, active-low `rst_n`, an 8-bit input `x`, and a 16-bit registered output `y`. Evaluate the degree-2 polynomial with coefficients [76, 3, 47] (c0 first) at `x` using Horner's method, keeping only the low 16 bits (mod 2^16), and register the result into `y`. Clear `y` to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule poly2_v1_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "4d1958fd2feecdfe7a3e36a1d9fa633ec8b1b5d32f4933fc6e4722806df2ab4d",
+      "reference_rtl": "// Degree-2 Horner polynomial, mod 2^16, FULL combinational mult-add chain\n// (the long path -> lower Fmax; pipeline the stages to go faster).\nmodule poly2_v1_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    wire [15:0] t0 = 16'd76;\n    wire [15:0] t1 = t0 * x + 16'd3;\n    wire [15:0] t2 = t1 * x + 16'd47;\n    always @(posedge clk) begin\n        if (!rst_n) y <= 16'd0;\n        else        y <= t2;\n    end\nendmodule\n",
+      "reference_sha256": "7158dd97ed8b4f7bc774c9f13e1c0a650a49c94da744381af66a71610bb05305"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "poly2_v2_8b",
+      "family": "poly",
+      "prompt": "Write a Verilog module named `poly2_v2_8b` with inputs `clk`, active-low `rst_n`, an 8-bit input `x`, and a 16-bit registered output `y`. Evaluate the degree-2 polynomial with coefficients [94, 1, 65] (c0 first) at `x` using Horner's method, keeping only the low 16 bits (mod 2^16), and register the result into `y`. Clear `y` to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule poly2_v2_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "fa78b15d6dac23430e47453062ecf70ab589e64efd9bec996661aa0a99313f10",
+      "reference_rtl": "// Degree-2 Horner polynomial, mod 2^16, FULL combinational mult-add chain\n// (the long path -> lower Fmax; pipeline the stages to go faster).\nmodule poly2_v2_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    wire [15:0] t0 = 16'd94;\n    wire [15:0] t1 = t0 * x + 16'd1;\n    wire [15:0] t2 = t1 * x + 16'd65;\n    always @(posedge clk) begin\n        if (!rst_n) y <= 16'd0;\n        else        y <= t2;\n    end\nendmodule\n",
+      "reference_sha256": "ce513ef54c5ccbe47359938d13cb69ae2aa1476b9b73136176fe2534794a2b3c"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "poly3_8b",
+      "family": "poly",
+      "prompt": "Write a Verilog module named `poly3_8b` with inputs `clk`, active-low `rst_n`, an 8-bit input `x`, and a 16-bit registered output `y`. Evaluate the degree-3 polynomial with coefficients [1, 3, 5, 7] (c0 first) at `x` using Horner's method, keeping only the low 16 bits (mod 2^16), and register the result into `y`. Clear `y` to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule poly3_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "c0e02b3d62bb895a5e4846fea59bc56fa8d656d43be1b8ac12393fc5eaf9780b",
+      "reference_rtl": "// Degree-3 Horner polynomial, mod 2^16, FULL combinational mult-add chain\n// (the long path -> lower Fmax; pipeline the stages to go faster).\nmodule poly3_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    wire [15:0] t0 = 16'd1;\n    wire [15:0] t1 = t0 * x + 16'd3;\n    wire [15:0] t2 = t1 * x + 16'd5;\n    wire [15:0] t3 = t2 * x + 16'd7;\n    always @(posedge clk) begin\n        if (!rst_n) y <= 16'd0;\n        else        y <= t3;\n    end\nendmodule\n",
+      "reference_sha256": "3ea33f94ef6e9c47f8428c42a1b96c42b16bfbcde2dc76708689edc269dbb9eb"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "poly3_v2_8b",
+      "family": "poly",
+      "prompt": "Write a Verilog module named `poly3_v2_8b` with inputs `clk`, active-low `rst_n`, an 8-bit input `x`, and a 16-bit registered output `y`. Evaluate the degree-3 polynomial with coefficients [26, 96, 82, 52] (c0 first) at `x` using Horner's method, keeping only the low 16 bits (mod 2^16), and register the result into `y`. Clear `y` to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule poly3_v2_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "833ce63523bbc881288cfad17b7f8554f8d1183d5f29561c1f053ef8c6ba6d14",
+      "reference_rtl": "// Degree-3 Horner polynomial, mod 2^16, FULL combinational mult-add chain\n// (the long path -> lower Fmax; pipeline the stages to go faster).\nmodule poly3_v2_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    wire [15:0] t0 = 16'd26;\n    wire [15:0] t1 = t0 * x + 16'd96;\n    wire [15:0] t2 = t1 * x + 16'd82;\n    wire [15:0] t3 = t2 * x + 16'd52;\n    always @(posedge clk) begin\n        if (!rst_n) y <= 16'd0;\n        else        y <= t3;\n    end\nendmodule\n",
+      "reference_sha256": "46787674751ae96baaa02f4370f27f55fc7c6b41ee234c8e7dc1d7e4588fe547"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "poly3_v3_8b",
+      "family": "poly",
+      "prompt": "Write a Verilog module named `poly3_v3_8b` with inputs `clk`, active-low `rst_n`, an 8-bit input `x`, and a 16-bit registered output `y`. Evaluate the degree-3 polynomial with coefficients [72, 60, 94, 32] (c0 first) at `x` using Horner's method, keeping only the low 16 bits (mod 2^16), and register the result into `y`. Clear `y` to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule poly3_v3_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "c5babde84b130f6175b1bf195575f95a6e36d06fa4bead93475ba0610d4a7fe2",
+      "reference_rtl": "// Degree-3 Horner polynomial, mod 2^16, FULL combinational mult-add chain\n// (the long path -> lower Fmax; pipeline the stages to go faster).\nmodule poly3_v3_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    wire [15:0] t0 = 16'd72;\n    wire [15:0] t1 = t0 * x + 16'd60;\n    wire [15:0] t2 = t1 * x + 16'd94;\n    wire [15:0] t3 = t2 * x + 16'd32;\n    always @(posedge clk) begin\n        if (!rst_n) y <= 16'd0;\n        else        y <= t3;\n    end\nendmodule\n",
+      "reference_sha256": "6cb22317434bf166ee29c4f05238b7b1363d6ac19f539ab4f33268382b1ec115"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "poly4_v4_8b",
+      "family": "poly",
+      "prompt": "Write a Verilog module named `poly4_v4_8b` with inputs `clk`, active-low `rst_n`, an 8-bit input `x`, and a 16-bit registered output `y`. Evaluate the degree-4 polynomial with coefficients [61, 89, 46, 64, 66] (c0 first) at `x` using Horner's method, keeping only the low 16 bits (mod 2^16), and register the result into `y`. Clear `y` to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule poly4_v4_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "3e214c35807d13f0f8dacaa6540772e8a8e04c6dedaa33af985920550121f120",
+      "reference_rtl": "// Degree-4 Horner polynomial, mod 2^16, FULL combinational mult-add chain\n// (the long path -> lower Fmax; pipeline the stages to go faster).\nmodule poly4_v4_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    wire [15:0] t0 = 16'd61;\n    wire [15:0] t1 = t0 * x + 16'd89;\n    wire [15:0] t2 = t1 * x + 16'd46;\n    wire [15:0] t3 = t2 * x + 16'd64;\n    wire [15:0] t4 = t3 * x + 16'd66;\n    always @(posedge clk) begin\n        if (!rst_n) y <= 16'd0;\n        else        y <= t4;\n    end\nendmodule\n",
+      "reference_sha256": "a1ef5653b65d40948e36f3ac98e83a57ec568902426eb87530ceda44d2d2a609"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "poly6_v2_8b",
+      "family": "poly",
+      "prompt": "Write a Verilog module named `poly6_v2_8b` with inputs `clk`, active-low `rst_n`, an 8-bit input `x`, and a 16-bit registered output `y`. Evaluate the degree-6 polynomial with coefficients [99, 23, 16, 67, 84, 79, 3] (c0 first) at `x` using Horner's method, keeping only the low 16 bits (mod 2^16), and register the result into `y`. Clear `y` to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule poly6_v2_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "53247c7354a159a58783f41f3c7e9067a554e38bdc91c369c5cbae6a2e632d6d",
+      "reference_rtl": "// Degree-6 Horner polynomial, mod 2^16, FULL combinational mult-add chain\n// (the long path -> lower Fmax; pipeline the stages to go faster).\nmodule poly6_v2_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    wire [15:0] t0 = 16'd99;\n    wire [15:0] t1 = t0 * x + 16'd23;\n    wire [15:0] t2 = t1 * x + 16'd16;\n    wire [15:0] t3 = t2 * x + 16'd67;\n    wire [15:0] t4 = t3 * x + 16'd84;\n    wire [15:0] t5 = t4 * x + 16'd79;\n    wire [15:0] t6 = t5 * x + 16'd3;\n    always @(posedge clk) begin\n        if (!rst_n) y <= 16'd0;\n        else        y <= t6;\n    end\nendmodule\n",
+      "reference_sha256": "c858bf5f541806ac2d7a258e57c34e348bd28300b7af7dc8a86de2514a7d2bfc"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "poly6_v5_8b",
+      "family": "poly",
+      "prompt": "Write a Verilog module named `poly6_v5_8b` with inputs `clk`, active-low `rst_n`, an 8-bit input `x`, and a 16-bit registered output `y`. Evaluate the degree-6 polynomial with coefficients [26, 39, 55, 96, 63, 32, 77] (c0 first) at `x` using Horner's method, keeping only the low 16 bits (mod 2^16), and register the result into `y`. Clear `y` to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule poly6_v5_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "176d4daa5b0c43c119755bd31436a38560253ec3fe27a4a613815c1814cb63e1",
+      "reference_rtl": "// Degree-6 Horner polynomial, mod 2^16, FULL combinational mult-add chain\n// (the long path -> lower Fmax; pipeline the stages to go faster).\nmodule poly6_v5_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    wire [15:0] t0 = 16'd26;\n    wire [15:0] t1 = t0 * x + 16'd39;\n    wire [15:0] t2 = t1 * x + 16'd55;\n    wire [15:0] t3 = t2 * x + 16'd96;\n    wire [15:0] t4 = t3 * x + 16'd63;\n    wire [15:0] t5 = t4 * x + 16'd32;\n    wire [15:0] t6 = t5 * x + 16'd77;\n    always @(posedge clk) begin\n        if (!rst_n) y <= 16'd0;\n        else        y <= t6;\n    end\nendmodule\n",
+      "reference_sha256": "d7c3f7c0a8e7688c8d4c8286678b48162349e4427beca09f623f4149e576c92f"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "poly8_v5_8b",
+      "family": "poly",
+      "prompt": "Write a Verilog module named `poly8_v5_8b` with inputs `clk`, active-low `rst_n`, an 8-bit input `x`, and a 16-bit registered output `y`. Evaluate the degree-8 polynomial with coefficients [18, 69, 93, 48, 90, 95, 49, 22, 49] (c0 first) at `x` using Horner's method, keeping only the low 16 bits (mod 2^16), and register the result into `y`. Clear `y` to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule poly8_v5_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "7dfd080a19676901b8001d9c979b44fccf86f0680777dd27c14acc583d94a9c9",
+      "reference_rtl": "// Degree-8 Horner polynomial, mod 2^16, FULL combinational mult-add chain\n// (the long path -> lower Fmax; pipeline the stages to go faster).\nmodule poly8_v5_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    wire [15:0] t0 = 16'd18;\n    wire [15:0] t1 = t0 * x + 16'd69;\n    wire [15:0] t2 = t1 * x + 16'd93;\n    wire [15:0] t3 = t2 * x + 16'd48;\n    wire [15:0] t4 = t3 * x + 16'd90;\n    wire [15:0] t5 = t4 * x + 16'd95;\n    wire [15:0] t6 = t5 * x + 16'd49;\n    wire [15:0] t7 = t6 * x + 16'd22;\n    wire [15:0] t8 = t7 * x + 16'd49;\n    always @(posedge clk) begin\n        if (!rst_n) y <= 16'd0;\n        else        y <= t8;\n    end\nendmodule\n",
+      "reference_sha256": "ce31f85f40c898365af462bfff7e335cda436750015430d782315aca87adb12f"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "poly9_8b",
+      "family": "poly",
+      "prompt": "Write a Verilog module named `poly9_8b` with inputs `clk`, active-low `rst_n`, an 8-bit input `x`, and a 16-bit registered output `y`. Evaluate the degree-9 polynomial with coefficients [1, 3, 5, 7, 9, 11, 13, 15, 17, 19] (c0 first) at `x` using Horner's method, keeping only the low 16 bits (mod 2^16), and register the result into `y`. Clear `y` to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule poly9_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "4a331cb13a27f93aa7d007e548c6fed1415bd3828b93f1ce2c5036d3ab356ca1",
+      "reference_rtl": "// Degree-9 Horner polynomial, mod 2^16, FULL combinational mult-add chain\n// (the long path -> lower Fmax; pipeline the stages to go faster).\nmodule poly9_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    wire [15:0] t0 = 16'd1;\n    wire [15:0] t1 = t0 * x + 16'd3;\n    wire [15:0] t2 = t1 * x + 16'd5;\n    wire [15:0] t3 = t2 * x + 16'd7;\n    wire [15:0] t4 = t3 * x + 16'd9;\n    wire [15:0] t5 = t4 * x + 16'd11;\n    wire [15:0] t6 = t5 * x + 16'd13;\n    wire [15:0] t7 = t6 * x + 16'd15;\n    wire [15:0] t8 = t7 * x + 16'd17;\n    wire [15:0] t9 = t8 * x + 16'd19;\n    always @(posedge clk) begin\n        if (!rst_n) y <= 16'd0;\n        else        y <= t9;\n    end\nendmodule\n",
+      "reference_sha256": "6ba5f43191e810c5c626728d050d011e77e6835aa100d31045d61148a463065c"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "poly9_v4_8b",
+      "family": "poly",
+      "prompt": "Write a Verilog module named `poly9_v4_8b` with inputs `clk`, active-low `rst_n`, an 8-bit input `x`, and a 16-bit registered output `y`. Evaluate the degree-9 polynomial with coefficients [59, 61, 59, 2, 39, 63, 11, 3, 8, 4] (c0 first) at `x` using Horner's method, keeping only the low 16 bits (mod 2^16), and register the result into `y`. Clear `y` to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule poly9_v4_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "21091f701da1b5b4e53e953a8d96dba84773fd77598a6381301613241473efa8",
+      "reference_rtl": "// Degree-9 Horner polynomial, mod 2^16, FULL combinational mult-add chain\n// (the long path -> lower Fmax; pipeline the stages to go faster).\nmodule poly9_v4_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    wire [15:0] t0 = 16'd59;\n    wire [15:0] t1 = t0 * x + 16'd61;\n    wire [15:0] t2 = t1 * x + 16'd59;\n    wire [15:0] t3 = t2 * x + 16'd2;\n    wire [15:0] t4 = t3 * x + 16'd39;\n    wire [15:0] t5 = t4 * x + 16'd63;\n    wire [15:0] t6 = t5 * x + 16'd11;\n    wire [15:0] t7 = t6 * x + 16'd3;\n    wire [15:0] t8 = t7 * x + 16'd8;\n    wire [15:0] t9 = t8 * x + 16'd4;\n    always @(posedge clk) begin\n        if (!rst_n) y <= 16'd0;\n        else        y <= t9;\n    end\nendmodule\n",
+      "reference_sha256": "41fd7748b3dd93ef97c3ceb0806f0b0a16cc3108e89ce11682c3b6d27e6d51bb"
+    },
+    {
+      "candidate_slots": 5,
+      "design": "poly9_v5_8b",
+      "family": "poly",
+      "prompt": "Write a Verilog module named `poly9_v5_8b` with inputs `clk`, active-low `rst_n`, an 8-bit input `x`, and a 16-bit registered output `y`. Evaluate the degree-9 polynomial with coefficients [45, 57, 8, 35, 13, 69, 3, 32, 43, 40] (c0 first) at `x` using Horner's method, keeping only the low 16 bits (mod 2^16), and register the result into `y`. Clear `y` to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule poly9_v5_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+      "prompt_sha256": "453342225821726f6b422547395d668ecd4cb7873fe5363a0afd96061951e386",
+      "reference_rtl": "// Degree-9 Horner polynomial, mod 2^16, FULL combinational mult-add chain\n// (the long path -> lower Fmax; pipeline the stages to go faster).\nmodule poly9_v5_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n    wire [15:0] t0 = 16'd45;\n    wire [15:0] t1 = t0 * x + 16'd57;\n    wire [15:0] t2 = t1 * x + 16'd8;\n    wire [15:0] t3 = t2 * x + 16'd35;\n    wire [15:0] t4 = t3 * x + 16'd13;\n    wire [15:0] t5 = t4 * x + 16'd69;\n    wire [15:0] t6 = t5 * x + 16'd3;\n    wire [15:0] t7 = t6 * x + 16'd32;\n    wire [15:0] t8 = t7 * x + 16'd43;\n    wire [15:0] t9 = t8 * x + 16'd40;\n    always @(posedge clk) begin\n        if (!rst_n) y <= 16'd0;\n        else        y <= t9;\n    end\nendmodule\n",
+      "reference_sha256": "2cc7caba8b2821c88e599869c3295596c678b8f33270239ca02f716ae9e31348"
+    }
+  ],
+  "schema_version": 1,
+  "selected_prompts": 46,
+  "selection_salt": "ppa_rtl_dpo_baseline_v1:train_prompt_selection:20260827",
+  "slots": [
+    {
+      "design": "fir17_8b",
+      "family": "fir",
+      "generation_seed": null,
+      "slot_id": "fir17_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "fir17_8b",
+      "family": "fir",
+      "generation_seed": 1095187175,
+      "slot_id": "fir17_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir17_8b",
+      "family": "fir",
+      "generation_seed": 3937330100,
+      "slot_id": "fir17_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir17_8b",
+      "family": "fir",
+      "generation_seed": 3920456862,
+      "slot_id": "fir17_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir17_8b",
+      "family": "fir",
+      "generation_seed": 815362116,
+      "slot_id": "fir17_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir20_8b",
+      "family": "fir",
+      "generation_seed": null,
+      "slot_id": "fir20_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "fir20_8b",
+      "family": "fir",
+      "generation_seed": 1566799759,
+      "slot_id": "fir20_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir20_8b",
+      "family": "fir",
+      "generation_seed": 3354289169,
+      "slot_id": "fir20_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir20_8b",
+      "family": "fir",
+      "generation_seed": 3720190142,
+      "slot_id": "fir20_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir20_8b",
+      "family": "fir",
+      "generation_seed": 717611095,
+      "slot_id": "fir20_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir23_8b",
+      "family": "fir",
+      "generation_seed": null,
+      "slot_id": "fir23_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "fir23_8b",
+      "family": "fir",
+      "generation_seed": 175839178,
+      "slot_id": "fir23_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir23_8b",
+      "family": "fir",
+      "generation_seed": 2662519824,
+      "slot_id": "fir23_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir23_8b",
+      "family": "fir",
+      "generation_seed": 3532731679,
+      "slot_id": "fir23_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir23_8b",
+      "family": "fir",
+      "generation_seed": 280297320,
+      "slot_id": "fir23_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir32_8b",
+      "family": "fir",
+      "generation_seed": null,
+      "slot_id": "fir32_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "fir32_8b",
+      "family": "fir",
+      "generation_seed": 2006732272,
+      "slot_id": "fir32_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir32_8b",
+      "family": "fir",
+      "generation_seed": 690528267,
+      "slot_id": "fir32_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir32_8b",
+      "family": "fir",
+      "generation_seed": 2985091298,
+      "slot_id": "fir32_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir32_8b",
+      "family": "fir",
+      "generation_seed": 85954046,
+      "slot_id": "fir32_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir5_8b",
+      "family": "fir",
+      "generation_seed": null,
+      "slot_id": "fir5_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "fir5_8b",
+      "family": "fir",
+      "generation_seed": 3046212612,
+      "slot_id": "fir5_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir5_8b",
+      "family": "fir",
+      "generation_seed": 3858456328,
+      "slot_id": "fir5_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir5_8b",
+      "family": "fir",
+      "generation_seed": 3476718878,
+      "slot_id": "fir5_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir5_8b",
+      "family": "fir",
+      "generation_seed": 1739213643,
+      "slot_id": "fir5_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir7_8b",
+      "family": "fir",
+      "generation_seed": null,
+      "slot_id": "fir7_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "fir7_8b",
+      "family": "fir",
+      "generation_seed": 540440767,
+      "slot_id": "fir7_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir7_8b",
+      "family": "fir",
+      "generation_seed": 2251814251,
+      "slot_id": "fir7_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir7_8b",
+      "family": "fir",
+      "generation_seed": 3875161067,
+      "slot_id": "fir7_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir7_8b",
+      "family": "fir",
+      "generation_seed": 529102477,
+      "slot_id": "fir7_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir8_8b",
+      "family": "fir",
+      "generation_seed": null,
+      "slot_id": "fir8_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "fir8_8b",
+      "family": "fir",
+      "generation_seed": 2933390891,
+      "slot_id": "fir8_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir8_8b",
+      "family": "fir",
+      "generation_seed": 252909014,
+      "slot_id": "fir8_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir8_8b",
+      "family": "fir",
+      "generation_seed": 2179613469,
+      "slot_id": "fir8_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir8_8b",
+      "family": "fir",
+      "generation_seed": 1443092124,
+      "slot_id": "fir8_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir9_8b",
+      "family": "fir",
+      "generation_seed": null,
+      "slot_id": "fir9_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "fir9_8b",
+      "family": "fir",
+      "generation_seed": 1624331922,
+      "slot_id": "fir9_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir9_8b",
+      "family": "fir",
+      "generation_seed": 2987828272,
+      "slot_id": "fir9_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir9_8b",
+      "family": "fir",
+      "generation_seed": 3278854015,
+      "slot_id": "fir9_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "fir9_8b",
+      "family": "fir",
+      "generation_seed": 3273883442,
+      "slot_id": "fir9_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr11",
+      "family": "firr",
+      "generation_seed": null,
+      "slot_id": "firr11/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "firr11",
+      "family": "firr",
+      "generation_seed": 3500116431,
+      "slot_id": "firr11/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr11",
+      "family": "firr",
+      "generation_seed": 1867470728,
+      "slot_id": "firr11/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr11",
+      "family": "firr",
+      "generation_seed": 2060615965,
+      "slot_id": "firr11/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr11",
+      "family": "firr",
+      "generation_seed": 3309694409,
+      "slot_id": "firr11/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr13",
+      "family": "firr",
+      "generation_seed": null,
+      "slot_id": "firr13/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "firr13",
+      "family": "firr",
+      "generation_seed": 1985750871,
+      "slot_id": "firr13/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr13",
+      "family": "firr",
+      "generation_seed": 2002172271,
+      "slot_id": "firr13/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr13",
+      "family": "firr",
+      "generation_seed": 3718633487,
+      "slot_id": "firr13/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr13",
+      "family": "firr",
+      "generation_seed": 3466292629,
+      "slot_id": "firr13/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr25",
+      "family": "firr",
+      "generation_seed": null,
+      "slot_id": "firr25/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "firr25",
+      "family": "firr",
+      "generation_seed": 4237503903,
+      "slot_id": "firr25/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr25",
+      "family": "firr",
+      "generation_seed": 3924158828,
+      "slot_id": "firr25/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr25",
+      "family": "firr",
+      "generation_seed": 260295548,
+      "slot_id": "firr25/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr25",
+      "family": "firr",
+      "generation_seed": 2050877662,
+      "slot_id": "firr25/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr30",
+      "family": "firr",
+      "generation_seed": null,
+      "slot_id": "firr30/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "firr30",
+      "family": "firr",
+      "generation_seed": 443060838,
+      "slot_id": "firr30/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr30",
+      "family": "firr",
+      "generation_seed": 1342629883,
+      "slot_id": "firr30/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr30",
+      "family": "firr",
+      "generation_seed": 914095601,
+      "slot_id": "firr30/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr30",
+      "family": "firr",
+      "generation_seed": 3687208943,
+      "slot_id": "firr30/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr32",
+      "family": "firr",
+      "generation_seed": null,
+      "slot_id": "firr32/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "firr32",
+      "family": "firr",
+      "generation_seed": 4068221271,
+      "slot_id": "firr32/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr32",
+      "family": "firr",
+      "generation_seed": 3140148193,
+      "slot_id": "firr32/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr32",
+      "family": "firr",
+      "generation_seed": 288962140,
+      "slot_id": "firr32/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr32",
+      "family": "firr",
+      "generation_seed": 4056485842,
+      "slot_id": "firr32/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr4",
+      "family": "firr",
+      "generation_seed": null,
+      "slot_id": "firr4/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "firr4",
+      "family": "firr",
+      "generation_seed": 842544161,
+      "slot_id": "firr4/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr4",
+      "family": "firr",
+      "generation_seed": 3939947937,
+      "slot_id": "firr4/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr4",
+      "family": "firr",
+      "generation_seed": 909985874,
+      "slot_id": "firr4/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr4",
+      "family": "firr",
+      "generation_seed": 828827850,
+      "slot_id": "firr4/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr5",
+      "family": "firr",
+      "generation_seed": null,
+      "slot_id": "firr5/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "firr5",
+      "family": "firr",
+      "generation_seed": 1639829137,
+      "slot_id": "firr5/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr5",
+      "family": "firr",
+      "generation_seed": 3134261211,
+      "slot_id": "firr5/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr5",
+      "family": "firr",
+      "generation_seed": 1805083759,
+      "slot_id": "firr5/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr5",
+      "family": "firr",
+      "generation_seed": 3513489893,
+      "slot_id": "firr5/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr9",
+      "family": "firr",
+      "generation_seed": null,
+      "slot_id": "firr9/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "firr9",
+      "family": "firr",
+      "generation_seed": 79172183,
+      "slot_id": "firr9/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr9",
+      "family": "firr",
+      "generation_seed": 4128278676,
+      "slot_id": "firr9/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr9",
+      "family": "firr",
+      "generation_seed": 1184593502,
+      "slot_id": "firr9/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "firr9",
+      "family": "firr",
+      "generation_seed": 578550347,
+      "slot_id": "firr9/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir10_v2",
+      "family": "iir",
+      "generation_seed": null,
+      "slot_id": "iir10_v2/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "iir10_v2",
+      "family": "iir",
+      "generation_seed": 1872003611,
+      "slot_id": "iir10_v2/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir10_v2",
+      "family": "iir",
+      "generation_seed": 1708658118,
+      "slot_id": "iir10_v2/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir10_v2",
+      "family": "iir",
+      "generation_seed": 2160034553,
+      "slot_id": "iir10_v2/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir10_v2",
+      "family": "iir",
+      "generation_seed": 2681562513,
+      "slot_id": "iir10_v2/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir11_v1",
+      "family": "iir",
+      "generation_seed": null,
+      "slot_id": "iir11_v1/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "iir11_v1",
+      "family": "iir",
+      "generation_seed": 4447503,
+      "slot_id": "iir11_v1/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir11_v1",
+      "family": "iir",
+      "generation_seed": 3891718710,
+      "slot_id": "iir11_v1/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir11_v1",
+      "family": "iir",
+      "generation_seed": 2696723396,
+      "slot_id": "iir11_v1/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir11_v1",
+      "family": "iir",
+      "generation_seed": 368118388,
+      "slot_id": "iir11_v1/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir11_v2",
+      "family": "iir",
+      "generation_seed": null,
+      "slot_id": "iir11_v2/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "iir11_v2",
+      "family": "iir",
+      "generation_seed": 1152717763,
+      "slot_id": "iir11_v2/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir11_v2",
+      "family": "iir",
+      "generation_seed": 1729964347,
+      "slot_id": "iir11_v2/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir11_v2",
+      "family": "iir",
+      "generation_seed": 446377169,
+      "slot_id": "iir11_v2/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir11_v2",
+      "family": "iir",
+      "generation_seed": 2689832931,
+      "slot_id": "iir11_v2/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir12_v1",
+      "family": "iir",
+      "generation_seed": null,
+      "slot_id": "iir12_v1/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "iir12_v1",
+      "family": "iir",
+      "generation_seed": 3616379881,
+      "slot_id": "iir12_v1/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir12_v1",
+      "family": "iir",
+      "generation_seed": 3296578045,
+      "slot_id": "iir12_v1/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir12_v1",
+      "family": "iir",
+      "generation_seed": 285641397,
+      "slot_id": "iir12_v1/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir12_v1",
+      "family": "iir",
+      "generation_seed": 3751747289,
+      "slot_id": "iir12_v1/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir12_v3",
+      "family": "iir",
+      "generation_seed": null,
+      "slot_id": "iir12_v3/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "iir12_v3",
+      "family": "iir",
+      "generation_seed": 2544445692,
+      "slot_id": "iir12_v3/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir12_v3",
+      "family": "iir",
+      "generation_seed": 1201687023,
+      "slot_id": "iir12_v3/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir12_v3",
+      "family": "iir",
+      "generation_seed": 328484405,
+      "slot_id": "iir12_v3/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir12_v3",
+      "family": "iir",
+      "generation_seed": 2550897319,
+      "slot_id": "iir12_v3/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir13",
+      "family": "iir",
+      "generation_seed": null,
+      "slot_id": "iir13/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "iir13",
+      "family": "iir",
+      "generation_seed": 2974759726,
+      "slot_id": "iir13/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir13",
+      "family": "iir",
+      "generation_seed": 681736605,
+      "slot_id": "iir13/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir13",
+      "family": "iir",
+      "generation_seed": 2164696558,
+      "slot_id": "iir13/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir13",
+      "family": "iir",
+      "generation_seed": 2981580795,
+      "slot_id": "iir13/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir3_v1",
+      "family": "iir",
+      "generation_seed": null,
+      "slot_id": "iir3_v1/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "iir3_v1",
+      "family": "iir",
+      "generation_seed": 2089224104,
+      "slot_id": "iir3_v1/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir3_v1",
+      "family": "iir",
+      "generation_seed": 1644268299,
+      "slot_id": "iir3_v1/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir3_v1",
+      "family": "iir",
+      "generation_seed": 4255723373,
+      "slot_id": "iir3_v1/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir3_v1",
+      "family": "iir",
+      "generation_seed": 4241297538,
+      "slot_id": "iir3_v1/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir3_v2",
+      "family": "iir",
+      "generation_seed": null,
+      "slot_id": "iir3_v2/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "iir3_v2",
+      "family": "iir",
+      "generation_seed": 2894151731,
+      "slot_id": "iir3_v2/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir3_v2",
+      "family": "iir",
+      "generation_seed": 1950704737,
+      "slot_id": "iir3_v2/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir3_v2",
+      "family": "iir",
+      "generation_seed": 723015481,
+      "slot_id": "iir3_v2/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir3_v2",
+      "family": "iir",
+      "generation_seed": 1979974787,
+      "slot_id": "iir3_v2/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir3_v3",
+      "family": "iir",
+      "generation_seed": null,
+      "slot_id": "iir3_v3/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "iir3_v3",
+      "family": "iir",
+      "generation_seed": 1695743902,
+      "slot_id": "iir3_v3/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir3_v3",
+      "family": "iir",
+      "generation_seed": 1389642934,
+      "slot_id": "iir3_v3/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir3_v3",
+      "family": "iir",
+      "generation_seed": 1458575067,
+      "slot_id": "iir3_v3/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir3_v3",
+      "family": "iir",
+      "generation_seed": 1306250563,
+      "slot_id": "iir3_v3/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir4_v1",
+      "family": "iir",
+      "generation_seed": null,
+      "slot_id": "iir4_v1/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "iir4_v1",
+      "family": "iir",
+      "generation_seed": 1214912898,
+      "slot_id": "iir4_v1/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir4_v1",
+      "family": "iir",
+      "generation_seed": 3179805808,
+      "slot_id": "iir4_v1/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir4_v1",
+      "family": "iir",
+      "generation_seed": 4034278072,
+      "slot_id": "iir4_v1/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir4_v1",
+      "family": "iir",
+      "generation_seed": 2531085983,
+      "slot_id": "iir4_v1/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir6_v1",
+      "family": "iir",
+      "generation_seed": null,
+      "slot_id": "iir6_v1/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "iir6_v1",
+      "family": "iir",
+      "generation_seed": 4049905000,
+      "slot_id": "iir6_v1/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir6_v1",
+      "family": "iir",
+      "generation_seed": 1514633686,
+      "slot_id": "iir6_v1/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir6_v1",
+      "family": "iir",
+      "generation_seed": 3297895978,
+      "slot_id": "iir6_v1/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir6_v1",
+      "family": "iir",
+      "generation_seed": 1310663208,
+      "slot_id": "iir6_v1/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir7",
+      "family": "iir",
+      "generation_seed": null,
+      "slot_id": "iir7/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "iir7",
+      "family": "iir",
+      "generation_seed": 2542432596,
+      "slot_id": "iir7/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir7",
+      "family": "iir",
+      "generation_seed": 3582137867,
+      "slot_id": "iir7/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir7",
+      "family": "iir",
+      "generation_seed": 3495912308,
+      "slot_id": "iir7/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir7",
+      "family": "iir",
+      "generation_seed": 2524878259,
+      "slot_id": "iir7/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir7_v2",
+      "family": "iir",
+      "generation_seed": null,
+      "slot_id": "iir7_v2/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "iir7_v2",
+      "family": "iir",
+      "generation_seed": 1474489195,
+      "slot_id": "iir7_v2/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir7_v2",
+      "family": "iir",
+      "generation_seed": 858989750,
+      "slot_id": "iir7_v2/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir7_v2",
+      "family": "iir",
+      "generation_seed": 900657704,
+      "slot_id": "iir7_v2/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir7_v2",
+      "family": "iir",
+      "generation_seed": 1676237822,
+      "slot_id": "iir7_v2/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir8_v3",
+      "family": "iir",
+      "generation_seed": null,
+      "slot_id": "iir8_v3/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "iir8_v3",
+      "family": "iir",
+      "generation_seed": 2003540600,
+      "slot_id": "iir8_v3/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir8_v3",
+      "family": "iir",
+      "generation_seed": 2958860245,
+      "slot_id": "iir8_v3/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir8_v3",
+      "family": "iir",
+      "generation_seed": 1392987828,
+      "slot_id": "iir8_v3/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "iir8_v3",
+      "family": "iir",
+      "generation_seed": 1507151058,
+      "slot_id": "iir8_v3/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "med9",
+      "family": "med",
+      "generation_seed": null,
+      "slot_id": "med9/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "med9",
+      "family": "med",
+      "generation_seed": 1725370693,
+      "slot_id": "med9/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "med9",
+      "family": "med",
+      "generation_seed": 3591764711,
+      "slot_id": "med9/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "med9",
+      "family": "med",
+      "generation_seed": 1390946511,
+      "slot_id": "med9/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "med9",
+      "family": "med",
+      "generation_seed": 2281031815,
+      "slot_id": "med9/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly10_v1_8b",
+      "family": "poly",
+      "generation_seed": null,
+      "slot_id": "poly10_v1_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "poly10_v1_8b",
+      "family": "poly",
+      "generation_seed": 3196617953,
+      "slot_id": "poly10_v1_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly10_v1_8b",
+      "family": "poly",
+      "generation_seed": 1579688168,
+      "slot_id": "poly10_v1_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly10_v1_8b",
+      "family": "poly",
+      "generation_seed": 191497598,
+      "slot_id": "poly10_v1_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly10_v1_8b",
+      "family": "poly",
+      "generation_seed": 3501852880,
+      "slot_id": "poly10_v1_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly10_v2_8b",
+      "family": "poly",
+      "generation_seed": null,
+      "slot_id": "poly10_v2_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "poly10_v2_8b",
+      "family": "poly",
+      "generation_seed": 3473589820,
+      "slot_id": "poly10_v2_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly10_v2_8b",
+      "family": "poly",
+      "generation_seed": 393197552,
+      "slot_id": "poly10_v2_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly10_v2_8b",
+      "family": "poly",
+      "generation_seed": 2965893776,
+      "slot_id": "poly10_v2_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly10_v2_8b",
+      "family": "poly",
+      "generation_seed": 1745165536,
+      "slot_id": "poly10_v2_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly10_v4_8b",
+      "family": "poly",
+      "generation_seed": null,
+      "slot_id": "poly10_v4_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "poly10_v4_8b",
+      "family": "poly",
+      "generation_seed": 2553549718,
+      "slot_id": "poly10_v4_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly10_v4_8b",
+      "family": "poly",
+      "generation_seed": 1605786420,
+      "slot_id": "poly10_v4_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly10_v4_8b",
+      "family": "poly",
+      "generation_seed": 2736286935,
+      "slot_id": "poly10_v4_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly2_v1_8b",
+      "family": "poly",
+      "generation_seed": null,
+      "slot_id": "poly2_v1_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "poly2_v1_8b",
+      "family": "poly",
+      "generation_seed": 1863564847,
+      "slot_id": "poly2_v1_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly2_v1_8b",
+      "family": "poly",
+      "generation_seed": 3070002974,
+      "slot_id": "poly2_v1_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly2_v1_8b",
+      "family": "poly",
+      "generation_seed": 3142126635,
+      "slot_id": "poly2_v1_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly2_v1_8b",
+      "family": "poly",
+      "generation_seed": 4074199657,
+      "slot_id": "poly2_v1_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly2_v2_8b",
+      "family": "poly",
+      "generation_seed": null,
+      "slot_id": "poly2_v2_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "poly2_v2_8b",
+      "family": "poly",
+      "generation_seed": 149879890,
+      "slot_id": "poly2_v2_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly2_v2_8b",
+      "family": "poly",
+      "generation_seed": 3757324085,
+      "slot_id": "poly2_v2_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly2_v2_8b",
+      "family": "poly",
+      "generation_seed": 388266639,
+      "slot_id": "poly2_v2_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly2_v2_8b",
+      "family": "poly",
+      "generation_seed": 1741194788,
+      "slot_id": "poly2_v2_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly3_8b",
+      "family": "poly",
+      "generation_seed": null,
+      "slot_id": "poly3_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "poly3_8b",
+      "family": "poly",
+      "generation_seed": 50482673,
+      "slot_id": "poly3_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly3_8b",
+      "family": "poly",
+      "generation_seed": 785885181,
+      "slot_id": "poly3_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly3_8b",
+      "family": "poly",
+      "generation_seed": 2689483622,
+      "slot_id": "poly3_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly3_8b",
+      "family": "poly",
+      "generation_seed": 4103130329,
+      "slot_id": "poly3_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly3_v2_8b",
+      "family": "poly",
+      "generation_seed": null,
+      "slot_id": "poly3_v2_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "poly3_v2_8b",
+      "family": "poly",
+      "generation_seed": 4240283458,
+      "slot_id": "poly3_v2_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly3_v2_8b",
+      "family": "poly",
+      "generation_seed": 2593456505,
+      "slot_id": "poly3_v2_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly3_v2_8b",
+      "family": "poly",
+      "generation_seed": 1211029763,
+      "slot_id": "poly3_v2_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly3_v2_8b",
+      "family": "poly",
+      "generation_seed": 4207487409,
+      "slot_id": "poly3_v2_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly3_v3_8b",
+      "family": "poly",
+      "generation_seed": null,
+      "slot_id": "poly3_v3_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "poly3_v3_8b",
+      "family": "poly",
+      "generation_seed": 1549897514,
+      "slot_id": "poly3_v3_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly3_v3_8b",
+      "family": "poly",
+      "generation_seed": 1420898178,
+      "slot_id": "poly3_v3_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly3_v3_8b",
+      "family": "poly",
+      "generation_seed": 2892706794,
+      "slot_id": "poly3_v3_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly3_v3_8b",
+      "family": "poly",
+      "generation_seed": 1174752977,
+      "slot_id": "poly3_v3_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly4_v4_8b",
+      "family": "poly",
+      "generation_seed": null,
+      "slot_id": "poly4_v4_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "poly4_v4_8b",
+      "family": "poly",
+      "generation_seed": 1905083920,
+      "slot_id": "poly4_v4_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly4_v4_8b",
+      "family": "poly",
+      "generation_seed": 264377477,
+      "slot_id": "poly4_v4_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly4_v4_8b",
+      "family": "poly",
+      "generation_seed": 227866537,
+      "slot_id": "poly4_v4_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly4_v4_8b",
+      "family": "poly",
+      "generation_seed": 2922166433,
+      "slot_id": "poly4_v4_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly6_v2_8b",
+      "family": "poly",
+      "generation_seed": null,
+      "slot_id": "poly6_v2_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "poly6_v2_8b",
+      "family": "poly",
+      "generation_seed": 4133959992,
+      "slot_id": "poly6_v2_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly6_v2_8b",
+      "family": "poly",
+      "generation_seed": 611900602,
+      "slot_id": "poly6_v2_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly6_v2_8b",
+      "family": "poly",
+      "generation_seed": 1039697224,
+      "slot_id": "poly6_v2_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly6_v2_8b",
+      "family": "poly",
+      "generation_seed": 1981767771,
+      "slot_id": "poly6_v2_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly6_v5_8b",
+      "family": "poly",
+      "generation_seed": null,
+      "slot_id": "poly6_v5_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "poly6_v5_8b",
+      "family": "poly",
+      "generation_seed": 722254487,
+      "slot_id": "poly6_v5_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly6_v5_8b",
+      "family": "poly",
+      "generation_seed": 3102061607,
+      "slot_id": "poly6_v5_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly6_v5_8b",
+      "family": "poly",
+      "generation_seed": 3709724969,
+      "slot_id": "poly6_v5_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly6_v5_8b",
+      "family": "poly",
+      "generation_seed": 3984548930,
+      "slot_id": "poly6_v5_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly8_v5_8b",
+      "family": "poly",
+      "generation_seed": null,
+      "slot_id": "poly8_v5_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "poly8_v5_8b",
+      "family": "poly",
+      "generation_seed": 3186982323,
+      "slot_id": "poly8_v5_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly8_v5_8b",
+      "family": "poly",
+      "generation_seed": 163546152,
+      "slot_id": "poly8_v5_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly8_v5_8b",
+      "family": "poly",
+      "generation_seed": 1270197900,
+      "slot_id": "poly8_v5_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly8_v5_8b",
+      "family": "poly",
+      "generation_seed": 1034280922,
+      "slot_id": "poly8_v5_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly9_8b",
+      "family": "poly",
+      "generation_seed": null,
+      "slot_id": "poly9_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "poly9_8b",
+      "family": "poly",
+      "generation_seed": 3359726782,
+      "slot_id": "poly9_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly9_8b",
+      "family": "poly",
+      "generation_seed": 1290242063,
+      "slot_id": "poly9_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly9_8b",
+      "family": "poly",
+      "generation_seed": 631548574,
+      "slot_id": "poly9_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly9_8b",
+      "family": "poly",
+      "generation_seed": 887518804,
+      "slot_id": "poly9_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly9_v4_8b",
+      "family": "poly",
+      "generation_seed": null,
+      "slot_id": "poly9_v4_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "poly9_v4_8b",
+      "family": "poly",
+      "generation_seed": 1145385671,
+      "slot_id": "poly9_v4_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly9_v4_8b",
+      "family": "poly",
+      "generation_seed": 4017580699,
+      "slot_id": "poly9_v4_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly9_v4_8b",
+      "family": "poly",
+      "generation_seed": 2083720532,
+      "slot_id": "poly9_v4_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly9_v4_8b",
+      "family": "poly",
+      "generation_seed": 44334118,
+      "slot_id": "poly9_v4_8b/sft_4",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly9_v5_8b",
+      "family": "poly",
+      "generation_seed": null,
+      "slot_id": "poly9_v5_8b/reference",
+      "source": "catalog_reference"
+    },
+    {
+      "design": "poly9_v5_8b",
+      "family": "poly",
+      "generation_seed": 38610067,
+      "slot_id": "poly9_v5_8b/sft_1",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly9_v5_8b",
+      "family": "poly",
+      "generation_seed": 1643196231,
+      "slot_id": "poly9_v5_8b/sft_2",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly9_v5_8b",
+      "family": "poly",
+      "generation_seed": 528378016,
+      "slot_id": "poly9_v5_8b/sft_3",
+      "source": "sft_v6c_out"
+    },
+    {
+      "design": "poly9_v5_8b",
+      "family": "poly",
+      "generation_seed": 1236108551,
+      "slot_id": "poly9_v5_8b/sft_4",
+      "source": "sft_v6c_out"
+    }
+  ],
+  "status": "planned_not_generated_or_labeled",
+  "study_id": "ppa_rtl_dpo_baseline_v1"
+}

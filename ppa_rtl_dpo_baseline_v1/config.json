@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "study_id": "ppa_rtl_dpo_baseline_v1",
+  "status": "prepared_not_launched",
+  "provenance_hash_policy": "sha256_raw_bytes_no_newline_normalization",
+  "method_identity": {
+    "name": "PPA-RTL performance-only DPO independent adaptation",
+    "official_reproduction": false,
+    "permitted_label": "independent adaptation of PPA-RTL's performance-only best-versus-worst DPO method",
+    "forbidden_labels": ["PPA-RTL reproduction", "official PPA-RTL implementation", "authors' PPA-RTL model"]
+  },
+  "primary_sources": {
+    "paper": {
+      "title": "Hardware Generation with High Flexibility using Reinforcement Learning Enhanced LLMs",
+      "authors": ["Yifang Zhao", "Weimin Fu", "Shijie Li", "Yi-Xiang Hu", "Xiaolong Guo", "Yier Jin"],
+      "venue": "62nd ACM/IEEE Design Automation Conference (DAC), 2025",
+      "ieee_document": "11132897",
+      "url": "https://ece.k-state.edu/research/hardware-security/papers/DAC2025_RLPFA_Processing.pdf"
+    },
+    "official_lab_page": "https://ece.k-state.edu/research/hardware-security/llm.html",
+    "official_preference_dataset": "https://huggingface.co/datasets/KSU-HW-SEC/PPA_data",
+    "observed_dataset_commit_short": "37913a5",
+    "official_code_or_training_checkpoint_found": false
+  },
+  "matched_scope": {
+    "initial_policy": "sft_v6c_out",
+    "frozen_reference_policy": "sft_v6c_out",
+    "base_model": "/home/adam/mas/mas/rtlcoder",
+    "train_split_definition": "all 145 non-holdout, non-cordic designs returned by gen_sft_corpus.designs(exclude_holdout=True); the finite EDA budget selects a frozen stratified subset only from this split",
+    "correctness_gate": {"oracle_seeds": [1, 2], "vectors_per_seed": 1024, "must_pass_both": true},
+    "eda_performance_label_budget": 229,
+    "optimizer_updates_per_seed": 276,
+    "training_seeds": [1, 2],
+    "evaluation_samples_per_design_per_seed": 24,
+    "failure_score_mhz": 0.0
+  },
+  "prospective_label_plan": {
+    "selection_salt": "ppa_rtl_dpo_baseline_v1:train_prompt_selection:20260827",
+    "eligible_train_prompts": 145,
+    "selected_prompts": 46,
+    "family_quotas": {"fir": 8, "firr": 8, "poly": 15, "iir": 14, "med": 1},
+    "candidate_slots": 229,
+    "default_candidates_per_prompt": 5,
+    "one_four_candidate_prompt_rule": "highest SHA-256 rank among selected poly prompts",
+    "candidate_composition": "one catalog reference style plus four SFT samples per prompt; the declared four-candidate prompt has one reference plus three SFT samples",
+    "generation": {"temperature": 1.0, "top_p": 1.0, "max_new_tokens": 1536, "seed_derivation": "uint32(SHA256(selection_salt || design || generated_slot_index)[0:8])", "maximum_attempts_to_obtain_a_correct_generated_slot": 16},
+    "no_reallocation": "A slot that cannot produce an oracle-correct candidate in 16 declared attempts makes construction incomplete; do not replace the prompt, add EDA labels, or raise the cap."
+  },
+  "performance_labeling": {
+    "go_no_go": "timing_closure_gate_v1/results/pilot_gate.json must be a complete PASS for manifest 2e0674f96c57be3864a6fab7683b0edc76f732762f78547d5e6a3e8efc17e194 before any candidate generation or EDA labeling",
+    "target": "xc7z020clg400-1",
+    "tool": "Vivado 2023.1",
+    "training_label": "the same one-implementation, 5.0 ns requested-clock WNS-derived Fmax proxy used for the existing 229-label RF budget, permitted only if the timing pilot passes",
+    "budget_accounting": "exactly 229 post-route implementation attempts; an implementation failure consumes its slot and receives 0 MHz; no replacement",
+    "preference_score": "performance-only: higher failure-aware Fmax is better; per-prompt min-max normalization is recorded but cannot change the best/worst ordering",
+    "pair_rule": "one maximum-score chosen and one minimum-score rejected per prompt; deterministic SHA-256 RTL-hash tie break; equal extrema yield no pair and no replacement"
+  },
+  "dpo_training": {
+    "objective": "standard reference-anchored DPO",
+    "performance_weights_power_performance_area": [0.0, 1.0, 0.0],
+    "beta": 0.1,
+    "dtype": "torch.float16",
+    "trainable_parameters": "the same SFT LoRA adapter parameters; base weights frozen",
+    "reference": "a separate frozen copy of the same SFT adapter",
+    "optimizer": "AdamW",
+    "learning_rate": 1e-05,
+    "betas": [0.9, 0.999],
+    "eps": 1e-08,
+    "weight_decay": 0.01,
+    "gradient_clip": 1.0,
+    "pairs_per_optimizer_update": 4,
+    "responses_per_optimizer_update": 8,
+    "gradient_accumulation_steps": 1,
+    "optimizer_updates": 276,
+    "schedule": "constant",
+    "warmup_steps": 0,
+    "max_prompt_tokens": 512,
+    "max_completion_tokens": 1536,
+    "max_sequence_tokens": 2048,
+    "overlength_policy": "fail before training; never truncate a chosen or rejected RTL silently",
+    "data_iteration": "seeded reshuffle and cycle over the frozen preference tuples until exactly 276 optimizer updates; report repeated exposure count",
+    "checkpoints_at_updates": [138, 276]
+  },
+  "true_closure_evaluation": {
+    "sealed_split": "sealed_split.json",
+    "designs": 20,
+    "generation_seeds": {"1": 101, "2": 102},
+    "temperature": 1.0,
+    "top_p": 1.0,
+    "samples_per_design_per_training_seed": 24,
+    "multiplicity_retained": true,
+    "endpoint": "failure-penalized equal-sample true timing-closure Fmax from the frozen binary-search closure protocol; not single-constraint WNS extrapolation",
+    "zero_scored": ["no module", "oracle incorrect", "oracle error", "unconstrained timing", "synthesis failure", "implementation failure", "timeout", "closure-search failure"],
+    "reporting": "each DPO seed separately, seed dispersion, pooled equal-multiplicity descriptive summary, and paired design contrasts versus SFT and repaired RF; never select the better seed"
+  },
+  "underspecified_adaptation_choices": [
+    "The paper does not report DPO beta; this adaptation freezes beta=0.1.",
+    "The paper does not report optimizer, learning rate, batch size, update/epoch count, scheduler, gradient clipping, precision, sequence limits, parameter-efficient versus full tuning, checkpoints, or training seeds; matched local controls are frozen above.",
+    "The paper says five designs including generated and reference code but does not disambiguate k generated samples versus total candidates; this adaptation uses five total including one reference.",
+    "The paper does not report decoding temperature, top-p, random seeds, or prompt-sampling seed; this adaptation freezes them.",
+    "The paper states min-max normalization but does not explicitly state its scope or constant-value handling; this adaptation normalizes within each prompt and rejects equal extrema.",
+    "The paper filters unsynthesizable candidates and does not specify zero accounting; this adaptation applies the local functional oracle before EDA and retains post-route failures as zero while charging the fixed EDA budget.",
+    "The paper uses Synopsys Design Compiler with TSMC 90 nm and critical-path delay; this adaptation uses the paper's best/worst DPO logic on the local Vivado/xc7z020 domain and evaluates with true routed closure.",
+    "The paper does not publish raw PPA reports, construction code, model checkpoints, or a complete reproducible training configuration on its official project page; the released files contain chosen/rejected tuples only.",
+    "The paper's functional check is not specified during preference construction; this adaptation adds the exact local oracle gate for a controlled comparison.",
+    "The paper does not define evaluation failure denominators or seed aggregation; this adaptation retains every draw and scores all failures zero."
+  ],
+  "existing_rows_dry_run": {
+    "input": "rf_rows.json",
+    "expected_rows": 229,
+    "expected_underlying_designs": 25,
+    "permitted_for_training": false,
+    "reason": "The rows have valid implementation labels and no held-out designs, but they mix known SFT/GRPO and unknown producer provenance and lack per-row frozen SFT generation seeds plus the two-seed oracle gate. They may audit the matched label count but may not be converted into DPO tuples."
+  },
+  "frozen_inputs": {
+    "rf_rows.json": "ddabd923bf843e2fc4ab77566427bc89a586d8724d097021630bad689892e785",
+    "sealed_split.json": "feb34aee6a56df67f61dfd524bdefa60057b0df9751c5589c49a8d289a286e04",
+    "gen_sft_corpus.py": "5b61f256ec0d8ceeae26efeede3170c7c504bf6fef0cd4d3d0a267b79c48d1b4",
+    "oracle.py": "c63f532698319019801e8dfd66b0a360e64b816ef40883b7b75a487eb82acb5e",
+    "run_ppa.py": "94c3fccad27cadac196fba43f3b3233f85cc60adc7e61480de81d402ff2b89eb",
+    "ppa_synth.tcl": "3def59efc4781b477d4cace4eb21bc3ca55970c332bd35f56ec6deab00f31c72",
+    "sft_v6c_out_directory_manifest": "9ce91891c911b73f3f636b21ffb9f1769ce2b7ef2fbe40a8d1d68a874d56e2e8",
+    "base_model_directory_manifest": "c29348b7a8ee7fbd73a31a215942d51d5490574d080305a15ca12f7fd396e256"
+  },
+  "generated_artifacts": {
+    "label_plan": "ppa_rtl_dpo_baseline_v1/label_plan.json",
+    "label_plan_sha256": "37ac99737d61219b02a2a200f378e1557301efa3c189759aa101a428c1b0bd00",
+    "existing_rows_audit": "ppa_rtl_dpo_baseline_v1/existing_rows_audit.json",
+    "existing_rows_audit_sha256": "1b961e9816381e3a21cfb5d7bff94ef31eda6056fc83010163678091626de622"
+  }
+}
