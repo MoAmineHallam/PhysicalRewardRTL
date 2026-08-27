@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "study_id": "timing_closure_gate_v1",
+  "frozen_utc": "2026-08-27T10:25:22Z",
+  "status_at_freeze": "sealed Study 2 complete; no candidate-specific timing-closure search run",
+  "purpose": "Validate the single-5-ns WNS-derived frequency metric against fresh constraint-driven timing closure without changing sealed Study 2.",
+  "immutability": {
+    "study2_is_historical_input": true,
+    "no_existing_artifact_may_be_modified": true,
+    "legacy_ppa_synth_path": "ppa_synth.tcl",
+    "legacy_ppa_synth_sha256_raw": "3def59efc4781b477d4cace4eb21bc3ca55970c332bd35f56ec6deab00f31c72",
+    "revision_rule": "Preserve v1 and create a separately named preregistered study for any justified protocol change."
+  },
+  "population": {
+    "common_support_rule": "Design has at least one emitted correct-candidate record in sealed_sft, pooled sealed_rf_s1/sealed_rf_s2, and sealed_mlp_s1.",
+    "family_rule": "Use the frozen family field in fmax_manifest.json.",
+    "design_rule": "Within each represented family, select the design minimizing lowercase SHA256('closure-v1|' + design).",
+    "expected_designs": [
+      "fir42_v6_8b",
+      "firr20_v6",
+      "iir18_v7",
+      "med21",
+      "poly6_v13_8b"
+    ],
+    "arms": ["sft", "rf"],
+    "candidate_rule": {
+      "sft": "Select the compiled candidate closest to the count-weighted conditional mean old proxy frequency within the selected design.",
+      "rf": "Compute each available RF seed's count-weighted conditional mean, average seed means equally, then select the compiled pooled-RF candidate closest to that target.",
+      "eligibility": "The old PPA row must exist, compiled must equal 1, fmax_mhz must be finite and positive, count must be positive, and emitted file/hash must verify.",
+      "tie_break": "Ascending absolute distance, then source_sha256, then module name.",
+      "duplicate_rule": "The ten selected materialized byte streams must have distinct source identities; otherwise select the next ranked eligible candidate in the same arm/design or fail manifest generation."
+    },
+    "expected_candidates": 10
+  },
+  "flow": {
+    "vivado": "2023.1",
+    "part": "xc7z020clg400-1",
+    "mode": "out_of_context",
+    "clock_port": "clk",
+    "constraint_order": "Read the candidate and clock/I-O XDC before synth_design.",
+    "implementation": ["synth_design", "opt_design", "place_design", "route_design"],
+    "fresh_run": "Every requested period uses a new process and clean trial directory.",
+    "closed_rule": "Synthesis and implementation succeed, exactly one named clock exists, at least one setup path exists, no unconstrained timing path is reported, routing is clean, and WNS is nonnegative.",
+    "failure_rule": "A repeated tool/parse/constraint/route failure is retained, assigned closure frequency zero for endpoint accounting, and makes completeness fail; it is never dropped."
+  },
+  "capability_preflight": {
+    "source": "timing_closure_gate_v1/preflight_probe.sv",
+    "contains_study2_rtl": false,
+    "required_before_final_manifest_freeze": true,
+    "required_verdict": "PASS",
+    "superseded_preflight_draft_manifest": {
+      "sha256_raw": "e5360513e94810540f60b48f4c05fb652b244d035a67b75067bb8cc21673fb36",
+      "status": "Generated during no-Vivado dry-run, then superseded before any candidate trial when the required synthetic capability preflight was added."
+    },
+    "required_checks": [
+      "Vivado version is 2023.1",
+      "read_xdc occurs before synth_design",
+      "report_timing_summary -report_unconstrained -check_timing_verbose is supported and all named unconstrained/coverage counts are zero",
+      "ROUTE_STATUS filtering is supported and finds no unrouted nets",
+      "clock, setup-path, and constraint-coverage checks pass"
+    ],
+    "preserved_initial_failure": {
+      "path": "timing_closure_gate_v1/preflight_attempt1_unsupported_queries/capability_preflight.json",
+      "sha256_raw": "42544de3015a0d3872cfcfa5b053e9b17e5508ffb70bcbdd714481ca9410db7d",
+      "reason": "The first synthetic probe established that XDC if statements and the proposed get_timing_paths/get_input_delays/get_output_delays query forms are unsupported in Vivado 2023.1. No Study 2 candidate had been run. The retained check_timing report identified the supported replacement."
+    },
+    "preserved_second_failure": {
+      "path": "timing_closure_gate_v1/preflight_attempt2_empty_get_timing_paths/capability_preflight.json",
+      "sha256_raw": "700579e42d92f35041ccf9c9588ca3eb2a0990161549236dcd57a001ef09f20c",
+      "reason": "The second synthetic probe passed constraint coverage but get_timing_paths -setup returned empty while the retained Design Timing Summary reported 51 setup endpoints and WNS 7.501 ns. The supported replacement parses that authoritative report row."
+    },
+    "attestation": "timing_closure_gate_v1/preflight/capability_preflight.json",
+    "pinning_rule": "The final manifest hashes the runner, probe, final attestation, both preserved failed-attempt attestations, closure Tcl, all retained logs/reports through the attestations, and every other workflow script."
+  },
+  "search": {
+    "old_proxy_delay_ns": "D0 = 1000 / old_fmax_mhz = 5 - old_WNS",
+    "initial_tight_period_factor": 0.75,
+    "initial_loose_period_factor": 1.25,
+    "expansion_factor": 1.5,
+    "period_floor_ns": 1.0,
+    "period_ceiling_ns": 200.0,
+    "maximum_expansions_per_side": 4,
+    "relative_bracket_tolerance": 0.01,
+    "maximum_bisections": 10,
+    "boundary_confirmation_runs": 1,
+    "reported_frequency": "Conservative 1000/P_pass with uncertainty interval [1000/P_pass, 1000/P_fail].",
+    "nonmonotonic_rule": "Repeat contradictory periods once. Persistent tighter-pass/looser-fail behavior fails the candidate; no favorable pocket is selected."
+  },
+  "pilot_gate": {
+    "expected_candidates": 10,
+    "expected_pairs": 5,
+    "criteria": {
+      "complete_and_constrained": "All ten candidates have valid monotone brackets and confirmed boundaries; no permanent, unconstrained, or nondeterministic result.",
+      "spearman_ge_0_90": "Pooled candidate-level Spearman rho between old proxy and conservative closure frequency is at least 0.90.",
+      "median_smape_le_0_15": "Median symmetric absolute percentage error is at most 0.15.",
+      "paired_direction": "Mean representative RF-minus-SFT closure difference is positive and no more than one non-tied pair reverses relative to the old proxy; old-proxy differences within 1 percent are ties."
+    },
+    "all_criteria_required": true
+  },
+  "publication_extension": {
+    "full_sample_rule": "After a pilot pass, extend to all 15 common-support SFT/RF representative pairs plus the unselected minimum and maximum old-proxy candidate in each family, 40 distinct raw inputs total.",
+    "full_gate_summary": "Require zero invalid results, rho >= 0.90 with cluster-bootstrap 95% lower bound >= 0.80, median sMAPE <= 0.15, 90th percentile sMAPE <= 0.30, at least 13/15 non-tied pair orderings preserved, and positive paired RF-minus-SFT mean with 95% lower bound above zero."
+  },
+  "stop_rules": [
+    "Do not start a long Vivado run until manifest.json, manifest.sha256, materialized inputs, dry-run output, and unit checks have been reported.",
+    "Do not freeze the final manifest unless the non-Study-2 capability preflight passes and its attestation is included in the dependency hashes.",
+    "Do not change selection, thresholds, search bounds, or failure scoring after any closure result is inspected.",
+    "If the pilot fails, preserve it and stop new comparisons whose physical endpoint depends on the old metric until the measurement issue is resolved.",
+    "If rank/calibration fails, do not fit a post-hoc calibration to rescue the headline; either close every primary raw source and regenerate the endpoint or label it only as a single-request timing proxy.",
+    "If the RF effect disappears or reverses under closure, the current TCAD efficacy headline is unsupported and must be reframed or replaced."
+  ]
+}
