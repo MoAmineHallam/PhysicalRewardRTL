@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "study_id": "seed_replication_extension_v1",
+  "frozen_utc": "2026-08-27T10:26:31Z",
+  "status": "prepared_not_launched",
+  "purpose": "Prospective training-seed replication of the repaired-RF and correctness-only conditions after the frozen Study 2 endpoint. This extension estimates training variability; it does not replace, reopen, or retroactively alter the Study 2 primary analysis.",
+  "separation_from_prior_studies": {
+    "study2_primary_remains_unchanged": true,
+    "extension_runs_must_not_be_pooled_into_the_preregistered_primary_result": true,
+    "extension_label": "prospective post-primary seed replication",
+    "launch_is_training_only": true,
+    "endpoint_generation_requires_a_separate_explicit_command_and_is_not_implemented_by_the_launcher": true
+  },
+  "repository": {
+    "preparation_commit": "3076480ebfda85c9ee09594c6569334aac2f0117",
+    "remote": "git@github.com:moaminehallam/fpga.git",
+    "scientific_identity_is_content_hash_based": true
+  },
+  "remote_execution": {
+    "ssh_alias": "adam40",
+    "hostname": "ubuntu-SYS-420GP-TNR",
+    "repo_root": "/home/adam/mas/mas/fpga",
+    "allowed_parent": "/home/adam/mas/mas",
+    "python": "/home/adam/mas/mas/env_fpga/bin/python",
+    "environment_bin": "/home/adam/mas/mas/env_fpga/bin",
+    "base_model": "/home/adam/mas/mas/rtlcoder",
+    "sft_adapter": "sft_v6c_out",
+    "required_environment": {
+      "PYTHONNOUSERSITE": "1",
+      "python": "3.10.20",
+      "torch": "2.4.1+cu121",
+      "transformers": "4.46.3",
+      "peft": "0.13.2",
+      "accelerate": "1.0.1",
+      "numpy": "2.2.6",
+      "scipy": "1.15.3",
+      "scikit_learn": "1.7.2",
+      "joblib": "1.5.3",
+      "iverilog": "12.0"
+    },
+    "allowed_physical_gpus": [7, 6, 5, 4],
+    "gpu_idle": {
+      "maximum_memory_used_mib": 128,
+      "maximum_utilization_percent": 1,
+      "require_no_compute_pids": true,
+      "checks_immediately_before_launch": 2,
+      "seconds_between_checks": 2
+    },
+    "minimum_repo_filesystem_free_gib": 25
+  },
+  "launch_prerequisites": {
+    "all_required_artifact_hashes_match": true,
+    "run_arm_sh_must_remain_unchanged": true,
+    "every_selected_run_assigned_gpu_must_be_idle": true,
+    "every_extension_output_log_and_status_path_must_be_absent": true,
+    "timing_gate": {
+      "result_path": "timing_closure_gate_v1/results/pilot_gate.json",
+      "manifest_sha256_path": "timing_closure_gate_v1/manifest.sha256",
+      "expected_manifest_sha256": "2e0674f96c57be3864a6fab7683b0edc76f732762f78547d5e6a3e8efc17e194",
+      "schema_version": 1,
+      "study_id": "timing_closure_gate_v1",
+      "scope": "pilot_10",
+      "expected_candidates": 10,
+      "required_verdict": "PASS",
+      "required_criteria": [
+        "complete_and_constrained",
+        "spearman_ge_0_90",
+        "median_smape_le_0_15",
+        "paired_direction"
+      ]
+    }
+  },
+  "training_protocol": {
+    "initialization": "byte-identical sft_v6c_out adapter",
+    "kl_reference": "frozen copy of the same SFT adapter",
+    "optimizer": "AdamW",
+    "optimizer_defaults": {
+      "betas": [0.9, 0.999],
+      "eps": 1e-08,
+      "weight_decay": 0.01
+    },
+    "dtype": "torch.float16",
+    "group_size": 8,
+    "generation_batch": 4,
+    "temperature": 1.0,
+    "max_tokens": 1536,
+    "learning_rate": 1e-05,
+    "kl_coefficient": 0.1,
+    "incorrect_reward": 0.0,
+    "target_nonflat_updates": 276,
+    "checkpoints_at_updates": [138, 276],
+    "rf_max_attempted_groups": 2000,
+    "correctness_max_attempted_groups": 15000,
+    "crash_policy": "discard the complete failed run directory/log/status set and restart that declared seed from update zero; never resume, merge, extend a ceiling, substitute a checkpoint, or change a seed",
+    "flat_group_policy": "flat groups make no optimizer update; runs are matched on 276 non-flat updates"
+  },
+  "runs": [
+    {
+      "run_id": "rf_s3",
+      "condition": "repaired_rf",
+      "reward": "rf_struct",
+      "reward_artifact": "rf_struct.joblib",
+      "training_seed": 3,
+      "physical_gpu": 7,
+      "max_attempted_groups": 2000,
+      "output_dir": "seed_replication_extension_v1/runs/grpo_rf_s3",
+      "optimizer_log": "seed_replication_extension_v1/logs/rf_s3.optimizer.jsonl",
+      "stdout_log": "seed_replication_extension_v1/logs/rf_s3.stdout.log",
+      "status_file": "seed_replication_extension_v1/status/rf_s3.status.json"
+    },
+    {
+      "run_id": "rf_s4",
+      "condition": "repaired_rf",
+      "reward": "rf_struct",
+      "reward_artifact": "rf_struct.joblib",
+      "training_seed": 4,
+      "physical_gpu": 6,
+      "max_attempted_groups": 2000,
+      "output_dir": "seed_replication_extension_v1/runs/grpo_rf_s4",
+      "optimizer_log": "seed_replication_extension_v1/logs/rf_s4.optimizer.jsonl",
+      "stdout_log": "seed_replication_extension_v1/logs/rf_s4.stdout.log",
+      "status_file": "seed_replication_extension_v1/status/rf_s4.status.json"
+    },
+    {
+      "run_id": "correctness_s2",
+      "condition": "correctness_only",
+      "reward": "correctness",
+      "reward_artifact": null,
+      "training_seed": 2,
+      "physical_gpu": 5,
+      "max_attempted_groups": 15000,
+      "output_dir": "seed_replication_extension_v1/runs/grpo_correctness_s2",
+      "optimizer_log": "seed_replication_extension_v1/logs/correctness_s2.optimizer.jsonl",
+      "stdout_log": "seed_replication_extension_v1/logs/correctness_s2.stdout.log",
+      "status_file": "seed_replication_extension_v1/status/correctness_s2.status.json"
+    },
+    {
+      "run_id": "correctness_s3",
+      "condition": "correctness_only",
+      "reward": "correctness",
+      "reward_artifact": null,
+      "training_seed": 3,
+      "physical_gpu": 4,
+      "max_attempted_groups": 15000,
+      "output_dir": "seed_replication_extension_v1/runs/grpo_correctness_s3",
+      "optimizer_log": "seed_replication_extension_v1/logs/correctness_s3.optimizer.jsonl",
+      "stdout_log": "seed_replication_extension_v1/logs/correctness_s3.stdout.log",
+      "status_file": "seed_replication_extension_v1/status/correctness_s3.status.json"
+    }
+  ],
+  "prospective_evaluation_contract_not_launched_here": {
+    "status": "frozen_for_a_later_separate_evaluation_launcher",
+    "sealed_split": "sealed_split.json",
+    "checkpoint": 276,
+    "rf_samples_per_design_per_seed": 24,
+    "correctness_samples_per_design_per_seed": 48,
+    "generation_seed_rule": "100 + training_seed",
+    "rf_generation_seeds": {"3": 103, "4": 104},
+    "correctness_generation_seeds": {"2": 102, "3": 103},
+    "temperature": 1.0,
+    "top_p": 1.0,
+    "oracle_seeds": [1, 2],
+    "oracle_vectors_per_seed": 1024,
+    "failure_score_mhz": 0.0,
+    "multiplicity_retained": true,
+    "analysis": "Report every training seed separately, a seed-level dispersion summary, and post-primary paired design contrasts. Do not rewrite or pool into the original Study 2 primary confidence interval."
+  },
+  "frozen_dependencies": {
+    "hash_basis": "SHA-256; text files use LF-normalized bytes, binaries use raw bytes, directories use a relative-POSIX-path-sorted manifest of per-file hashes",
+    "identity_manifest": {
+      "path": "hashes_study2.json",
+      "sha256": "ae6eba02b205c3b628ce1fa0025b7071c1a3b973a427a93f256c4fb2ca08b623"
+    },
+    "items": [
+      {"path": "run_arm.sh", "kind": "file", "sha256": "32986c616cf92b9d01ddb5e8b671d1fcd3939eeb5a02b0228e78c3d72e022eca", "manifest_key": "run_arm.sh"},
+      {"path": "grpo_oracle.py", "kind": "file", "sha256": "808834839a44d5daf7a99e73d13824ed2d3179c05b8ed264e51d7d261b258020", "manifest_key": "grpo_oracle.py"},
+      {"path": "oracle.py", "kind": "file", "sha256": "afd3138ff30cee45a02f3c841c445f29dfda3fea44f3c4e2401d0be2ee4de8c5", "manifest_key": "oracle.py"},
+      {"path": "canonicalize.py", "kind": "file", "sha256": "36577ed72d1e64f32bd950f6887e59c7393614c60dedb6c1ff89ae6ceb7aae9f", "manifest_key": "canonicalize.py"},
+      {"path": "gen_accelerator_catalog.py", "kind": "file", "sha256": "2226fae084baf358b3002a669fb66c2ce497815335aaba3b535c146b12e8f7ad", "manifest_key": "gen_accelerator_catalog.py"},
+      {"path": "gen_sft_corpus.py", "kind": "file", "sha256": "4e12315bbd27700efd2db07f011543eef2870ab49e7a1518e39a3e6fb6c429e0", "manifest_key": "gen_sft_corpus.py"},
+      {"path": "rf_struct.joblib", "kind": "file", "sha256": "e17f1e20f07ec201c3e02b9ce52dc8adf92e5bc30b508cbd03d4663c06dfc1a0", "manifest_key": "rf_struct.joblib", "legacy_run_config_lf_normalized_binary_sha256": "7fb56b44ced752dcd836d48562f66ef6894fda7df872a5df7c44fd17ae4cbb0b"},
+      {"path": "rf_rows.json", "kind": "file", "sha256": "1760667512a102b3a5678366c6f5f30b632e4a9c1a26b931db2dacaca19c4922", "manifest_key": "rf_rows.json"},
+      {"path": "sealed_split.json", "kind": "file", "sha256": "2fa2890e534231f811e9f770bb549128731f2dc043cc061dae4f7bf333ac4553", "manifest_key": "sealed_split.json"},
+      {"path": "preregistration.json", "kind": "file", "sha256": "947affc88373098232dfde2d6ce37f5efdcba43f2cbb470063cdac9e7be0a198", "manifest_key": "preregistration.json"},
+      {"path": "preregistration_study2.json", "kind": "file", "sha256": "d27fed53bd89761f704bdf6a7219d6b9524665c429af941daf3cdf8bee786597", "manifest_key": "preregistration_study2.json"},
+      {"path": "sft_v6c_out", "kind": "directory", "sha256": "9ce91891c911b73f3f636b21ffb9f1769ce2b7ef2fbe40a8d1d68a874d56e2e8", "n_files": 38, "manifest_key": "sft_v6c_out", "availability": "server_only"},
+      {"path": "/home/adam/mas/mas/rtlcoder", "kind": "directory", "sha256": "c29348b7a8ee7fbd73a31a215942d51d5490574d080305a15ca12f7fd396e256", "n_files": 31, "manifest_key": "BASE_MODEL:/home/adam/mas/mas/rtlcoder", "availability": "server_only"}
+    ]
+  }
+}
