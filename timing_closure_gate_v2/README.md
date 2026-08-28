@@ -34,3 +34,13 @@ attestation, and invokes the already-tested iPhone notification hook on either
 PASS or FAIL. A FAIL is retained and blocks every Study-2 candidate. A PASS
 does not itself establish any Study-2 result; it merely authorizes freezing the
 separate v2 candidate-runner package.
+
+## Frozen outcome
+
+The August 28, 2026 campaign failed on synthetic first attempt 10 after nine
+valid implementations. Vivado could not read a generated Tcl file under its
+per-process `.Xil` working directory during `synth_design`; that file is
+present in the retained failed directory. Both raw dependency guards passed.
+No Study-2 candidate RTL was exposed. V2 therefore remains a permanent
+infrastructure-stability failure, not an RTL performance observation, and it
+must not be restarted.
