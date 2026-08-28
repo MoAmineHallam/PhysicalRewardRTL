@@ -4073,3 +4073,147 @@ bitstream SHA-256 is
 27-claim ledger, and TeX table. `verify_claims.py` independently checks all raw
 boundaries, hashes, repetitions, canary gates, scope language, source pointers,
 and generated table macros.
+
+### Strongest-paper evidence consolidation (2026-08-26)
+
+`STRONGEST_PAPER_EVIDENCE_MAP.md` is now the single pre-writing map for the
+strongest paper supported by this record. It inventories the sealed primary
+result, matched controls, repaired-reward checks, physical-cost trade-offs,
+live board support, historical breadth, Qwen replication, mechanism, sampling
+efficiency, contextual controls, mandatory caveats, and evidence that must stay
+excluded. It does not draft or modify manuscript prose. Numerical authority
+remains with the generated claim ledgers and their artifact pointers; if the
+map ever disagrees with a generated claim, the generated claim wins.
+
+### Verified pre-writing figure and table package (2026-08-26)
+
+The canonical visual package is inventoried in
+`paper/FIGURE_TABLE_PACKAGE.md`. `paper/make_verified_figures.py` produces the
+five quantitative figure composites plus the locked method export as matching
+PDF/PNG files, with exact plotted arrays, frozen input hashes, output hashes,
+factual caption skeletons, and file:line provenance recorded under
+`paper/generated/`. Its `--check` mode independently regenerated all six
+figures and confirmed byte-identical outputs. The final visual audit repaired
+annotation collisions and retained zero-valued designs, both board ties, the
+board loss, the median-family counterexample, and the amended board-study scope
+warning.
+
+`analyze_study2_secondary.py` also generates a compact four-arm headline table,
+a separate two-seed replication table, a regime/direct-control table, and the
+conditional-PPA table entirely through claim macros. The legacy breadth,
+family, Qwen replication, and trajectory tables remain generated supporting
+assets. `verify_claims.py` checks every Study 2 table macro against the
+provenance ledger. This package is complete enough to begin drafting; no
+manuscript prose was changed during visual preparation.
+
+### Full TCAD manuscript draft and rendered audit (2026-08-26)
+
+The strongest-paper evidence map has now been converted into a complete IEEE
+TCAD regular-paper draft under `paper/`. The manuscript leads with the frozen
+20-design repaired-RF versus SFT endpoint, reports both independent RF seeds,
+then presents the correctness-only and original-MLP controls, conditional PPA,
+the explicitly amended descriptive PYNQ-Z2 study, earlier five-family breadth,
+Qwen2.5-Coder transfer, probability-reallocation mechanism, perfect-selector
+bound, and bounded historical reward-failure trajectory. It does not pool the
+historical and sealed studies or promote the amended board subset to
+independent confirmation.
+
+The generated PDF is `paper/build/main.pdf`: 12 US-letter IEEE two-column pages
+with a 214-word abstract, six index terms, six canonical figures, five headline
+tables, a dedicated generative-AI-use section, and 24 bibliography entries.
+Every rendered manuscript number remains claim-ledger backed; static checks
+found no undefined citations, references, duplicate labels, or structural TeX
+errors. All 12 rendered pages were visually inspected. The remaining
+submission tasks are human-author decisions---supervisor review, author order,
+ORCIDs, prior-version/concurrent-submission disclosure, and final approval---not
+missing empirical analysis.
+
+### Post-primary artifact-only mechanism and sampling-cost extension (2026-08-27)
+
+Before launching any new training or timing-closure experiment, a deterministic
+post-primary analysis was added without changing the completed Study 2 outcome,
+samples, checkpoints, oracle decisions, or Vivado rows. The exact endpoint
+decomposition verifies `F = q * mu`: SFT has correctness 0.562500, conditional
+Fmax 62.889157 MHz, and penalized Fmax 35.375151 MHz; repaired RF has
+0.538542, 172.713370 MHz, and 93.013346 MHz; original MLP has 0.498958,
+132.556431 MHz, and 66.140136 MHz; correctness-only has 0.673958,
+36.616941 MHz, and 24.678293 MHz
+(`artifact_extension_results.json:13-34`,
+`artifact_extension_results.json:282-304`,
+`artifact_extension_results.json:542-564`,
+`artifact_extension_results.json:802-824`). Thus the correctness-only arm's
+higher functional yield coexists with a much lower quality conditional on a
+correct draw; this is stronger and more precise than saying only that its
+penalized endpoint fell.
+
+The structural analysis retains multiplicity within design and then weights
+the 16 common-support designs equally. Relative to SFT, correctness-only RTL
+raises the mean maximum multiplications per statement from 8.7758 to 17.3349,
+reduces the structural accumulation score from 2.8871 to 0.2478, reduces the
+pipeline-ratio feature from 0.1447 to 0.0242, and raises the maximum loop bound
+from 9.9950 to 12.5830
+(`artifact_extension_results.json:1070-1186`). The deterministic largest
+conditional-Fmax loss is `iir18_v7`, 126.9468 to 40.1027 MHz; its representative
+correctness-only implementation places all 21 multiplications in one statement
+and has zero structural pipeline ratio
+(`artifact_extension_results.json:2350-2437`). These lexical aggregates
+support the bounded interpretation "larger, less-pipelined arithmetic
+expressions and loops"; they do not prove that every correctness-only output is
+a wide combinational `always` block or establish a unique causal mechanism.
+
+The sealed perfect-selector analysis also corrects the sampling-efficiency
+claim for Study 2. One repaired-RF draw (93.0133 MHz) lies between SFT
+best-of-17 (92.4707 MHz) and best-of-18 (93.6642 MHz), with an interpolated
+equivalent of 17.45 draws (`artifact_extension_results.json:2443-2530`). At
+best-of-18, the distinct cost axes are 18 LLM draws, 36 oracle simulation
+streams, an expected 10.125 raw correct implementation attempts, and 3.078
+content-deduplicated implementations per design. These are workload counts,
+not reconstructed GPU seconds or token totals. The older best-of-21 statement
+must not be transferred into this sealed study.
+
+`analyze_artifact_extension.py` is the sole generator of
+`artifact_extension_results.json` and `artifact_extension_provenance.md`.
+`verify_artifact_extension.py` independently checks all input hashes,
+decomposition identities, selection rules, structural aggregates, cost axes,
+and generated-file freshness. Five extension tests plus the twelve original
+sealed-workflow tests pass. All frequencies in this extension remain the
+original single-5-ns WNS-derived values until the separately preregistered
+timing-closure gate reports its outcome.
+
+### Timing-closure infrastructure gate status (2026-08-28)
+
+The preregistered timing-closure validation has not yet produced a Study-2
+candidate result. V1 was aborted after Vivado intermittently failed to read
+four different Tcl files from its own installation. Two completed candidate
+measurements are retained only as aborted-protocol diagnostics and are not
+used in any paper endpoint. The frozen v1 manifest SHA-256 is
+`2e0674f96c57be3864a6fab7683b0edc76f732762f78547d5e6a3e8efc17e194`.
+
+V2 introduced raw dependency guards and required 12 consecutive synthetic
+first-attempt implementations before exposing any candidate. It produced nine
+valid runs, then failed on run 10 when Vivado could not read its own generated
+`.Xil/.../realtime/timing_gate_v2_stability_probe.tcl`; that file was present
+in the retained failed directory and both dependency guards passed. The v2
+FAIL attestation SHA-256 is
+`10625e4104341efcdfb21efd3b2983d5e12ba537cb33743bc95dc8196e061ed0`.
+No Study-2 candidate RTL ran in v2, and the failure is classified as host/tool
+working-file instability rather than RTL timing performance.
+
+V3 moved every Vivado process to a unique short working directory and supplied
+an explicit short `-tempDir` under `C:\VGT3S001`, while leaving the device,
+Vivado version, closure Tcl, constraints, candidate selection, search rule,
+failure scoring, and pilot thresholds unchanged. All 20 required fresh
+synthetic synth/place/route processes passed on their first attempt. Every run
+compiled and implemented, reported one clock and 51 setup paths, had zero
+unconstrained paths, clean routing, and WNS 7.501 ns at the synthetic 10 ns
+request. All pre/post raw dependency guards matched and no retry was used.
+
+The frozen v3 package manifest SHA-256 is
+`a1d7308b26ee8e8a0081da83dac53b4db6bad2335bd91dcac661ec81c2177271`;
+the v3 PASS attestation SHA-256 is
+`bdddfb76499011dd0492b4560ac2bba9277f874400663e63cb11dea4da8a829c`.
+The full raw logs, per-run result JSON files, launcher status, and attestation
+are committed in `timing_closure_gate_v3/stability_campaign_001/` (commit
+`816778cc`). This PASS authorizes freezing and running the separate ten-candidate
+closure package; it does not validate the manuscript's WNS-derived Fmax proxy
+by itself, and no manuscript frequency should yet be relabeled timing-closed.
