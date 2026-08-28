@@ -12,6 +12,26 @@ $log = Join-Path $gate "stability_launcher.log"
 $notificationLog = Join-Path $gate "stability_notification.log"
 $campaign = Join-Path $gate "stability_campaign_001"
 
+function Invoke-LoggedPython {
+    param([string[]]$PythonArgs)
+    $previousErrorAction = $ErrorActionPreference
+    try {
+        # unittest writes its normal summary to stderr.  Keep that output in
+        # the launcher log and decide success exclusively from Python's exit
+        # code, rather than letting PowerShell convert it to a terminating
+        # NativeCommandError.
+        $ErrorActionPreference = "Continue"
+        & python @PythonArgs *>> $log
+        $nativeExit = $LASTEXITCODE
+    }
+    finally {
+        $ErrorActionPreference = $previousErrorAction
+    }
+    if ($nativeExit -ne 0) {
+        throw "python $($PythonArgs -join ' ') failed with exit code $nativeExit"
+    }
+}
+
 Set-Location -LiteralPath $repo
 if (-not (Test-Path -LiteralPath $vivado -PathType Leaf)) {
     throw "Vivado 2023.1 launcher is missing: $vivado"
@@ -30,12 +50,9 @@ if (Test-Path -LiteralPath $campaign) {
 if (Get-Process -Name vivado -ErrorAction SilentlyContinue) {
     throw "another Vivado process is already running"
 }
-& python -m unittest timing_closure_gate_v2.test_stability *>> $log
-if ($LASTEXITCODE -ne 0) { throw "v2 CPU-only tests failed" }
-& python (Join-Path $gate "audit_v1_abort.py") --check *>> $log
-if ($LASTEXITCODE -ne 0) { throw "v1 failure/abort attestation changed" }
-& python (Join-Path $gate "freeze_dependency_baseline.py") --check *>> $log
-if ($LASTEXITCODE -ne 0) { throw "raw Vivado dependency baseline changed" }
+Invoke-LoggedPython -PythonArgs @("-m", "unittest", "timing_closure_gate_v2.test_stability")
+Invoke-LoggedPython -PythonArgs @((Join-Path $gate "audit_v1_abort.py"), "--check")
+Invoke-LoggedPython -PythonArgs @((Join-Path $gate "freeze_dependency_baseline.py"), "--check")
 
 @(
     "state=RUNNING"
@@ -47,8 +64,8 @@ if ($LASTEXITCODE -ne 0) { throw "raw Vivado dependency baseline changed" }
 $exitCode = 1
 $verdict = "ERROR"
 try {
-    & python (Join-Path $gate "run_stability_gate.py") --vivado $vivado --campaign $campaign *>> $log
-    $exitCode = $LASTEXITCODE
+    Invoke-LoggedPython -PythonArgs @((Join-Path $gate "run_stability_gate.py"), "--vivado", $vivado, "--campaign", $campaign)
+    $exitCode = 0
     $attestation = Join-Path $campaign "stability_attestation.json"
     if (Test-Path -LiteralPath $attestation -PathType Leaf) {
         $verdict = (Get-Content -LiteralPath $attestation -Raw | ConvertFrom-Json).verdict
