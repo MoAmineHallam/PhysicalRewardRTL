@@ -1,0 +1,72 @@
+{
+  "schema_version": 2,
+  "study_id": "timing_closure_gate_v2",
+  "frozen_date": "2026-08-27",
+  "purpose": "Repeat the unchanged ten-candidate timing-closure pilot after a synthetic infrastructure-stability gate, separating allowlisted host/tool I/O failures from scientific measurement failures.",
+  "v1_boundary": {
+    "manifest_sha256": "2e0674f96c57be3864a6fab7683b0edc76f732762f78547d5e6a3e8efc17e194",
+    "status": "irreversible protocol failure and aborted pilot",
+    "reuse_v1_candidate_outcomes": false,
+    "candidate_rule": "Use all ten v1 manifest candidates in their original frozen order; rerun every candidate from scratch in v2, including candidates completed in v1.",
+    "selection_changes": "none",
+    "scientific_search_changes": "none",
+    "result_directory_changes": "v2 uses a new empty results directory and never reads v1/results during execution"
+  },
+  "flow": {
+    "vivado_version": "2023.1",
+    "vivado_root": "C:/Xilinx/Vivado/2023.1",
+    "part": "xc7z020clg400-1",
+    "closure_tcl": "timing_closure_gate_v1/closure_synth.tcl",
+    "constraint_and_search_contract": "identical to timing_closure_gate_v1",
+    "single_process": true
+  },
+  "dependency_stability": {
+    "pinned_paths": [
+      "bin/vivado.bat",
+      "bin/unwrapped/win64.o/vivado.exe",
+      "scripts/rt/data/**/*.tcl"
+    ],
+    "baseline_raw_read_repetitions": 20,
+    "runtime_raw_read_passes": 3,
+    "require_identical_sha256_and_size": true,
+    "guard_timing": "before and after every synthetic or candidate Vivado process",
+    "mismatch_action": "classify as infrastructure, retain the attempted directory/ledger row, and apply only the bounded infrastructure retry rule"
+  },
+  "synthetic_stability_gate": {
+    "source": "timing_closure_gate_v2/stability_probe.sv",
+    "contains_study2_rtl": false,
+    "independent_fresh_processes": 12,
+    "requested_period_ns": 10.0,
+    "retry_within_campaign": 0,
+    "pass_rule": "All 12 consecutive first attempts must pass the unchanged full synth/opt/place/route/constraint flow; every pre/post dependency guard must match; no allowlisted infrastructure signature may appear.",
+    "failure_rule": "Any failed launch or dependency mismatch freezes a FAIL attestation and blocks every Study-2 candidate. A new campaign requires a new protocol version or explicit pre-candidate amendment retaining the failed campaign.",
+    "required_before_candidate": true
+  },
+  "infrastructure_classification": {
+    "outcome_independence": "Classification may inspect process status, dependency hashes, stage code, and exact diagnostic text/path. It may not inspect WNS sign/value, closed status, candidate arm, family, old proxy, or rank.",
+    "allowlisted_classes": [
+      "dependency_guard_read_or_hash_failure",
+      "vivado_process_launch_oserror",
+      "vivado_internal_tcl_read_failure_for_a_file_in_the_frozen_dependency_baseline",
+      "explicit_vivado_license_checkout_unavailable"
+    ],
+    "internal_tcl_signature": "A failed measurement at synth/implementation stage whose stdout/stderr contains exactly an open/read failure for a path under the frozen Vivado scripts/rt/data dependency set, with no candidate/syntax/design-error denylist signature.",
+    "maximum_infrastructure_retries_per_measurement": 3,
+    "maximum_process_launches_per_measurement": 4,
+    "retry_identity": "candidate_id, RTL hash, module, clock, requested period, purpose, Tcl hash, dependency baseline, and all command arguments remain byte-for-byte/number-for-number identical",
+    "exhaustion_action": "ABORT_INFRASTRUCTURE for the whole v2 run; do not zero-score the candidate, do not continue to another candidate, and do not calculate the pilot gate"
+  },
+  "scientific_failure": {
+    "blind_retry_removed": true,
+    "rule": "Any invalid measurement not independently allowlisted as infrastructure is retained once and handled by the original v1 zero-scored candidate failure rule.",
+    "boundary_confirmation": "The original one fresh confirmation at each bracket boundary remains a scientific reproducibility check, not an infrastructure retry.",
+    "gate_thresholds": "unchanged from v1"
+  },
+  "stop_rules": [
+    "Do not launch any Study-2 candidate until the v1 abort report, dependency baseline, v2 protocol manifest, unit tests, dry-run, and twelve-launch synthetic PASS attestation are frozen and validated.",
+    "Never read or cache v1 candidate closure outcomes in the v2 runner.",
+    "Do not change candidate order, periods, search bounds, thresholds, classifier allowlist, denylist, or retry count after any v2 candidate launch.",
+    "An exhausted infrastructure retry aborts the entire run without scientific scoring.",
+    "A non-infrastructure invalid measurement follows the original v1 scientific failure rule without a broad retry."
+  ]
+}
