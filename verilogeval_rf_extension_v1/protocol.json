@@ -1,0 +1,120 @@
+{
+  "schema": "verilogeval_rf_extension_protocol/1",
+  "protocol_id": "verilogeval_rf_repaired_2026-08-27",
+  "status": "frozen_before_generation",
+  "purpose": "Matched VerilogEvalV2 evaluation of the Study 2 SFT checkpoint and both repaired-RF endpoint adapters. Historical VerilogEval outputs are not inputs to this study.",
+  "benchmark": {
+    "repository": "https://github.com/NVlabs/verilog-eval.git",
+    "commit": "c498220d0a52248f8e3fdffe279075215bde2da6",
+    "dataset_subdir": "dataset_spec-to-rtl",
+    "expected_problems": 156,
+    "files_per_problem": 3,
+    "required_suffixes": [
+      "_prompt.txt",
+      "_ref.sv",
+      "_test.sv"
+    ],
+    "content_binding": "A complete per-file SHA-256 manifest and aggregate directory digest must be created once by freeze_inputs.py before any policy generation. All three policies must consume that identical frozen-input manifest. No dataset digest is invented in this repository because the benchmark checkout is not stored here."
+  },
+  "artifacts": {
+    "base": {
+      "label": "RTLCoder base model",
+      "legacy_study2_dir_sha256": "c29348b7a8ee7fbd73a31a215942d51d5490574d080305a15ca12f7fd396e256"
+    },
+    "sft": {
+      "label": "Study 2 SFT adapter (sft_v6c_out)",
+      "training_seed": 0,
+      "legacy_study2_dir_sha256": "9ce91891c911b73f3f636b21ffb9f1769ce2b7ef2fbe40a8d1d68a874d56e2e8"
+    },
+    "rf_s1": {
+      "label": "repaired-RF endpoint, training seed 1 (upd_276)",
+      "training_seed": 1,
+      "legacy_study2_dir_sha256": "1e1dfe049d8b1b4ea1230c21dfad89ae378e78baee5ad762bdc115607434a959"
+    },
+    "rf_s2": {
+      "label": "repaired-RF endpoint, training seed 2 (upd_276)",
+      "training_seed": 2,
+      "legacy_study2_dir_sha256": "d151c4b3c42617ca1159412597ebb8d428d9fb895f5e2845437032356c8eff87"
+    }
+  },
+  "hashing": {
+    "new_evidence": "raw-byte SHA-256 for every file; directory digest is SHA-256 over sorted relative_path + NUL + raw_file_sha256 + LF records",
+    "legacy_identity_boundary": "The four pre-existing Study 2 model/adapter identities normalized CRLF to LF for text-like files. Those values are named legacy_study2_dir_sha256 and are used only to establish continuity with the recorded checkpoints. freeze_inputs.py additionally records raw-byte directory manifests for all four artifacts; every newly created manifest/result is bound with raw-byte SHA-256."
+  },
+  "environment": {
+    "python": "3.10.20",
+    "packages": {
+      "torch": "2.4.1+cu121",
+      "transformers": "4.46.3",
+      "peft": "0.13.2",
+      "accelerate": "1.0.1",
+      "numpy": "2.2.6"
+    },
+    "torch_cuda": "12.1",
+    "gpu_name": "NVIDIA L40S",
+    "gpu_compute_capability": [8, 9],
+    "nvidia_driver": "550.144.03",
+    "iverilog_major": 12,
+    "vvp_major": 12,
+    "required_environment": {
+      "PYTHONNOUSERSITE": "1",
+      "HF_HUB_OFFLINE": "1",
+      "TRANSFORMERS_OFFLINE": "1",
+      "TOKENIZERS_PARALLELISM": "false",
+      "CUBLAS_WORKSPACE_CONFIG": ":4096:8"
+    }
+  },
+  "generation": {
+    "root_seed": 20260827,
+    "seed_derivation": "lower 63 bits of SHA256('20260827\\0' + problem_id)",
+    "same_problem_seed_across_policies": true,
+    "n_samples_per_problem": 20,
+    "generation_batch_size": 5,
+    "do_sample": true,
+    "temperature": 0.85,
+    "top_p": 0.95,
+    "top_k": 0,
+    "typical_p": 1.0,
+    "repetition_penalty": 1.0,
+    "num_beams": 1,
+    "max_new_tokens": 1024,
+    "stop_strings": [
+      "endmodule"
+    ],
+    "dtype": "float16",
+    "system_prompt": "You are an expert Verilog RTL designer. Write synthesizable Verilog-2001. The module MUST be named TopModule with exactly the ports given in the prompt. Return only the Verilog module, no markdown, no explanation.",
+    "determinism_note": "Per-problem RNG reset, fixed chunking, deterministic-algorithm request, TF32 disabled, and a single visible GPU make interruption/resume and ordering invariant on the frozen stack. CUDA execution is not claimed bit-identical on an unapproved driver, GPU, or package stack; those stacks are rejected."
+  },
+  "oracle": {
+    "compiler": "iverilog",
+    "compiler_arguments": [
+      "-g2012"
+    ],
+    "simulator": "vvp",
+    "compile_timeout_seconds": 60,
+    "simulation_timeout_seconds": 60,
+    "verdict_regex": "Mismatches:\\s*(\\d+)\\s*in\\s*(\\d+)\\s*samples",
+    "pass_condition": "simulator return code == 0, parsed sample count > 0, and mismatch count == 0",
+    "nonpass_policy": "compile errors, timeouts, missing verdicts, nonzero mismatches, and internal judge errors are retained as failures"
+  },
+  "reporting": {
+    "primary_metric": "pass@1 over all 156 problems, estimated from 20 samples/problem",
+    "secondary_metrics": [
+      "pass@5",
+      "pass@10",
+      "pass@20",
+      "compile-and-verdict rate",
+      "failure-category counts"
+    ],
+    "training_seed_rule": "Report SFT, RF seed 1, and RF seed 2 separately. The RF headline may average the two per-problem RF estimates, but the 40 RF draws must not be pooled and represented as one policy run.",
+    "comparison_ci": "paired nonparametric bootstrap over the 156 benchmark problems, 10000 resamples, seed 20260827; this interval is conditional on the three realized checkpoints and does not estimate training-seed uncertainty",
+    "historical_boundary": "This V2 n=20, temperature=0.85, top-p=0.95 experiment is a new matched evaluation. Do not pool it with or silently compare it to legacy n=10, temperature=0.8 files."
+  },
+  "output_contract": {
+    "unit_of_atomicity": "one complete problem shard containing exactly 20 indexed samples",
+    "fresh_run": "policy output directory must not exist",
+    "resume": "requires --resume; run_config.json and every completed problem shard are revalidated byte-for-content against frozen inputs and protocol; only complete valid shards are skipped",
+    "forbidden": "JSONL append, partial-shard acceptance, duplicate sample index, mixed policy/configuration, unrecognized output files, or in-place repair",
+    "finalization": "a final directory containing samples.jsonl, summary.json, and COMPLETE.json is rebuilt deterministically from validated shards and published by one atomic directory rename only after all 156 shards exist"
+  }
+}
