@@ -60,6 +60,27 @@ export TRANSFORMERS_OFFLINE=1
 export TOKENIZERS_PARALLELISM=false
 export CUBLAS_WORKSPACE_CONFIG=:4096:8
 
+# The isolated prefix contains the frozen Icarus binaries.  Non-interactive
+# launchers do not inherit that prefix on PATH, which caused the first recovery
+# attempt to stop before producing a shard.  Bind the simulator to the same
+# environment as the validated Python executable and fail before model loading
+# if either binary is absent or resolves elsewhere.
+ENV_BIN=$(dirname "$PYTHON_BIN")
+export PATH="$ENV_BIN:$PATH"
+for tool in iverilog vvp; do
+  resolved=$(command -v "$tool" || true)
+  [[ "$resolved" == "$ENV_BIN/$tool" && -x "$resolved" ]] || {
+    echo "$tool must resolve to $ENV_BIN/$tool (got ${resolved:-missing})" >&2
+    exit 2
+  }
+done
+iverilog_output=$(iverilog -V 2>&1)
+iverilog_version=${iverilog_output%%$'\n'*}
+[[ "$iverilog_version" == *"Icarus Verilog version 12.0"* ]] || {
+  echo "unexpected Icarus version: $iverilog_version" >&2
+  exit 2
+}
+
 gpu_name=$(nvidia-smi -i "$GPU_INDEX" --query-gpu=name --format=csv,noheader | tr -d '\r')
 [[ "$gpu_name" == "NVIDIA L40S" ]] || {
   echo "GPU $GPU_INDEX is $gpu_name, not the frozen NVIDIA L40S" >&2
