@@ -29,7 +29,19 @@
 - The GPU-0 prohibition above is specific to physical GPU 0 on the L40S host.
   An idle V100 GPU may be used only after its own canary passes.
 
-Current access boundary (2026-08-29): SSH authentication to both declared V100
-endpoints, `10.251.171.18:30194` and `10.251.171.18:30797`, is rejected with
-`Permission denied (publickey,password)`. The fallback is authorized but cannot
-launch until access is restored; this is not permission to use L40S GPU 0.
+Current readiness boundary (2026-08-29): key-based, non-interactive SSH access
+is working for both declared V100 endpoints.  The local aliases are `v100a`
+(`10.251.171.18:30194`, host `49ed1pm9lmiqe-0`) and `v100b`
+(`10.251.171.18:30797`, host `8cqofmihc71pg-0`).  Both see the shared repository
+at `/zeng_gk/Amine/mas/fpga` and the persistent prefix environment at
+`/zeng_gk/Amine/mas/env_mas`.
+
+With `PYTHONNOUSERSITE=1` and that environment first on `PATH`, both hosts were
+verified against the frozen stack: Python 3.10.20, torch 2.4.1+cu121,
+Transformers 4.46.3, PEFT 0.13.2, Accelerate 1.0.1, NumPy 2.2.6, SciPy 1.15.3,
+scikit-learn 1.7.2, joblib 1.5.3, and Icarus Verilog 12.0.  A bounded tensor
+canary passed independently on physical GPUs 0 and 1 of both V100 hosts; all
+four returned to idle afterward.  Shared storage had ample free space at the
+readiness check.  A future job must still pass its job-specific artifact hashes,
+functional-oracle canary, and launch-time idle/disk checks before it may start.
+This readiness does not relax the permanent L40S GPU-0 exclusion.
