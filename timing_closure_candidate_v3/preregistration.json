@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "study_id": "timing_closure_candidate_v3",
+  "frozen_date": "2026-08-28",
+  "status_at_freeze": "V3 synthetic infrastructure gate passed; no V3 Study-2 candidate process launched",
+  "purpose": "Execute the unchanged V1 ten-candidate closure pilot using only the V3 short-workdir and explicit-tempDir infrastructure repair.",
+  "frozen_inputs": {
+    "v1_manifest": "timing_closure_gate_v1/manifest.json",
+    "v1_manifest_sha256_raw": "2e0674f96c57be3864a6fab7683b0edc76f732762f78547d5e6a3e8efc17e194",
+    "candidate_count": 10,
+    "v3_package_manifest": "timing_closure_gate_v3/manifest.json",
+    "v3_package_manifest_sha256_raw": "a1d7308b26ee8e8a0081da83dac53b4db6bad2335bd91dcac661ec81c2177271",
+    "v3_stability_attestation": "timing_closure_gate_v3/stability_campaign_001/stability_attestation.json",
+    "v3_stability_attestation_sha256_raw": "bdddfb76499011dd0492b4560ac2bba9277f874400663e63cb11dea4da8a829c"
+  },
+  "outcome_isolation": {
+    "reuse_v1_or_v2_candidate_outcomes": false,
+    "results_root": "timing_closure_candidate_v3/results",
+    "old_partial_results_are_diagnostics_only": true
+  },
+  "unchanged_science": {
+    "candidate_selection": "exact frozen V1 manifest order and raw RTL identities",
+    "vivado": "2023.1",
+    "part": "xc7z020clg400-1",
+    "closure_tcl": "timing_closure_gate_v1/closure_synth.tcl",
+    "constraints": "clock and zero-delay I/O XDC read before synthesis",
+    "search": "V1 0.75/1.25 initial bracket, 1.5 expansion, [1,200] ns, at most four expansions per side, at most ten bisections, relative width <= 1 percent",
+    "boundary_confirmation_runs": 1,
+    "invalid_measurement_retries": 1,
+    "failure_score_mhz": 0.0,
+    "gate": "all ten complete; pooled Spearman >= 0.90; median sMAPE <= 0.15; positive mean RF-SFT closure difference with at most one non-tied sign reversal"
+  },
+  "infrastructure_amendment": {
+    "scratch_root": "C:/VGC3P001",
+    "unique_short_work_and_temp_directory_per_trial": true,
+    "explicit_vivado_tempdir": true,
+    "dependency_guard_reads_before_and_after": 3,
+    "dependency_baseline": "timing_closure_gate_v3/dependency_baseline.json",
+    "candidate_reports_remain_under_repository": true
+  },
+  "stop_rules": [
+    "Freeze and commit this package before the first candidate process.",
+    "Refuse if the V1 manifest, candidate RTL, closure Tcl, V3 package, V3 PASS attestation, or Vivado dependency set changes.",
+    "Do not read, copy, or reuse V1/V2 candidate outcomes.",
+    "Do not change search, thresholds, retries, or failure scoring after a V3 candidate outcome exists.",
+    "A missing, invalid, unconstrained, nondeterministic, or repeatedly failed candidate receives zero and makes completeness fail.",
+    "If the pilot gate fails, preserve it and stop proxy-dependent downstream physical comparisons."
+  ]
+}
