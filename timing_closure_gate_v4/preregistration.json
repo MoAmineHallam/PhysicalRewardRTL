@@ -1,0 +1,44 @@
+{
+  "schema_version": 4,
+  "study_id": "timing_closure_gate_v4",
+  "frozen_date": "2026-08-29",
+  "status_at_freeze": "V3 real-candidate pilot is permanently retained as FAIL; no V4 Vivado process has launched",
+  "observed_v3_failure": {
+    "pilot_gate": "timing_closure_candidate_v3/results/pilot_gate.json",
+    "verdict": "FAIL",
+    "completed_candidates": 10,
+    "failed_candidate": "c02_fir_rf_fir42_v6_8b",
+    "failure_reason": "permanent_invalid_bisection_measurement",
+    "vivado_evidence": "two consecutive synthesis processes reported different existing scripts/rt Tcl files as missing",
+    "v3_spearman_with_failed_candidate_zero_scored": 0.8159509202453987
+  },
+  "infrastructure_amendment": {
+    "single_change": "set_param general.maxThreads 1 before the unchanged V1 closure Tcl",
+    "rationale": "remove the multithreaded synthesis helper implicated by the retained V3 logs",
+    "dependency_guard": "raw SHA-256 of Vivado executables and every scripts/rt/**/*.tcl file, read three times before and after each process",
+    "scratch_root": "C:/VGT4S001",
+    "unique_short_work_and_temp_directory_per_process": true
+  },
+  "unchanged_science": {
+    "candidates": "the exact ten raw RTL files and order frozen in timing_closure_gate_v1/manifest.json",
+    "device": "xc7z020clg400-1",
+    "vivado": "2023.1",
+    "constraints": "clock and zero-delay I/O XDC read before synthesis",
+    "search_failure_scoring_and_thresholds": "unchanged from V1 and V3",
+    "reuse_any_v1_or_v3_candidate_measurement": false
+  },
+  "synthetic_gate": {
+    "contains_study2_rtl": false,
+    "required_consecutive_first_attempts": 20,
+    "retry_count": 0,
+    "pass_rule": "all twenty synth/place/route measurements valid with unchanged full dependency tree",
+    "failure_rule": "retain FAIL and do not construct or launch the V4 real-candidate package"
+  },
+  "stop_rules": [
+    "Freeze and commit this package before the first V4 synthetic process.",
+    "Do not launch a V4 Study-2 candidate before the frozen V4 synthetic PASS.",
+    "Do not overwrite, delete, or reinterpret any V3 result.",
+    "If V4 synthetic stability fails, stop rather than adding retries.",
+    "If V4 stability passes, freeze a separate all-ten fresh candidate package before reading any V4 candidate outcome."
+  ]
+}
