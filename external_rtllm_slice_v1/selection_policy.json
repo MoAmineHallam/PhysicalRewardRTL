@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "policy_id": "external_rtllm_slice_v1",
+  "categories": [
+    "Arithmetic",
+    "Control",
+    "Memory",
+    "Miscellaneous"
+  ],
+  "tasks_per_category": 2,
+  "total_tasks": 8,
+  "selection_salt": "external_rtllm_slice_v1|e67f150603f52d6abf208ed0e97bd77a95b1ee34|balanced-two-per-category",
+  "selection_key": "sha256(selection_salt + '|' + category + '|' + task_id)",
+  "ranking": "ascending lowercase hexadecimal selection_key; task_id is the deterministic tie-breaker",
+  "eligibility": {
+    "required_task_count": 50,
+    "required_files": [
+      "design_description.txt",
+      "testbench.v",
+      "exactly one verified*.v"
+    ],
+    "reference_requirements": [
+      "at least one edge-triggered sequential block",
+      "exactly one non-reset edge signal",
+      "no mixed edge/level sensitivity",
+      "no initial block, delay control, system task, or Xilinx primitive",
+      "official reference passes its official testbench under the frozen Icarus preflight"
+    ],
+    "testbench_requirements": [
+      "instantiates the specified module",
+      "self-checking pass and failure/error markers",
+      "terminates with $finish",
+      "random stimulus is permitted only when two fresh frozen-simulator processes produce byte-identical transcripts",
+      "no external file input",
+      "no break statement"
+    ],
+    "contamination_requirements": [
+      "no exact task-name collision in the declared local fine-tuning sources",
+      "no exact or normalized prompt match",
+      "no module-name-normalized reference RTL match"
+    ]
+  },
+  "outcome_independence": "Eligibility uses only frozen upstream descriptions, references, testbenches, declared local training inputs, and reference-oracle self-tests. It never reads generated candidates, Vivado reports, timing, power, area, or policy identity."
+}
