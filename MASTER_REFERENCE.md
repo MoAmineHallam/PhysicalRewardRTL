@@ -4217,3 +4217,17 @@ are committed in `timing_closure_gate_v3/stability_campaign_001/` (commit
 `816778cc`). This PASS authorizes freezing and running the separate ten-candidate
 closure package; it does not validate the manuscript's WNS-derived Fmax proxy
 by itself, and no manuscript frequency should yet be relabeled timing-closed.
+
+### L40S GPU-0 exclusion and VerilogEval pre-result boundary (2026-08-29)
+
+Physical GPU index 0 on `ubuntu-SYS-420GP-TNR` is permanently excluded from
+future CUDA work by explicit user instruction. During the prospective matched
+VerilogEval extension, the SFT process assigned to GPU 0 stopped on its first
+problem with a CUDA illegal-memory error before publishing any problem shard.
+The RF seed-1 and seed-2 processes on GPUs 2 and 4 were unaffected and
+continued. This zero-shard SFT attempt is infrastructure evidence, not a model
+correctness result; it must never enter the policy comparison. The failed
+remote attempt is retained under
+`/home/adam/mas/mas/verilogeval_rf_v3_20260829/sft`, and a fresh SFT run may use
+only a nonzero validated L40S GPU after one becomes free. The permanent local
+operational rule is recorded in `EXECUTION_HOST_POLICY.md`.
