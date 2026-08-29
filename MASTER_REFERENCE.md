@@ -4231,3 +4231,41 @@ remote attempt is retained under
 `/home/adam/mas/mas/verilogeval_rf_v3_20260829/sft`, and a fresh SFT run may use
 only a nonzero validated L40S GPU after one becomes free. The permanent local
 operational rule is recorded in `EXECUTION_HOST_POLICY.md`.
+
+### Real-candidate closure V3 and single-thread infrastructure V4 (2026-08-29)
+
+The separately frozen real-candidate V3 package ran all ten predeclared
+candidates from scratch after the V3 synthetic PASS. Nine candidates produced
+complete constrained closure brackets. Candidate
+`c02_fir_rf_fir42_v6_8b` received the preregistered zero after two consecutive
+Vivado synthesis processes at the same bisection period reported two different
+existing installation Tcl files as missing. The formal V3 verdict is FAIL:
+completeness is false and pooled Spearman is 0.8159509202, below the frozen
+0.90 threshold. Median sMAPE is 0.0231660 and the representative paired RF-SFT
+mean remains +86.5879 MHz, but those favorable secondary values do not override
+the failed gate (`timing_closure_candidate_v3/results/pilot_gate.json`). No
+historical WNS-derived manuscript value may be relabeled timing-closed from V3.
+
+V4 prospectively tested the concrete infrastructure hypothesis that Vivado's
+multithreaded synthesis helper caused the internal-file failures. Its frozen
+manifest is
+`0abb91093bb073b483dbe0e09d1863004eed3b468174ca66259055014cbd72e1`.
+The wrapper set `general.maxThreads=1` before sourcing the byte-identical V1
+closure flow, and the raw dependency guard was expanded from
+`scripts/rt/data/**/*.tcl` to the complete `scripts/rt/**/*.tcl` tree. Eighteen
+fresh synthetic implementations passed. Run 19 then failed when Vivado still
+launched its helper and reported the existing
+`scripts/rt/data/unimacro/unimacro_vhdl.tcl` unreadable, while all before/after
+raw dependency hashes matched. V4 therefore froze FAIL without a retry and
+without exposing any Study-2 candidate. Its attestation SHA-256 is
+`77d34c36ca081176732286170b81bdc2a7b52dd5647a188bfc0e714731b304d3`
+(`timing_closure_gate_v4/stability_campaign_001/stability_attestation.json`).
+
+The current scientific boundary is that the laptop's Vivado installation/host
+is not reliable enough for the preregistered repeated fresh-process closure
+gate. This is infrastructure evidence, not evidence that candidate RTL failed
+timing. The V4 candidate package remains NO-GO, the extra-seed package's frozen
+timing prerequisite remains unsatisfied, and proxy-dependent PPA-RTL labeling
+must not launch. Repair requires a validated Vivado reinstall/other licensed
+Vivado host or a newly justified prospective execution architecture; repeated
+retries until PASS are prohibited.
