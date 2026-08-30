@@ -4269,3 +4269,31 @@ timing prerequisite remains unsatisfied, and proxy-dependent PPA-RTL labeling
 must not launch. Repair requires a validated Vivado reinstall/other licensed
 Vivado host or a newly justified prospective execution architecture; repeated
 retries until PASS are prohibited.
+
+### Minimal Vivado synthesis reproducer and host diagnosis (2026-08-30)
+
+The V4 infrastructure fault was reproduced without candidate RTL, placement,
+routing, or timing analysis. A trivial registered 32-bit module failed during
+out-of-context synthesis when Vivado 2023.1 falsely reported different existing
+realtime Tcl files as missing. Direct file I/O was stable: PowerShell completed
+10,000 SHA-256 reads, one parent Vivado Tcl process completed 20,000 binary
+reads, and five fresh parent Vivado processes completed 100 reads each with
+zero failures. In contrast, the nine retained minimal helper-enabled synthesis
+runs produced four passes and five internal-file-read failures. A byte-identical
+short-path copy did not eliminate the fault.
+
+A diagnostic-only copy of `rtSynthParallelPrep.tcl` disabled the parallel
+helper without modifying the Vivado installation. Six of seven retained runs
+then passed, but the seventh still falsely reported the existing `common.tcl`
+as missing. The helper therefore amplifies the fault but is not its root cause.
+The installation files remained byte-stable, ACL-readable, and repeatedly
+hashable; C: reported Healthy/OK, and no contemporaneous storage, Defender, or
+resource-exhaustion event explained the failures.
+
+The host is Windows 11 25H2 build 26200.9168, while AMD's Vivado 2023.1 support
+matrix lists only Windows 11 21H2 and 22H2. The established proximate cause is
+the Vivado synthesis/realtime runtime's intermittent file-I/O failure on this
+host; the leading underlying hypothesis is the unsupported tool/OS combination,
+not candidate RTL. Full scripts, bounded raw logs, and the post-restart decision
+rule are retained in `vivado_diagnostics/`. No frozen study was amended and no
+paper endpoint was produced.
