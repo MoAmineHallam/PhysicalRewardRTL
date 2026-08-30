@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "study_id": "timing_closure_candidate_v7",
+  "frozen_date": "2026-08-30",
+  "status_at_preparation": "code prepared while V7 synthetic stability gate was running; no V7 candidate process or candidate outcome existed",
+  "purpose": "Fresh all-ten closure pilot using the prospectively frozen Vivado-2026.1 V7 infrastructure amendment.",
+  "outcome_isolation": {
+    "reuse_v1_through_v6_candidate_outcomes": false,
+    "results_root": "timing_closure_candidate_v7/results",
+    "scratch_root": "C:/VGC7P001",
+    "prior_results_remain_diagnostics_or_failed_evidence_only": true
+  },
+  "unchanged_science": {
+    "candidate_selection": "exact V1 manifest order and raw RTL identities",
+    "part": "xc7z020clg400-1",
+    "constraints": "byte-identical V1 closure Tcl; clock and zero-delay I/O XDC before synthesis",
+    "period_search_implementation": "direct call to frozen timing_closure_gate_v1.run_closure.close_candidate",
+    "period_search": "0.75/1.25 bracket, 1.5 expansion, [1,200] ns, at most four expansions per side, at most ten bisections, relative width <= 1 percent",
+    "boundary_confirmation_runs": 1,
+    "invalid_measurement_retries": 1,
+    "failure_score_mhz": 0.0,
+    "gate": "all ten complete; pooled Spearman >= 0.90; median sMAPE <= 0.15; positive mean RF-SFT closure difference with at most one non-tied sign reversal"
+  },
+  "infrastructure_amendment": {
+    "vivado": "2026.1",
+    "vivado_root": "C:/AMD/2026.1/Vivado",
+    "v7_40_of_40_pass_required": true,
+    "full_vivado_rt_tcl_dependency_guard": true,
+    "unique_short_work_and_temp_directory_per_trial": true,
+    "ordinary_synthesis_helper": true
+  },
+  "stop_rules": [
+    "Do not freeze or launch unless the V7 synthetic gate is a frozen 40/40 PASS.",
+    "Freeze and commit this package before the first candidate process.",
+    "Run all ten candidates fresh; do not rerun only the V3 failure.",
+    "Do not change search, thresholds, retries, or zero scoring after any V7 candidate outcome exists.",
+    "A V7 candidate-pilot FAIL remains evidence and blocks the timing-dependent downstream queue."
+  ]
+}
