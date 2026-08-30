@@ -1,0 +1,41 @@
+{
+  "schema_version": 5,
+  "study_id": "timing_closure_gate_v5",
+  "frozen_date": "2026-08-30",
+  "status_at_freeze": "V1--V4 remain immutable FAIL; one post-restart minimal helper-enabled synthesis PASS has been observed; no V5 Vivado process has launched",
+  "observed_evidence": {
+    "v3_synthetic_gate": "20/20 PASS followed by a failed real-candidate pilot",
+    "v4_synthetic_gate": "18 valid first attempts followed by an internal-Tcl read failure on run 19",
+    "minimal_helper_enabled_before_restart": "4 PASS and 5 internal-file-read FAIL among nine retained runs",
+    "minimal_nohelper_before_restart": "6 PASS and 1 internal-file-read FAIL among seven retained runs",
+    "first_post_restart_probe": "one ordinary helper-enabled synthesis PASS; diagnostic only"
+  },
+  "infrastructure_amendment": {
+    "single_change": "launch the unchanged V4 single-thread closure flow within four hours of a Windows restart",
+    "rationale": "prospectively test whether clearing host runtime state removes the diagnosed intermittent Vivado file-I/O fault",
+    "maximum_uptime_at_launcher_start_seconds": 14400,
+    "scratch_root": "C:/VGT5S001",
+    "unique_short_work_and_temp_directory_per_process": true
+  },
+  "unchanged_science": {
+    "closure_tcl": "byte-identical timing_closure_gate_v4/closure_synth_single_thread.tcl",
+    "synthetic_rtl": "byte-identical timing_closure_gate_v4/stability_probe.sv",
+    "device": "xc7z020clg400-1",
+    "vivado": "2023.1",
+    "constraints_and_measurement_validity": "unchanged from V4",
+    "contains_study2_rtl": false
+  },
+  "synthetic_gate": {
+    "required_consecutive_first_attempts": 40,
+    "retry_count": 0,
+    "pass_rule": "all forty synth/place/route measurements valid with unchanged full dependency tree",
+    "failure_rule": "retain FAIL and do not construct or launch the V5 real-candidate package"
+  },
+  "stop_rules": [
+    "Freeze and commit this package before the first V5 process.",
+    "Do not launch a V5 Study-2 candidate before a frozen V5 synthetic PASS.",
+    "Do not overwrite, delete, rerun, or reinterpret V1--V4.",
+    "Stop V5 on its first invalid process; do not retry within or after the campaign.",
+    "If V5 passes, freeze a separate all-ten fresh candidate package before reading any V5 candidate outcome."
+  ]
+}

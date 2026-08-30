@@ -16,7 +16,7 @@ RF2_PID=
 NOTIFY_SCRIPT=
 
 usage() {
-  echo "usage: $0 --python PATH --package-dir DIR --frozen FILE --rf-root DIR --out-dir DIR --comparison-dir DIR --gpu-index N --release-pid PID --rf1-pid PID --rf2-pid PID [--notify-script PATH]" >&2
+  echo "usage: $0 --python PATH --package-dir DIR --frozen FILE --rf-root DIR --out-dir DIR --comparison-dir DIR --gpu-index N [--release-pid PID] [--rf1-pid PID] [--rf2-pid PID] [--notify-script PATH]" >&2
   exit 2
 }
 
@@ -45,7 +45,14 @@ done
   exit 2
 }
 for pid in "$RELEASE_PID" "$RF1_PID" "$RF2_PID"; do
+  [[ -z "$pid" ]] && continue
   [[ "$pid" =~ ^[1-9][0-9]*$ ]] || usage
+done
+for policy in rf_s1 rf_s2; do
+  [[ -f "$RF_ROOT/$policy/final/COMPLETE.json" ]] || {
+    echo "missing completed RF result: $RF_ROOT/$policy/final/COMPLETE.json" >&2
+    exit 2
+  }
 done
 [[ ! -e "$OUT_DIR" ]] || { echo "refusing existing SFT output: $OUT_DIR" >&2; exit 2; }
 [[ ! -e "$COMPARISON_DIR" ]] || { echo "refusing existing comparison output: $COMPARISON_DIR" >&2; exit 2; }
@@ -87,8 +94,12 @@ gpu_name=$(nvidia-smi -i "$GPU_INDEX" --query-gpu=name --format=csv,noheader | t
   exit 2
 }
 
-echo "waiting for PID $RELEASE_PID to release GPU $GPU_INDEX"
-while kill -0 "$RELEASE_PID" 2>/dev/null; do sleep 30; done
+if [[ -n "$RELEASE_PID" ]]; then
+  echo "waiting for PID $RELEASE_PID to release GPU $GPU_INDEX"
+  while kill -0 "$RELEASE_PID" 2>/dev/null; do sleep 30; done
+else
+  echo "no release PID supplied; GPU $GPU_INDEX must already be idle"
+fi
 while :; do
   active=$(nvidia-smi -i "$GPU_INDEX" --query-compute-apps=pid --format=csv,noheader,nounits | tr -d '[:space:]')
   [[ -z "$active" ]] && break
@@ -111,6 +122,7 @@ fi
 
 echo "SFT complete; waiting for both RF jobs"
 for pid in "$RF1_PID" "$RF2_PID"; do
+  [[ -z "$pid" ]] && continue
   while kill -0 "$pid" 2>/dev/null; do sleep 30; done
 done
 
