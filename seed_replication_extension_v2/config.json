@@ -1,0 +1,159 @@
+{
+  "schema_version": 2,
+  "study_id": "seed_replication_extension_v2",
+  "frozen_utc": "2026-08-30T15:43:15Z",
+  "status": "prepared_not_launched",
+  "purpose": "Prospective V100 execution version of the unlaunched seed_replication_extension_v1 protocol.",
+  "parent_protocol": {
+    "config_path": "seed_replication_extension_v1/config.json",
+    "config_sha256_raw": "3ae8f352b0cbaf92dbcacd0f15e2791c8c72ee588d51628e51554275985c80ff",
+    "protocol_path": "seed_replication_extension_v1/PROTOCOL.md",
+    "protocol_sha256_raw": "6257a08fa4138b5bf0cc22731e467886f4bafb732ac723ee6dc126313b6dc807",
+    "supersession_rule": "V1 remains immutable and unlaunched; V2 is the only authorized package for these four seeds. Never combine V1 and V2 outputs."
+  },
+  "amendment": {
+    "type": "mid-gate prospective execution-host and gate-identity amendment",
+    "user_authorized_utc": "2026-08-30T15:35:00Z",
+    "reason": "Both two-GPU V100 boxes are guaranteed available, while the originally allocated L40S GPUs are not. The original V1 timing gate is immutable failed evidence; the already-frozen Vivado-2026.1 V7 candidate pilot is the applicable downstream gate.",
+    "state_visible_when_prepared": "Five of ten V7 timing candidates were complete and the sixth was running. No V2 training, endpoint generation, or PPA-RTL outcome existed.",
+    "outcome_independence": "No seed, optimizer, budget, model, reward, precision, evaluation multiplicity, endpoint, threshold, or analysis rule changed. The V7 gate thresholds were frozen before its first candidate run.",
+    "changes": [
+      "replace the unavailable fixed L40S placements with a balanced, fixed allocation across four idle 32-GiB V100 GPUs",
+      "replace the impossible V1-PASS prerequisite with an exact complete PASS from timing_closure_candidate_v7",
+      "relocate repository, Python, and base-model absolute paths to the shared V100 filesystem"
+    ]
+  },
+  "remote_execution": {
+    "repo_root": "/zeng_gk/Amine/mas/fpga",
+    "allowed_parent": "/zeng_gk/Amine/mas",
+    "python": "/zeng_gk/Amine/mas/env_mas/bin/python",
+    "environment_bin": "/zeng_gk/Amine/mas/env_mas/bin",
+    "base_model": "/zeng_gk/Amine/mas/rtlcoder",
+    "sft_adapter": "sft_v6c_out",
+    "hosts": {
+      "v100a": {
+        "hostname": "49ed1pm9lmiqe-0",
+        "gpu_model": "Tesla V100-SXM2-32GB",
+        "allowed_physical_gpus": [0, 1]
+      },
+      "v100b": {
+        "hostname": "8cqofmihc71pg-0",
+        "gpu_model": "Tesla V100S-PCIE-32GB",
+        "allowed_physical_gpus": [0, 1]
+      }
+    },
+    "required_environment": {
+      "PYTHONNOUSERSITE": "1",
+      "python": "3.10.20",
+      "torch": "2.4.1+cu121",
+      "transformers": "4.46.3",
+      "peft": "0.13.2",
+      "accelerate": "1.0.1",
+      "numpy": "2.2.6",
+      "scipy": "1.15.3",
+      "scikit_learn": "1.7.2",
+      "joblib": "1.5.3",
+      "iverilog": "12.0"
+    },
+    "gpu_idle": {
+      "maximum_memory_used_mib": 128,
+      "maximum_utilization_percent": 1,
+      "require_no_compute_pids": true,
+      "checks_immediately_before_launch": 2,
+      "seconds_between_checks": 2
+    },
+    "minimum_repo_filesystem_free_gib": 25
+  },
+  "launch_prerequisites": {
+    "all_required_artifact_hashes_match": true,
+    "parent_protocol_hashes_match": true,
+    "every_selected_run_assigned_host_and_gpu_must_be_idle": true,
+    "every_extension_output_log_and_status_path_must_be_absent": true,
+    "timing_gate": {
+      "result_path": "timing_closure_candidate_v7/results/pilot_gate.json",
+      "candidate_manifest_path": "timing_closure_candidate_v7/manifest.json",
+      "candidate_manifest_sha256_path": "timing_closure_candidate_v7/manifest.sha256",
+      "expected_candidate_package_sha256": "6d2512c8d256dde29eb7c45754bf4e3e42a89a2e6ef23d121af1e9e768496049",
+      "v1_manifest_path": "timing_closure_gate_v1/manifest.json",
+      "expected_v1_manifest_sha256": "2e0674f96c57be3864a6fab7683b0edc76f732762f78547d5e6a3e8efc17e194",
+      "schema_version": 1,
+      "study_id": "timing_closure_candidate_v7",
+      "scope": "pilot_10",
+      "vivado_version": "2026.1",
+      "expected_candidates": 10,
+      "required_verdict": "PASS",
+      "required_criteria": [
+        "complete_and_constrained",
+        "spearman_ge_0_90",
+        "median_smape_le_0_15",
+        "paired_direction"
+      ]
+    }
+  },
+  "runs": [
+    {
+      "run_id": "rf_s3",
+      "condition": "repaired_rf",
+      "reward": "rf_struct",
+      "reward_artifact": "rf_struct.joblib",
+      "training_seed": 3,
+      "ssh_alias": "v100a",
+      "hostname": "49ed1pm9lmiqe-0",
+      "gpu_model": "Tesla V100-SXM2-32GB",
+      "physical_gpu": 0,
+      "max_attempted_groups": 2000,
+      "output_dir": "seed_replication_extension_v2/runs/grpo_rf_s3",
+      "optimizer_log": "seed_replication_extension_v2/logs/rf_s3.optimizer.jsonl",
+      "stdout_log": "seed_replication_extension_v2/logs/rf_s3.stdout.log",
+      "status_file": "seed_replication_extension_v2/status/rf_s3.status.json"
+    },
+    {
+      "run_id": "rf_s4",
+      "condition": "repaired_rf",
+      "reward": "rf_struct",
+      "reward_artifact": "rf_struct.joblib",
+      "training_seed": 4,
+      "ssh_alias": "v100b",
+      "hostname": "8cqofmihc71pg-0",
+      "gpu_model": "Tesla V100S-PCIE-32GB",
+      "physical_gpu": 0,
+      "max_attempted_groups": 2000,
+      "output_dir": "seed_replication_extension_v2/runs/grpo_rf_s4",
+      "optimizer_log": "seed_replication_extension_v2/logs/rf_s4.optimizer.jsonl",
+      "stdout_log": "seed_replication_extension_v2/logs/rf_s4.stdout.log",
+      "status_file": "seed_replication_extension_v2/status/rf_s4.status.json"
+    },
+    {
+      "run_id": "correctness_s2",
+      "condition": "correctness_only",
+      "reward": "correctness",
+      "reward_artifact": null,
+      "training_seed": 2,
+      "ssh_alias": "v100a",
+      "hostname": "49ed1pm9lmiqe-0",
+      "gpu_model": "Tesla V100-SXM2-32GB",
+      "physical_gpu": 1,
+      "max_attempted_groups": 15000,
+      "output_dir": "seed_replication_extension_v2/runs/grpo_correctness_s2",
+      "optimizer_log": "seed_replication_extension_v2/logs/correctness_s2.optimizer.jsonl",
+      "stdout_log": "seed_replication_extension_v2/logs/correctness_s2.stdout.log",
+      "status_file": "seed_replication_extension_v2/status/correctness_s2.status.json"
+    },
+    {
+      "run_id": "correctness_s3",
+      "condition": "correctness_only",
+      "reward": "correctness",
+      "reward_artifact": null,
+      "training_seed": 3,
+      "ssh_alias": "v100b",
+      "hostname": "8cqofmihc71pg-0",
+      "gpu_model": "Tesla V100S-PCIE-32GB",
+      "physical_gpu": 1,
+      "max_attempted_groups": 15000,
+      "output_dir": "seed_replication_extension_v2/runs/grpo_correctness_s3",
+      "optimizer_log": "seed_replication_extension_v2/logs/correctness_s3.optimizer.jsonl",
+      "stdout_log": "seed_replication_extension_v2/logs/correctness_s3.stdout.log",
+      "status_file": "seed_replication_extension_v2/status/correctness_s3.status.json"
+    }
+  ]
+}

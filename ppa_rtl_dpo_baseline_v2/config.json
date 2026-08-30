@@ -1,0 +1,79 @@
+{
+  "schema_version": 2,
+  "study_id": "ppa_rtl_dpo_baseline_v2",
+  "frozen_utc": "2026-08-30T15:43:15Z",
+  "status": "prepared_not_launched",
+  "parent_protocol": {
+    "config_path": "ppa_rtl_dpo_baseline_v1/config.json",
+    "config_sha256_raw": "df68523614e13d29201e865531b4b3e9e0ad1d3868b481ad28bc0b3148a48c99",
+    "protocol_path": "ppa_rtl_dpo_baseline_v1/PROTOCOL.md",
+    "protocol_sha256_raw": "db07d3e1917da428a87640a4a25ceabd9d2f136682bbc9a56c759061b56618c5",
+    "inheritance": "Every scientific field, budget, seed, endpoint, failure rule, and stop rule is inherited unchanged except the obsolete timing-gate identity is prospectively replaced below."
+  },
+  "amendment": {
+    "type": "mid-gate prospective execution-host and gate-identity amendment",
+    "state_visible_when_prepared": "Five of ten V7 timing candidates were complete and the sixth was running. No PPA-RTL V1 or V2 candidate, label, preference tuple, checkpoint, or evaluation output existed.",
+    "changes": [
+      "use the two guaranteed-available two-GPU V100 boxes for every model operation",
+      "replace the impossible V1-PASS prerequisite with the already-frozen V7 candidate-pilot PASS",
+      "freeze a balanced per-slot/per-seed hardware assignment before generation"
+    ]
+  },
+  "timing_gate": {
+    "result_path": "timing_closure_candidate_v7/results/pilot_gate.json",
+    "candidate_manifest_path": "timing_closure_candidate_v7/manifest.json",
+    "candidate_manifest_sha256_path": "timing_closure_candidate_v7/manifest.sha256",
+    "expected_candidate_package_sha256": "6d2512c8d256dde29eb7c45754bf4e3e42a89a2e6ef23d121af1e9e768496049",
+    "v1_manifest_path": "timing_closure_gate_v1/manifest.json",
+    "expected_v1_manifest_sha256": "2e0674f96c57be3864a6fab7683b0edc76f732762f78547d5e6a3e8efc17e194",
+    "schema_version": 1,
+    "study_id": "timing_closure_candidate_v7",
+    "scope": "pilot_10",
+    "vivado_version": "2026.1",
+    "expected_candidates": 10,
+    "required_verdict": "PASS",
+    "required_criteria": [
+      "complete_and_constrained",
+      "spearman_ge_0_90",
+      "median_smape_le_0_15",
+      "paired_direction"
+    ]
+  },
+  "model_execution": {
+    "repo_root": "/zeng_gk/Amine/mas/fpga",
+    "python": "/zeng_gk/Amine/mas/env_mas/bin/python",
+    "base_model": "/zeng_gk/Amine/mas/rtlcoder",
+    "sft_adapter": "sft_v6c_out",
+    "dtype": "torch.float16",
+    "hosts": {
+      "v100a": {
+        "hostname": "49ed1pm9lmiqe-0",
+        "gpu": 0,
+        "gpu_model": "Tesla V100-SXM2-32GB"
+      },
+      "v100b": {
+        "hostname": "8cqofmihc71pg-0",
+        "gpu": 0,
+        "gpu_model": "Tesla V100S-PCIE-32GB"
+      }
+    },
+    "candidate_generation_assignment": "For generated slots only, use zero-based generated-slot order in label_plan.json: even indices on v100a GPU 0 and odd indices on v100b GPU 0. Reference slots require no GPU.",
+    "dpo_training_assignment": {
+      "seed_1": "v100a:0",
+      "seed_2": "v100b:0"
+    },
+    "heldout_generation_assignment": {
+      "seed_1": "v100a:0",
+      "seed_2": "v100b:0"
+    },
+    "scheduling_precedence": "On each host, seed_replication_extension_v2 RF training owns GPU 0 first. PPA-RTL may use that GPU only after its assigned RF run is COMPLETE and no process remains. Correctness replication continues concurrently on GPU 1.",
+    "no_migration": true,
+    "record_hardware_per_artifact": true
+  },
+  "vivado_execution": {
+    "host": "Windows laptop",
+    "vivado": "2026.1",
+    "note": "V2 retains the parent's xc7z020, 5-ns training-label budget and true-closure endpoint, but executes them through the validated Vivado-2026.1 V7 infrastructure authorized by the gate. No GPU is involved in Vivado labeling."
+  },
+  "launcher_boundary": "No PPA-RTL generation, Vivado, DPO, or evaluation launcher is authorized by this metadata-only amendment. Implement, test, hash, and review phase launchers after the V7 PASS and before the first phase output."
+}
