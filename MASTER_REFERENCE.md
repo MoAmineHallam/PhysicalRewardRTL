@@ -4342,3 +4342,29 @@ are exhausted without modifying unsupported Vivado internals.  Completion of
 that timing-dependent branch now requires a licensed Vivado environment on a
 supported OS (or another prospectively justified external environment); this
 is an infrastructure boundary, not candidate timing evidence.
+
+### Supported Vivado 2026.1 infrastructure gate V7 (2026-08-30)
+
+Vivado 2026.1 was installed side by side at `C:\AMD\2026.1\Vivado`, with the
+failed 2023.1 installation and every V1--V6 result retained.  Before the first
+2026.1 synthesis, V7 froze the byte-identical V1 closure Tcl, V4 synthetic
+probe, `xc7z020clg400-1` target, ordinary fresh-process synthesis architecture,
+unique short work/temp paths, no retries, and a raw dependency baseline over
+all 55 `scripts/rt/**/*.tcl` files.  The frozen V7 package manifest SHA-256 is
+`c2bfb67f49584787cf23668689e5fa86ed4165e5510c9e4ea2f779e8de387f0b`.
+
+All forty required fresh first-attempt synth/place/route processes passed.
+Every process reported one clock, 51 setup paths, zero unconstrained paths,
+clean routing, and WNS 7.501 ns at the synthetic 10 ns request.  All forty
+before/after dependency guards matched aggregate SHA-256
+`ca1f31caa1894ec6755bec6ff959be5d83bec80a834d5c5bfb0fcfb532e8d7f7`;
+work and explicit temp paths were unique and no retry was used.  An independent
+artifact audit verified all 120 retained stdout/stderr/result hashes.  The V7
+PASS attestation SHA-256 is
+`951b4b577fea68cba2d4478ae6022d7be8eec5e373f306d7c89c008c34f929b1`.
+
+This bounded PASS supports the diagnosed infrastructure repair but does not
+erase V1--V6, validate the historical WNS-derived frequency proxy, or expose
+Study-2 candidate RTL.  It authorizes freezing the separate all-ten fresh V7
+candidate package; timing-dependent seed replication and PPA-RTL work remain
+locked until that real-candidate pilot also passes its unchanged thresholds.
