@@ -1,0 +1,49 @@
+{
+  "schema_version": 7,
+  "study_id": "timing_closure_gate_v7",
+  "frozen_date": "2026-08-30",
+  "status_at_freeze": "Vivado 2026.1 installation files are present; no Vivado 2026.1 synthesis, implementation, or Study-2 candidate has run",
+  "prior_boundary": {
+    "v5": "six valid fresh-process synthetic runs followed by immutable FAIL on run 7 from an internal Tcl read failure",
+    "v6": "one valid persistent-parent synthetic project followed by immutable FAIL on project 2 from an internal realtime genlib read failure",
+    "candidate_exposure_after_v5_v6": false
+  },
+  "infrastructure_amendment": {
+    "single_change": "execute the unchanged fresh-process closure flow with Vivado 2026.1 installed at C:/AMD/2026.1/Vivado",
+    "rationale": "Vivado 2026.1 supports the host Windows 11 25H2 release and the Zynq-7000 target; Vivado 2023.1 did not support the host OS",
+    "old_installation_retained": "C:/Xilinx/Vivado/2023.1",
+    "new_installation_root": "C:/AMD/2026.1/Vivado",
+    "scratch_root": "C:/VGT7S001",
+    "unique_short_work_and_temp_directory_per_process": true,
+    "ordinary_synthesis_helper": true,
+    "persistent_parent": false
+  },
+  "unchanged_science": {
+    "closure_tcl": "byte-identical timing_closure_gate_v1/closure_synth.tcl",
+    "synthetic_rtl": "byte-identical timing_closure_gate_v4/stability_probe.sv",
+    "device": "xc7z020clg400-1",
+    "requested_period_ns": 10.0,
+    "constraints": "one clock plus zero-delay nonclock inputs and outputs before synthesis",
+    "measurement_validity": "compiled, implemented, one clock, positive setup-path count, parsed finite WNS, zero unconstrained paths, clean routing, complete I/O-delay coverage",
+    "contains_study2_rtl": false
+  },
+  "preflight": {
+    "allowed_before_campaign": "non-synthesis batch Tcl query of version -short and get_parts xc7z020clg400-1",
+    "required_version": "2026.1",
+    "required_part_count": 1,
+    "preflight_is_efficacy_evidence": false
+  },
+  "synthetic_gate": {
+    "required_consecutive_first_attempts": 40,
+    "retry_count": 0,
+    "pass_rule": "all forty fresh synth/place/route measurements valid with unchanged full dependency tree",
+    "failure_rule": "retain FAIL and do not construct or launch the V7 real-candidate package"
+  },
+  "stop_rules": [
+    "Freeze and commit this package and its 2026.1 dependency baseline before the first V7 synthesis.",
+    "Do not launch a V7 Study-2 candidate before a frozen V7 synthetic PASS.",
+    "Do not overwrite, delete, rerun, or reinterpret V1--V6.",
+    "Stop V7 on its first invalid process; do not retry within or after the campaign.",
+    "If V7 passes, freeze a separate all-ten fresh candidate package before reading any V7 candidate outcome."
+  ]
+}
