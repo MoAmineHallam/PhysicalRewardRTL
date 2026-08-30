@@ -4297,3 +4297,48 @@ host; the leading underlying hypothesis is the unsupported tool/OS combination,
 not candidate RTL. Full scripts, bounded raw logs, and the post-restart decision
 rule are retained in `vivado_diagnostics/`. No frozen study was amended and no
 paper endpoint was produced.
+
+### First post-restart Vivado probe (2026-08-30)
+
+The prescribed first post-restart ordinary helper-enabled minimal synthesis
+passed once: 106 cells, zero synthesis errors, empty stderr, and exit code 0.
+The raw stdout confirms that Vivado launched its synthesis helper, so the trial
+exercised the previously implicated runtime path
+(`vivado_diagnostics/evidence/postrestart_20260830__r01/`). This is encouraging
+host-diagnostic evidence, but it is not a stability PASS: four of nine retained
+pre-restart helper-enabled trials also passed. No paper experiment or candidate
+closure run was launched, and the existing V1--V4 scientific boundary is
+unchanged.
+
+### Post-restart and persistent-parent Vivado gates V5--V6 (2026-08-30)
+
+V5 prospectively tested the reboot hypothesis with forty required fresh
+first-attempt synthetic implementations, using the unchanged V4 single-thread
+closure wrapper and no Study-2 candidate RTL.  Runs 1--6 were valid.  Run 7
+then launched the synthesis helper and falsely reported the existing
+`scripts/rt/data/unimacro/unimacro_vhdl.tcl` file unreadable (`No error`).  The
+complete raw dependency guards before and after the process matched.  V5 is an
+immutable FAIL; its attestation SHA-256 is
+`6dcb03bf4ec0ba575f4d2908d991f3d6a65d4bccb9c9a8340a9f9847e71a46e6`
+(`timing_closure_gate_v5/`).  Restarting Windows therefore did not repair the
+runtime fault.
+
+The only locally justified alternative architecture was then tested before
+candidate exposure.  A diagnostic showed that two isolated in-memory projects
+could synthesize in one Vivado parent with clean project boundaries and one
+helper launch.  V6 prospectively required forty such isolated projects, each
+running the unchanged pre-synthesis XDC plus synth/opt/place/route sequence.
+Its first project was fully valid (WNS 7.501 ns, 51 setup paths, zero
+unconstrained paths, clean routing and isolation).  During synthesis of project
+2, however, ABC failed to open an internal realtime `genlib` temporary path and
+the parent exited with code 3.  The dependency guards again matched.  V6 is an
+immutable FAIL; its attestation SHA-256 is
+`de502c2e9d6e7832f222a5555986a9eddabf442a87ed4e1f8c562bd501339eca`
+(`timing_closure_gate_v6/`).
+
+Consequently no real V4--V6 candidate, extra-seed timing-dependent extension,
+or PPA-RTL physical-label job was authorized.  The local execution alternatives
+are exhausted without modifying unsupported Vivado internals.  Completion of
+that timing-dependent branch now requires a licensed Vivado environment on a
+supported OS (or another prospectively justified external environment); this
+is an infrastructure boundary, not candidate timing evidence.

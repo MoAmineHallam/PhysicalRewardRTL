@@ -50,6 +50,35 @@ hypothesis is the unsupported Vivado/Windows combination, but the retained
 evidence cannot uniquely distinguish that from a Windows minifilter or other
 host-runtime interaction.
 
+## First post-restart trial (2026-08-30)
+
+The prescribed first ordinary helper-enabled minimal synthesis was run once
+after restarting Windows, before opening Vivado or launching any paper
+experiment. It passed with 106 cells, zero synthesis errors, and an empty
+stderr log. The retained stdout confirms that the synthesis helper was
+launched, so this trial exercised the path implicated before the restart.
+Raw output and metadata are under
+`evidence/postrestart_20260830__r01/`.
+
+This single pass does not establish that restarting repaired the intermittent
+fault: four of the nine retained pre-restart helper-enabled runs also passed.
+It therefore does not authorize a candidate experiment by itself.
+
+## Subsequent prospective gates
+
+V5 tested the restart hypothesis directly and froze FAIL after six valid fresh
+synthetic implementations: process 7 again failed on the existing
+`unimacro_vhdl.tcl`, with matching dependency hashes.  V6 then tested isolated
+in-memory projects inside one persistent Vivado parent.  Its first full routed
+project was valid, but synthesis of project 2 failed in ABC on an internal
+realtime temporary path.  Raw evidence and immutable attestations are retained
+under `timing_closure_gate_v5/` and `timing_closure_gate_v6/`.
+
+These outcomes reject both reboot and persistent-parent execution as local
+repairs.  No candidate was exposed.  The remaining defensible remedy is a
+validated licensed Vivado environment on a supported operating system or a
+different prospectively justified external environment.
+
 ## Next controlled action
 
 1. Restart Windows, then run the minimal reproducer before opening Vivado or
