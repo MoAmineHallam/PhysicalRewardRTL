@@ -1,0 +1,42 @@
+{
+  "schema_version": 6,
+  "study_id": "timing_closure_gate_v6",
+  "frozen_date": "2026-08-30",
+  "status_at_freeze": "V1--V5 are immutable FAIL; no V6 stability process has launched",
+  "observed_evidence": {
+    "v5": "six valid fresh processes followed by an internal-Tcl read failure in process seven after restart",
+    "persistent_nonproject_diagnostic": "first synthesis passed; second synthesis stopped in ABC on an internal realtime temporary path",
+    "persistent_in_memory_project_diagnostic": "two isolated in-memory projects passed in one parent, with empty project boundaries and one helper launch"
+  },
+  "execution_amendment": {
+    "single_change": "execute isolated documented in-memory projects within one Vivado parent instead of one new parent per measurement",
+    "rationale": "avoid the diagnosed repeated parent/helper/realtime initialization while preserving a supported project isolation boundary",
+    "parent_processes": 1,
+    "in_memory_projects": 40,
+    "scratch_root": "C:/VGT6P001"
+  },
+  "unchanged_science": {
+    "synthetic_rtl": "byte-identical timing_closure_gate_v4/stability_probe.sv",
+    "device": "xc7z020clg400-1",
+    "vivado": "2023.1",
+    "constraints": "clock and zero-delay I/O XDC read before synthesis",
+    "implementation_sequence": "synth_design, opt_design, place_design, route_design",
+    "measurement_validity": "unchanged V4 field requirements",
+    "contains_study2_rtl": false
+  },
+  "gate": {
+    "required_iterations": 40,
+    "retry_count": 0,
+    "required_helper_launch_count": 1,
+    "maximum_wns_spread_ns": 0.001,
+    "required_clean_project_and_file_boundaries": true,
+    "failure_rule": "retain FAIL and do not construct or launch a V6 candidate package"
+  },
+  "stop_rules": [
+    "Freeze and commit this package before the first V6 stability process.",
+    "Do not launch Study-2 candidates before a frozen V6 PASS.",
+    "Do not reuse or reinterpret V1--V5 outcomes.",
+    "Do not rerun V6 after any invalid iteration or session failure.",
+    "If V6 passes, freeze a separate all-ten candidate package before reading any V6 candidate outcome."
+  ]
+}
