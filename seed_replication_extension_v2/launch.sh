@@ -8,7 +8,7 @@ PY="/zeng_gk/Amine/mas/env_mas/bin/python"
 CONFIG="$REPO/$STUDY/config.json"
 VALIDATOR="$REPO/$STUDY/validate.py"
 EXPECTED_CONFIG_SHA256="98be47564acf6c344939c4b043fb9476dfac49d4975f3bef7b8df9adae02d81b"
-EXPECTED_VALIDATOR_SHA256="d80ee516bc0589985f3f5bcbbf8ae6799f679aa2f4cbf7ac30a6be1b2fa3018a"
+EXPECTED_VALIDATOR_SHA256="26494c0f64d96c7adf41610bf0c27edc0758d8d96dd4400adcefc830e332d12d"
 LOCK="/tmp/${STUDY}.${USER:-root}.launch.lock"
 
 export PATH="/zeng_gk/Amine/mas/env_mas/bin:$PATH"

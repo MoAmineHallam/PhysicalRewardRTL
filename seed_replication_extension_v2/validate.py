@@ -12,6 +12,7 @@ import platform
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, Sequence
 
@@ -259,6 +260,19 @@ def current_host(config: Dict[str, Any]) -> tuple[str, Dict[str, Any]]:
     return matches[0]
 
 
+def settled_gpu_snapshot(gpu: int, idle: Dict[str, Any]) -> Dict[str, int]:
+    """Wait out nvidia-smi's short utilization window after our CUDA canary."""
+    deadline = time.monotonic() + 30.0
+    while True:
+        try:
+            return base.gpu_snapshot(gpu, idle)
+        except base.ValidationError as exc:
+            if ("utilization is not idle" not in str(exc) or
+                    time.monotonic() >= deadline):
+                raise
+            time.sleep(2.0)
+
+
 def environment_preflight(config: Dict[str, Any],
                           runs: Iterable[Dict[str, Any]]) -> list[dict]:
     selected = list(runs)
@@ -289,7 +303,7 @@ def environment_preflight(config: Dict[str, Any],
     required.pop("iverilog")
     records = []
     for run in selected:
-        before = base.gpu_snapshot(run["physical_gpu"], remote["gpu_idle"])
+        before = settled_gpu_snapshot(run["physical_gpu"], remote["gpu_idle"])
         env = dict(os.environ)
         env["CUDA_VISIBLE_DEVICES"] = str(run["physical_gpu"])
         canary = subprocess.run(
@@ -316,7 +330,7 @@ def environment_preflight(config: Dict[str, Any],
                 f"environment version drift: expected {required}, got {observed}")
         require(gpu_name == host["gpu_model"] == run["gpu_model"],
                 f"GPU model mismatch: {gpu_name}")
-        after = base.gpu_snapshot(run["physical_gpu"], remote["gpu_idle"])
+        after = settled_gpu_snapshot(run["physical_gpu"], remote["gpu_idle"])
         driver = subprocess.run(
             ["nvidia-smi", "-i", str(run["physical_gpu"]),
              "--query-gpu=driver_version", "--format=csv,noheader"],
