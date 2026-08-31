@@ -20,6 +20,10 @@ the applicable timing gate. All training and endpoint quantities are inherited
 byte-for-byte from the raw-hash-pinned V1 config: seeds, FP16, model and adapter,
 rewards, 276 non-flat updates, attempt ceilings, checkpoints, generation
 settings, evaluation multiplicity, failure scoring, and analysis rules.
+The later physical endpoint is executed with the validated Vivado 2026.1 V7
+infrastructure; the part, constraints, search, failure scoring, and endpoint
+definition remain unchanged. This tool-version amendment is reported rather
+than treating 2023.1 and 2026.1 as identical runtimes.
 
 The old V1 gate can never pass because it is immutable failed evidence. V2
 therefore requires a complete PASS from the already-frozen

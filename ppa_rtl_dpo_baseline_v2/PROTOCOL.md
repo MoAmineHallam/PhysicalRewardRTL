@@ -7,11 +7,17 @@ Model phases use the clean shared worktree
 `/zeng_gk/Amine/mas/fpga-v100-v2`, preserving the historical checkout and its
 untracked retained artifacts.
 
-Every scientific choice in V1 remains unchanged: the 229-slot construction,
+Every scientific choice in V1 remains unchanged except the prospectively
+disclosed Vivado infrastructure amendment: the 229-slot construction,
 oracle gate, exact physical-label budget, best-versus-worst rule, two DPO seeds,
 276 updates, FP16, 20 held-out designs, 24 draws/design/seed, failure-zero rule,
-and routed true-closure endpoint. V2 changes only the applicable timing gate,
-execution hardware, and absolute server paths.
+and routed true-closure endpoint remain fixed. Physical labels and endpoint
+closure now use the validated Vivado 2026.1 V7 runtime because the retained
+2023.1 runtime is unusable on this host. V2 otherwise changes only the
+applicable timing gate, execution hardware, and absolute server paths. The RF
+policy's historical surrogate was learned from 2023.1 labels; both compared
+policies nevertheless receive the same new 2026.1 true-closure evaluation.
+This training-label-version asymmetry is retained and reported as a limitation.
 
 The model workload is balanced across the guaranteed-free V100 boxes:
 

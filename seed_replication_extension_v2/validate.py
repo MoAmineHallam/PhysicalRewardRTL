@@ -139,6 +139,7 @@ def validate_config(config: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
         "candidate_manifest_path": "timing_closure_candidate_v7/manifest.json",
         "candidate_manifest_sha256_path": "timing_closure_candidate_v7/manifest.sha256",
         "expected_candidate_package_sha256": "6d2512c8d256dde29eb7c45754bf4e3e42a89a2e6ef23d121af1e9e768496049",
+        "expected_v7_stability_attestation_sha256": "951b4b577fea68cba2d4478ae6022d7be8eec5e373f306d7c89c008c34f929b1",
         "v1_manifest_path": "timing_closure_gate_v1/manifest.json",
         "expected_v1_manifest_sha256": "2e0674f96c57be3864a6fab7683b0edc76f732762f78547d5e6a3e8efc17e194",
         "schema_version": 1, "study_id": "timing_closure_candidate_v7",
@@ -208,6 +209,7 @@ def verify_timing_gate(config: Dict[str, Any]) -> Dict[str, Any]:
         "vivado_version": gate["vivado_version"],
         "v1_manifest_sha256": gate["expected_v1_manifest_sha256"],
         "candidate_package_sha256": gate["expected_candidate_package_sha256"],
+        "v7_stability_attestation_sha256": gate["expected_v7_stability_attestation_sha256"],
         "expected_candidates": gate["expected_candidates"],
         "completed_candidates": gate["expected_candidates"],
         "verdict": gate["required_verdict"],
@@ -231,7 +233,7 @@ def verify_timing_gate(config: Dict[str, Any]) -> Dict[str, Any]:
     verified = []
     for source in sources:
         require(isinstance(source, dict), "malformed generated-from record")
-        rel, expected = source.get("path"), source.get("sha256")
+        rel, expected = source.get("path"), source.get("sha256_raw")
         require(isinstance(rel, str) and isinstance(expected, str),
                 "malformed generated-from identity")
         candidate = Path(rel)

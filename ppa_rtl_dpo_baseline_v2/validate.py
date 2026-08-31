@@ -84,6 +84,7 @@ def validate_gate(config: dict) -> None:
         "schema_version": 1, "study_id": "timing_closure_candidate_v7",
         "scope": "pilot_10", "vivado_version": "2026.1",
         "candidate_package_sha256": digest,
+        "v7_stability_attestation_sha256": gate["expected_v7_stability_attestation_sha256"],
         "v1_manifest_sha256": gate["expected_v1_manifest_sha256"],
         "expected_candidates": 10, "completed_candidates": 10,
         "verdict": "PASS",
@@ -94,6 +95,16 @@ def validate_gate(config: dict) -> None:
     for criterion in gate["required_criteria"]:
         need(result.get("criteria", {}).get(criterion) is True,
              f"gate criterion failed: {criterion}")
+    sources = result.get("generated_from")
+    need(isinstance(sources, list) and sources, "gate provenance is missing")
+    for source in sources:
+        relative = source.get("path")
+        expected = source.get("sha256_raw")
+        need(isinstance(relative, str) and isinstance(expected, str),
+             "malformed gate provenance record")
+        path = REPO / relative
+        need(path.is_file(), f"missing gate provenance artifact: {path}")
+        need(sha(path) == expected, f"gate provenance hash drift: {path}")
 
 
 def main() -> int:
