@@ -180,7 +180,7 @@ reserve_one() {
   mkdir -p "$REPO/$STUDY/logs" "$REPO/$STUDY/status" "$REPO/$STUDY/runs"
   started="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   write_status RESERVED "" "$started" "" "${CMD[@]}"
-  nohup "$REPO/$STUDY/launch.sh" worker "$RUN_ID" \
+  nohup bash "$REPO/$STUDY/launch.sh" worker "$RUN_ID" \
     >"$REPO/$STDOUT" 2>&1 </dev/null &
   echo "launched $RUN_ID pid=$! host=$EXPECTED_HOST gpu=$GPU"
 }
