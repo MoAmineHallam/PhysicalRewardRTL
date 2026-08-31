@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob019_m2014_q4f",
+  "problem_seed": 5750108253095715979,
+  "prompt_raw_sha256": "97bd8fbb078bc6c1cddfb97a61f5a3e3ed8b33012333b295800d3cc6e1f0982e",
+  "reference_raw_sha256": "c92c3177993007c8cb6d72fa96527a70431a66dc655c3b422bb94ed9c9ca9c29",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "72/100 mismatches",
+      "raw_completion": "// One-bit AND gate with a bubble, implemented as a register in Verilog\nmodule TopModule (\n    input  in1,\n    input  in2,\n    output reg out\n);\n    wire and_out;\n    and gate1 (and_out, in1, in2);\n    always @(posedge and_out) out <= and_out;\nendmodule",
+      "raw_completion_raw_sha256": "5c3ae46cf127ede26c8b5eb8315fa2f5c152899c06d224022f6855d960a961cf",
+      "rtl": "module TopModule (\n    input  in1,\n    input  in2,\n    output reg out\n);\n    wire and_out;\n    and gate1 (and_out, in1, in2);\n    always @(posedge and_out) out <= and_out;\nendmodule",
+      "rtl_raw_sha256": "f7278316313dad1cddbd788b041176ce5e0670d5147af876cf42c5361bedef9e",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "49/100 mismatches",
+      "raw_completion": "// One-bit AND with bubble on the second input.\nmodule TopModule(input in1, input in2, output out);\n    wire and_out;\n    and gate1(and_out, in1, in2);\n    buf buf1(out, and_out);\nendmodule",
+      "raw_completion_raw_sha256": "d87195f9b9ae3872ecc84e29198aef9ff4bbc1680db6423d67e3fccc32e29a9d",
+      "rtl": "module TopModule(input in1, input in2, output out);\n    wire and_out;\n    and gate1(and_out, in1, in2);\n    buf buf1(out, and_out);\nendmodule",
+      "rtl_raw_sha256": "b589f791f79bfd9d57a99010ff530d5c39222210ad332d9b2cb29327a4725242",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "28/100 mismatches",
+      "raw_completion": "// Bubble-wrapped AND gate. The AND gate input 'in2' is deliberately\n// single-stage pipeline-bubbled to create a delay.\nmodule TopModule (\n    input  in1,\n    input  in2,\n    output out\n);\n    wire and0_out;\n    and and0 (and0_out, in1, in2);\n    reg and1_out;\n    always @(posedge in2) and1_out <= and0_out;\n    assign out = and1_out;\nendmodule",
+      "raw_completion_raw_sha256": "9191ee9f67c6ca40788067607596e9b0ce93179fc50622c04aa53c5a309dd71c",
+      "rtl": "module TopModule (\n    input  in1,\n    input  in2,\n    output out\n);\n    wire and0_out;\n    and and0 (and0_out, in1, in2);\n    reg and1_out;\n    always @(posedge in2) and1_out <= and0_out;\n    assign out = and1_out;\nendmodule",
+      "rtl_raw_sha256": "bc97286268ee91344c2612d0400c52247b33ccc619523a78b672a72cc8f5080e",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "99/100 mismatches",
+      "raw_completion": "module TopModule (\n    input  in1,\n    input  in2,\n    output out\n);\n    wire and_out;\n    and #1 andgate (and_out, in1, in2);\n    reg  bubble;\n    always @(*) bubble = and_out;\n    assign out = bubble;\nendmodule",
+      "raw_completion_raw_sha256": "edb54a2d38644e0b0b001ff2c95eb2cc740715935fad91d9e2af205600532ca0",
+      "rtl": "module TopModule (\n    input  in1,\n    input  in2,\n    output out\n);\n    wire and_out;\n    and #1 andgate (and_out, in1, in2);\n    reg  bubble;\n    always @(*) bubble = and_out;\n    assign out = bubble;\nendmodule",
+      "rtl_raw_sha256": "edb54a2d38644e0b0b001ff2c95eb2cc740715935fad91d9e2af205600532ca0",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: error: Unknown module type: AND2D1",
+      "raw_completion": "// One-bit AND with a bubble, as described in the problem description\nmodule TopModule(\n    input  in1,\n    input  in2,\n    output out\n);\n    wire and_out;\n    AND2D1 and_gate (.I0(in1), .I1(in2), .O(and_out));\n    BUFG bubble (.I(and_out), .O(out));\nendmodule",
+      "raw_completion_raw_sha256": "8d848214d21a5c504eb0cd5b87c6dce7c00a431e36a8b4a1e5b9772f251bbaaf",
+      "rtl": "module TopModule(\n    input  in1,\n    input  in2,\n    output out\n);\n    wire and_out;\n    AND2D1 and_gate (.I0(in1), .I1(in2), .O(and_out));\n    BUFG bubble (.I(and_out), .O(out));\nendmodule",
+      "rtl_raw_sha256": "f6b74fb62dbfb940ffec89907827ae7f95ac278d4f9cbfc525e708696a0e6485",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob019_m2014_q4f_test.sv:67: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit AND gate with bubble, implemented as a feedback loop.\nmodule AND_bubble (input a, b, output reg out);\n    always @(*) out = a & b;\n    always @(posedge out) out = 1'b0;\nendmodule",
+      "raw_completion_raw_sha256": "7fd5913fce0e8f248db74c362fb1be2be2ba0e719a7a863a69d8c569d37c9ece",
+      "rtl": "module AND_bubble (input a, b, output reg out);\n    always @(*) out = a & b;\n    always @(posedge out) out = 1'b0;\nendmodule",
+      "rtl_raw_sha256": "b6713e644d159f017b7638cafd7afe0a366d028e7b37a245ede028812021ec8d",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: error: Unknown module type: AND2D1",
+      "raw_completion": "// The top-level module\nmodule TopModule (\n    input  in1,\n    input  in2,\n    output out\n);\n    wire and_out;\n    AND2D1 and0 (.A1(in1), .A2(in2), .ZN(and_out));\n    BUFG out_buf (.I(and_out), .O(out));\nendmodule",
+      "raw_completion_raw_sha256": "03d144d88acb8fb70d614305574667cb89ec197ff8741e730b92158dae0520ac",
+      "rtl": "module TopModule (\n    input  in1,\n    input  in2,\n    output out\n);\n    wire and_out;\n    AND2D1 and0 (.A1(in1), .A2(in2), .ZN(and_out));\n    BUFG out_buf (.I(and_out), .O(out));\nendmodule",
+      "rtl_raw_sha256": "3bada380d8cededd4140b654577b78525db6d16f51a281d7b07620d4b92989bd",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob019_m2014_q4f_test.sv:67: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit AND gate with a bubble\nmodule AndWithBubble(input in1, input in2, output reg out);\n    always @(*) begin\n        #1 out = in1 & in2;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "786ddc97c790714753eafe0c022db76fb88436e229ec80bdf09320703e70be8c",
+      "rtl": "module AndWithBubble(input in1, input in2, output reg out);\n    always @(*) begin\n        #1 out = in1 & in2;\n    end\nendmodule",
+      "rtl_raw_sha256": "e0bf829d9665d2196e122acb8a31d96ded9c5ddaf53ef35ea0455b7be3886709",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob019_m2014_q4f_test.sv:67: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit AND gate with a bubble. The bubble is modelled as a short\n// path (0 delay) between the gate inputs.\nmodule AndGateWithBubble(input in1, in2, output out);\n  wire and_out;\n  and gate1(and_out, in1, in2);\n  wire bubble;\n  assign bubble = 1'b1;\n  assign out = and_out & bubble;\nendmodule",
+      "raw_completion_raw_sha256": "666f6d2c0f30ab9cd52b428363645288f378f058b3c5804576233af0c8dc32e4",
+      "rtl": "module AndGateWithBubble(input in1, in2, output out);\n  wire and_out;\n  and gate1(and_out, in1, in2);\n  wire bubble;\n  assign bubble = 1'b1;\n  assign out = and_out & bubble;\nendmodule",
+      "rtl_raw_sha256": "949937d5dc92f8c563cd84628e26b3b2f4d138393efbc5e33ca4fb72e8f4b7eb",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:3: error: Unknown module type: AND2D1",
+      "raw_completion": "// One-bit AND with bubble, as described in the problem description.\nmodule TopModule(input in1, input in2, output out);\n    wire and_out;\n    AND2D1 and0 (.A1(in1), .A2(in2), .ZN(and_out));\n    BUFGATE bufgate0 (.O(out), .I0(and_out));\nendmodule",
+      "raw_completion_raw_sha256": "5623122634edc1cb5178125c16ec28991fce981c35b5e85a282a44abd972b7cb",
+      "rtl": "module TopModule(input in1, input in2, output out);\n    wire and_out;\n    AND2D1 and0 (.A1(in1), .A2(in2), .ZN(and_out));\n    BUFGATE bufgate0 (.O(out), .I0(and_out));\nendmodule",
+      "rtl_raw_sha256": "4483856e45f273885b7ab01acb344a442a3ebc413998516b9b138d3fe202de96",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob019_m2014_q4f_test.sv:67: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit AND gate with bubble\nmodule AndBubble(input a, b, output reg out);\n  always @(*) begin\n    out = a & b;\n    #1;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "da91ca1f5e7bcd1a2c9d5bf27e47a14402f5cac52a3a8e666d99dc2f154c8e6c",
+      "rtl": "module AndBubble(input a, b, output reg out);\n  always @(*) begin\n    out = a & b;\n    #1;\n  end\nendmodule",
+      "rtl_raw_sha256": "0d854aef699d684c078086dd355a57ccf890d9cc11b667e24653cc6380f71034",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:3: error: Unknown module type: AND2D1",
+      "raw_completion": "// One-bit AND with bubble on one input\nmodule TopModule(input in1, input in2, output out);\n    wire and_out;\n    AND2D1 and_gate (and_out, in1, in2);\n    BUFG post_bubble (out, and_out);\nendmodule",
+      "raw_completion_raw_sha256": "f06360f9b2bc3170ad2a2ae125fcccb61522dd2aec837bb475799432c1e4a885",
+      "rtl": "module TopModule(input in1, input in2, output out);\n    wire and_out;\n    AND2D1 and_gate (and_out, in1, in2);\n    BUFG post_bubble (out, and_out);\nendmodule",
+      "rtl_raw_sha256": "2c7d11e178474b9a56ab1cc767fa42ddab01dacea0393e7daa28e94e57a0874d",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob019_m2014_q4f_test.sv:67: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit AND gate with bubble on the second input (the \"bubble\" delay).\nmodule AndBubble(input a, b, output reg out);\n  always @(a, b) begin\n    #1 out = a & b;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "c48becb25e1cbd0dfd0edcd1e9203b68d5755c2227349702f13d67762dae5d1b",
+      "rtl": "module AndBubble(input a, b, output reg out);\n  always @(a, b) begin\n    #1 out = a & b;\n  end\nendmodule",
+      "rtl_raw_sha256": "f4bd3431c224e8b90a90fa927503e11ac04d3343507104488f9631135369dca4",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob019_m2014_q4f_test.sv:67: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit AND gate with a bubble (short path to GND)\nmodule AND_bubble (input a, b, output reg out);\n    always @(*) begin\n        out = a & b;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "78090fb020e0589da0d8480ead6ed60fc1328ba23df8d3a85f1b58ba819ac083",
+      "rtl": "module AND_bubble (input a, b, output reg out);\n    always @(*) begin\n        out = a & b;\n    end\nendmodule",
+      "rtl_raw_sha256": "736d7e2c47cb189be382627e83437209e1c62a4253ae2179631e2808f37f8b13",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: Unknown module type: AND2AndBubble",
+      "raw_completion": "// One-bit AND gate with a bubble in one of the inputs\nmodule AndBubble (\n    input  wire in1,\n    input  wire in2,\n    output wire out\n);\n    wire nand_out;\n    assign nand_out = ~(in1 & in2);\n    AND2AndBubble and_inst (.in1(in1), .in2(nand_out), .out(out));\nendmodule",
+      "raw_completion_raw_sha256": "1c8ce60ce041e8fda2284b20220bf2c37f0ee74d355123c0d64c159a0a32abcf",
+      "rtl": "module AndBubble (\n    input  wire in1,\n    input  wire in2,\n    output wire out\n);\n    wire nand_out;\n    assign nand_out = ~(in1 & in2);\n    AND2AndBubble and_inst (.in1(in1), .in2(nand_out), .out(out));\nendmodule",
+      "rtl_raw_sha256": "c68d92ae3582f219558dd3d884613c73de639bdb50bfded089e605de4d4e621d",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "99/100 mismatches",
+      "raw_completion": "module TopModule (\n    input  in1,\n    input  in2,\n    output out\n);\n    wire and_out;\n    and and_gate (and_out, in1, in2);\n    assign #1 out = and_out;\nendmodule",
+      "raw_completion_raw_sha256": "a02702c7eea7b8ffad381de5449fe047876dab0dd0036375ad619ab8031ea90c",
+      "rtl": "module TopModule (\n    input  in1,\n    input  in2,\n    output out\n);\n    wire and_out;\n    and and_gate (and_out, in1, in2);\n    assign #1 out = and_out;\nendmodule",
+      "rtl_raw_sha256": "a02702c7eea7b8ffad381de5449fe047876dab0dd0036375ad619ab8031ea90c",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "49/100 mismatches",
+      "raw_completion": "// The top-level module. Same function as the reference circuit, but with a\n// bubble on the second input to the AND gate.\nmodule TopModule(input in1, input in2, output out);\n    wire and_out;\n    and and_gate (and_out, in1, in2);\n    wire bubble;\n    assign bubble = 1'b1;\n    and and_gate2 (out, and_out, bubble);\nendmodule",
+      "raw_completion_raw_sha256": "d9dabdafd74a8cdb47f8334410520dda31efbeebcbd937972bdae4a594a621e5",
+      "rtl": "module TopModule(input in1, input in2, output out);\n    wire and_out;\n    and and_gate (and_out, in1, in2);\n    wire bubble;\n    assign bubble = 1'b1;\n    and and_gate2 (out, and_out, bubble);\nendmodule",
+      "rtl_raw_sha256": "9c16511f7ff28808f6b0e67bad8e18cb6356bbeec85225f397850081025330a5",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "49/100 mismatches",
+      "raw_completion": "module TopModule (\n    input  in1,\n    input  in2,\n    output out\n);\n    wire and_out;\n    and gate1 (and_out, in1, in2);\n    assign out = and_out;\nendmodule",
+      "raw_completion_raw_sha256": "e8f893b4f4a26e056b93428ce7255b427d027e3d363d9d12e54ccea4ff255ae6",
+      "rtl": "module TopModule (\n    input  in1,\n    input  in2,\n    output out\n);\n    wire and_out;\n    and gate1 (and_out, in1, in2);\n    assign out = and_out;\nendmodule",
+      "rtl_raw_sha256": "e8f893b4f4a26e056b93428ce7255b427d027e3d363d9d12e54ccea4ff255ae6",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob019_m2014_q4f_test.sv:67: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit AND gate with a bubble on the second input.\nmodule AndBubble (input a, b, output reg y);\n  always @(*) begin\n    #1 y = a & b;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "a14dd361eddf36eeb98d1c8cecae448d6411a44f8f0c0191afa4f09bcb590e00",
+      "rtl": "module AndBubble (input a, b, output reg y);\n  always @(*) begin\n    #1 y = a & b;\n  end\nendmodule",
+      "rtl_raw_sha256": "8e6a4b406ffc760277fb1d07da04f9e0bc8e9779e78073b418443a52e04c85bf",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "49/100 mismatches",
+      "raw_completion": "// One-bit AND with a bubble\nmodule TopModule (\n    input  in1,\n    input  in2,\n    output out\n);\n    wire and_out;\n    and and_gate (and_out, in1, in2);\n    reg [1:0] bubble;\n    always @(*) bubble = 2'b11;\n    assign out = and_out & bubble[0];\nendmodule",
+      "raw_completion_raw_sha256": "884a061866c481214ea6285000e9e7b0c8041cc25918d7cb9f3781408b5a53b3",
+      "rtl": "module TopModule (\n    input  in1,\n    input  in2,\n    output out\n);\n    wire and_out;\n    and and_gate (and_out, in1, in2);\n    reg [1:0] bubble;\n    always @(*) bubble = 2'b11;\n    assign out = and_out & bubble[0];\nendmodule",
+      "rtl_raw_sha256": "bb29ab42e3e2f35b1d080e8cdb7397f8fa013642015472a51a8e7b89b503a1b6",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 12,
+    "fail": 8
+  },
+  "testbench_raw_sha256": "084d74cb95eaa0adc2c33fa13fdb43a7bace3c5714bf98854a161f21d5812ea6",
+  "training_seed": 2
+}

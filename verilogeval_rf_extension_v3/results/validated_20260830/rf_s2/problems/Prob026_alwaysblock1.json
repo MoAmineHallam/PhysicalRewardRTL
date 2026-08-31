@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob026_alwaysblock1",
+  "problem_seed": 4610087137880387662,
+  "prompt_raw_sha256": "6eae7df079dcd42bd6dedd42895a6ca4dae7c52112a894c20b17b0febd071924",
+  "reference_raw_sha256": "8c56a4c015ef90a231d4ed1ccd661696fed4cd6e123dc45fc768f187608d129a",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out_alwaysblock is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "b74b708339ec8f0e0b4410f77c1756b047d72946b32b682dc21ae5d4411e8b9a",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "b74b708339ec8f0e0b4410f77c1756b047d72946b32b682dc21ae5d4411e8b9a",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob026_alwaysblock1_test.sv:94: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit AND gate, implemented as an assign statement and an always\n// block, in a separate module.\nmodule AndGate(input a, b, output reg out_assign, output reg out_always);\n  always @(*) out_always = a & b;\n  assign out_assign = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "c834dbdfe8f6e6e77ca7c90dd2f42c0c7f5c4bf29f2994138cdd75cacd578e3c",
+      "rtl": "module AndGate(input a, b, output reg out_assign, output reg out_always);\n  always @(*) out_always = a & b;\n  assign out_assign = a & b;\nendmodule",
+      "rtl_raw_sha256": "c531f66972bd3c20ed80583ed6cc391fdffb29a993b6d479cc8cc427bca8a479",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out_alwaysblock is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// AND gate using an assign statement and an always block\nmodule TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "5e8b524b23314b8982ef685b8f6a9a29335a83f2d4d18ac492e6825a31c93a1f",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "e16d48b2f14782a2b60998aa15abe61c46fada47d881e86d4fb70edc239d8dc4",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out_alwaysblock is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// AND gate implemented with an assign statement and an always block, the two\n// outputs should be identical.\nmodule TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "58e3f2460d24f150b4b0496177a428a3960371e04f27fcb4da1be2fbada33ab9",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "e16d48b2f14782a2b60998aa15abe61c46fada47d881e86d4fb70edc239d8dc4",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out_alwaysblock is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "e16d48b2f14782a2b60998aa15abe61c46fada47d881e86d4fb70edc239d8dc4",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "e16d48b2f14782a2b60998aa15abe61c46fada47d881e86d4fb70edc239d8dc4",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out_alwaysblock is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit AND gate, implemented as an assign statement and a combinational\n// always block.\nmodule TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "a4f5bb65d5888052d2dac0da4827da4d81ccc9e6b75ac9f8ffccc95c74b4da21",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "e16d48b2f14782a2b60998aa15abe61c46fada47d881e86d4fb70edc239d8dc4",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out_alwaysblock is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "b74b708339ec8f0e0b4410f77c1756b047d72946b32b682dc21ae5d4411e8b9a",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "b74b708339ec8f0e0b4410f77c1756b047d72946b32b682dc21ae5d4411e8b9a",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out_alwaysblock is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "b74b708339ec8f0e0b4410f77c1756b047d72946b32b682dc21ae5d4411e8b9a",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "b74b708339ec8f0e0b4410f77c1756b047d72946b32b682dc21ae5d4411e8b9a",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out_alwaysblock is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit AND gate, implemented using an assign statement and an always\n// block (in the same clock domain).\nmodule TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "f3cf68f10988c6e3bc5921380292ed51d4bcb48bde5d2c3dbe3e547399f097d3",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "e16d48b2f14782a2b60998aa15abe61c46fada47d881e86d4fb70edc239d8dc4",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out_alwaysblock is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "b74b708339ec8f0e0b4410f77c1756b047d72946b32b682dc21ae5d4411e8b9a",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "b74b708339ec8f0e0b4410f77c1756b047d72946b32b682dc21ae5d4411e8b9a",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out_alwaysblock is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit AND gate, implemented as an assign statement and a combinational\n// always block, with the same function. The two outputs should be identical.\nmodule TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "5c6292905c7e342d63bf219b05737b04c040de77090f10df8a7310483052b025",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "e16d48b2f14782a2b60998aa15abe61c46fada47d881e86d4fb70edc239d8dc4",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out_alwaysblock is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit AND gate, both assign and always block\nmodule TopModule (\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "02643c2372387bc4423037b9266b5d6e09ae68de28b5d50d197755f025e1f430",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "b74b708339ec8f0e0b4410f77c1756b047d72946b32b682dc21ae5d4411e8b9a",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out_alwaysblock is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit AND gate, implemented with an assign statement and an always\n// block.\nmodule TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "3ea675b8ae3ff351f58a0265aee2dfdb0d88374016dc00d045db6ed719b8d8c3",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "e16d48b2f14782a2b60998aa15abe61c46fada47d881e86d4fb70edc239d8dc4",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out_alwaysblock is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit AND gate, implemented as an assign statement and a combinational\n// always block.\nmodule TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "a4f5bb65d5888052d2dac0da4827da4d81ccc9e6b75ac9f8ffccc95c74b4da21",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "e16d48b2f14782a2b60998aa15abe61c46fada47d881e86d4fb70edc239d8dc4",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input a,\n    input b,\n    output reg out_assign,\n    output reg out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "d8de241fa247e5617de7645edb658380cc5624a18b3d32fdb81f811aa18eaefd",
+      "rtl": "module TopModule(\n    input a,\n    input b,\n    output reg out_assign,\n    output reg out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "d8de241fa247e5617de7645edb658380cc5624a18b3d32fdb81f811aa18eaefd",
+      "sample_index": 14,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out_alwaysblock is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "e16d48b2f14782a2b60998aa15abe61c46fada47d881e86d4fb70edc239d8dc4",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "e16d48b2f14782a2b60998aa15abe61c46fada47d881e86d4fb70edc239d8dc4",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out_alwaysblock is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "b74b708339ec8f0e0b4410f77c1756b047d72946b32b682dc21ae5d4411e8b9a",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "b74b708339ec8f0e0b4410f77c1756b047d72946b32b682dc21ae5d4411e8b9a",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out_alwaysblock is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit AND gate, implemented as both an assign statement and a combinational\n// always block (the two paths are identical, so the gate is fully\n// combinational).\nmodule TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "6099c3ad46b4661cedcb5b6c2107ceab250d5375df5ef408dd1c0019b86243dd",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "e16d48b2f14782a2b60998aa15abe61c46fada47d881e86d4fb70edc239d8dc4",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out_alwaysblock is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit AND gate, implemented as an assign statement and a combinational\n// always block. Same result.\nmodule TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "b0e0f68f4d267dafd99f0fe8409c1b37097df02c9cd3abb28f17cdc472455a01",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "e16d48b2f14782a2b60998aa15abe61c46fada47d881e86d4fb70edc239d8dc4",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out_alwaysblock is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit AND gate implemented with an assign statement and an always block\nmodule TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "29a646d9ff5b7bfc4d457a800d008a0fd19caad9e47fe5d67353b2c2a357fd4d",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output out_assign,\n    output out_alwaysblock\n);\n    assign out_assign = a & b;\n    always @(*) out_alwaysblock = a & b;\nendmodule",
+      "rtl_raw_sha256": "e16d48b2f14782a2b60998aa15abe61c46fada47d881e86d4fb70edc239d8dc4",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 1,
+    "compile_fail": 19
+  },
+  "testbench_raw_sha256": "a22407ed040fbae0318860a70409e5de3f8c324983fe5bd0d77e1912f4af6fbd",
+  "training_seed": 2
+}

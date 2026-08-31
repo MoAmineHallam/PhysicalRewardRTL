@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob147_circuit10",
+  "problem_seed": 1792515011188482950,
+  "prompt_raw_sha256": "35e57c1d4031ba2a229da50b82c0b018de20cb9ab3e29afb6e25d927db5e9c49",
+  "reference_raw_sha256": "2dcf39be47b8847f2e6a831112633d3a917efd2ba45268488155a0d27dc8c9b7",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "16/232 mismatches",
+      "raw_completion": "// One-bit sequential circuit with combinational logic stage. The output of the\n// flip-flop has been made observable through the output state.\nmodule TopModule (\n    input  clk,\n    input  a,\n    input  b,\n    output q,\n    output state\n);\n    wire f1;\n    reg  r1;\n    assign f1 = a & b;\n    always @(posedge clk) begin\n        r1 <= f1;\n    end\n    assign q = r1;\n    assign state = r1;\nendmodule",
+      "raw_completion_raw_sha256": "c7dfe57df826866c98312f83ba332fb01ec158427bdbbab997dff03bc91e1d58",
+      "rtl": "module TopModule (\n    input  clk,\n    input  a,\n    input  b,\n    output q,\n    output state\n);\n    wire f1;\n    reg  r1;\n    assign f1 = a & b;\n    always @(posedge clk) begin\n        r1 <= f1;\n    end\n    assign q = r1;\n    assign state = r1;\nendmodule",
+      "rtl_raw_sha256": "22207208934ea6d2fefe7639c559f8e7effc914f68d2ce2a3861db1755308675",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "36/232 mismatches",
+      "raw_completion": "// One-bit sequential circuit with combinational logic\nmodule TopModule(input clk, input a, input b, output reg q, output reg state);\n    reg [1:0] mem;\n    always @(posedge clk) begin\n        mem <= {a ^ b, mem[1]};\n        state <= mem[1];\n        q <= mem[0];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "24ac324c75c478eb355b6688884913f24fc5af097e144c24bd50be6d87148b8c",
+      "rtl": "module TopModule(input clk, input a, input b, output reg q, output reg state);\n    reg [1:0] mem;\n    always @(posedge clk) begin\n        mem <= {a ^ b, mem[1]};\n        state <= mem[1];\n        q <= mem[0];\n    end\nendmodule",
+      "rtl_raw_sha256": "b67b3dffc5f5d09c76f2918b85bfee22c529c848ecdad8a72154cec92e3b0b1a",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "229/232 mismatches",
+      "raw_completion": "// Sequential circuit: combinational logic + one-bit memory (flip-flop)\n// The output of the flip-flop has been made observable through the output\n// state.\nmodule TopModule(input clk, input a, input b, output reg q, output reg state);\n  reg [1:0] mem;\n  always @(posedge clk) begin\n    mem <= {a ^ b, mem[0]};\n    q <= mem[1];\n    state <= mem[0];\n  end\nendmodule",
+      "raw_completion_raw_sha256": "9996f28b6e20fd871f771bc0d303e61153142ef7da9157e3dbba70e7634e863f",
+      "rtl": "module TopModule(input clk, input a, input b, output reg q, output reg state);\n  reg [1:0] mem;\n  always @(posedge clk) begin\n    mem <= {a ^ b, mem[0]};\n    q <= mem[1];\n    state <= mem[0];\n  end\nendmodule",
+      "rtl_raw_sha256": "0487e385976b84457a48a76f50fad7bebe205502bfc0cc94f2a5eb0a30ccf3e1",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: error: f is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Sequential circuit with observable state (same as the reference\n// circuit). The combinational logic is a simple sum of AND gates,\n// followed by a D flip-flop. The output state is the state of the\n// flip-flop.\nmodule TopModule(\n    input  clk,\n    input  a,\n    input  b,\n    output reg q,\n    output reg state\n);\n    wire f;\n    always @(posedge clk) begin\n        f <= a & b;\n        q <= f;\n        state <= q;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "7b0ee9cb88b5e103a0b0565dd9ef16e6bcc8a89ab564830ac9e2c23c8c2a0948",
+      "rtl": "module TopModule(\n    input  clk,\n    input  a,\n    input  b,\n    output reg q,\n    output reg state\n);\n    wire f;\n    always @(posedge clk) begin\n        f <= a & b;\n        q <= f;\n        state <= q;\n    end\nendmodule",
+      "rtl_raw_sha256": "a43255c0679c7691e0e10c14b21d098f692bd624804a97b15210078d22236b17",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "176/232 mismatches",
+      "raw_completion": "// The sequential circuit described in the problem description.\nmodule TopModule(\n    input  clk,\n    input  a,\n    input  b,\n    output reg q,\n    output reg state\n);\n    always @(posedge clk) begin\n        state <= q;\n        q <= (a & ~b) | (~a & ~state);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "cdbd2a2cd17583735b8d749268e32ed3d99ca230438b9ebc0705d0e39d02bf76",
+      "rtl": "module TopModule(\n    input  clk,\n    input  a,\n    input  b,\n    output reg q,\n    output reg state\n);\n    always @(posedge clk) begin\n        state <= q;\n        q <= (a & ~b) | (~a & ~state);\n    end\nendmodule",
+      "rtl_raw_sha256": "7b96471fe4117d2fe2e32513680f74c0d19618c33fd16eff825fabe8907708ae",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "229/232 mismatches",
+      "raw_completion": "// Sequential circuit with combinational logic: the same as the reference\n// circuit, but with the output state explicitly observed (it matches the\n// reference up to the first cycle, then matches the long-term circuit\n// exactly).\nmodule TopModule(input clk, input a, input b, output reg q, output reg state);\n  reg [1:0] mem;\n  always @(posedge clk) begin\n    mem <= {a, b} ^ mem[1:0];\n    state <= mem[0];\n    q <= mem[1];\n  end\nendmodule",
+      "raw_completion_raw_sha256": "c94af672e5253f0bedd35d9b62cd686ca052ca1b9629aafd43fc398c6cbf60a6",
+      "rtl": "module TopModule(input clk, input a, input b, output reg q, output reg state);\n  reg [1:0] mem;\n  always @(posedge clk) begin\n    mem <= {a, b} ^ mem[1:0];\n    state <= mem[0];\n    q <= mem[1];\n  end\nendmodule",
+      "rtl_raw_sha256": "719e1804929468a74c37ca2e7802f0405032cb52f4250c64be47fa7d0daa7fc7",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "28/232 mismatches",
+      "raw_completion": "// One-bit sequential circuit. The combinational logic is inline, so the\n// output of the flip-flop is observable through the output state.\nmodule TopModule(\n    input  clk,\n    input  a,\n    input  b,\n    output reg q,\n    output reg state\n);\n    always @(posedge clk) begin\n        q <= a & ~b | ~a & b;\n        state <= q;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "fe0951b30d25a292196a220d63b1052949853c07d3164d7a2c3be0500dff8258",
+      "rtl": "module TopModule(\n    input  clk,\n    input  a,\n    input  b,\n    output reg q,\n    output reg state\n);\n    always @(posedge clk) begin\n        q <= a & ~b | ~a & b;\n        state <= q;\n    end\nendmodule",
+      "rtl_raw_sha256": "c34403164fc7c38f80c2b9cfebdfecf7ec7c7518c29f1d8a8586e703b6aca316",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob147_circuit10_ref.sv:2: syntax error",
+      "raw_completion": "// Sequential circuit with observable state (same as the reference\n// circuit). The combinational logic is explicitly named so that it can\n// be independently verified to be the same as the reference circuit.\nmodule TopModule(\n  input  clk,\n  input  a,\n  input  b,\n  output q,\n  output state\n);\n  wire and0_out, and1_out, and2_out, and3_out, and4_out, nand0_out, nand1_out, nand2_out, nand3_out, nand4_out, nand5_out, nand6_out, nand7_out, nand8_out, nand9_out, nand10_out, nand11_out, nand12_out, nand13_out, nand14_out, nand15_out, nand16_out, nand17_out, nand18_out, nand19_out, nand20_out, nand21_out, nand22_out, nand23_out, nand24_out, nand25_out, nand26_out, nand27_out, nand28_out, nand29_out, nand30_out, nand31_out, nand32_out, nand33_out, nand34_out, nand35_out, nand36_out, nand37_out, nand38_out, nand39_out, nand40_out, nand41_out, nand42_out, nand43_out, nand44_out, nand45_out, nand46_out, nand47_out, nand48_out, nand49_out, nand50_out, nand51_out, nand52_out, nand53_out, nand54_out, nand55_out, nand56_out, nand57_out, nand58_out, nand59_out, nand60_out, nand61_out, nand62_out, nand63_out, nand64_out, nand65_out, nand66_out, nand67_out, nand68_out, nand69_out, nand70_out, nand71_out, nand72_out, nand73_out, nand74_out, nand75_out, nand76_out, nand77_out, nand78_out, nand79_out, nand80_out, nand81_out, nand82_out, nand83_out, nand84_out, nand85_out, nand86_out, nand87_out, nand88_out, nand89_out, nand90_out, nand91_out, nand92_out, nand93_out, nand94_out, nand95_out, nand96_out, nand97_out, nand98_out, nand99_out, nand100_out, nand101_out, nand102_out, nand103_out, nand104_out, nand105_out, nand106_out, nand107_out, nand108_out, nand109_out, nand110_out, nand111_out, nand112_out, nand113_out, nand114_out, nand115_out, nand116_out, nand117_out, nand118_out, nand119_out, nand120_out, nand121_out, nand122_out, nand123_out, nand124_out, nand125_out, nand126_out, nand127_out, nand128",
+      "raw_completion_raw_sha256": "1ed38f74cdb0431996a7f45636625d16306b654a37ac39e1d8103fb834940144",
+      "rtl": "module TopModule(\n  input  clk,\n  input  a,\n  input  b,\n  output q,\n  output state\n);\n  wire and0_out, and1_out, and2_out, and3_out, and4_out, nand0_out, nand1_out, nand2_out, nand3_out, nand4_out, nand5_out, nand6_out, nand7_out, nand8_out, nand9_out, nand10_out, nand11_out, nand12_out, nand13_out, nand14_out, nand15_out, nand16_out, nand17_out, nand18_out, nand19_out, nand20_out, nand21_out, nand22_out, nand23_out, nand24_out, nand25_out, nand26_out, nand27_out, nand28_out, nand29_out, nand30_out, nand31_out, nand32_out, nand33_out, nand34_out, nand35_out, nand36_out, nand37_out, nand38_out, nand39_out, nand40_out, nand41_out, nand42_out, nand43_out, nand44_out, nand45_out, nand46_out, nand47_out, nand48_out, nand49_out, nand50_out, nand51_out, nand52_out, nand53_out, nand54_out, nand55_out, nand56_out, nand57_out, nand58_out, nand59_out, nand60_out, nand61_out, nand62_out, nand63_out, nand64_out, nand65_out, nand66_out, nand67_out, nand68_out, nand69_out, nand70_out, nand71_out, nand72_out, nand73_out, nand74_out, nand75_out, nand76_out, nand77_out, nand78_out, nand79_out, nand80_out, nand81_out, nand82_out, nand83_out, nand84_out, nand85_out, nand86_out, nand87_out, nand88_out, nand89_out, nand90_out, nand91_out, nand92_out, nand93_out, nand94_out, nand95_out, nand96_out, nand97_out, nand98_out, nand99_out, nand100_out, nand101_out, nand102_out, nand103_out, nand104_out, nand105_out, nand106_out, nand107_out, nand108_out, nand109_out, nand110_out, nand111_out, nand112_out, nand113_out, nand114_out, nand115_out, nand116_out, nand117_out, nand118_out, nand119_out, nand120_out, nand121_out, nand122_out, nand123_out, nand124_out, nand125_out, nand126_out, nand127_out, nand128",
+      "rtl_raw_sha256": "733f16afed3a90e569e4012e084fb9914f7198881ea21e94e06eb0f0e6830abe",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "229/232 mismatches",
+      "raw_completion": "// One-bit sequential circuit, with combinational logic on the\n// transition to the next state. The output state is observable,\n// but the function can be inferred from the combinational logic.\nmodule TopModule(input clk, input a, input b, output reg q, output reg state);\n  reg [1:0] next_state;\n  always @(*) begin\n    case (state)\n      2'b00: next_state = (a & ~b) ? 2'b01 : 2'b00;\n      2'b01: next_state = (a & b) ? 2'b10 : 2'b00;\n      2'b10: next_state = (~a & ~b) ? 2'b11 : 2'b01;\n      2'b11: next_state = (a & b) ? 2'b00 : 2'b10;\n    endcase\n  end\n  always @(posedge clk) begin\n    state <= next_state;\n    q <= (next_state == 2'b00);\n  end\nendmodule",
+      "raw_completion_raw_sha256": "93dbeed59fb85ca93859d53ee061fd72f7fef7d27e000e7dc9bb34e6a79866f9",
+      "rtl": "module TopModule(input clk, input a, input b, output reg q, output reg state);\n  reg [1:0] next_state;\n  always @(*) begin\n    case (state)\n      2'b00: next_state = (a & ~b) ? 2'b01 : 2'b00;\n      2'b01: next_state = (a & b) ? 2'b10 : 2'b00;\n      2'b10: next_state = (~a & ~b) ? 2'b11 : 2'b01;\n      2'b11: next_state = (a & b) ? 2'b00 : 2'b10;\n    endcase\n  end\n  always @(posedge clk) begin\n    state <= next_state;\n    q <= (next_state == 2'b00);\n  end\nendmodule",
+      "rtl_raw_sha256": "5902409121b954197e4e96f38be3f92883632a1826e3e6c837a988cde37e3f36",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "229/232 mismatches",
+      "raw_completion": "// One-bit sequential circuit with combinational logic: the circuit\n// observably functions as a ring counter (a counter where the count\n// wraps around to 0 after reaching the maximum value).\nmodule TopModule(input clk, input a, input b, output reg q, output reg state);\n    reg [1:0] counter;\n    always @(posedge clk) begin\n        counter <= {counter[0], ~(counter[0] ^ counter[1])};\n        state <= counter[1];\n        q <= counter[0];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "19db3c730ba08106932601e2bff5361a707f78f28a9b43c3d9bdfc0377a55c6c",
+      "rtl": "module TopModule(input clk, input a, input b, output reg q, output reg state);\n    reg [1:0] counter;\n    always @(posedge clk) begin\n        counter <= {counter[0], ~(counter[0] ^ counter[1])};\n        state <= counter[1];\n        q <= counter[0];\n    end\nendmodule",
+      "rtl_raw_sha256": "43b1598c45a7854dbd8983d7f5d52384a1ca3c0cfb7420e62a77f6bf003efcd1",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "22/232 mismatches",
+      "raw_completion": "// Sequential circuit, combinational logic and one bit of memory. The output\n// of the flip-flop has been made observable through the output state.\nmodule TopModule(\n    input  clk,\n    input  a,\n    input  b,\n    output reg q,\n    output reg state\n);\n    wire w1 = a & ~b;\n    reg  r;\n    always @(posedge clk) begin\n        r <= w1;\n        q <= r;\n        state <= r;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "18e98c7127e373a7c15c5410301cf40df4303112254618b590e520c83da03dc3",
+      "rtl": "module TopModule(\n    input  clk,\n    input  a,\n    input  b,\n    output reg q,\n    output reg state\n);\n    wire w1 = a & ~b;\n    reg  r;\n    always @(posedge clk) begin\n        r <= w1;\n        q <= r;\n        state <= r;\n    end\nendmodule",
+      "rtl_raw_sha256": "6dc4898d1636bf3955f1ef006699b8fc13a9dab4af3b45faac6309e5eb0c59ef",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "223/232 mismatches",
+      "raw_completion": "// One-bit sequential circuit (flip-flop, register, counter, ...)\n// as a combinational function of the inputs and the previous state.\nmodule TopModule(\n    input  clk,\n    input  a,\n    input  b,\n    output reg q,\n    output reg state\n);\n    always @(posedge clk) begin\n        {q, state} <= {~a & b | state, a & ~b | ~state};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "2a8985f888d75789cf5c0947e22be50f9aff5e60d2240fbf6bdb1f85d495be9a",
+      "rtl": "module TopModule(\n    input  clk,\n    input  a,\n    input  b,\n    output reg q,\n    output reg state\n);\n    always @(posedge clk) begin\n        {q, state} <= {~a & b | state, a & ~b | ~state};\n    end\nendmodule",
+      "rtl_raw_sha256": "31ca3ada6f2cf78e41ed677535fd3769a9682857f22b57ac06f4c1152848b3f3",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "227/232 mismatches",
+      "raw_completion": "// Sequential circuit: combinational logic + one bit of memory\nmodule TopModule(\n    input  clk,\n    input  a,\n    input  b,\n    output reg q,\n    output reg state\n);\n    reg next_q;\n    reg next_state;\n    always @(*) begin\n        next_q = a & ~b | ~a & q;\n        next_state = a & b | a & ~q | ~a & ~b;\n    end\n    always @(posedge clk) begin\n        q <= next_q;\n        state <= next_state;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "518ef56cebe1ce70872c8696b3cc828c4ee3397d7ae34fbbe1b9c9fba91bffd9",
+      "rtl": "module TopModule(\n    input  clk,\n    input  a,\n    input  b,\n    output reg q,\n    output reg state\n);\n    reg next_q;\n    reg next_state;\n    always @(*) begin\n        next_q = a & ~b | ~a & q;\n        next_state = a & b | a & ~q | ~a & ~b;\n    end\n    always @(posedge clk) begin\n        q <= next_q;\n        state <= next_state;\n    end\nendmodule",
+      "rtl_raw_sha256": "aa971035eae1ac29e2b88c37812f0f19fe2ebcc4ca9065403459259b3c729aff",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob147_circuit10_ref.sv:2: syntax error",
+      "raw_completion": "// The sequential circuit described in the problem description. The\n// combinational logic is instantiated as a separate module, so we can\n// test it independently of the sequential part.\nmodule TopModule(\n  input  clk,\n  input  a,\n  input  b,\n  output reg q,\n  output reg state\n);\n  wire        n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14,\n              n15, n16, n17, n18, n19, n20, n21, n22, n23, n24, n25, n26,\n              n27, n28, n29, n30, n31, n32, n33, n34, n35, n36, n37, n38,\n              n39, n40, n41, n42, n43, n44, n45, n46, n47, n48, n49, n50,\n              n51, n52, n53, n54, n55, n56, n57, n58, n59, n60, n61, n62,\n              n63, n64, n65, n66, n67, n68, n69, n70, n71, n72, n73, n74,\n              n75, n76, n77, n78, n79, n80, n81, n82, n83, n84, n85, n86,\n              n87, n88, n89, n90, n91, n92, n93, n94, n95, n96, n97, n98,\n              n99, n100, n101, n102, n103, n104, n105, n106, n107, n108,\n              n109, n110, n111, n112, n113, n114, n115, n116, n117, n118,\n              n119, n120, n121, n122, n123, n124, n125, n126, n127, n128,\n              n129, n130, n131, n132, n133, n134, n135, n136, n137, n138,\n              n139, n140, n141, n142, n143, n144, n145, n146, n147, n148,\n              n149, n150, n151, n152, n153, n154, n155, n156, n157, n158,\n              n159, n160, n161, n162, n163, n164, n165, n166, n167, n168,\n              n169, n170, n171, n172, n173, n174, n175, n176, n177, n178,\n              n179, n180, n181, n182, n183, n184, n185, n186, n187, n188,\n              n189, n190, n191, n192, n193, n194, n195, n196, n197, n198,\n              n199, n200, n201, n202, n203, n",
+      "raw_completion_raw_sha256": "7e5dfe67ef148d3cff2fb636bf377253c3d3cb1bd80a8e2fec5b63bd15124aa2",
+      "rtl": "module TopModule(\n  input  clk,\n  input  a,\n  input  b,\n  output reg q,\n  output reg state\n);\n  wire        n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14,\n              n15, n16, n17, n18, n19, n20, n21, n22, n23, n24, n25, n26,\n              n27, n28, n29, n30, n31, n32, n33, n34, n35, n36, n37, n38,\n              n39, n40, n41, n42, n43, n44, n45, n46, n47, n48, n49, n50,\n              n51, n52, n53, n54, n55, n56, n57, n58, n59, n60, n61, n62,\n              n63, n64, n65, n66, n67, n68, n69, n70, n71, n72, n73, n74,\n              n75, n76, n77, n78, n79, n80, n81, n82, n83, n84, n85, n86,\n              n87, n88, n89, n90, n91, n92, n93, n94, n95, n96, n97, n98,\n              n99, n100, n101, n102, n103, n104, n105, n106, n107, n108,\n              n109, n110, n111, n112, n113, n114, n115, n116, n117, n118,\n              n119, n120, n121, n122, n123, n124, n125, n126, n127, n128,\n              n129, n130, n131, n132, n133, n134, n135, n136, n137, n138,\n              n139, n140, n141, n142, n143, n144, n145, n146, n147, n148,\n              n149, n150, n151, n152, n153, n154, n155, n156, n157, n158,\n              n159, n160, n161, n162, n163, n164, n165, n166, n167, n168,\n              n169, n170, n171, n172, n173, n174, n175, n176, n177, n178,\n              n179, n180, n181, n182, n183, n184, n185, n186, n187, n188,\n              n189, n190, n191, n192, n193, n194, n195, n196, n197, n198,\n              n199, n200, n201, n202, n203, n",
+      "rtl_raw_sha256": "f5221487693b3d3b0bea6b26f59d2a5a75cf08a0a0d06dbbb68816dfa8356ece",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "28/232 mismatches",
+      "raw_completion": "// Sequential circuit with observable state\nmodule TopModule(input clk, input a, input b, output reg q, output reg state);\n  reg [1:0] mem;\n  always @(posedge clk) begin\n    {q, mem} <= {~a & mem[1] | b & ~mem[1], ~a & mem[0] | b & mem[1]};\n    state <= mem;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "eae3fa75b9ac57eadbbcc11516dce47b5f93ade1b8b542dd5ed2efd17b062e37",
+      "rtl": "module TopModule(input clk, input a, input b, output reg q, output reg state);\n  reg [1:0] mem;\n  always @(posedge clk) begin\n    {q, mem} <= {~a & mem[1] | b & ~mem[1], ~a & mem[0] | b & mem[1]};\n    state <= mem;\n  end\nendmodule",
+      "rtl_raw_sha256": "9c00960f521120360963f075c767e540ed5128f4f20dcaf76aebacd68b25a23e",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "30/232 mismatches",
+      "raw_completion": "// Sequential circuit with observable state, combinational logic in the\n// transition function.\nmodule TopModule(input clk, input a, input b, output reg q, output reg state);\n  reg [1:0] r;\n  always @(posedge clk) begin\n    r <= {a & ~b, ~a & b};\n    state <= r[1];\n    q <= r[0];\n  end\nendmodule",
+      "raw_completion_raw_sha256": "6a577e63d2467112290f2c71188d64a65f98e72de03ab6f1dfb9d3c1201c6ecb",
+      "rtl": "module TopModule(input clk, input a, input b, output reg q, output reg state);\n  reg [1:0] r;\n  always @(posedge clk) begin\n    r <= {a & ~b, ~a & b};\n    state <= r[1];\n    q <= r[0];\n  end\nendmodule",
+      "rtl_raw_sha256": "eeff30530cc0a529797a4ca35821eedf09473571b52096a90c1c1018f3846bc7",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "229/232 mismatches",
+      "raw_completion": "// One-bit sequential circuit, with observable state output. The circuit\n// consists of combinational logic and one bit of memory (i.e., one\n// flip-flop).\nmodule TopModule(\n  input  clk,\n  input  a,\n  input  b,\n  output reg q,\n  output reg state\n);\n  reg [1:0] comb;\n  always @(*) begin\n    comb = {a, b} ^ state;\n    state = comb[0];\n    q = comb[1];\n  end\n  always @(posedge clk) begin\n    {comb, state, q} <= {comb, state, q};\n  end\nendmodule",
+      "raw_completion_raw_sha256": "c203ebe12b5d70bbfcc7e7ba56420f0e1a0f57c3abcdfe6ff4624353fbd5a831",
+      "rtl": "module TopModule(\n  input  clk,\n  input  a,\n  input  b,\n  output reg q,\n  output reg state\n);\n  reg [1:0] comb;\n  always @(*) begin\n    comb = {a, b} ^ state;\n    state = comb[0];\n    q = comb[1];\n  end\n  always @(posedge clk) begin\n    {comb, state, q} <= {comb, state, q};\n  end\nendmodule",
+      "rtl_raw_sha256": "d3441abe7c7512de29c82372b93a49cf35135435642525f211f77156c3886840",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "229/232 mismatches",
+      "raw_completion": "// One-bit sequential circuit, with observable state output.\nmodule TopModule(input clk, input a, input b, output reg q, output reg state);\n  reg [1:0] next_state;\n  always @(*) begin\n    case ({a, b, state})\n      2'b000: next_state = 2'b00;\n      2'b001: next_state = 2'b01;\n      2'b010: next_state = 2'b00;\n      2'b011: next_state = 2'b01;\n      2'b100: next_state = 2'b10;\n      2'b101: next_state = 2'b01;\n      2'b110: next_state = 2'b10;\n      2'b111: next_state = 2'b01;\n    endcase\n  end\n  always @(posedge clk) begin\n    state <= next_state[1];\n    q <= next_state[0];\n  end\nendmodule",
+      "raw_completion_raw_sha256": "5fbdebfaa5851d11a373f388898f9017ef7c859ed5eeccc722994aec39d34090",
+      "rtl": "module TopModule(input clk, input a, input b, output reg q, output reg state);\n  reg [1:0] next_state;\n  always @(*) begin\n    case ({a, b, state})\n      2'b000: next_state = 2'b00;\n      2'b001: next_state = 2'b01;\n      2'b010: next_state = 2'b00;\n      2'b011: next_state = 2'b01;\n      2'b100: next_state = 2'b10;\n      2'b101: next_state = 2'b01;\n      2'b110: next_state = 2'b10;\n      2'b111: next_state = 2'b01;\n    endcase\n  end\n  always @(posedge clk) begin\n    state <= next_state[1];\n    q <= next_state[0];\n  end\nendmodule",
+      "rtl_raw_sha256": "bc381fb2af0547c1028a84afd88e3d435a9e9febf1aa7cd7843e2867e8148ad0",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "36/232 mismatches",
+      "raw_completion": "// The sequential circuit described in the waveform.\nmodule TopModule(input clk, input a, input b, output reg q, output reg state);\n    reg [1:0] mem;\n    always @(posedge clk) begin\n        mem <= {a ^ b, mem[1]};\n        q <= mem[0];\n        state <= mem[1];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "310cd8593238a1706d97fb1fadda5bf397b68a33c76aaac49260130e5c32e732",
+      "rtl": "module TopModule(input clk, input a, input b, output reg q, output reg state);\n    reg [1:0] mem;\n    always @(posedge clk) begin\n        mem <= {a ^ b, mem[1]};\n        q <= mem[0];\n        state <= mem[1];\n    end\nendmodule",
+      "rtl_raw_sha256": "60b58ea44ccbb20fa0121ac540e89bacc70be452bec93117ac9f709ddd5ae767",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "221/232 mismatches",
+      "raw_completion": "// Sequential circuit with observable state (same as the reference\n// circuit). The output of the flip-flop has been made observable\n// through the output state.\nmodule TopModule(input clk, input a, input b, output reg q, output reg state);\n  reg [1:0] p;\n  always @(posedge clk) begin\n    p <= {a, b};\n    case (p)\n      2'b00: begin q <= 1; state <= 1; end\n      2'b01: begin q <= 0; state <= 0; end\n      2'b10: begin q <= 0; state <= 0; end\n      2'b11: begin q <= 1; state <= 0; end\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "079893d43655729bb0e7b570754bf2240a69be2953ce8c4c535d9452c7275dc2",
+      "rtl": "module TopModule(input clk, input a, input b, output reg q, output reg state);\n  reg [1:0] p;\n  always @(posedge clk) begin\n    p <= {a, b};\n    case (p)\n      2'b00: begin q <= 1; state <= 1; end\n      2'b01: begin q <= 0; state <= 0; end\n      2'b10: begin q <= 0; state <= 0; end\n      2'b11: begin q <= 1; state <= 0; end\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "98baa6ded061326a42f6d18242ea47ab7cf2cf607cf57705c697820271979b25",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 3,
+    "fail": 17
+  },
+  "testbench_raw_sha256": "8740465ba59035be5f35aa0647cf25ca6552ec74d0dfb0647a13273c973f6335",
+  "training_seed": 2
+}

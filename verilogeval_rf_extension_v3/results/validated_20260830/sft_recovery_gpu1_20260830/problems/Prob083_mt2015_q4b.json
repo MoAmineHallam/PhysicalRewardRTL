@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob083_mt2015_q4b",
+  "problem_seed": 7031172687577676813,
+  "prompt_raw_sha256": "a510057c5c343e7e48708a60c3d0d8f861656c7be4c04628e5375d848eab0c69",
+  "reference_raw_sha256": "bc3e16ff3466e559770a931c4f21532e30465c4efe5f2b01f9e101838245eedf",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(input x, input y, output z);\n    reg [1:0] state;\n    always @(*) begin\n        case ({x, y})\n            2'b00: state = 2'b10;\n            2'b01: state = 2'b01;\n            2'b10: state = 2'b01;\n            2'b11: state = 2'b11;\n        endcase\n    end\n    assign z = state[1];\nendmodule",
+      "raw_completion_raw_sha256": "c6e3cff142d37d0729808299167be77a31adea89766080e85b946d3b66b61817",
+      "rtl": "module TopModule(input x, input y, output z);\n    reg [1:0] state;\n    always @(*) begin\n        case ({x, y})\n            2'b00: state = 2'b10;\n            2'b01: state = 2'b01;\n            2'b10: state = 2'b01;\n            2'b11: state = 2'b11;\n        endcase\n    end\n    assign z = state[1];\nendmodule",
+      "rtl_raw_sha256": "c6e3cff142d37d0729808299167be77a31adea89766080e85b946d3b66b61817",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit combinational circuit\nmodule TopModule(input x, y, output z);\n    wire w1 = x & y;\n    wire w2 = ~(x | y);\n    assign z = w1 | w2;\nendmodule",
+      "raw_completion_raw_sha256": "fc1c3e60ae5115e8215eb469c294e6386bd59a53cf9f7a790df8d4c2164ae97e",
+      "rtl": "module TopModule(input x, y, output z);\n    wire w1 = x & y;\n    wire w2 = ~(x | y);\n    assign z = w1 | w2;\nendmodule",
+      "rtl_raw_sha256": "abb5f0448162fd13b042e9d68ce61f25b7883a4273a51dfc5cc4bc73d71d2248",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "110/110 mismatches",
+      "raw_completion": "// One-bit combinational logic with long-delay path. Same as the reference\n// design, but with an extra combinational stage inserted in the function\n// (longer delay -> faster simulation).\nmodule TopModule(input x, input y, output reg z);\n  reg [1:0] a;\n  always @(*) a <= ~(x & y);\n  always @(posedge a) #10 z <= ~(x & y);\nendmodule",
+      "raw_completion_raw_sha256": "a375f3ef7ddf4fb0945e29c168420a7ca5d49e708792ad97e1bf98018d2b32d3",
+      "rtl": "module TopModule(input x, input y, output reg z);\n  reg [1:0] a;\n  always @(*) a <= ~(x & y);\n  always @(posedge a) #10 z <= ~(x & y);\nendmodule",
+      "rtl_raw_sha256": "e1d76bf33ee3fbf490b151870cdf17567577f6b17461d62e8a04de7b5e9d5497",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: error: z is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input  x,\n    input  y,\n    output z\n);\n    reg [1:0] state;\n    always @(*) begin\n        case (state)\n            2'b00: begin\n                z = 1;\n                if (x == 1) state = 2'b01;\n                else if (y == 1) state = 2'b10;\n            end\n            2'b01: begin\n                z = 1;\n                if (x == 0) state = 2'b00;\n                else if (y == 1) state = 2'b10;\n            end\n            2'b10: begin\n                z = 0;\n                if (x == 0) state = 2'b00;\n                else if (y == 0) state = 2'b01;\n            end\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "9761373f46fc5253d7ecc2c4abf229785e118f24bd4c9ab7fb8129b80ea35dff",
+      "rtl": "module TopModule (\n    input  x,\n    input  y,\n    output z\n);\n    reg [1:0] state;\n    always @(*) begin\n        case (state)\n            2'b00: begin\n                z = 1;\n                if (x == 1) state = 2'b01;\n                else if (y == 1) state = 2'b10;\n            end\n            2'b01: begin\n                z = 1;\n                if (x == 0) state = 2'b00;\n                else if (y == 1) state = 2'b10;\n            end\n            2'b10: begin\n                z = 0;\n                if (x == 0) state = 2'b00;\n                else if (y == 0) state = 2'b01;\n            end\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "9761373f46fc5253d7ecc2c4abf229785e118f24bd4c9ab7fb8129b80ea35dff",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "86/110 mismatches",
+      "raw_completion": "// One-bit combinational function\nmodule TopModule (\n    input  x,\n    input  y,\n    output z\n);\n    wire w1 = x & ~y;\n    wire w2 = ~x & y;\n    wire w3 = ~x & ~y;\n    wire w4 = x & y;\n    reg [1:0] sel;\n    always @(*) begin\n        case ({w1, w2, w3, w4})\n            2'b01: sel = 2'b00;\n            2'b10: sel = 2'b00;\n            2'b11: sel = 2'b00;\n            2'b00: sel = 2'b01;\n        endcase\n    end\n    assign z = sel[0];\nendmodule",
+      "raw_completion_raw_sha256": "f5ad3d6afb2d5afe956c8599c24ef175cbb9ca323f640caa74f4e2e4b0ba9100",
+      "rtl": "module TopModule (\n    input  x,\n    input  y,\n    output z\n);\n    wire w1 = x & ~y;\n    wire w2 = ~x & y;\n    wire w3 = ~x & ~y;\n    wire w4 = x & y;\n    reg [1:0] sel;\n    always @(*) begin\n        case ({w1, w2, w3, w4})\n            2'b01: sel = 2'b00;\n            2'b10: sel = 2'b00;\n            2'b11: sel = 2'b00;\n            2'b00: sel = 2'b01;\n        endcase\n    end\n    assign z = sel[0];\nendmodule",
+      "rtl_raw_sha256": "a3d81323c567859d9fd9ba582f123932e401a244c5d1d22242995607d28c9812",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:15: error: z is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n  input  x,\n  input  y,\n  output z\n);\n  reg [1:0] state;\n  always @(*) begin\n    case ({x, y})\n      2'b00: state = 2'b00;\n      2'b01: state = 2'b01;\n      2'b10: state = 2'b10;\n      2'b11: state = 2'b11;\n    endcase\n  end\n  always @(posedge state[0]) z <= 1;\n  always @(posedge state[1]) z <= 0;\nendmodule",
+      "raw_completion_raw_sha256": "2a0837808a77a46630a5c56e65a37e37c271604bed606c6918c55305541b20f7",
+      "rtl": "module TopModule (\n  input  x,\n  input  y,\n  output z\n);\n  reg [1:0] state;\n  always @(*) begin\n    case ({x, y})\n      2'b00: state = 2'b00;\n      2'b01: state = 2'b01;\n      2'b10: state = 2'b10;\n      2'b11: state = 2'b11;\n    endcase\n  end\n  always @(posedge state[0]) z <= 1;\n  always @(posedge state[1]) z <= 0;\nendmodule",
+      "rtl_raw_sha256": "2a0837808a77a46630a5c56e65a37e37c271604bed606c6918c55305541b20f7",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: z is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Simulation waveform matches the description above.\nmodule TopModule(\n    input  x,\n    input  y,\n    output z\n);\n    reg [2:0] state;\n    always @(*) begin\n        case (state)\n            3'b000: begin z <= 1; state <= (x & ~y) ? 3'b001 : 3'b000; end\n            3'b001: begin z <= 1; state <= (x & ~y) ? 3'b001 : 3'b010; end\n            3'b010: begin z <= 1; state <= (x & ~y) ? 3'b001 : 3'b100; end\n            3'b100: begin z <= 0; state <= (~x & y) ? 3'b101 : 3'b000; end\n            3'b101: begin z <= 0; state <= (~x & y) ? 3'b101 : 3'b011; end\n            3'b011: begin z <= 0; state <= (~x & y) ? 3'b101 : 3'b110; end\n            3'b110: begin z <= 1; state <= (x & y) ? 3'b111 : 3'b000; end\n            3'b111: begin z <= 1; state <= (x & y) ? 3'b111 : 3'b001; end\n            default: begin z <= 1; state <= 3'b000; end\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "882753285b1a369c95b54d863fc8bef60d8493c0f2cec422cd094e75b3903433",
+      "rtl": "module TopModule(\n    input  x,\n    input  y,\n    output z\n);\n    reg [2:0] state;\n    always @(*) begin\n        case (state)\n            3'b000: begin z <= 1; state <= (x & ~y) ? 3'b001 : 3'b000; end\n            3'b001: begin z <= 1; state <= (x & ~y) ? 3'b001 : 3'b010; end\n            3'b010: begin z <= 1; state <= (x & ~y) ? 3'b001 : 3'b100; end\n            3'b100: begin z <= 0; state <= (~x & y) ? 3'b101 : 3'b000; end\n            3'b101: begin z <= 0; state <= (~x & y) ? 3'b101 : 3'b011; end\n            3'b011: begin z <= 0; state <= (~x & y) ? 3'b101 : 3'b110; end\n            3'b110: begin z <= 1; state <= (x & y) ? 3'b111 : 3'b000; end\n            3'b111: begin z <= 1; state <= (x & y) ? 3'b111 : 3'b001; end\n            default: begin z <= 1; state <= 3'b000; end\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "469a0fbb1a9e7e3c1c296f1cc36d41d70a2792e1bfaee6017889dba3b9eef8f3",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:2: error: No function named `f_1bit_comb' found in this context (tb.top_module1).",
+      "raw_completion": "// One-bit combinational function. The delay is set to match the simulation\n// waveform.\nfunction reg [1:0] f_1bit_comb (input reg x, input reg y);\n  #1  return (~x & ~y) | (x & y);\n  #5  return (~x & ~y) | (x & y);\n  #10 return (~x & ~y) | (x & y);\n  #15 return (~x & ~y) | (x & y);\n  #20 return (~x & ~y) | (x & y);\n  #25 return (x & ~y) | (~x & y);\n  #30 return (x & ~y) | (~x & y);\n  #35 return (~x & y) | (x & ~y);\n  #40 return (~x & y) | (x & ~y);\n  #45 return (x & y) | (~x & ~y);\n  #50 return (x & y) | (~x & ~y);\n  #55 return (~x & ~y) | (x & y);\n  #60 return (~x & y) | (x & ~y);\n  #65 return (~x & y) | (x & ~y);\n  #70 return (x & y) | (~x & ~y);\n  #75 return (~x & y) | (x & ~y);\n  #80 return (~x & y) | (x & ~y);\n  #85 return (~x & y) | (x & ~y);\n  #90 return (x & ~y) | (~x & y);\nendfunction\n\n// TopModule, as described in the problem description.\nmodule TopModule (input x, input y, output reg z);\n  always @(*) z = f_1bit_comb(x, y);\nendmodule",
+      "raw_completion_raw_sha256": "12a7dda6851a100195a8a7323b998029a487d9bbf79bbf7d66bdfa065b4c591f",
+      "rtl": "module TopModule (input x, input y, output reg z);\n  always @(*) z = f_1bit_comb(x, y);\nendmodule",
+      "rtl_raw_sha256": "08281ae92674aab8da7a1b6447b8f8f7871e71bccc5da903dcff3bf7d9ecc815",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "89/110 mismatches",
+      "raw_completion": "// One-bit combinational function: AND gate\nmodule TopModule(input x, input y, output z);\n    wire w1 = x & y;\n    assign z = ~w1;\nendmodule",
+      "raw_completion_raw_sha256": "732c3c2d4d43528e33806eb1aa2d2b9cac76030046b62665e4a4557b20c2a990",
+      "rtl": "module TopModule(input x, input y, output z);\n    wire w1 = x & y;\n    assign z = ~w1;\nendmodule",
+      "rtl_raw_sha256": "633dbbd93e15695a866eed72cbe3510092d3a0135783d7eab8acfbcde427bd10",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "110/110 mismatches",
+      "raw_completion": "// One-bit combinational logic with a long-ish path (a long path is the key to\n// meet the critical path)\nmodule TopModule(input x, input y, output reg z);\n  always @(*) begin\n    #1;\n    z = (x & ~y) | (~x & y);\n  end\nendmodule",
+      "raw_completion_raw_sha256": "ea83b17f82f445498d498bf73068fe856fad477813426bf4dfa979f9f0e10dbc",
+      "rtl": "module TopModule(input x, input y, output reg z);\n  always @(*) begin\n    #1;\n    z = (x & ~y) | (~x & y);\n  end\nendmodule",
+      "rtl_raw_sha256": "420eec85a9f48115ad5aeaceb42913d3d23b8c9267784946c627fced2afef78d",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "53/110 mismatches",
+      "raw_completion": "module TopModule (\n    input x,\n    input y,\n    output z\n);\n    reg [1:0] state;\n    always @(*) begin\n        case ({x, y})\n            2'b00: state = 2'b01;\n            2'b01: state = 2'b10;\n            2'b10: state = 2'b00;\n            2'b11: state = 2'b11;\n        endcase\n    end\n    assign z = ~state[1];\nendmodule",
+      "raw_completion_raw_sha256": "2795696cad9afaa6e32586ed0c10bc1fa8b8ff041e266e5e049735f8491f53f2",
+      "rtl": "module TopModule (\n    input x,\n    input y,\n    output z\n);\n    reg [1:0] state;\n    always @(*) begin\n        case ({x, y})\n            2'b00: state = 2'b01;\n            2'b01: state = 2'b10;\n            2'b10: state = 2'b00;\n            2'b11: state = 2'b11;\n        endcase\n    end\n    assign z = ~state[1];\nendmodule",
+      "rtl_raw_sha256": "2795696cad9afaa6e32586ed0c10bc1fa8b8ff041e266e5e049735f8491f53f2",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "89/110 mismatches",
+      "raw_completion": "// Simulation waveform:\n//   time  x  y  z\n//   0ns   0  0  1\n//   5ns   0  0  1\n//   10ns  0  0  1\n//   15ns  0  0  1\n//   20ns  0  0  1\n//   25ns  1  0  0\n//   30ns  1  0  0\n//   35ns  0  1  0\n//   40ns  0  1  0\n//   45ns  1  1  1\n//   50ns  1  1  1\n//   55ns  0  0  1\n//   60ns  0  1  0\n//   65ns  0  1  0\n//   70ns  1  1  1\n//   75ns  0  1  0\n//   80ns  0  1  0\n//   85ns  0  1  0\n//   90ns  1  0  0\nmodule TopModule (\n  input x,\n  input y,\n  output z\n);\n  reg [2:0] state;\n  always @(*) begin\n    case ({x, y})\n      2'b00: state = 3'b001;\n      2'b01: state = 3'b001;\n      2'b10: state = 3'b001;\n      2'b11: state = 3'b110;\n    endcase\n  end\n  assign z = ~state[2];\nendmodule",
+      "raw_completion_raw_sha256": "d67343ccef234efb19ae2e53e34ca340e74c55fb3206af2dd792c60427328a64",
+      "rtl": "module TopModule (\n  input x,\n  input y,\n  output z\n);\n  reg [2:0] state;\n  always @(*) begin\n    case ({x, y})\n      2'b00: state = 3'b001;\n      2'b01: state = 3'b001;\n      2'b10: state = 3'b001;\n      2'b11: state = 3'b110;\n    endcase\n  end\n  assign z = ~state[2];\nendmodule",
+      "rtl_raw_sha256": "d83cc73858fec754b21e860d810746efccd21162b065d88f9e35a62443b9f246",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input x,\n    input y,\n    output reg z\n);\n    always @(*) begin\n        case ({x, y})\n            2'b00: z = 1;\n            2'b01: z = 0;\n            2'b10: z = 0;\n            2'b11: z = 1;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "1f8b8262ea9f0c57e7dedf214827b517d519ecfd306ae0a52594f89d103f29b3",
+      "rtl": "module TopModule (\n    input x,\n    input y,\n    output reg z\n);\n    always @(*) begin\n        case ({x, y})\n            2'b00: z = 1;\n            2'b01: z = 0;\n            2'b10: z = 0;\n            2'b11: z = 1;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "1f8b8262ea9f0c57e7dedf214827b517d519ecfd306ae0a52594f89d103f29b3",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "110/110 mismatches",
+      "raw_completion": "// One-bit combinational logic with a long delay, to demonstrate a\n// simulation waveform that's not a piecewise-constant function of time.\nmodule TopModule (\n    input  x,\n    input  y,\n    output z\n);\n    reg [7:0] delay;\n    always @(*) begin\n        case ({x, y})\n            2'b00: delay = 8'd1;\n            2'b01: delay = 8'd2;\n            2'b10: delay = 8'd3;\n            2'b11: delay = 8'd4;\n        endcase\n    end\n    assign #delay z = ~x & ~y;\nendmodule",
+      "raw_completion_raw_sha256": "b07ac580cd68aafae1f9afa25c5559b2cfafad0768215fc7519c42f6a0e1ccaa",
+      "rtl": "module TopModule (\n    input  x,\n    input  y,\n    output z\n);\n    reg [7:0] delay;\n    always @(*) begin\n        case ({x, y})\n            2'b00: delay = 8'd1;\n            2'b01: delay = 8'd2;\n            2'b10: delay = 8'd3;\n            2'b11: delay = 8'd4;\n        endcase\n    end\n    assign #delay z = ~x & ~y;\nendmodule",
+      "rtl_raw_sha256": "bfc9ac73546da1b1bdd4ffb4abb8869ed65c6b6d04a7e9f5887f6f78ddc105b6",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: error: z is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input x,\n    input y,\n    output z\n);\n    reg [1:0] state;\n    always @(*) begin\n        case (state)\n            2'b00: begin\n                z = 1;\n                if (x) state = 2'b01;\n            end\n            2'b01: begin\n                z = 1;\n                if (x) state = 2'b10; else state = 2'b00;\n            end\n            2'b10: begin\n                z = 0;\n                if (y) state = 2'b01; else state = 2'b00;\n            end\n            default: state = 2'b00;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "83a4347fec10c2058b9d90c2e8c1c191d3aeb0c7a1da885afd9037fd20e4f647",
+      "rtl": "module TopModule (\n    input x,\n    input y,\n    output z\n);\n    reg [1:0] state;\n    always @(*) begin\n        case (state)\n            2'b00: begin\n                z = 1;\n                if (x) state = 2'b01;\n            end\n            2'b01: begin\n                z = 1;\n                if (x) state = 2'b10; else state = 2'b00;\n            end\n            2'b10: begin\n                z = 0;\n                if (y) state = 2'b01; else state = 2'b00;\n            end\n            default: state = 2'b00;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "83a4347fec10c2058b9d90c2e8c1c191d3aeb0c7a1da885afd9037fd20e4f647",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Synchronous one-bit combinational circuit\nmodule TopModule(input x, input y, output reg z);\n  always @(*) begin\n    case ({x, y})\n      2'b00: z = 1;\n      2'b01: z = 0;\n      2'b10: z = 0;\n      2'b11: z = 1;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "bed877fd3595983153d9b527569131def2072877248a61ad40f3109e9c6e33fe",
+      "rtl": "module TopModule(input x, input y, output reg z);\n  always @(*) begin\n    case ({x, y})\n      2'b00: z = 1;\n      2'b01: z = 0;\n      2'b10: z = 0;\n      2'b11: z = 1;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "c7dfed7738c7f153917c3ee60a358f83dbd917f2be36a762fd312c901ffa121c",
+      "sample_index": 15,
+      "status": "PASS"
+    },
+    {
+      "detail": "65/110 mismatches",
+      "raw_completion": "// One-bit combinational circuit, described by a simulation waveform.\nmodule TopModule(input x, input y, output z);\n  reg [1:0] state;\n  always @(*) begin\n    case ({x, y})\n      2'b00: state = 2'b01;\n      2'b01: state = 2'b01;\n      2'b10: state = 2'b01;\n      2'b11: state = 2'b11;\n    endcase\n  end\n  assign z = state[0];\nendmodule",
+      "raw_completion_raw_sha256": "85b3fe6095b4b3eaf2157628b781857b2a156a7ce6880c1bbe638839b3cd0f80",
+      "rtl": "module TopModule(input x, input y, output z);\n  reg [1:0] state;\n  always @(*) begin\n    case ({x, y})\n      2'b00: state = 2'b01;\n      2'b01: state = 2'b01;\n      2'b10: state = 2'b01;\n      2'b11: state = 2'b11;\n    endcase\n  end\n  assign z = state[0];\nendmodule",
+      "rtl_raw_sha256": "3d7c0797711fc80dfc57153b807985e2adc9c602021b1c217943036c856a55aa",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: z is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit combinational circuit described by a simulation waveform.\nmodule TopModule (\n    input  x,\n    input  y,\n    output z\n);\n    reg [1:0] state;\n    always @(*) begin\n        case (state)\n            2'b00: begin z <= 1; state <= (x & ~y) ? 2'b01 : 2'b00; end\n            2'b01: begin z <= 1; state <= (x & ~y) ? 2'b10 : 2'b01; end\n            2'b10: begin z <= 0; state <= (~x & y) ? 2'b11 : 2'b10; end\n            2'b11: begin z <= 1; state <= (x & y) ? 2'b00 : 2'b11; end\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "87b02ccb9b98381f03317a4723f5655573722a3c1904a191c355d67c8515e272",
+      "rtl": "module TopModule (\n    input  x,\n    input  y,\n    output z\n);\n    reg [1:0] state;\n    always @(*) begin\n        case (state)\n            2'b00: begin z <= 1; state <= (x & ~y) ? 2'b01 : 2'b00; end\n            2'b01: begin z <= 1; state <= (x & ~y) ? 2'b10 : 2'b01; end\n            2'b10: begin z <= 0; state <= (~x & y) ? 2'b11 : 2'b10; end\n            2'b11: begin z <= 1; state <= (x & y) ? 2'b00 : 2'b11; end\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "7f9fd6c5980da9b34007753927212770ff95767d24116864f6c972522ae51cac",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "89/110 mismatches",
+      "raw_completion": "// One-bit combinational function: AND. Same as the simulation waveform.\nmodule TopModule (\n    input  x,\n    input  y,\n    output z\n);\n    wire w1 = x & y;\n    assign z = ~w1;\nendmodule",
+      "raw_completion_raw_sha256": "d401fd0145165eb4ee09f6534252363926ef1aa263138746be7620f00df227b0",
+      "rtl": "module TopModule (\n    input  x,\n    input  y,\n    output z\n);\n    wire w1 = x & y;\n    assign z = ~w1;\nendmodule",
+      "rtl_raw_sha256": "e3566f9c1d6e54da50963760dd1c245cf104f01ae7b1c8583a1ce44e17c9055c",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input x,\n    input y,\n    output reg z\n);\n    always @(*) begin\n        case ({x, y})\n            2'b00: z = 1;\n            2'b01: z = 0;\n            2'b10: z = 0;\n            2'b11: z = 1;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "1f8b8262ea9f0c57e7dedf214827b517d519ecfd306ae0a52594f89d103f29b3",
+      "rtl": "module TopModule (\n    input x,\n    input y,\n    output reg z\n);\n    always @(*) begin\n        case ({x, y})\n            2'b00: z = 1;\n            2'b01: z = 0;\n            2'b10: z = 0;\n            2'b11: z = 1;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "1f8b8262ea9f0c57e7dedf214827b517d519ecfd306ae0a52594f89d103f29b3",
+      "sample_index": 19,
+      "status": "PASS"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 5,
+    "compile_fail": 6,
+    "fail": 9
+  },
+  "testbench_raw_sha256": "61d8a73905c757bb75943dc7863b3bc9b163273ca0fef0584f6ea86526e19b14",
+  "training_seed": 0
+}

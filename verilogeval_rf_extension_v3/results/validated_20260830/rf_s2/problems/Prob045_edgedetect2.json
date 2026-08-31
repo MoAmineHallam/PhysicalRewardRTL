@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob045_edgedetect2",
+  "problem_seed": 5526528355792345461,
+  "prompt_raw_sha256": "a324f434e49d6794fda35448ea1674d2090797c71c0734c8796d468789efb98a",
+  "reference_raw_sha256": "8b54c0faa026c483b2eb6fdd30f131e954366022d5d951a1ccd343e057f58df8",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] last;\n    always @(posedge clk) begin\n        last <= in;\n        anyedge <= {8{1'b0}};\n        for (int i = 0; i < 8; i = i + 1) begin\n            if (in[i] != last[i]) anyedge[i] <= 1'b1;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a142325fe4faf95d870a401b4be2c87402147d85612da1eef30c3d031df4ca42",
+      "rtl": "module TopModule(\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] last;\n    always @(posedge clk) begin\n        last <= in;\n        anyedge <= {8{1'b0}};\n        for (int i = 0; i < 8; i = i + 1) begin\n            if (in[i] != last[i]) anyedge[i] <= 1'b1;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "a142325fe4faf95d870a401b4be2c87402147d85612da1eef30c3d031df4ca42",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Detect any edge on an 8-bit input. Same as detecting any edge on\n// an AND-reduced version of the input.\nmodule TopModule(input clk, input [7:0] in, output reg [7:0] anyedge);\n    reg [7:0] lastval;\n    always @(posedge clk) begin\n        anyedge <= 8'h00;\n        for (int i = 0; i < 8; i = i + 1)\n            anyedge[i] <= in[i] ^ lastval[i];\n        lastval <= in;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "efd814e0839575e3c462b8a1b8996f34f90a2d2f956621d1d666492fa72684eb",
+      "rtl": "module TopModule(input clk, input [7:0] in, output reg [7:0] anyedge);\n    reg [7:0] lastval;\n    always @(posedge clk) begin\n        anyedge <= 8'h00;\n        for (int i = 0; i < 8; i = i + 1)\n            anyedge[i] <= in[i] ^ lastval[i];\n        lastval <= in;\n    end\nendmodule",
+      "rtl_raw_sha256": "3169ee7ffe6a1930323092a33f6c683bb53d9bfbf705d38c3f584af47c2e4863",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] prev;\n    always @(posedge clk) begin\n        anyedge <= (in ^ prev);\n        prev <= in;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "c3e8c522a7c8ff057ca87d139c13ed117ff542236c465b378b267ed56792eb35",
+      "rtl": "module TopModule(\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] prev;\n    always @(posedge clk) begin\n        anyedge <= (in ^ prev);\n        prev <= in;\n    end\nendmodule",
+      "rtl_raw_sha256": "c3e8c522a7c8ff057ca87d139c13ed117ff542236c465b378b267ed56792eb35",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Detect an edge of any polarity on an 8-bit bus, one bit per stage.\nmodule TopModule (\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] last;\n    integer i;\n    always @(posedge clk) begin\n        for (i = 0; i < 8; i = i + 1) begin\n            anyedge[i] <= in[i] != last[i];\n            last[i] <= in[i];\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "58e2a94487b2891db99452f7d9879cc796a36c8a3ba83ce50fe32f8784839070",
+      "rtl": "module TopModule (\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] last;\n    integer i;\n    always @(posedge clk) begin\n        for (i = 0; i < 8; i = i + 1) begin\n            anyedge[i] <= in[i] != last[i];\n            last[i] <= in[i];\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "e893eae98d245b21eb66744e42dd46e2265f771d607674a145d10b5b36ea483a",
+      "sample_index": 3,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: syntax error",
+      "raw_completion": "// Detect any edge of the 8-bit input signal. The output is a stage-delayed\n// version of the input, i.e. the output is 1 the cycle after the input signal\n// changes from 0 to 1 or from 1 to 0.\nmodule TopModule(\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] in_d1;\n    wire [7:0] edge;\n    always @(posedge clk) begin\n        in_d1 <= in;\n        anyedge <= edge;\n    end\n    genvar i;\n    for (i = 0; i < 8; i = i + 1) begin\n        LATCH_EDGE_D1 #(.INIT(1)) edge0 (\n            .clk(clk), .rst(1'b0), .in(in[i]), .in_d1(in_d1[i]), .out(edge[i])\n        );\n    end\nendmodule",
+      "raw_completion_raw_sha256": "c51b594d36e8d5bbeeae12516491c046f37e449036474260323b0ef14efb71b9",
+      "rtl": "module TopModule(\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] in_d1;\n    wire [7:0] edge;\n    always @(posedge clk) begin\n        in_d1 <= in;\n        anyedge <= edge;\n    end\n    genvar i;\n    for (i = 0; i < 8; i = i + 1) begin\n        LATCH_EDGE_D1 #(.INIT(1)) edge0 (\n            .clk(clk), .rst(1'b0), .in(in[i]), .in_d1(in_d1[i]), .out(edge[i])\n        );\n    end\nendmodule",
+      "rtl_raw_sha256": "ed46918b58ed23734998e5ae9ddd7592489da0941865883281f8b01d43c24a24",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:4: error: anyedge is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(input clk, input [7:0] in, output [7:0] anyedge);\n    reg [7:0] prev;\n    always @(posedge clk) begin\n        anyedge <= in ^ prev;\n        prev <= in;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a0ccdf353aab5bada1235a1f30ec903b848f8775b2fd6d497ec8cdc5c0d303d4",
+      "rtl": "module TopModule(input clk, input [7:0] in, output [7:0] anyedge);\n    reg [7:0] prev;\n    always @(posedge clk) begin\n        anyedge <= in ^ prev;\n        prev <= in;\n    end\nendmodule",
+      "rtl_raw_sha256": "a0ccdf353aab5bada1235a1f30ec903b848f8775b2fd6d497ec8cdc5c0d303d4",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:15: syntax error",
+      "raw_completion": "// Detect any edge of the 8-bit input.\nmodule EdgeDetect (\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] latched;\n    always @(posedge clk) latched <= in;\n    genvar i;\n    generate for (i = 0; i < 8; i = i + 1) begin : g\n        always @(posedge clk) begin\n            if (in[i] != latched[i]) anyedge[i] <= 1;\n            else anyedge[i] <= 0;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "dc270c5f9b02c1914c58f3c2967f8c1912370f7e607cdacc34d55d264f66c6c2",
+      "rtl": "module EdgeDetect (\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] latched;\n    always @(posedge clk) latched <= in;\n    genvar i;\n    generate for (i = 0; i < 8; i = i + 1) begin : g\n        always @(posedge clk) begin\n            if (in[i] != latched[i]) anyedge[i] <= 1;\n            else anyedge[i] <= 0;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "720a123a61b99125bd159158e6258d9d2c48637b8f96ca873d6348dce8f5663d",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: syntax error",
+      "raw_completion": "// Detect any edge in 8-bit input, one bit per stage\nmodule EdgeDetect8 (\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] prev;\n    wire [7:0] edge;\n    assign edge = ~prev & in;\n    always @(posedge clk) begin\n        anyedge <= edge;\n        prev <= in;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "1dc5d14643d667f86d2df48506dbc0f5ac5aa7aa3be9edac291dcb4f73f35a64",
+      "rtl": "module EdgeDetect8 (\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] prev;\n    wire [7:0] edge;\n    assign edge = ~prev & in;\n    always @(posedge clk) begin\n        anyedge <= edge;\n        prev <= in;\n    end\nendmodule",
+      "rtl_raw_sha256": "2d3b1262e8e7cca48d9f65ab241c8f30893c6791d1a8545b1003c634d298f2af",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob045_edgedetect2_test.sv:94: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit edge-detecting register, inlined into a separate module to make\n// the long upstream path go away.\nmodule EdgeDetect1 (\n    input clk,\n    input in,\n    output reg out\n);\n    reg in_d1;\n    always @(posedge clk) begin\n        out <= in & ~in_d1;\n        in_d1 <= in;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "fcce8116e5effaf0d9d87ef24435ca0371b44b481080029ae01799828ff645f7",
+      "rtl": "module EdgeDetect1 (\n    input clk,\n    input in,\n    output reg out\n);\n    reg in_d1;\n    always @(posedge clk) begin\n        out <= in & ~in_d1;\n        in_d1 <= in;\n    end\nendmodule",
+      "rtl_raw_sha256": "1bcd3d0c0c4c9ec4cef21718b8e0fe1aef7ac56de138423beab45787fc54e07c",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob045_edgedetect2_test.sv:94: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit edge-detecting register, inlined (no register, inline feedback).\nmodule Edge1(input clk, input a, output reg q);\n  reg a_d1;\n  always @(posedge clk) begin\n    q <= a & ~a_d1;\n    a_d1 <= a;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "a4f7c39cdf853a286d8e27446375aff39ea8d605a4bc46ee7959513c1aee5a56",
+      "rtl": "module Edge1(input clk, input a, output reg q);\n  reg a_d1;\n  always @(posedge clk) begin\n    q <= a & ~a_d1;\n    a_d1 <= a;\n  end\nendmodule",
+      "rtl_raw_sha256": "f7d3daf20a7aa4c1e4798bb634f27fffd924a5bfeadf72c621bae34f40579dd9",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: error: anyedge is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Detect any edge of an 8-bit input register. Outputs a 1-cycle pulse\n// for each bit that transitions from 0->1 or 1->0.\nmodule TopModule(input clk, input [7:0] in, output [7:0] anyedge);\n    reg [7:0] din;\n    reg [7:0] last;\n    always @(posedge clk) begin\n        last <= din;\n        din <= in;\n        anyedge <= 8'b0;\n        for (int i = 0; i < 8; i = i + 1)\n            if (din[i] != last[i]) anyedge[i] <= 1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "9e8d61e8f929f8d5829d35b83aa11bdcda10dd3c8c91cc582c54d818a923b992",
+      "rtl": "module TopModule(input clk, input [7:0] in, output [7:0] anyedge);\n    reg [7:0] din;\n    reg [7:0] last;\n    always @(posedge clk) begin\n        last <= din;\n        din <= in;\n        anyedge <= 8'b0;\n        for (int i = 0; i < 8; i = i + 1)\n            if (din[i] != last[i]) anyedge[i] <= 1;\n    end\nendmodule",
+      "rtl_raw_sha256": "bc1980a849cafadd202cdfd0a8c9e4a82861b7ec38f396554acf6f0cc22bc4fc",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: syntax error",
+      "raw_completion": "// Detect any edge of the 8-bit input signal. Output 1 the cycle after the\n// input signal changes from one value to another.\nmodule EdgeDetector (\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] in_d1;\n    wire [7:0] edge;\n    always @(posedge clk) begin\n        in_d1 <= in;\n        edge <= in ^ in_d1;\n        anyedge <= edge & ~(edge & (edge - 1));\n    end\nendmodule",
+      "raw_completion_raw_sha256": "9711c758c0248de588a8c435817193b03124c9f90ac5113636ba9a2ba4a4e11a",
+      "rtl": "module EdgeDetector (\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] in_d1;\n    wire [7:0] edge;\n    always @(posedge clk) begin\n        in_d1 <= in;\n        edge <= in ^ in_d1;\n        anyedge <= edge & ~(edge & (edge - 1));\n    end\nendmodule",
+      "rtl_raw_sha256": "863ed246143df3c56cad18dd9dc3309ba28fcd0e47d7e83cf2c8bdbf1e6ddca3",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "205/228 mismatches",
+      "raw_completion": "module TopModule(\n    input clk,\n    input [7:0] in,\n    output [7:0] anyedge\n);\n    reg [7:0] d1, d2;\n    wire [7:0] edges;\n    always @(posedge clk) begin\n        d1 <= in;\n        d2 <= d1;\n    end\n    assign edges = ~d1 & d2;\n    assign anyedge = edges & (edges << 1);\nendmodule",
+      "raw_completion_raw_sha256": "72a992bd84753b1eac4d89ab2dc95ce8519569eb07626350dfd2eba7f7bed678",
+      "rtl": "module TopModule(\n    input clk,\n    input [7:0] in,\n    output [7:0] anyedge\n);\n    reg [7:0] d1, d2;\n    wire [7:0] edges;\n    always @(posedge clk) begin\n        d1 <= in;\n        d2 <= d1;\n    end\n    assign edges = ~d1 & d2;\n    assign anyedge = edges & (edges << 1);\nendmodule",
+      "rtl_raw_sha256": "72a992bd84753b1eac4d89ab2dc95ce8519569eb07626350dfd2eba7f7bed678",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] last;\n    always @(posedge clk) begin\n        for (int i=0; i<8; i=i+1)\n            anyedge[i] <= (in[i] != last[i]);\n        last <= in;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b6ab6657f0ab35b6b6f7427a3fd1585a75bb45f33133faa05b730ae1a9bb15af",
+      "rtl": "module TopModule(\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] last;\n    always @(posedge clk) begin\n        for (int i=0; i<8; i=i+1)\n            anyedge[i] <= (in[i] != last[i]);\n        last <= in;\n    end\nendmodule",
+      "rtl_raw_sha256": "b6ab6657f0ab35b6b6f7427a3fd1585a75bb45f33133faa05b730ae1a9bb15af",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "187/228 mismatches",
+      "raw_completion": "module TopModule (\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] last;\n    always @(posedge clk) begin\n        anyedge <= (in ^ last) & in;\n        last <= in;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "dfd6242a7fb087aa42255bef3c58b1dafc76d76ff730ee7d5a37ee4c3e528aa3",
+      "rtl": "module TopModule (\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] last;\n    always @(posedge clk) begin\n        anyedge <= (in ^ last) & in;\n        last <= in;\n    end\nendmodule",
+      "rtl_raw_sha256": "dfd6242a7fb087aa42255bef3c58b1dafc76d76ff730ee7d5a37ee4c3e528aa3",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] last;\n    always @(posedge clk) begin\n        anyedge <= in ^ last;\n        last <= in;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "4e3c84b4c5bc7f793b0c7f6403489fd2042eba84e7a8908ca604e79632eb222b",
+      "rtl": "module TopModule (\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] last;\n    always @(posedge clk) begin\n        anyedge <= in ^ last;\n        last <= in;\n    end\nendmodule",
+      "rtl_raw_sha256": "4e3c84b4c5bc7f793b0c7f6403489fd2042eba84e7a8908ca604e79632eb222b",
+      "sample_index": 15,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] last_in;\n    always @(posedge clk) begin\n        anyedge <= (in ^ last_in) & 8'hFF;\n        last_in <= in;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "9f473066cd2a4e249bec1395d9447e9c23866cfa8b45587cbe2886323bb8a0a5",
+      "rtl": "module TopModule(\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] last_in;\n    always @(posedge clk) begin\n        anyedge <= (in ^ last_in) & 8'hFF;\n        last_in <= in;\n    end\nendmodule",
+      "rtl_raw_sha256": "9f473066cd2a4e249bec1395d9447e9c23866cfa8b45587cbe2886323bb8a0a5",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "213/228 mismatches",
+      "raw_completion": "// Detect 1->0 or 0->1 transitions on an 8-bit input, one per clock cycle.\nmodule TopModule(input clk, input [7:0] in, output [7:0] anyedge);\n  reg [7:0] prev;\n  wire [7:0] changed;\n  // Detect when any bit changes from the previous value.\n  assign changed = (in ^ prev);\n  // Register the previous value.\n  always @(posedge clk) prev <= in;\n  // Set the output to 1 in the same cycle as the transition.\n  assign anyedge = changed & ~(changed & (changed - 1));\nendmodule",
+      "raw_completion_raw_sha256": "b004c8b2cf26d88f1f244134444783449f3710065d1b19c53b76f19112c55467",
+      "rtl": "module TopModule(input clk, input [7:0] in, output [7:0] anyedge);\n  reg [7:0] prev;\n  wire [7:0] changed;\n  // Detect when any bit changes from the previous value.\n  assign changed = (in ^ prev);\n  // Register the previous value.\n  always @(posedge clk) prev <= in;\n  // Set the output to 1 in the same cycle as the transition.\n  assign anyedge = changed & ~(changed & (changed - 1));\nendmodule",
+      "rtl_raw_sha256": "1f23448a7c9da26c8febf8569ad2e1ba6cf86047da5ec5303dd87367ab204972",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "205/228 mismatches",
+      "raw_completion": "module TopModule(input clk, input [7:0] in, output [7:0] anyedge);\n    reg [7:0] r_in;\n    reg [7:0] r_in2;\n    wire [7:0] edges;\n    always @(posedge clk) begin\n        r_in <= in;\n        r_in2 <= r_in;\n    end\n    assign edges = ~r_in & r_in2;\n    assign anyedge = edges & (edges & r_in);\nendmodule",
+      "raw_completion_raw_sha256": "aa81ea74a024fa7964c203271af99f93e9e044bf00e5bd4ced925a7ef5606a5f",
+      "rtl": "module TopModule(input clk, input [7:0] in, output [7:0] anyedge);\n    reg [7:0] r_in;\n    reg [7:0] r_in2;\n    wire [7:0] edges;\n    always @(posedge clk) begin\n        r_in <= in;\n        r_in2 <= r_in;\n    end\n    assign edges = ~r_in & r_in2;\n    assign anyedge = edges & (edges & r_in);\nendmodule",
+      "rtl_raw_sha256": "aa81ea74a024fa7964c203271af99f93e9e044bf00e5bd4ced925a7ef5606a5f",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "187/228 mismatches",
+      "raw_completion": "module TopModule(\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] last;\n    always @(posedge clk) begin\n        anyedge <= (in ^ last) & in;\n        last <= in;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "11f7b6d39aea6d32298048f4d7a683da08caa5c6945a129d74e86690549801c2",
+      "rtl": "module TopModule(\n    input clk,\n    input [7:0] in,\n    output reg [7:0] anyedge\n);\n    reg [7:0] last;\n    always @(posedge clk) begin\n        anyedge <= (in ^ last) & in;\n        last <= in;\n    end\nendmodule",
+      "rtl_raw_sha256": "11f7b6d39aea6d32298048f4d7a683da08caa5c6945a129d74e86690549801c2",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 7,
+    "compile_fail": 8,
+    "fail": 5
+  },
+  "testbench_raw_sha256": "e1e1fb847dd0b234e26387f1fe6786149daf5553f6ca335e05fd392374deb3fe",
+  "training_seed": 2
+}

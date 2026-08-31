@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob135_m2014_q6b",
+  "problem_seed": 3713840284365693168,
+  "prompt_raw_sha256": "02da5df3fa54157b706f445bb1e6a0d078c9c90b7af01218e0567187bb4d9d2d",
+  "reference_raw_sha256": "1982076dae0458a47cf365dee5d2a052fe2a2368de3799a4a0bb9dbdb4d6d9ee",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "68/100 mismatches",
+      "raw_completion": "// State machine, next-state logic for y[1] only, register stage.\nmodule TopModule(input [2:0] y, input w, output reg Y1);\n  reg [2:0] state, next_state;\n  always @(*) begin\n    case (state)\n      // Next state functions for y[1]\n      // Self-transition on y[0] = 0\n      3'b000: next_state = y[0] ? 3'b001 : 3'b000;\n      3'b001: next_state = y[0] ? 3'b010 : 3'b001;\n      3'b010: next_state = y[0] ? 3'b011 : 3'b010;\n      3'b011: next_state = y[0] ? 3'b100 : 3'b011;\n      3'b100: next_state = y[0] ? 3'b101 : 3'b100;\n      3'b101: next_state = y[0] ? 3'b000 : 3'b101;\n      // Self-transition on y[0] = 1\n      3'b001: next_state = y[0] ? 3'b010 : 3'b001;\n      3'b010: next_state = y[0] ? 3'b011 : 3'b010;\n      3'b011: next_state = y[0] ? 3'b100 : 3'b011;\n      3'b100: next_state = y[0] ? 3'b101 : 3'b100;\n      3'b101: next_state = y[0] ? 3'b000 : 3'b101;\n      // Self-transition on y[0] = 0\n      3'b000: next_state = y[0] ? 3'b001 : 3'b000;\n      3'b011: next_state = y[0] ? 3'b100 : 3'b011;\n      3'b100: next_state = y[0] ? 3'b101 : 3'b100;\n      3'b101: next_state = y[0] ? 3'b000 : 3'b101;\n      // Self-transition on y[0] = 1\n      3'b001: next_state = y[0] ? 3'b010 : 3'b001;\n      3'b010: next_state = y[0] ? 3'b011 : 3'b010;\n      3'b100: next_state = y[0] ? 3'b101 : 3'b100;\n      3'b101: next_state = y[0] ? 3'b000 : 3'b101;\n    endcase\n  end\n  always @(posedge w) state <= next_state;\n  assign Y1 = state[1];\nendmodule",
+      "raw_completion_raw_sha256": "d157108d5442671853504e55d91ba3ab32b539090293b7ee2778feaf53ab351f",
+      "rtl": "module TopModule(input [2:0] y, input w, output reg Y1);\n  reg [2:0] state, next_state;\n  always @(*) begin\n    case (state)\n      // Next state functions for y[1]\n      // Self-transition on y[0] = 0\n      3'b000: next_state = y[0] ? 3'b001 : 3'b000;\n      3'b001: next_state = y[0] ? 3'b010 : 3'b001;\n      3'b010: next_state = y[0] ? 3'b011 : 3'b010;\n      3'b011: next_state = y[0] ? 3'b100 : 3'b011;\n      3'b100: next_state = y[0] ? 3'b101 : 3'b100;\n      3'b101: next_state = y[0] ? 3'b000 : 3'b101;\n      // Self-transition on y[0] = 1\n      3'b001: next_state = y[0] ? 3'b010 : 3'b001;\n      3'b010: next_state = y[0] ? 3'b011 : 3'b010;\n      3'b011: next_state = y[0] ? 3'b100 : 3'b011;\n      3'b100: next_state = y[0] ? 3'b101 : 3'b100;\n      3'b101: next_state = y[0] ? 3'b000 : 3'b101;\n      // Self-transition on y[0] = 0\n      3'b000: next_state = y[0] ? 3'b001 : 3'b000;\n      3'b011: next_state = y[0] ? 3'b100 : 3'b011;\n      3'b100: next_state = y[0] ? 3'b101 : 3'b100;\n      3'b101: next_state = y[0] ? 3'b000 : 3'b101;\n      // Self-transition on y[0] = 1\n      3'b001: next_state = y[0] ? 3'b010 : 3'b001;\n      3'b010: next_state = y[0] ? 3'b011 : 3'b010;\n      3'b100: next_state = y[0] ? 3'b101 : 3'b100;\n      3'b101: next_state = y[0] ? 3'b000 : 3'b101;\n    endcase\n  end\n  always @(posedge w) state <= next_state;\n  assign Y1 = state[1];\nendmodule",
+      "rtl_raw_sha256": "5505b984d623f01650a13bbf18459b858c9b1316d02d1928554a6c5d2e821628",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:14: error: Unable to bind wire/reg/memory `clk' in `tb.top_module1'",
+      "raw_completion": "module TopModule(input [2:0] y, input w, output reg Y1);\n    reg [2:0] ns;\n    always @* begin\n        case (y)\n            3'b000: ns = w ? 3'b001 : 3'b000;\n            3'b001: ns = w ? 3'b010 : 3'b001;\n            3'b010: ns = w ? 3'b100 : 3'b010;\n            3'b011: ns = w ? 3'b101 : 3'b011;\n            3'b100: ns = w ? 3'b011 : 3'b100;\n            3'b101: ns = w ? 3'b000 : 3'b101;\n            default: ns = 3'b000;\n        endcase\n    end\n    always @(posedge clk) Y1 <= ns[1];\nendmodule",
+      "raw_completion_raw_sha256": "f1240f39f75564c53f9bacebc9417eae3033624488b5f75863f44cf9bd1400d7",
+      "rtl": "module TopModule(input [2:0] y, input w, output reg Y1);\n    reg [2:0] ns;\n    always @* begin\n        case (y)\n            3'b000: ns = w ? 3'b001 : 3'b000;\n            3'b001: ns = w ? 3'b010 : 3'b001;\n            3'b010: ns = w ? 3'b100 : 3'b010;\n            3'b011: ns = w ? 3'b101 : 3'b011;\n            3'b100: ns = w ? 3'b011 : 3'b100;\n            3'b101: ns = w ? 3'b000 : 3'b101;\n            default: ns = 3'b000;\n        endcase\n    end\n    always @(posedge clk) Y1 <= ns[1];\nendmodule",
+      "rtl_raw_sha256": "f1240f39f75564c53f9bacebc9417eae3033624488b5f75863f44cf9bd1400d7",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:18: error: Unable to bind wire/reg/memory `clk' in `tb.top_module1'",
+      "raw_completion": "// State machine next-state logic (y[1]) ONLY. Registers y[0] and y[2] need\n// to be synchronized to the clock to form a full 3-stage state machine.\nmodule TopModule(\n    input  [2:0] y,\n    input  w,\n    output reg Y1\n);\n    reg [2:0] ns;\n    always @* begin\n        case (y)\n            3'b000: ns = w ? 3'b001 : 3'b000;\n            3'b001: ns = w ? 3'b010 : 3'b001;\n            3'b010: ns = w ? 3'b011 : 3'b010;\n            3'b011: ns = w ? 3'b100 : 3'b011;\n            3'b100: ns = w ? 3'b101 : 3'b100;\n            3'b101: ns = w ? 3'b001 : 3'b101;\n            default: ns = 3'b000;\n        endcase\n    end\n    always @(posedge clk) Y1 <= ns[1];\nendmodule",
+      "raw_completion_raw_sha256": "03a475b9200ca66fdd3c769b7aca03acce6e7d6b38ea430b970c95bdcdd09433",
+      "rtl": "module TopModule(\n    input  [2:0] y,\n    input  w,\n    output reg Y1\n);\n    reg [2:0] ns;\n    always @* begin\n        case (y)\n            3'b000: ns = w ? 3'b001 : 3'b000;\n            3'b001: ns = w ? 3'b010 : 3'b001;\n            3'b010: ns = w ? 3'b011 : 3'b010;\n            3'b011: ns = w ? 3'b100 : 3'b011;\n            3'b100: ns = w ? 3'b101 : 3'b100;\n            3'b101: ns = w ? 3'b001 : 3'b101;\n            default: ns = 3'b000;\n        endcase\n    end\n    always @(posedge clk) Y1 <= ns[1];\nendmodule",
+      "rtl_raw_sha256": "00aabb3f26fc9ab16389a25eb51514d6147ab6e5069b7fef7cbb88a9dd248f17",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "41/100 mismatches",
+      "raw_completion": "// State machine, stage 1: register + combinational next state\n// (the long-handed \"register + inline next-state\" form)\nmodule TopModule(input  [2:0] y, input  w, output reg Y1);\n  reg [2:0] ns;\n  always @(*) begin\n    case (y)\n      3'b000: ns = w ? 3'b001 : 3'b000;\n      3'b001: ns = w ? 3'b010 : 3'b001;\n      3'b010: ns = w ? 3'b011 : 3'b010;\n      3'b011: ns = w ? 3'b100 : 3'b011;\n      3'b100: ns = w ? 3'b101 : 3'b100;\n      3'b101: ns = w ? 3'b001 : 3'b101;\n      3'b110: ns = w ? 3'b011 : 3'b110;\n      3'b111: ns = w ? 3'b100 : 3'b111;\n    endcase\n  end\n  always @(posedge ns[0]) Y1 <= 1'b0;\n  always @(posedge ns[1]) Y1 <= 1'b1;\nendmodule",
+      "raw_completion_raw_sha256": "e175c399f2a3ce4ac403d680324762e59d92d095c52c164c24fb72553e0e8f2d",
+      "rtl": "module TopModule(input  [2:0] y, input  w, output reg Y1);\n  reg [2:0] ns;\n  always @(*) begin\n    case (y)\n      3'b000: ns = w ? 3'b001 : 3'b000;\n      3'b001: ns = w ? 3'b010 : 3'b001;\n      3'b010: ns = w ? 3'b011 : 3'b010;\n      3'b011: ns = w ? 3'b100 : 3'b011;\n      3'b100: ns = w ? 3'b101 : 3'b100;\n      3'b101: ns = w ? 3'b001 : 3'b101;\n      3'b110: ns = w ? 3'b011 : 3'b110;\n      3'b111: ns = w ? 3'b100 : 3'b111;\n    endcase\n  end\n  always @(posedge ns[0]) Y1 <= 1'b0;\n  always @(posedge ns[1]) Y1 <= 1'b1;\nendmodule",
+      "rtl_raw_sha256": "bee5e783f30ca4cc8b360229f64a3f195889edd3623a12777727e9fa95a0ac04",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "43/100 mismatches",
+      "raw_completion": "// One-bit state machines can be implemented using combinational logic.\nmodule TopModule(\n  input  [2:0] y,\n  input  w,\n  output reg Y1\n);\n  reg [2:0] next_y;\n  always @(*) begin\n    case (y)\n      3'b000: next_y = w ? 3'b001 : 3'b000;\n      3'b001: next_y = w ? 3'b010 : 3'b000;\n      3'b010: next_y = w ? 3'b011 : 3'b001;\n      3'b011: next_y = w ? 3'b100 : 3'b001;\n      3'b100: next_y = w ? 3'b101 : 3'b010;\n      3'b101: next_y = w ? 3'b001 : 3'b011;\n      3'b110: next_y = w ? 3'b010 : 3'b100;\n      3'b111: next_y = w ? 3'b011 : 3'b101;\n    endcase\n  end\n  always @(posedge w) Y1 <= next_y[1];\nendmodule",
+      "raw_completion_raw_sha256": "258c0ab4e7b27d3ce18e81d2b124ac568c2469ef1ca76623d8ca76bdce80c557",
+      "rtl": "module TopModule(\n  input  [2:0] y,\n  input  w,\n  output reg Y1\n);\n  reg [2:0] next_y;\n  always @(*) begin\n    case (y)\n      3'b000: next_y = w ? 3'b001 : 3'b000;\n      3'b001: next_y = w ? 3'b010 : 3'b000;\n      3'b010: next_y = w ? 3'b011 : 3'b001;\n      3'b011: next_y = w ? 3'b100 : 3'b001;\n      3'b100: next_y = w ? 3'b101 : 3'b010;\n      3'b101: next_y = w ? 3'b001 : 3'b011;\n      3'b110: next_y = w ? 3'b010 : 3'b100;\n      3'b111: next_y = w ? 3'b011 : 3'b101;\n    endcase\n  end\n  always @(posedge w) Y1 <= next_y[1];\nendmodule",
+      "rtl_raw_sha256": "1bb00b13fb9cfd888bf8cd120b2fba4e547cfb092eec8faaf35e5c7879dfa037",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "31/100 mismatches",
+      "raw_completion": "module TopModule(\n    input  [2:0] y,\n    input  w,\n    output Y1\n);\n    reg [2:0] ns;\n    always @* begin\n        case ({y, w})\n            3'b0000: ns = 3'b001;\n            3'b0001: ns = 3'b010;\n            3'b0010: ns = 3'b011;\n            3'b0011: ns = 3'b100;\n            3'b0100: ns = 3'b101;\n            3'b0101: ns = 3'b110;\n            3'b0110: ns = 3'b111;\n            3'b0111: ns = 3'b000;\n            3'b1000: ns = 3'b001;\n            3'b1001: ns = 3'b010;\n            3'b1010: ns = 3'b100;\n            3'b1011: ns = 3'b101;\n            3'b1100: ns = 3'b110;\n            3'b1101: ns = 3'b111;\n            3'b1110: ns = 3'b000;\n            3'b1111: ns = 3'b001;\n        endcase\n    end\n    assign Y1 = ns[1];\nendmodule",
+      "raw_completion_raw_sha256": "d0ce62ada4e7c98daefa6fa3205d45ffd41e7ee2ebdc8f107bcd4c47cc2f8bf8",
+      "rtl": "module TopModule(\n    input  [2:0] y,\n    input  w,\n    output Y1\n);\n    reg [2:0] ns;\n    always @* begin\n        case ({y, w})\n            3'b0000: ns = 3'b001;\n            3'b0001: ns = 3'b010;\n            3'b0010: ns = 3'b011;\n            3'b0011: ns = 3'b100;\n            3'b0100: ns = 3'b101;\n            3'b0101: ns = 3'b110;\n            3'b0110: ns = 3'b111;\n            3'b0111: ns = 3'b000;\n            3'b1000: ns = 3'b001;\n            3'b1001: ns = 3'b010;\n            3'b1010: ns = 3'b100;\n            3'b1011: ns = 3'b101;\n            3'b1100: ns = 3'b110;\n            3'b1101: ns = 3'b111;\n            3'b1110: ns = 3'b000;\n            3'b1111: ns = 3'b001;\n        endcase\n    end\n    assign Y1 = ns[1];\nendmodule",
+      "rtl_raw_sha256": "d0ce62ada4e7c98daefa6fa3205d45ffd41e7ee2ebdc8f107bcd4c47cc2f8bf8",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "25/100 mismatches",
+      "raw_completion": "module TopModule(\n    input  [2:0] y,\n    input        w,\n    output       Y1\n);\n    reg [2:0] ns;\n    always @(*) begin\n        case (y)\n            3'b000: ns = w ? 3'b001 : 3'b000;\n            3'b001: ns = w ? 3'b010 : 3'b000;\n            3'b010: ns = w ? 3'b011 : 3'b001;\n            3'b011: ns = w ? 3'b100 : 3'b001;\n            3'b100: ns = w ? 3'b101 : 3'b010;\n            3'b101: ns = w ? 3'b001 : 3'b010;\n            3'b110: ns = w ? 3'b010 : 3'b011;\n            3'b111: ns = w ? 3'b011 : 3'b100;\n        endcase\n    end\n    assign Y1 = ns[1];\nendmodule",
+      "raw_completion_raw_sha256": "92a10bc2a89ff1b6a855f8429e61d747ed8091387c7e11e56bb820d3fe5a99fc",
+      "rtl": "module TopModule(\n    input  [2:0] y,\n    input        w,\n    output       Y1\n);\n    reg [2:0] ns;\n    always @(*) begin\n        case (y)\n            3'b000: ns = w ? 3'b001 : 3'b000;\n            3'b001: ns = w ? 3'b010 : 3'b000;\n            3'b010: ns = w ? 3'b011 : 3'b001;\n            3'b011: ns = w ? 3'b100 : 3'b001;\n            3'b100: ns = w ? 3'b101 : 3'b010;\n            3'b101: ns = w ? 3'b001 : 3'b010;\n            3'b110: ns = w ? 3'b010 : 3'b011;\n            3'b111: ns = w ? 3'b011 : 3'b100;\n        endcase\n    end\n    assign Y1 = ns[1];\nendmodule",
+      "rtl_raw_sha256": "92a10bc2a89ff1b6a855f8429e61d747ed8091387c7e11e56bb820d3fe5a99fc",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "35/100 mismatches",
+      "raw_completion": "// State machine, next-state logic for y[1] only, i.e., the \"combinational\"\n// next-state function. The outputs Y1 are implicitly defined as the function\n// of the next-state, i.e., the state register y[1] (as a one-hot code).\nmodule TopModule(input [2:0] y, input w, output reg Y1);\n  reg [2:0] ns;\n  always @(*) begin\n    case (y)\n      3'b000: ns = w ? 3'b001 : 3'b000;\n      3'b001: ns = w ? 3'b010 : 3'b001;\n      3'b010: ns = w ? 3'b011 : 3'b010;\n      3'b011: ns = w ? 3'b100 : 3'b011;\n      3'b100: ns = w ? 3'b101 : 3'b100;\n      3'b101: ns = w ? 3'b001 : 3'b101;\n      3'b110: ns = w ? 3'b011 : 3'b000;\n      3'b111: ns = w ? 3'b100 : 3'b001;\n    endcase\n  end\n  always @(ns) Y1 = ns[1];\nendmodule",
+      "raw_completion_raw_sha256": "c2739d2ebf54c29680ab135b0fc724d08132e7e57a97587baa854bb10dcc48b6",
+      "rtl": "module TopModule(input [2:0] y, input w, output reg Y1);\n  reg [2:0] ns;\n  always @(*) begin\n    case (y)\n      3'b000: ns = w ? 3'b001 : 3'b000;\n      3'b001: ns = w ? 3'b010 : 3'b001;\n      3'b010: ns = w ? 3'b011 : 3'b010;\n      3'b011: ns = w ? 3'b100 : 3'b011;\n      3'b100: ns = w ? 3'b101 : 3'b100;\n      3'b101: ns = w ? 3'b001 : 3'b101;\n      3'b110: ns = w ? 3'b011 : 3'b000;\n      3'b111: ns = w ? 3'b100 : 3'b001;\n    endcase\n  end\n  always @(ns) Y1 = ns[1];\nendmodule",
+      "rtl_raw_sha256": "7febd61e813cba67c4182d858492cb9f4ac036019ecce7e9b414b865d37d5c46",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "18/100 mismatches",
+      "raw_completion": "// State machine, next-state logic for y[1] only, stage 1.\nmodule TopModule(input [2:0] y, input w, output reg Y1);\n  reg [2:0] ns;\n  always @* begin\n    case (y)\n      3'b000: ns = w ? 3'b001 : 3'b000;\n      3'b001: ns = w ? 3'b010 : 3'b001;\n      3'b010: ns = w ? 3'b011 : 3'b010;\n      3'b011: ns = w ? 3'b100 : 3'b011;\n      3'b100: ns = w ? 3'b101 : 3'b100;\n      3'b101: ns = w ? 3'b001 : 3'b101;\n      default: ns = 3'b000;\n    endcase\n  end\n  always @(posedge ns[0]) Y1 <= 1'b1;\n  always @(negedge ns[0]) Y1 <= 1'b0;\nendmodule",
+      "raw_completion_raw_sha256": "0c206200d26f3397cbe6fe9eeb4a47c967b12d0970d3cc1254f336f406f78a09",
+      "rtl": "module TopModule(input [2:0] y, input w, output reg Y1);\n  reg [2:0] ns;\n  always @* begin\n    case (y)\n      3'b000: ns = w ? 3'b001 : 3'b000;\n      3'b001: ns = w ? 3'b010 : 3'b001;\n      3'b010: ns = w ? 3'b011 : 3'b010;\n      3'b011: ns = w ? 3'b100 : 3'b011;\n      3'b100: ns = w ? 3'b101 : 3'b100;\n      3'b101: ns = w ? 3'b001 : 3'b101;\n      default: ns = 3'b000;\n    endcase\n  end\n  always @(posedge ns[0]) Y1 <= 1'b1;\n  always @(negedge ns[0]) Y1 <= 1'b0;\nendmodule",
+      "rtl_raw_sha256": "f70853a2537971efad558cf0d7825971158a20a02353a9d562b588ad92c9f194",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "68/100 mismatches",
+      "raw_completion": "// One-bit state machine, next-state logic for y[1] only.\nmodule TopModule (\n    input  [2:0] y,\n    input  w,\n    output reg Y1\n);\n    reg [2:0] ns;\n    always @* begin\n        case (y)\n            3'b000: ns = w ? 3'b001 : 3'b000;\n            3'b001: ns = w ? 3'b010 : 3'b000;\n            3'b010: ns = w ? 3'b011 : 3'b001;\n            3'b011: ns = w ? 3'b100 : 3'b010;\n            3'b100: ns = w ? 3'b101 : 3'b011;\n            3'b101: ns = w ? 3'b000 : 3'b100;\n            default: ns = 3'b000;\n        endcase\n    end\n    always @(posedge ns[0]) Y1 <= ~Y1;\nendmodule",
+      "raw_completion_raw_sha256": "e6f6d439b252ed2c7163da07c611d08b33a7e7fa5e740ebb88d6863a547ccbaa",
+      "rtl": "module TopModule (\n    input  [2:0] y,\n    input  w,\n    output reg Y1\n);\n    reg [2:0] ns;\n    always @* begin\n        case (y)\n            3'b000: ns = w ? 3'b001 : 3'b000;\n            3'b001: ns = w ? 3'b010 : 3'b000;\n            3'b010: ns = w ? 3'b011 : 3'b001;\n            3'b011: ns = w ? 3'b100 : 3'b010;\n            3'b100: ns = w ? 3'b101 : 3'b011;\n            3'b101: ns = w ? 3'b000 : 3'b100;\n            default: ns = 3'b000;\n        endcase\n    end\n    always @(posedge ns[0]) Y1 <= ~Y1;\nendmodule",
+      "rtl_raw_sha256": "9fb81d2bb978b02789ef5a3b79fb49b948a7f0bf9e181a8686ac58e5c5167c56",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "25/100 mismatches",
+      "raw_completion": "module TopModule (\n    input [2:0] y,\n    input w,\n    output Y1\n);\n    reg [2:0] ns;\n    always @(*) begin\n        case (y)\n            3'b000: ns = w ? 3'b001 : 3'b000;\n            3'b001: ns = w ? 3'b010 : 3'b000;\n            3'b010: ns = w ? 3'b011 : 3'b001;\n            3'b011: ns = w ? 3'b100 : 3'b001;\n            3'b100: ns = w ? 3'b101 : 3'b010;\n            3'b101: ns = w ? 3'b001 : 3'b010;\n            3'b110: ns = w ? 3'b011 : 3'b011;\n            3'b111: ns = w ? 3'b100 : 3'b011;\n        endcase\n    end\n    assign Y1 = ns[1];\nendmodule",
+      "raw_completion_raw_sha256": "f8e9b6906e02ed6496944d49f5220399d661dac8abf78743fed1c03ece03e38e",
+      "rtl": "module TopModule (\n    input [2:0] y,\n    input w,\n    output Y1\n);\n    reg [2:0] ns;\n    always @(*) begin\n        case (y)\n            3'b000: ns = w ? 3'b001 : 3'b000;\n            3'b001: ns = w ? 3'b010 : 3'b000;\n            3'b010: ns = w ? 3'b011 : 3'b001;\n            3'b011: ns = w ? 3'b100 : 3'b001;\n            3'b100: ns = w ? 3'b101 : 3'b010;\n            3'b101: ns = w ? 3'b001 : 3'b010;\n            3'b110: ns = w ? 3'b011 : 3'b011;\n            3'b111: ns = w ? 3'b100 : 3'b011;\n        endcase\n    end\n    assign Y1 = ns[1];\nendmodule",
+      "rtl_raw_sha256": "f8e9b6906e02ed6496944d49f5220399d661dac8abf78743fed1c03ece03e38e",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "35/100 mismatches",
+      "raw_completion": "module TopModule(input [2:0] y, input w, output reg Y1);\n  reg [2:0] ns;\n  always @(*) begin\n    case (y)\n      3'b000: ns = w ? 3'b001 : 3'b000;\n      3'b001: ns = w ? 3'b010 : 3'b000;\n      3'b010: ns = w ? 3'b011 : 3'b001;\n      3'b011: ns = w ? 3'b100 : 3'b001;\n      3'b100: ns = w ? 3'b101 : 3'b010;\n      3'b101: ns = w ? 3'b001 : 3'b010;\n      3'b001: ns = w ? 3'b011 : 3'b001;\n      3'b011: ns = w ? 3'b100 : 3'b001;\n      3'b100: ns = w ? 3'b101 : 3'b010;\n      3'b101: ns = w ? 3'b001 : 3'b010;\n      3'b010: ns = w ? 3'b011 : 3'b001;\n      3'b011: ns = w ? 3'b100 : 3'b001;\n      3'b100: ns = w ? 3'b101 : 3'b010;\n      3'b101: ns = w ? 3'b001 : 3'b010;\n    endcase\n  end\n  always @(posedge ns[0]) Y1 <= 1'b1;\n  always @(negedge ns[0]) Y1 <= 1'b0;\nendmodule",
+      "raw_completion_raw_sha256": "a6a4f8d7127620a67da57b9dccab4019f1cedbda6d37a200fb688104fa93da11",
+      "rtl": "module TopModule(input [2:0] y, input w, output reg Y1);\n  reg [2:0] ns;\n  always @(*) begin\n    case (y)\n      3'b000: ns = w ? 3'b001 : 3'b000;\n      3'b001: ns = w ? 3'b010 : 3'b000;\n      3'b010: ns = w ? 3'b011 : 3'b001;\n      3'b011: ns = w ? 3'b100 : 3'b001;\n      3'b100: ns = w ? 3'b101 : 3'b010;\n      3'b101: ns = w ? 3'b001 : 3'b010;\n      3'b001: ns = w ? 3'b011 : 3'b001;\n      3'b011: ns = w ? 3'b100 : 3'b001;\n      3'b100: ns = w ? 3'b101 : 3'b010;\n      3'b101: ns = w ? 3'b001 : 3'b010;\n      3'b010: ns = w ? 3'b011 : 3'b001;\n      3'b011: ns = w ? 3'b100 : 3'b001;\n      3'b100: ns = w ? 3'b101 : 3'b010;\n      3'b101: ns = w ? 3'b001 : 3'b010;\n    endcase\n  end\n  always @(posedge ns[0]) Y1 <= 1'b1;\n  always @(negedge ns[0]) Y1 <= 1'b0;\nendmodule",
+      "rtl_raw_sha256": "a6a4f8d7127620a67da57b9dccab4019f1cedbda6d37a200fb688104fa93da11",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "26/100 mismatches",
+      "raw_completion": "// State machine, next-state logic for y[1] only, plus a combinational\n// output Y1 that's the same as y[1] (the \"register stage\").\nmodule TopModule(input [2:0] y, input w, output reg Y1);\n  reg [2:0] ns;\n  always @(*) begin\n    case (y)\n      3'b000: ns = w ? 3'b001 : 3'b000;\n      3'b001: ns = w ? 3'b010 : 3'b000;\n      3'b010: ns = w ? 3'b011 : 3'b001;\n      3'b011: ns = w ? 3'b100 : 3'b001;\n      3'b100: ns = w ? 3'b101 : 3'b010;\n      3'b101: ns = w ? 3'b001 : 3'b010;\n      3'b110: ns = w ? 3'b011 : 3'b011;\n      3'b111: ns = w ? 3'b100 : 3'b011;\n    endcase\n  end\n  always @(posedge ns[0]) Y1 <= ns[1];\nendmodule",
+      "raw_completion_raw_sha256": "ee838e7cd99044b12bd32a32b9cea04f36b728e9bdc58507e0897d8de8fc315f",
+      "rtl": "module TopModule(input [2:0] y, input w, output reg Y1);\n  reg [2:0] ns;\n  always @(*) begin\n    case (y)\n      3'b000: ns = w ? 3'b001 : 3'b000;\n      3'b001: ns = w ? 3'b010 : 3'b000;\n      3'b010: ns = w ? 3'b011 : 3'b001;\n      3'b011: ns = w ? 3'b100 : 3'b001;\n      3'b100: ns = w ? 3'b101 : 3'b010;\n      3'b101: ns = w ? 3'b001 : 3'b010;\n      3'b110: ns = w ? 3'b011 : 3'b011;\n      3'b111: ns = w ? 3'b100 : 3'b011;\n    endcase\n  end\n  always @(posedge ns[0]) Y1 <= ns[1];\nendmodule",
+      "rtl_raw_sha256": "5da5f4bea5495d503484ff3b83c148f99a16defc0449ec4ec54a9a1b9841c80e",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:20: error: Unable to bind wire/reg/memory `clk' in `tb.top_module1'",
+      "raw_completion": "module TopModule (\n    input  [2:0] y,\n    input  w,\n    output Y1\n);\n    reg [2:0] state, next_state;\n    always @(*) begin\n        case (state)\n            3'b000: next_state = w ? 3'b010 : 3'b001;\n            3'b001: next_state = w ? 3'b011 : 3'b000;\n            3'b010: next_state = w ? 3'b110 : 3'b011;\n            3'b011: next_state = w ? 3'b111 : 3'b000;\n            3'b100: next_state = w ? 3'b100 : 3'b101;\n            3'b101: next_state = w ? 3'b001 : 3'b000;\n            3'b110: next_state = w ? 3'b101 : 3'b111;\n            3'b111: next_state = w ? 3'b010 : 3'b000;\n            default: next_state = 3'b000;\n        endcase\n    end\n    always @(posedge clk) state <= next_state;\n    assign Y1 = state[1];\nendmodule",
+      "raw_completion_raw_sha256": "a3ada4efda461552dc455afd636b33d89a3dbf4c68b5b7d92686b64d70a466bb",
+      "rtl": "module TopModule (\n    input  [2:0] y,\n    input  w,\n    output Y1\n);\n    reg [2:0] state, next_state;\n    always @(*) begin\n        case (state)\n            3'b000: next_state = w ? 3'b010 : 3'b001;\n            3'b001: next_state = w ? 3'b011 : 3'b000;\n            3'b010: next_state = w ? 3'b110 : 3'b011;\n            3'b011: next_state = w ? 3'b111 : 3'b000;\n            3'b100: next_state = w ? 3'b100 : 3'b101;\n            3'b101: next_state = w ? 3'b001 : 3'b000;\n            3'b110: next_state = w ? 3'b101 : 3'b111;\n            3'b111: next_state = w ? 3'b010 : 3'b000;\n            default: next_state = 3'b000;\n        endcase\n    end\n    always @(posedge clk) state <= next_state;\n    assign Y1 = state[1];\nendmodule",
+      "rtl_raw_sha256": "a3ada4efda461552dc455afd636b33d89a3dbf4c68b5b7d92686b64d70a466bb",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob135_m2014_q6b_ref.sv:2: syntax error",
+      "raw_completion": "module TopModule (\n  input  [2:0] y,\n  input        w,\n  output       Y1\n);\n  reg [2:0] ns;\n  always @* begin\n    case ({y,w})\n      6'b000000: ns = 3'b001;\n      6'b000001: ns = 3'b010;\n      6'b000010: ns = 3'b000;\n      6'b000011: ns = 3'b001;\n      6'b000100: ns = 3'b010;\n      6'b000101: ns = 3'b000;\n      6'b000110: ns = 3'b001;\n      6'b000111: ns = 3'b011;\n      6'b001000: ns = 3'b001;\n      6'b001001: ns = 3'b010;\n      6'b001010: ns = 3'b000;\n      6'b001011: ns = 3'b001;\n      6'b001100: ns = 3'b010;\n      6'b001101: ns = 3'b000;\n      6'b001110: ns = 3'b001;\n      6'b001111: ns = 3'b011;\n      6'b010000: ns = 3'b001;\n      6'b010001: ns = 3'b010;\n      6'b010010: ns = 3'b100;\n      6'b010011: ns = 3'b001;\n      6'b010100: ns = 3'b010;\n      6'b010101: ns = 3'b100;\n      6'b010110: ns = 3'b001;\n      6'b010111: ns = 3'b011;\n      6'b011000: ns = 3'b001;\n      6'b011001: ns = 3'b010;\n      6'b011010: ns = 3'b100;\n      6'b011011: ns = 3'b001;\n      6'b011100: ns = 3'b010;\n      6'b011101: ns = 3'b100;\n      6'b011110: ns = 3'b001;\n      6'b011111: ns = 3'b011;\n      6'b100000: ns = 3'b001;\n      6'b100001: ns = 3'b010;\n      6'b100010: ns = 3'b100;\n      6'b100011: ns = 3'b001;\n      6'b100100: ns = 3'b010;\n      6'b100101: ns = 3'b100;\n      6'b100110: ns = 3'b001;\n      6'b100111: ns = 3'b011;\n      6'b101000: ns = 3'b001;\n      6'b101001: ns = 3'b010;\n      6'b101010: ns = 3'b100;\n      6'b101011: ns = 3'b001;\n      6'b101100: ns = 3'b010;\n      6'b101101: ns = 3'b100;\n      6'",
+      "raw_completion_raw_sha256": "c4ebc360ca2c9e14c262e9ecb9ecfe13e12ba80c3eff49933cec6dc813d64302",
+      "rtl": "module TopModule (\n  input  [2:0] y,\n  input        w,\n  output       Y1\n);\n  reg [2:0] ns;\n  always @* begin\n    case ({y,w})\n      6'b000000: ns = 3'b001;\n      6'b000001: ns = 3'b010;\n      6'b000010: ns = 3'b000;\n      6'b000011: ns = 3'b001;\n      6'b000100: ns = 3'b010;\n      6'b000101: ns = 3'b000;\n      6'b000110: ns = 3'b001;\n      6'b000111: ns = 3'b011;\n      6'b001000: ns = 3'b001;\n      6'b001001: ns = 3'b010;\n      6'b001010: ns = 3'b000;\n      6'b001011: ns = 3'b001;\n      6'b001100: ns = 3'b010;\n      6'b001101: ns = 3'b000;\n      6'b001110: ns = 3'b001;\n      6'b001111: ns = 3'b011;\n      6'b010000: ns = 3'b001;\n      6'b010001: ns = 3'b010;\n      6'b010010: ns = 3'b100;\n      6'b010011: ns = 3'b001;\n      6'b010100: ns = 3'b010;\n      6'b010101: ns = 3'b100;\n      6'b010110: ns = 3'b001;\n      6'b010111: ns = 3'b011;\n      6'b011000: ns = 3'b001;\n      6'b011001: ns = 3'b010;\n      6'b011010: ns = 3'b100;\n      6'b011011: ns = 3'b001;\n      6'b011100: ns = 3'b010;\n      6'b011101: ns = 3'b100;\n      6'b011110: ns = 3'b001;\n      6'b011111: ns = 3'b011;\n      6'b100000: ns = 3'b001;\n      6'b100001: ns = 3'b010;\n      6'b100010: ns = 3'b100;\n      6'b100011: ns = 3'b001;\n      6'b100100: ns = 3'b010;\n      6'b100101: ns = 3'b100;\n      6'b100110: ns = 3'b001;\n      6'b100111: ns = 3'b011;\n      6'b101000: ns = 3'b001;\n      6'b101001: ns = 3'b010;\n      6'b101010: ns = 3'b100;\n      6'b101011: ns = 3'b001;\n      6'b101100: ns = 3'b010;\n      6'b101101: ns = 3'b100;\n      6'",
+      "rtl_raw_sha256": "c4ebc360ca2c9e14c262e9ecb9ecfe13e12ba80c3eff49933cec6dc813d64302",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "40/100 mismatches",
+      "raw_completion": "// State machine with three flip-flops, y[1] as next-state logic.\nmodule TopModule(input [2:0] y, input w, output reg Y1);\n  reg [2:0] ns;\n  always @(*) begin\n    case (y)\n      3'b000: ns = w ? 3'b001 : 3'b000;\n      3'b001: ns = w ? 3'b010 : 3'b000;\n      3'b010: ns = w ? 3'b011 : 3'b001;\n      3'b011: ns = w ? 3'b100 : 3'b010;\n      3'b100: ns = w ? 3'b101 : 3'b011;\n      3'b101: ns = w ? 3'b001 : 3'b100;\n      3'b110: ns = w ? 3'b011 : 3'b011;\n      3'b111: ns = w ? 3'b100 : 3'b100;\n    endcase\n  end\n  always @(posedge ns[0]) Y1 <= 1'b1;\n  always @(negedge ns[0]) Y1 <= 1'b0;\n  always @(*) Y1 <= ns[1];\nendmodule",
+      "raw_completion_raw_sha256": "3d98a79e8ba0dab4372bdbf87d3a1a22d87262f284a0bdac9784e580e0c314fb",
+      "rtl": "module TopModule(input [2:0] y, input w, output reg Y1);\n  reg [2:0] ns;\n  always @(*) begin\n    case (y)\n      3'b000: ns = w ? 3'b001 : 3'b000;\n      3'b001: ns = w ? 3'b010 : 3'b000;\n      3'b010: ns = w ? 3'b011 : 3'b001;\n      3'b011: ns = w ? 3'b100 : 3'b010;\n      3'b100: ns = w ? 3'b101 : 3'b011;\n      3'b101: ns = w ? 3'b001 : 3'b100;\n      3'b110: ns = w ? 3'b011 : 3'b011;\n      3'b111: ns = w ? 3'b100 : 3'b100;\n    endcase\n  end\n  always @(posedge ns[0]) Y1 <= 1'b1;\n  always @(negedge ns[0]) Y1 <= 1'b0;\n  always @(*) Y1 <= ns[1];\nendmodule",
+      "rtl_raw_sha256": "227df3daaf2e66d69b4cd7501c1db8a3c945d42a38936258a353b26c9bc2fec2",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "19/100 mismatches",
+      "raw_completion": "module TopModule (\n    input  [2:0] y,\n    input  w,\n    output Y1\n);\n    reg [2:0] ns;\n    always @* begin\n        case ({y, w})\n            3'b0000: ns = 3'b001;\n            3'b0001: ns = 3'b001;\n            3'b0010: ns = 3'b010;\n            3'b0011: ns = 3'b011;\n            3'b0100: ns = 3'b010;\n            3'b0101: ns = 3'b010;\n            3'b0110: ns = 3'b011;\n            3'b0111: ns = 3'b011;\n            3'b1000: ns = 3'b101;\n            3'b1001: ns = 3'b100;\n            3'b1010: ns = 3'b101;\n            3'b1011: ns = 3'b100;\n            3'b1100: ns = 3'b101;\n            3'b1101: ns = 3'b100;\n            3'b1110: ns = 3'b100;\n            3'b1111: ns = 3'b100;\n        endcase\n    end\n    assign Y1 = ns[1];\nendmodule",
+      "raw_completion_raw_sha256": "5a8ec6b81943e272546418c787551d94a2d9614449d670b75eb6b1bd293e1202",
+      "rtl": "module TopModule (\n    input  [2:0] y,\n    input  w,\n    output Y1\n);\n    reg [2:0] ns;\n    always @* begin\n        case ({y, w})\n            3'b0000: ns = 3'b001;\n            3'b0001: ns = 3'b001;\n            3'b0010: ns = 3'b010;\n            3'b0011: ns = 3'b011;\n            3'b0100: ns = 3'b010;\n            3'b0101: ns = 3'b010;\n            3'b0110: ns = 3'b011;\n            3'b0111: ns = 3'b011;\n            3'b1000: ns = 3'b101;\n            3'b1001: ns = 3'b100;\n            3'b1010: ns = 3'b101;\n            3'b1011: ns = 3'b100;\n            3'b1100: ns = 3'b101;\n            3'b1101: ns = 3'b100;\n            3'b1110: ns = 3'b100;\n            3'b1111: ns = 3'b100;\n        endcase\n    end\n    assign Y1 = ns[1];\nendmodule",
+      "rtl_raw_sha256": "5a8ec6b81943e272546418c787551d94a2d9614449d670b75eb6b1bd293e1202",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "68/100 mismatches",
+      "raw_completion": "module TopModule (\n    input [2:0] y,\n    input w,\n    output reg Y1\n);\n    reg [2:0] state;\n    reg [2:0] next_state;\n    always @* begin\n        case (state)\n            3'b000: next_state = w ? 3'b001 : 3'b000;\n            3'b001: next_state = w ? 3'b010 : 3'b001;\n            3'b010: next_state = w ? 3'b011 : 3'b010;\n            3'b011: next_state = w ? 3'b100 : 3'b011;\n            3'b100: next_state = w ? 3'b101 : 3'b100;\n            3'b101: next_state = w ? 3'b101 : 3'b101;\n            3'b110: next_state = w ? 3'b001 : 3'b110;\n            3'b111: next_state = w ? 3'b011 : 3'b111;\n        endcase\n    end\n    always @(posedge y[1]) state <= next_state;\n    always @(posedge y[1]) Y1 <= state[1];\nendmodule",
+      "raw_completion_raw_sha256": "72d56d0cace5ba605598e9dde4fc397d565eb945e8772920dbcb08e23b2c420f",
+      "rtl": "module TopModule (\n    input [2:0] y,\n    input w,\n    output reg Y1\n);\n    reg [2:0] state;\n    reg [2:0] next_state;\n    always @* begin\n        case (state)\n            3'b000: next_state = w ? 3'b001 : 3'b000;\n            3'b001: next_state = w ? 3'b010 : 3'b001;\n            3'b010: next_state = w ? 3'b011 : 3'b010;\n            3'b011: next_state = w ? 3'b100 : 3'b011;\n            3'b100: next_state = w ? 3'b101 : 3'b100;\n            3'b101: next_state = w ? 3'b101 : 3'b101;\n            3'b110: next_state = w ? 3'b001 : 3'b110;\n            3'b111: next_state = w ? 3'b011 : 3'b111;\n        endcase\n    end\n    always @(posedge y[1]) state <= next_state;\n    always @(posedge y[1]) Y1 <= state[1];\nendmodule",
+      "rtl_raw_sha256": "72d56d0cace5ba605598e9dde4fc397d565eb945e8772920dbcb08e23b2c420f",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "25/100 mismatches",
+      "raw_completion": "// One-bit FSM: next-state logic for y[1] only\nmodule TopModule (\n    input  [2:0] y,\n    input  w,\n    output Y1\n);\n    reg [2:0] ns;\n    always @(*) begin\n        case (y)\n            3'b000: ns = w ? 3'b001 : 3'b000;\n            3'b001: ns = w ? 3'b010 : 3'b000;\n            3'b010: ns = w ? 3'b011 : 3'b001;\n            3'b011: ns = w ? 3'b100 : 3'b001;\n            3'b100: ns = w ? 3'b101 : 3'b010;\n            3'b101: ns = w ? 3'b000 : 3'b010;\n            3'b110: ns = w ? 3'b001 : 3'b011;\n            3'b111: ns = w ? 3'b010 : 3'b100;\n            default: ns = 3'b000;\n        endcase\n    end\n    assign Y1 = ns[1];\nendmodule",
+      "raw_completion_raw_sha256": "d8ac8eef3ba691870dad94a6fb98a90556adcbfe25a4e67aaa0b104f64198a2b",
+      "rtl": "module TopModule (\n    input  [2:0] y,\n    input  w,\n    output Y1\n);\n    reg [2:0] ns;\n    always @(*) begin\n        case (y)\n            3'b000: ns = w ? 3'b001 : 3'b000;\n            3'b001: ns = w ? 3'b010 : 3'b000;\n            3'b010: ns = w ? 3'b011 : 3'b001;\n            3'b011: ns = w ? 3'b100 : 3'b001;\n            3'b100: ns = w ? 3'b101 : 3'b010;\n            3'b101: ns = w ? 3'b000 : 3'b010;\n            3'b110: ns = w ? 3'b001 : 3'b011;\n            3'b111: ns = w ? 3'b010 : 3'b100;\n            default: ns = 3'b000;\n        endcase\n    end\n    assign Y1 = ns[1];\nendmodule",
+      "rtl_raw_sha256": "d2d215c9d16530410a6b4ba6a89ee42b47ec66de522b41a2330dac6b089afa52",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "68/100 mismatches",
+      "raw_completion": "module TopModule(\n    input  [2:0] y,\n    input  w,\n    output reg Y1\n);\n    reg [2:0] ns;\n    always @* begin\n        case (y)\n            3'b000: ns = w ? 3'b001 : 3'b000;\n            3'b001: ns = w ? 3'b010 : 3'b000;\n            3'b010: ns = w ? 3'b011 : 3'b001;\n            3'b011: ns = w ? 3'b100 : 3'b001;\n            3'b100: ns = w ? 3'b101 : 3'b010;\n            3'b101: ns = w ? 3'b001 : 3'b010;\n            3'b110: ns = w ? 3'b011 : 3'b011;\n            3'b111: ns = w ? 3'b100 : 3'b011;\n            default: ns = 3'b000;\n        endcase\n    end\n    always @(posedge ns[0]) Y1 <= ~Y1;\nendmodule",
+      "raw_completion_raw_sha256": "f597d250dbc4395c45c34d10fd3e5a17274f5165f1ebbb7a0830d8a0cd37a29e",
+      "rtl": "module TopModule(\n    input  [2:0] y,\n    input  w,\n    output reg Y1\n);\n    reg [2:0] ns;\n    always @* begin\n        case (y)\n            3'b000: ns = w ? 3'b001 : 3'b000;\n            3'b001: ns = w ? 3'b010 : 3'b000;\n            3'b010: ns = w ? 3'b011 : 3'b001;\n            3'b011: ns = w ? 3'b100 : 3'b001;\n            3'b100: ns = w ? 3'b101 : 3'b010;\n            3'b101: ns = w ? 3'b001 : 3'b010;\n            3'b110: ns = w ? 3'b011 : 3'b011;\n            3'b111: ns = w ? 3'b100 : 3'b011;\n            default: ns = 3'b000;\n        endcase\n    end\n    always @(posedge ns[0]) Y1 <= ~Y1;\nendmodule",
+      "rtl_raw_sha256": "f597d250dbc4395c45c34d10fd3e5a17274f5165f1ebbb7a0830d8a0cd37a29e",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 4,
+    "fail": 16
+  },
+  "testbench_raw_sha256": "cfcf1d9435480e60ab22686b9203b2523e4136ccc1bb9a47adc3d175f1528ed9",
+  "training_seed": 0
+}

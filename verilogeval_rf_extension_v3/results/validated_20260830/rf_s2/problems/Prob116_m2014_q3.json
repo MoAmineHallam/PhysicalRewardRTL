@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob116_m2014_q3",
+  "problem_seed": 8575715298350738495,
+  "prompt_raw_sha256": "9c40c9be5f741d9678898b4e27c58737aed85873059f258eb3027706515f46ed",
+  "reference_raw_sha256": "71fc30b8d528205b1d97db9c6c0eeec7f936dbda016ab7a4a0e28ad80533988d",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob116_m2014_q3_test.sv:64: error: Unknown module type: TopModule",
+      "raw_completion": "// Functional description of the desired function, as a standalone module.\nmodule Functional (\n    input [3:0] x,\n    output reg f\n);\n    always @* begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000, 4'b1111: f = 1'b0;\n            4'b0011, 4'b1100: f = 1'b1;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "6a7930e47858e812d8ec1ff69da9a1d89163637929d4cb42c387b83c13368383",
+      "rtl": "module Functional (\n    input [3:0] x,\n    output reg f\n);\n    always @* begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000, 4'b1111: f = 1'b0;\n            4'b0011, 4'b1100: f = 1'b1;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "452955436c332e286634915febe620164af5bf6da2553d42b9790a86b491abfd",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "20/100 mismatches",
+      "raw_completion": "module TopModule(\n    input  [3:0] x,\n    output reg  f\n);\n    always @* begin\n        case (x)\n            4'b0000: f = 1'b0;\n            4'b0001: f = 1'b0;\n            4'b0011: f = 1'b1;\n            4'b0010: f = 1'b1;\n            4'b0110: f = 1'b1;\n            4'b0111: f = 1'b1;\n            4'b0101: f = 1'b0;\n            4'b0100: f = 1'b0;\n            4'b1100: f = 1'b0;\n            4'b1101: f = 1'b0;\n            4'b1111: f = 1'b1;\n            4'b1110: f = 1'b1;\n            4'b1010: f = 1'b1;\n            4'b1011: f = 1'b1;\n            4'b1001: f = 1'b0;\n            4'b1000: f = 1'b0;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "fff41b4ef44e9b463a5d055b8e539f9039c226685f63b58949146d466a945187",
+      "rtl": "module TopModule(\n    input  [3:0] x,\n    output reg  f\n);\n    always @* begin\n        case (x)\n            4'b0000: f = 1'b0;\n            4'b0001: f = 1'b0;\n            4'b0011: f = 1'b1;\n            4'b0010: f = 1'b1;\n            4'b0110: f = 1'b1;\n            4'b0111: f = 1'b1;\n            4'b0101: f = 1'b0;\n            4'b0100: f = 1'b0;\n            4'b1100: f = 1'b0;\n            4'b1101: f = 1'b0;\n            4'b1111: f = 1'b1;\n            4'b1110: f = 1'b1;\n            4'b1010: f = 1'b1;\n            4'b1011: f = 1'b1;\n            4'b1001: f = 1'b0;\n            4'b1000: f = 1'b0;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "fff41b4ef44e9b463a5d055b8e539f9039c226685f63b58949146d466a945187",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "22/100 mismatches",
+      "raw_completion": "module TopModule (\n    input  [3:0] x,\n    output reg f\n);\n    always @(*) begin\n        case (x)\n            4'b0000: f = 1'b0;\n            4'b0001: f = 1'b0;\n            4'b0010: f = 1'b0;\n            4'b0011: f = 1'b0;\n            4'b0100: f = 1'b0;\n            4'b0101: f = 1'b1;\n            4'b0110: f = 1'b1;\n            4'b0111: f = 1'b1;\n            4'b1000: f = 1'b1;\n            4'b1001: f = 1'b1;\n            4'b1010: f = 1'b0;\n            4'b1011: f = 1'b1;\n            4'b1100: f = 1'b1;\n            4'b1101: f = 1'b1;\n            4'b1110: f = 1'b0;\n            4'b1111: f = 1'b0;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "69c67a177bbb5a665598275c7840964cf8be50daa2a8a7155c1999b193c07672",
+      "rtl": "module TopModule (\n    input  [3:0] x,\n    output reg f\n);\n    always @(*) begin\n        case (x)\n            4'b0000: f = 1'b0;\n            4'b0001: f = 1'b0;\n            4'b0010: f = 1'b0;\n            4'b0011: f = 1'b0;\n            4'b0100: f = 1'b0;\n            4'b0101: f = 1'b1;\n            4'b0110: f = 1'b1;\n            4'b0111: f = 1'b1;\n            4'b1000: f = 1'b1;\n            4'b1001: f = 1'b1;\n            4'b1010: f = 1'b0;\n            4'b1011: f = 1'b1;\n            4'b1100: f = 1'b1;\n            4'b1101: f = 1'b1;\n            4'b1110: f = 1'b0;\n            4'b1111: f = 1'b0;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "69c67a177bbb5a665598275c7840964cf8be50daa2a8a7155c1999b193c07672",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "24/100 mismatches",
+      "raw_completion": "// Function f from the Karnaugh map.\nmodule TopModule(input [3:0] x, output reg f);\n    always @* begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000, 4'b0011, 4'b1100, 4'b1111: f = 1'b0;\n            4'b0001, 4'b0010, 4'b1101, 4'b1110: f = 1'b1;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "d03ae8827180c5b0359b3718a76d87182e9be9dcf8c9a4f20f09c5c8c08eaba6",
+      "rtl": "module TopModule(input [3:0] x, output reg f);\n    always @* begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000, 4'b0011, 4'b1100, 4'b1111: f = 1'b0;\n            4'b0001, 4'b0010, 4'b1101, 4'b1110: f = 1'b1;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "fde9766dffd30855623b548528c60e029c0f05487a830790102a3255f4e217ee",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "48/100 mismatches",
+      "raw_completion": "// One-bit function, implemented as a multiplexer with a don't-care (z)\n// input (considered to be the function's constant output for this\n// specific Karnaugh map).\nmodule TopModule(input [3:0] x, output reg f);\n    always @(*) begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000: f = 1'b0;\n            4'b0001: f = 1'b0;\n            4'b0011: f = 1'b1;\n            4'b0010: f = 1'b0;\n            4'b0100: f = 1'b0;\n            4'b0110: f = 1'b0;\n            4'b0111: f = 1'b1;\n            4'b0101: f = 1'b1;\n            4'b1101: f = 1'b1;\n            4'b1100: f = 1'b0;\n            4'b1000: f = 1'b0;\n            4'b1010: f = 1'b0;\n            4'b1011: f = 1'b1;\n            4'b1001: f = 1'b1;\n            default: f = 1'bz;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "d716d965e683ef97fcae719638b99ffb1095dcd3075e5d6ac0391c3ba9b0d4a2",
+      "rtl": "module TopModule(input [3:0] x, output reg f);\n    always @(*) begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000: f = 1'b0;\n            4'b0001: f = 1'b0;\n            4'b0011: f = 1'b1;\n            4'b0010: f = 1'b0;\n            4'b0100: f = 1'b0;\n            4'b0110: f = 1'b0;\n            4'b0111: f = 1'b1;\n            4'b0101: f = 1'b1;\n            4'b1101: f = 1'b1;\n            4'b1100: f = 1'b0;\n            4'b1000: f = 1'b0;\n            4'b1010: f = 1'b0;\n            4'b1011: f = 1'b1;\n            4'b1001: f = 1'b1;\n            default: f = 1'bz;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "1e7f10c14bbb651a19cd4650a0b821e61d4c2151972cc4b0be80c9723e4482fd",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "48/100 mismatches",
+      "raw_completion": "// Function f as per the Karnaugh map, implemented as a single combinational\n// multiplexer.\nmodule TopModule(\n    input  [3:0] x,\n    output reg  f\n);\n    always @* begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000, 4'b0011, 4'b1100, 4'b1111: f = 1'b0;\n            4'b0001, 4'b0010, 4'b1101, 4'b1110: f = 1'b1;\n            default:                                 f = 1'bX;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "62caf309ad2844e52108da97f4dbde7287f6be61715f0614fef4ca6370053ac6",
+      "rtl": "module TopModule(\n    input  [3:0] x,\n    output reg  f\n);\n    always @* begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000, 4'b0011, 4'b1100, 4'b1111: f = 1'b0;\n            4'b0001, 4'b0010, 4'b1101, 4'b1110: f = 1'b1;\n            default:                                 f = 1'bX;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "ab93610e2538be653afad85f977168659802b28b14931701cf546632c09d347a",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:2: error: Object f in tb.top_module1 is not a function.",
+      "raw_completion": "// Function f from the Karnaugh map.\nfunction [0:0] f;\n    input [3:0] x;\n    begin\n        f = (x[1] & x[2]) | (x[3] & x[4]) | (x[1] & x[3]) | (x[2] & x[4]);\n    end\nendfunction\n\n// TopModule as described in the problem description.\nmodule TopModule(input [3:0] x, output reg f);\n    always @(*) f = f(x);\nendmodule",
+      "raw_completion_raw_sha256": "dce69b3123dea222a4a037511f44c9747216a324e80d6c07f8657aa69e91837c",
+      "rtl": "module TopModule(input [3:0] x, output reg f);\n    always @(*) f = f(x);\nendmodule",
+      "rtl_raw_sha256": "3ac85b5aad7c6429d6f9dc8493f474c213c8d44257f666a4a4eb5936f85ccab0",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "21/100 mismatches",
+      "raw_completion": "// One-bit function; the function f is the Karnaugh map for the desired\n// Boolean function, expanded out in full.\nmodule TopModule(input [3:0] x, output reg f);\n    always @(*) begin\n        case (x)\n            4'b0000: f = 1'b0;\n            4'b0001: f = 1'b0;\n            4'b0010: f = 1'b0;\n            4'b0011: f = 1'b0;\n            4'b0100: f = 1'b0;\n            4'b0101: f = 1'b0;\n            4'b0110: f = 1'b0;\n            4'b0111: f = 1'b1;\n            4'b1000: f = 1'b1;\n            4'b1001: f = 1'b0;\n            4'b1010: f = 1'b0;\n            4'b1011: f = 1'b1;\n            4'b1100: f = 1'b1;\n            4'b1101: f = 1'b1;\n            4'b1110: f = 1'b0;\n            4'b1111: f = 1'b0;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "d74c271200d60dae0e138b27baeddefc728af0bc0cee1953a4fc8c34305ab85d",
+      "rtl": "module TopModule(input [3:0] x, output reg f);\n    always @(*) begin\n        case (x)\n            4'b0000: f = 1'b0;\n            4'b0001: f = 1'b0;\n            4'b0010: f = 1'b0;\n            4'b0011: f = 1'b0;\n            4'b0100: f = 1'b0;\n            4'b0101: f = 1'b0;\n            4'b0110: f = 1'b0;\n            4'b0111: f = 1'b1;\n            4'b1000: f = 1'b1;\n            4'b1001: f = 1'b0;\n            4'b1010: f = 1'b0;\n            4'b1011: f = 1'b1;\n            4'b1100: f = 1'b1;\n            4'b1101: f = 1'b1;\n            4'b1110: f = 1'b0;\n            4'b1111: f = 1'b0;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "933a390b5c9b68ca5883165d43b5e82d46931ffdc108229ed8329dab5afb36ca",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "24/100 mismatches",
+      "raw_completion": "// Function f as specified in the Karnaugh map.\nmodule TopModule(input [3:0] x, output reg f);\n    always @(*) begin\n        case (x)\n            4'b0000, 4'b0111, 4'b1100: f = 1'b0;\n            4'b0001, 4'b1010: f = 1'b1;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "75f2b8716c48afb2b8a60ca972c5b28bb4db7c26c78937bffa9fee7cafcd5282",
+      "rtl": "module TopModule(input [3:0] x, output reg f);\n    always @(*) begin\n        case (x)\n            4'b0000, 4'b0111, 4'b1100: f = 1'b0;\n            4'b0001, 4'b1010: f = 1'b1;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "20fcac42b3797203d7ed300f1e3284b36eda5b9b8076cd61504f1632040097ee",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "48/100 mismatches",
+      "raw_completion": "// Function f as specified in the Karnaugh map.\nmodule TopModule(input [3:0] x, output reg f);\n    always @(*) begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000, 4'b0111, 4'b1100: f = 1;\n            4'b0001, 4'b0110, 4'b1010: f = 0;\n            4'b0010, 4'b0101, 4'b1011: f = 1;\n            4'b0011, 4'b0100, 4'b1100: f = 0;\n            default: f = 1'bz;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "7e75a429ddb396ee68fed4013197deb68159a5b245a685444d3fbd0a44fbd2b2",
+      "rtl": "module TopModule(input [3:0] x, output reg f);\n    always @(*) begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000, 4'b0111, 4'b1100: f = 1;\n            4'b0001, 4'b0110, 4'b1010: f = 0;\n            4'b0010, 4'b0101, 4'b1011: f = 1;\n            4'b0011, 4'b0100, 4'b1100: f = 0;\n            default: f = 1'bz;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "94349b60ad26792e0f7aa1cc26d93a2a501e2db62f797bc04ba3ff940029d2a1",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "24/100 mismatches",
+      "raw_completion": "// One-bit function: Fully described by a Karnaugh map\nmodule TopModule(input [3:0] x, output reg f);\n    always @(*) begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000, 4'b0011, 4'b1100, 4'b1000: f = 1'b0;\n            4'b0100, 4'b0111, 4'b1110, 4'b1010: f = 1'b1;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "3fdad50a4de465f4e1e2494a6aff6e8657a7f0ce4d1313ef7e8f4f66589d6bc0",
+      "rtl": "module TopModule(input [3:0] x, output reg f);\n    always @(*) begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000, 4'b0011, 4'b1100, 4'b1000: f = 1'b0;\n            4'b0100, 4'b0111, 4'b1110, 4'b1010: f = 1'b1;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "3facd4f704b1e8c61c665f672aa0614cd97ab897cf51c6f35d5938d833560c56",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "17/100 mismatches",
+      "raw_completion": "// Function f as per the Karnaugh map (omitting d values)\nmodule TopModule (\n    input [3:0] x,\n    output reg f\n);\n    always @(*) begin\n        case (x)\n            4'b0000: f = 1'b0;\n            4'b0001: f = 1'b0;\n            4'b0010: f = 1'b0;\n            4'b0011: f = 1'b1;\n            4'b0100: f = 1'b1;\n            4'b0101: f = 1'b1;\n            4'b0110: f = 1'b1;\n            4'b0111: f = 1'b0;\n            4'b1000: f = 1'b1;\n            4'b1001: f = 1'b1;\n            4'b1010: f = 1'b0;\n            4'b1011: f = 1'b0;\n            4'b1100: f = 1'b1;\n            4'b1101: f = 1'b0;\n            4'b1110: f = 1'b1;\n            4'b1111: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "6a50ec166e8093aba9c0c32a890c2cd5e4d06b2ca1d8fe5fe9ebfd9b68f47a5f",
+      "rtl": "module TopModule (\n    input [3:0] x,\n    output reg f\n);\n    always @(*) begin\n        case (x)\n            4'b0000: f = 1'b0;\n            4'b0001: f = 1'b0;\n            4'b0010: f = 1'b0;\n            4'b0011: f = 1'b1;\n            4'b0100: f = 1'b1;\n            4'b0101: f = 1'b1;\n            4'b0110: f = 1'b1;\n            4'b0111: f = 1'b0;\n            4'b1000: f = 1'b1;\n            4'b1001: f = 1'b1;\n            4'b1010: f = 1'b0;\n            4'b1011: f = 1'b0;\n            4'b1100: f = 1'b1;\n            4'b1101: f = 1'b0;\n            4'b1110: f = 1'b1;\n            4'b1111: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "0903a1d2bb744bf48caaee89595432fc03ca2a8eea732dbdc9ccc095489db153",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob116_m2014_q3_test.sv:64: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit function, implemented as a full Karnaugh map.\nmodule Function (\n    input [3:0] x,\n    output reg f\n);\n    always @* begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000: f = 1'b0;\n            4'b0001: f = 1'b0;\n            4'b0011: f = 1'b0;\n            4'b0010: f = 1'b1;\n            4'b0100: f = 1'b1;\n            4'b0101: f = 1'b1;\n            4'b0111: f = 1'b1;\n            4'b0110: f = 1'b0;\n            4'b1100: f = 1'b0;\n            4'b1101: f = 1'b1;\n            4'b1111: f = 1'b0;\n            4'b1110: f = 1'b0;\n            4'b1000: f = 1'b0;\n            4'b1001: f = 1'b1;\n            4'b1011: f = 1'b0;\n            4'b1010: f = 1'b1;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "1ec7bd9a34fc8d577c4762f689780ff107614a74faadb897cf93a328ddf4b43b",
+      "rtl": "module Function (\n    input [3:0] x,\n    output reg f\n);\n    always @* begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000: f = 1'b0;\n            4'b0001: f = 1'b0;\n            4'b0011: f = 1'b0;\n            4'b0010: f = 1'b1;\n            4'b0100: f = 1'b1;\n            4'b0101: f = 1'b1;\n            4'b0111: f = 1'b1;\n            4'b0110: f = 1'b0;\n            4'b1100: f = 1'b0;\n            4'b1101: f = 1'b1;\n            4'b1111: f = 1'b0;\n            4'b1110: f = 1'b0;\n            4'b1000: f = 1'b0;\n            4'b1001: f = 1'b1;\n            4'b1011: f = 1'b0;\n            4'b1010: f = 1'b1;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "846e96d184ef998754f65f5fc88d274368d8ab649ab2ba827b2f340583a0bcec",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "31/100 mismatches",
+      "raw_completion": "// Functional form, Karnaugh map directly translated to a combinational\n// multicube chain (shortest possible form).\nmodule TopModule(input [3:0] x, output reg f);\n    always @(*) f = (x[1] ^ x[2] ^ x[3]) & (x[0] ^ x[2] ^ x[3] ^ x[1]);\nendmodule",
+      "raw_completion_raw_sha256": "14f3796ed836cf18bdb78cae550f1bdc388f5a6333cb37e935d51489f38db2d3",
+      "rtl": "module TopModule(input [3:0] x, output reg f);\n    always @(*) f = (x[1] ^ x[2] ^ x[3]) & (x[0] ^ x[2] ^ x[3] ^ x[1]);\nendmodule",
+      "rtl_raw_sha256": "b307f36e3f558e92554a659e540078277342f7967c9a1d3e99de1afe09991f14",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "18/100 mismatches",
+      "raw_completion": "// Function f as described in the Karnaugh map.\nmodule TopModule(input [3:0] x, output reg f);\n    always @(*) begin\n        case (x)\n            4'b0000, 4'b0111, 4'b1100: f = 1'b0;\n            4'b0001, 4'b0110, 4'b1010, 4'b1101: f = 1'b1;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "62b514730b6f74faed00dec073f259db28fcb6262b0b930069b39b056b81ffa3",
+      "rtl": "module TopModule(input [3:0] x, output reg f);\n    always @(*) begin\n        case (x)\n            4'b0000, 4'b0111, 4'b1100: f = 1'b0;\n            4'b0001, 4'b0110, 4'b1010, 4'b1101: f = 1'b1;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "6bbf6b05853701c4c5f1f0f36b09bf8c51c6209c8a0b837508866f19ebabbbbd",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "23/100 mismatches",
+      "raw_completion": "// Functional form as a Karnaugh map\nmodule TopModule (\n    input [3:0] x,\n    output reg f\n);\n    always @* begin\n        case ({x[3], x[2], x[1], x[0]})\n            4'b0000, 4'b0011, 4'b1100, 4'b1111: f = 1'b0;\n            4'b0100, 4'b1000, 4'b1011, 4'b1101: f = 1'b1;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a13af66d57b612a8cdaa11c19edb0def4c5ee6827539ac5cd2b39816db8f9c21",
+      "rtl": "module TopModule (\n    input [3:0] x,\n    output reg f\n);\n    always @* begin\n        case ({x[3], x[2], x[1], x[0]})\n            4'b0000, 4'b0011, 4'b1100, 4'b1111: f = 1'b0;\n            4'b0100, 4'b1000, 4'b1011, 4'b1101: f = 1'b1;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "f4b73a152dd443372a83fe5014b55fd725cdb3524b4ef6fcabbe07a5ba6d5d80",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "24/100 mismatches",
+      "raw_completion": "module TopModule (\n    input  [3:0] x,\n    output reg f\n);\n    always @* begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000, 4'b0011, 4'b1100: f = 1'b0;\n            4'b0001, 4'b0110, 4'b1101, 4'b1010: f = 1'b1;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "702f38a300c911abb898cd0cc9ef0e2e568fa6aad8a0637b7429b8ec9c9a87eb",
+      "rtl": "module TopModule (\n    input  [3:0] x,\n    output reg f\n);\n    always @* begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000, 4'b0011, 4'b1100: f = 1'b0;\n            4'b0001, 4'b0110, 4'b1101, 4'b1010: f = 1'b1;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "702f38a300c911abb898cd0cc9ef0e2e568fa6aad8a0637b7429b8ec9c9a87eb",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "24/100 mismatches",
+      "raw_completion": "module TopModule(\n    input  [3:0] x,\n    output reg  f\n);\n    always @* begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000: f = 1'b0;\n            4'b0001: f = 1'b0;\n            4'b0011: f = 1'b0;\n            4'b0010: f = 1'b1;\n            4'b0100: f = 1'b1;\n            4'b0110: f = 1'b1;\n            4'b0101: f = 1'b0;\n            4'b0111: f = 1'b0;\n            4'b1101: f = 1'b0;\n            4'b1100: f = 1'b1;\n            4'b1110: f = 1'b1;\n            4'b1111: f = 1'b0;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "dab503d2c421ea38b46913611ba97410f8383e5e3cab49642047c3c879675d60",
+      "rtl": "module TopModule(\n    input  [3:0] x,\n    output reg  f\n);\n    always @* begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000: f = 1'b0;\n            4'b0001: f = 1'b0;\n            4'b0011: f = 1'b0;\n            4'b0010: f = 1'b1;\n            4'b0100: f = 1'b1;\n            4'b0110: f = 1'b1;\n            4'b0101: f = 1'b0;\n            4'b0111: f = 1'b0;\n            4'b1101: f = 1'b0;\n            4'b1100: f = 1'b1;\n            4'b1110: f = 1'b1;\n            4'b1111: f = 1'b0;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "dab503d2c421ea38b46913611ba97410f8383e5e3cab49642047c3c879675d60",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "26/100 mismatches",
+      "raw_completion": "module TopModule (\n    input  [3:0] x,\n    output reg f\n);\n    always @* begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000, 4'b0011, 4'b1100: f = 1'b0;\n            4'b0001, 4'b0010, 4'b1101: f = 1'b1;\n            default: f = $random;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "352ab1a215ed64ecb77d3656c2dc9a931bf445286b1b2213899c986cea946c54",
+      "rtl": "module TopModule (\n    input  [3:0] x,\n    output reg f\n);\n    always @* begin\n        case ({x[1], x[2], x[3], x[4]})\n            4'b0000, 4'b0011, 4'b1100: f = 1'b0;\n            4'b0001, 4'b0010, 4'b1101: f = 1'b1;\n            default: f = $random;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "352ab1a215ed64ecb77d3656c2dc9a931bf445286b1b2213899c986cea946c54",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob116_m2014_q3_test.sv:64: error: Unknown module type: TopModule",
+      "raw_completion": "// Function f, implemented as a one-bit register, to ensure that the function\n// is fully specified in the Karnaugh map (the register is necessary to\n// implement combinational functions in FULLY-SPECIFIED register-transfer\n// forms).\nmodule FunctionF(input [3:0] x, output reg f);\n    always @(*) begin\n        case (x)\n            4'b0000: f = 1'b0;\n            4'b0001: f = 1'b0;\n            4'b0010: f = 1'b0;\n            4'b0011: f = 1'b0;\n            4'b0100: f = 1'b0;\n            4'b0101: f = 1'b1;\n            4'b0110: f = 1'b1;\n            4'b0111: f = 1'b0;\n            4'b1000: f = 1'b1;\n            4'b1001: f = 1'b1;\n            4'b1010: f = 1'b0;\n            4'b1011: f = 1'b1;\n            4'b1100: f = 1'b0;\n            4'b1101: f = 1'b0;\n            4'b1110: f = 1'b0;\n            4'b1111: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "2f91b089ca0311848af5227fc5e9c3935569f96bd669506902328ed660652070",
+      "rtl": "module FunctionF(input [3:0] x, output reg f);\n    always @(*) begin\n        case (x)\n            4'b0000: f = 1'b0;\n            4'b0001: f = 1'b0;\n            4'b0010: f = 1'b0;\n            4'b0011: f = 1'b0;\n            4'b0100: f = 1'b0;\n            4'b0101: f = 1'b1;\n            4'b0110: f = 1'b1;\n            4'b0111: f = 1'b0;\n            4'b1000: f = 1'b1;\n            4'b1001: f = 1'b1;\n            4'b1010: f = 1'b0;\n            4'b1011: f = 1'b1;\n            4'b1100: f = 1'b0;\n            4'b1101: f = 1'b0;\n            4'b1110: f = 1'b0;\n            4'b1111: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "1a8cea4e660ea08b8ba385d9fe7bc2f63724a641ba82c955d90b974449296433",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 4,
+    "fail": 16
+  },
+  "testbench_raw_sha256": "5cdd2e30a960e24c43b4c214db7f752a3c098b39dd17378035d59a234b6b7288",
+  "training_seed": 2
+}

@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob013_m2014_q4e",
+  "problem_seed": 1325158098140664028,
+  "prompt_raw_sha256": "c4adcffee7da43aa1ec11ae8ba93095a5e34f1ffade2418c05f2a4ef3075d9a4",
+  "reference_raw_sha256": "9dbd9a718fb163bbb60d876b23518c9eb8d211dfc5f891aac87920da3b5b36b0",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "99/100 mismatches",
+      "raw_completion": "// 2-input NOR gate\nmodule TopModule(input in1, input in2, output out);\n  wire nor1_out;\n  nor nor1(nor1_out, in1, in2);\n  assign out = ~nor1_out;\nendmodule",
+      "raw_completion_raw_sha256": "5173d1eab73a3defdc03c9336dd673ac188a06216cf4557ee41231901811ec88",
+      "rtl": "module TopModule(input in1, input in2, output out);\n  wire nor1_out;\n  nor nor1(nor1_out, in1, in2);\n  assign out = ~nor1_out;\nendmodule",
+      "rtl_raw_sha256": "a6b802e0cceb49fecc1c5181a606d651f978bd0722637879ed387e2af5488dc1",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-input NOR gate\nmodule TopModule (\n    input  in1,\n    input  in2,\n    output out\n);\n    assign out = ~(in1 | in2);\nendmodule",
+      "raw_completion_raw_sha256": "9c94ab3d9db01a0578ca308ae5b78b4b0698ae3411a6820d181510f5883a4f89",
+      "rtl": "module TopModule (\n    input  in1,\n    input  in2,\n    output out\n);\n    assign out = ~(in1 | in2);\nendmodule",
+      "rtl_raw_sha256": "c8fb790296fc5368732e300a904ea22cf75915c270cc86ee0da48c74d58610e2",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "99/100 mismatches",
+      "raw_completion": "// 2-input NOR gate\nmodule TopModule(input in1, input in2, output out);\n    wire w1;\n    nor n1(w1, in1, in2);\n    assign out = ~w1;\nendmodule",
+      "raw_completion_raw_sha256": "755cbd0eaec1cfa0af9998bbaae5454545ce466c391921d15d59ad3226b58152",
+      "rtl": "module TopModule(input in1, input in2, output out);\n    wire w1;\n    nor n1(w1, in1, in2);\n    assign out = ~w1;\nendmodule",
+      "rtl_raw_sha256": "c2e664da2ea1dc968bacff021ae563beebe8a72fd979b7dfdb4ff9e7568e0358",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "99/100 mismatches",
+      "raw_completion": "// 2-input NOR gate\nmodule TopModule(input in1, input in2, output out);\n    wire n1, n2, n3;\n    not #1 gate1(n1, in1);\n    not #1 gate2(n2, in2);\n    nor #1 gate3(n3, n1, n2);\n    assign out = n3;\nendmodule",
+      "raw_completion_raw_sha256": "241c45f84c104d2f8d68b92f81a8ef088b30bf88e6058b7d25055a7eda1b608b",
+      "rtl": "module TopModule(input in1, input in2, output out);\n    wire n1, n2, n3;\n    not #1 gate1(n1, in1);\n    not #1 gate2(n2, in2);\n    nor #1 gate3(n3, n1, n2);\n    assign out = n3;\nendmodule",
+      "rtl_raw_sha256": "2ec8e096c6167c31968552d47b72787f43846f3af3b5a1d1ec5a4431899fe953",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  in1,\n    input  in2,\n    output out\n);\n    assign out = ~(in1 | in2);\nendmodule",
+      "raw_completion_raw_sha256": "c8fb790296fc5368732e300a904ea22cf75915c270cc86ee0da48c74d58610e2",
+      "rtl": "module TopModule (\n    input  in1,\n    input  in2,\n    output out\n);\n    assign out = ~(in1 | in2);\nendmodule",
+      "rtl_raw_sha256": "c8fb790296fc5368732e300a904ea22cf75915c270cc86ee0da48c74d58610e2",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-input NOR gate\nmodule TopModule(input in1, input in2, output out);\n    wire w1 = in1 | in2;\n    assign out = ~w1;\nendmodule",
+      "raw_completion_raw_sha256": "7f1dddba2a8dbe3d969c212580bd6cc602318416f259abeea76a74cfc99a1626",
+      "rtl": "module TopModule(input in1, input in2, output out);\n    wire w1 = in1 | in2;\n    assign out = ~w1;\nendmodule",
+      "rtl_raw_sha256": "dd8dea15862206642eba22427f18effb6dfd724859efc4cffcfb874b34ecf673",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "99/100 mismatches",
+      "raw_completion": "// 2-input NOR gate\nmodule TopModule(input in1, input in2, output out);\n    wire n1, n2, n3;\n    not #1 u1(n1, in1);\n    not #1 u2(n2, in2);\n    nor #1 u3(n3, n1, n2);\n    assign out = n3;\nendmodule",
+      "raw_completion_raw_sha256": "04e3262ef7c6cd235a9d587ebe61a1c1b55bba44d8b68af48e5b715cfc906492",
+      "rtl": "module TopModule(input in1, input in2, output out);\n    wire n1, n2, n3;\n    not #1 u1(n1, in1);\n    not #1 u2(n2, in2);\n    nor #1 u3(n3, n1, n2);\n    assign out = n3;\nendmodule",
+      "rtl_raw_sha256": "aa2c2f183dccb483e5eaada825a83f920d71a94f632d2280cc6b3d3d7504399c",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  in1,\n    input  in2,\n    output out\n);\n    assign out = ~(in1 | in2);\nendmodule",
+      "raw_completion_raw_sha256": "0315614615d8da3e7b79dc64e98c8e9ef9938c7b10eb8ec061991b57bf5a6b3e",
+      "rtl": "module TopModule(\n    input  in1,\n    input  in2,\n    output out\n);\n    assign out = ~(in1 | in2);\nendmodule",
+      "rtl_raw_sha256": "0315614615d8da3e7b79dc64e98c8e9ef9938c7b10eb8ec061991b57bf5a6b3e",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-input NOR gate\nmodule TopModule(input in1, input in2, output out);\n    assign out = ~(in1 | in2);\nendmodule",
+      "raw_completion_raw_sha256": "9fe1e2a144c0dfad595e790f508c1f14aea5e0824842e0a0e678ade4d53b4753",
+      "rtl": "module TopModule(input in1, input in2, output out);\n    assign out = ~(in1 | in2);\nendmodule",
+      "rtl_raw_sha256": "fc955d5d756b2175503ce61f66231fee0f8bb9f60160cf72500b2a5c1e9dc5a0",
+      "sample_index": 8,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:3: error: Unknown module type: NOR2X1",
+      "raw_completion": "// 2-input NOR gate\nmodule TopModule(input in1, input in2, output out);\n    wire w1;\n    NOR2X1 U1 (.A(in1), .B(in2), .Y(w1));\n    NOT1 X2 (.A(w1), .Y(out));\nendmodule",
+      "raw_completion_raw_sha256": "bb39d46a31a56f503a23c5e9c481d97ce0347ca9bce6adc3cb23af9eb50bfd16",
+      "rtl": "module TopModule(input in1, input in2, output out);\n    wire w1;\n    NOR2X1 U1 (.A(in1), .B(in2), .Y(w1));\n    NOT1 X2 (.A(w1), .Y(out));\nendmodule",
+      "rtl_raw_sha256": "ba0054bef54bfa44001864ee36e4b73d2161872c37157cd4148ba35c380f6ffc",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-input NOR gate\nmodule TopModule(input in1, input in2, output out);\n    assign out = ~(in1 | in2);\nendmodule",
+      "raw_completion_raw_sha256": "9fe1e2a144c0dfad595e790f508c1f14aea5e0824842e0a0e678ade4d53b4753",
+      "rtl": "module TopModule(input in1, input in2, output out);\n    assign out = ~(in1 | in2);\nendmodule",
+      "rtl_raw_sha256": "fc955d5d756b2175503ce61f66231fee0f8bb9f60160cf72500b2a5c1e9dc5a0",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-input NOR gate\nmodule TopModule(input in1, input in2, output out);\n    wire w1;\n    assign w1 = ~(in1 | in2);\n    assign out = w1;\nendmodule",
+      "raw_completion_raw_sha256": "b52efd1ca4c42b8ed85a8c9e7985821e362d860b9476c61cf1c38345f2e64983",
+      "rtl": "module TopModule(input in1, input in2, output out);\n    wire w1;\n    assign w1 = ~(in1 | in2);\n    assign out = w1;\nendmodule",
+      "rtl_raw_sha256": "7642dad7b4fa27e1ae00b1af16366944465fce36997fdcff2eb681f7994f47d6",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input in1,\n    input in2,\n    output out\n);\n    assign out = ~(in1 | in2);\nendmodule",
+      "raw_completion_raw_sha256": "622ed5a20a08f34175a4e9b205e49b1644a77f2b487c9a4be66073f6a5f4bcdd",
+      "rtl": "module TopModule (\n    input in1,\n    input in2,\n    output out\n);\n    assign out = ~(in1 | in2);\nendmodule",
+      "rtl_raw_sha256": "622ed5a20a08f34175a4e9b205e49b1644a77f2b487c9a4be66073f6a5f4bcdd",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-input NOR gate\nmodule TopModule(input in1, input in2, output out);\n    assign out = ~(in1 | in2);\nendmodule",
+      "raw_completion_raw_sha256": "9fe1e2a144c0dfad595e790f508c1f14aea5e0824842e0a0e678ade4d53b4753",
+      "rtl": "module TopModule(input in1, input in2, output out);\n    assign out = ~(in1 | in2);\nendmodule",
+      "rtl_raw_sha256": "fc955d5d756b2175503ce61f66231fee0f8bb9f60160cf72500b2a5c1e9dc5a0",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-input NOR gate\nmodule TopModule (\n    input  in1,\n    input  in2,\n    output out\n);\n    assign out = ~(in1 | in2);\nendmodule",
+      "raw_completion_raw_sha256": "9c94ab3d9db01a0578ca308ae5b78b4b0698ae3411a6820d181510f5883a4f89",
+      "rtl": "module TopModule (\n    input  in1,\n    input  in2,\n    output out\n);\n    assign out = ~(in1 | in2);\nendmodule",
+      "rtl_raw_sha256": "c8fb790296fc5368732e300a904ea22cf75915c270cc86ee0da48c74d58610e2",
+      "sample_index": 14,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-input NOR gate\nmodule TopModule(input in1, input in2, output out);\n    wire w1;\n    assign w1 = ~(in1 | in2);\n    assign out = w1;\nendmodule",
+      "raw_completion_raw_sha256": "b52efd1ca4c42b8ed85a8c9e7985821e362d860b9476c61cf1c38345f2e64983",
+      "rtl": "module TopModule(input in1, input in2, output out);\n    wire w1;\n    assign w1 = ~(in1 | in2);\n    assign out = w1;\nendmodule",
+      "rtl_raw_sha256": "7642dad7b4fa27e1ae00b1af16366944465fce36997fdcff2eb681f7994f47d6",
+      "sample_index": 15,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-input NOR gate\nmodule TopModule(input in1, input in2, output out);\n    assign out = ~(in1 | in2);\nendmodule",
+      "raw_completion_raw_sha256": "9fe1e2a144c0dfad595e790f508c1f14aea5e0824842e0a0e678ade4d53b4753",
+      "rtl": "module TopModule(input in1, input in2, output out);\n    assign out = ~(in1 | in2);\nendmodule",
+      "rtl_raw_sha256": "fc955d5d756b2175503ce61f66231fee0f8bb9f60160cf72500b2a5c1e9dc5a0",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "99/100 mismatches",
+      "raw_completion": "// 2-input NOR gate\nmodule TopModule(input in1, input in2, output out);\n    wire n1, n2, n3;\n    not #1 (n1, in1);\n    not #1 (n2, in2);\n    nor #1 (n3, n1, n2);\n    assign out = n3;\nendmodule",
+      "raw_completion_raw_sha256": "7b432749ad19b2acfcfb5a9945fe632ff4c87ccb49b03bcbdf4f6daad83ebe9e",
+      "rtl": "module TopModule(input in1, input in2, output out);\n    wire n1, n2, n3;\n    not #1 (n1, in1);\n    not #1 (n2, in2);\n    nor #1 (n3, n1, n2);\n    assign out = n3;\nendmodule",
+      "rtl_raw_sha256": "e0f2b8aa87db365b98e76cb1cd91b033a1d4bc68190daa01ddba68319ba2a5f0",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input in1,\n    input in2,\n    output out\n);\n    assign out = ~(in1 | in2);\nendmodule",
+      "raw_completion_raw_sha256": "5f9c985f35a7e443168c36018538664613c20d5ee80271caa52159078520f6e0",
+      "rtl": "module TopModule(\n    input in1,\n    input in2,\n    output out\n);\n    assign out = ~(in1 | in2);\nendmodule",
+      "rtl_raw_sha256": "5f9c985f35a7e443168c36018538664613c20d5ee80271caa52159078520f6e0",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-input NOR gate\nmodule TopModule(input in1, input in2, output out);\n    wire w1;\n    assign w1 = ~(in1 | in2);\n    assign out = w1;\nendmodule",
+      "raw_completion_raw_sha256": "b52efd1ca4c42b8ed85a8c9e7985821e362d860b9476c61cf1c38345f2e64983",
+      "rtl": "module TopModule(input in1, input in2, output out);\n    wire w1;\n    assign w1 = ~(in1 | in2);\n    assign out = w1;\nendmodule",
+      "rtl_raw_sha256": "7642dad7b4fa27e1ae00b1af16366944465fce36997fdcff2eb681f7994f47d6",
+      "sample_index": 19,
+      "status": "PASS"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 14,
+    "compile_fail": 1,
+    "fail": 5
+  },
+  "testbench_raw_sha256": "084d74cb95eaa0adc2c33fa13fdb43a7bace3c5714bf98854a161f21d5812ea6",
+  "training_seed": 1
+}

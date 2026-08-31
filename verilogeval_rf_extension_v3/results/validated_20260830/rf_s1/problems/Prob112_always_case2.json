@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob112_always_case2",
+  "problem_seed": 3674832290523926720,
+  "prompt_raw_sha256": "6a17eb818d48dab63be542a115dee4223fb7bd480ea9a2161ca8724aab15cc82",
+  "reference_raw_sha256": "1381f5ab0ed243628965c0d2c89bd792f0455a6c9a8e3b113fa380e2590e94ec",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "63/94 mismatches",
+      "raw_completion": "module TopModule (\n    input  [3:0] in,\n    output [1:0] pos\n);\n    wire [3:0] b0, b1, b2, b3;\n    wire [1:0] p0, p1, p2;\n    assign b0 = {1'b0, 1'b0, 1'b0, 1'b0} & in;\n    assign b1 = {1'b1, 1'b0, 1'b0, 1'b0} & in;\n    assign b2 = {1'b0, 1'b1, 1'b0, 1'b0} & in;\n    assign b3 = {1'b0, 1'b0, 1'b1, 1'b0} & in;\n    assign p0 = b0 ? 2'd0 : (b1 ? 2'd1 : (b2 ? 2'd2 : (b3 ? 2'd3 : 2'd0)));\n    assign p1 = b1 ? 2'd1 : (b2 ? 2'd2 : (b3 ? 2'd3 : 2'd0));\n    assign p2 = b2 ? 2'd2 : (b3 ? 2'd3 : 2'd0);\n    assign pos = p0 ? p0 : (p1 ? p1 : p2);\nendmodule",
+      "raw_completion_raw_sha256": "df2069c591aecf51b4c031e29afe40ec93dbc99bae8317ba6a0b52faacd9cff3",
+      "rtl": "module TopModule (\n    input  [3:0] in,\n    output [1:0] pos\n);\n    wire [3:0] b0, b1, b2, b3;\n    wire [1:0] p0, p1, p2;\n    assign b0 = {1'b0, 1'b0, 1'b0, 1'b0} & in;\n    assign b1 = {1'b1, 1'b0, 1'b0, 1'b0} & in;\n    assign b2 = {1'b0, 1'b1, 1'b0, 1'b0} & in;\n    assign b3 = {1'b0, 1'b0, 1'b1, 1'b0} & in;\n    assign p0 = b0 ? 2'd0 : (b1 ? 2'd1 : (b2 ? 2'd2 : (b3 ? 2'd3 : 2'd0)));\n    assign p1 = b1 ? 2'd1 : (b2 ? 2'd2 : (b3 ? 2'd3 : 2'd0));\n    assign p2 = b2 ? 2'd2 : (b3 ? 2'd3 : 2'd0);\n    assign pos = p0 ? p0 : (p1 ? p1 : p2);\nendmodule",
+      "rtl_raw_sha256": "df2069c591aecf51b4c031e29afe40ec93dbc99bae8317ba6a0b52faacd9cff3",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 4-bit priority encoder, combinational: outputs position of first 1\n// bit, or 0 if all inputs are 0.\nmodule TopModule (\n    input  [3:0] in,\n    output reg [1:0] pos\n);\n    always @* begin\n        casez(in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0011: pos = 2'd0;\n            4'b0100: pos = 2'd2;\n            4'b0101: pos = 2'd0;\n            4'b0110: pos = 2'd1;\n            4'b0111: pos = 2'd0;\n            4'b1000: pos = 2'd3;\n            4'b1001: pos = 2'd0;\n            4'b1010: pos = 2'd1;\n            4'b1011: pos = 2'd0;\n            4'b1100: pos = 2'd2;\n            4'b1101: pos = 2'd0;\n            4'b1110: pos = 2'd1;\n            4'b1111: pos = 2'd0;\n            default: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "6e34dabc9c820791a43493b0c744872442ab426caf4991a00269eb59aeded4ff",
+      "rtl": "module TopModule (\n    input  [3:0] in,\n    output reg [1:0] pos\n);\n    always @* begin\n        casez(in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0011: pos = 2'd0;\n            4'b0100: pos = 2'd2;\n            4'b0101: pos = 2'd0;\n            4'b0110: pos = 2'd1;\n            4'b0111: pos = 2'd0;\n            4'b1000: pos = 2'd3;\n            4'b1001: pos = 2'd0;\n            4'b1010: pos = 2'd1;\n            4'b1011: pos = 2'd0;\n            4'b1100: pos = 2'd2;\n            4'b1101: pos = 2'd0;\n            4'b1110: pos = 2'd1;\n            4'b1111: pos = 2'd0;\n            default: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "b2b9b0887730dddb02229a2f77efbb34cac587436b5224c946b465b4966df353",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "57/94 mismatches",
+      "raw_completion": "// 4-bit priority encoder\nmodule TopModule(input [3:0] in, output reg [1:0] pos);\n    always @(*) begin\n        casez(in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0100: pos = 2'd2;\n            4'b1000: pos = 2'd3;\n            4'b0011: pos = 2'd1;\n            4'b0101: pos = 2'd2;\n            4'b0110: pos = 2'd2;\n            4'b1001: pos = 2'd3;\n            4'b0111: pos = 2'd2;\n            4'b1010: pos = 2'd3;\n            4'b1011: pos = 2'd3;\n            4'b1100: pos = 2'd3;\n            4'b1101: pos = 2'd3;\n            4'b1110: pos = 2'd3;\n            4'b0000: pos = 2'd0;\n            default: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "678f485fe60b4274fb3c8a6f2d89aa271ca0a0accd4b5c436272b46a3888c826",
+      "rtl": "module TopModule(input [3:0] in, output reg [1:0] pos);\n    always @(*) begin\n        casez(in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0100: pos = 2'd2;\n            4'b1000: pos = 2'd3;\n            4'b0011: pos = 2'd1;\n            4'b0101: pos = 2'd2;\n            4'b0110: pos = 2'd2;\n            4'b1001: pos = 2'd3;\n            4'b0111: pos = 2'd2;\n            4'b1010: pos = 2'd3;\n            4'b1011: pos = 2'd3;\n            4'b1100: pos = 2'd3;\n            4'b1101: pos = 2'd3;\n            4'b1110: pos = 2'd3;\n            4'b0000: pos = 2'd0;\n            default: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "5a05a6e05f5d5feb29ee5aa9a51bfaed0047381dc1f7d0656db4cdd1d1fe0170",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "57/94 mismatches",
+      "raw_completion": "module TopModule (\n    input  [3:0] in,\n    output reg [1:0] pos\n);\n    always @* begin\n        casez(in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0100: pos = 2'd2;\n            4'b1000: pos = 2'd3;\n            4'b0011: pos = 2'd1;\n            4'b0101: pos = 2'd2;\n            4'b0110: pos = 2'd2;\n            4'b1001: pos = 2'd3;\n            4'b0111: pos = 2'd2;\n            4'b1010: pos = 2'd3;\n            4'b1011: pos = 2'd3;\n            4'b1100: pos = 2'd3;\n            4'b1101: pos = 2'd3;\n            4'b1110: pos = 2'd3;\n            4'b0000: pos = 2'd0;\n            default: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "ba572a59642cfe9307003eb7248e0dbe1f9dd96be10338690d266f4e35868a15",
+      "rtl": "module TopModule (\n    input  [3:0] in,\n    output reg [1:0] pos\n);\n    always @* begin\n        casez(in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0100: pos = 2'd2;\n            4'b1000: pos = 2'd3;\n            4'b0011: pos = 2'd1;\n            4'b0101: pos = 2'd2;\n            4'b0110: pos = 2'd2;\n            4'b1001: pos = 2'd3;\n            4'b0111: pos = 2'd2;\n            4'b1010: pos = 2'd3;\n            4'b1011: pos = 2'd3;\n            4'b1100: pos = 2'd3;\n            4'b1101: pos = 2'd3;\n            4'b1110: pos = 2'd3;\n            4'b0000: pos = 2'd0;\n            default: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "ba572a59642cfe9307003eb7248e0dbe1f9dd96be10338690d266f4e35868a15",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 4-bit priority encoder, combinational (no register). Same as a truth\n// table -> direct combinational logic (no logic gates in the critical\n// path).\nmodule TopModule(\n    input  [3:0] in,\n    output reg [1:0] pos\n);\n    always @* begin\n        case (in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0011: pos = 2'd0;\n            4'b0100: pos = 2'd2;\n            4'b0101: pos = 2'd0;\n            4'b0110: pos = 2'd1;\n            4'b0111: pos = 2'd0;\n            4'b1000: pos = 2'd3;\n            4'b1001: pos = 2'd0;\n            4'b1010: pos = 2'd1;\n            4'b1011: pos = 2'd0;\n            4'b1100: pos = 2'd2;\n            4'b1101: pos = 2'd0;\n            4'b1110: pos = 2'd1;\n            4'b1111: pos = 2'd0;\n            default: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "62df287f491183e2191201d3feb128c82298ec19f2c1bf150450758027dc7e76",
+      "rtl": "module TopModule(\n    input  [3:0] in,\n    output reg [1:0] pos\n);\n    always @* begin\n        case (in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0011: pos = 2'd0;\n            4'b0100: pos = 2'd2;\n            4'b0101: pos = 2'd0;\n            4'b0110: pos = 2'd1;\n            4'b0111: pos = 2'd0;\n            4'b1000: pos = 2'd3;\n            4'b1001: pos = 2'd0;\n            4'b1010: pos = 2'd1;\n            4'b1011: pos = 2'd0;\n            4'b1100: pos = 2'd2;\n            4'b1101: pos = 2'd0;\n            4'b1110: pos = 2'd1;\n            4'b1111: pos = 2'd0;\n            default: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "963a10fa7cf75b79360903e1ad292d5f65bc0debfd55a7394149510970e84422",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "61/94 mismatches",
+      "raw_completion": "module TopModule (\n    input  [3:0] in,\n    output reg [1:0] pos\n);\n    always @* begin\n        casez(in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0100: pos = 2'd2;\n            4'b1000: pos = 2'd3;\n            4'b0011: pos = 2'd1;\n            4'b0101: pos = 2'd2;\n            4'b0110: pos = 2'd3;\n            4'b1001: pos = 2'd3;\n            4'b0111: pos = 2'd3;\n            4'b1010: pos = 2'd3;\n            4'b1011: pos = 2'd3;\n            4'b1100: pos = 2'd3;\n            4'b1101: pos = 2'd3;\n            4'b1110: pos = 2'd3;\n            4'b0000: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "7c2649b57d8d53eae07c5932fcacb07964d95247786fa0c3b82e5121be20b9e3",
+      "rtl": "module TopModule (\n    input  [3:0] in,\n    output reg [1:0] pos\n);\n    always @* begin\n        casez(in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0100: pos = 2'd2;\n            4'b1000: pos = 2'd3;\n            4'b0011: pos = 2'd1;\n            4'b0101: pos = 2'd2;\n            4'b0110: pos = 2'd3;\n            4'b1001: pos = 2'd3;\n            4'b0111: pos = 2'd3;\n            4'b1010: pos = 2'd3;\n            4'b1011: pos = 2'd3;\n            4'b1100: pos = 2'd3;\n            4'b1101: pos = 2'd3;\n            4'b1110: pos = 2'd3;\n            4'b0000: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "7c2649b57d8d53eae07c5932fcacb07964d95247786fa0c3b82e5121be20b9e3",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "61/94 mismatches",
+      "raw_completion": "module TopModule(\n    input [3:0] in,\n    output reg [1:0] pos\n);\n    always @(*) begin\n        case (in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0100: pos = 2'd2;\n            4'b1000: pos = 2'd3;\n            4'b0011: pos = 2'd1;\n            4'b0101: pos = 2'd2;\n            4'b0110: pos = 2'd3;\n            4'b1001: pos = 2'd3;\n            4'b0111: pos = 2'd3;\n            4'b1010: pos = 2'd3;\n            4'b1011: pos = 2'd3;\n            4'b1100: pos = 2'd3;\n            4'b1101: pos = 2'd3;\n            4'b1110: pos = 2'd3;\n            4'b1111: pos = 2'd3;\n            4'b0000: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "cd997f6700bd1c5c80185d1c346b49a4c6c0bbb094c8b98afa230e7fe2df67ff",
+      "rtl": "module TopModule(\n    input [3:0] in,\n    output reg [1:0] pos\n);\n    always @(*) begin\n        case (in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0100: pos = 2'd2;\n            4'b1000: pos = 2'd3;\n            4'b0011: pos = 2'd1;\n            4'b0101: pos = 2'd2;\n            4'b0110: pos = 2'd3;\n            4'b1001: pos = 2'd3;\n            4'b0111: pos = 2'd3;\n            4'b1010: pos = 2'd3;\n            4'b1011: pos = 2'd3;\n            4'b1100: pos = 2'd3;\n            4'b1101: pos = 2'd3;\n            4'b1110: pos = 2'd3;\n            4'b1111: pos = 2'd3;\n            4'b0000: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "cd997f6700bd1c5c80185d1c346b49a4c6c0bbb094c8b98afa230e7fe2df67ff",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 4-bit priority encoder\nmodule TopModule(input [3:0] in, output reg [1:0] pos);\n  always @* begin\n    case (in)\n      4'b0001: pos = 2'd0;\n      4'b0010: pos = 2'd1;\n      4'b0011: pos = 2'd0;\n      4'b0100: pos = 2'd2;\n      4'b0101: pos = 2'd0;\n      4'b0110: pos = 2'd1;\n      4'b0111: pos = 2'd0;\n      4'b1000: pos = 2'd3;\n      4'b1001: pos = 2'd0;\n      4'b1010: pos = 2'd1;\n      4'b1011: pos = 2'd0;\n      4'b1100: pos = 2'd2;\n      4'b1101: pos = 2'd0;\n      4'b1110: pos = 2'd1;\n      4'b1111: pos = 2'd0;\n      default: pos = 2'd0;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "c51494564c2412a8309f33c5e65dd96a05b05e0a1cfba859b66edd0f36a14ed1",
+      "rtl": "module TopModule(input [3:0] in, output reg [1:0] pos);\n  always @* begin\n    case (in)\n      4'b0001: pos = 2'd0;\n      4'b0010: pos = 2'd1;\n      4'b0011: pos = 2'd0;\n      4'b0100: pos = 2'd2;\n      4'b0101: pos = 2'd0;\n      4'b0110: pos = 2'd1;\n      4'b0111: pos = 2'd0;\n      4'b1000: pos = 2'd3;\n      4'b1001: pos = 2'd0;\n      4'b1010: pos = 2'd1;\n      4'b1011: pos = 2'd0;\n      4'b1100: pos = 2'd2;\n      4'b1101: pos = 2'd0;\n      4'b1110: pos = 2'd1;\n      4'b1111: pos = 2'd0;\n      default: pos = 2'd0;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "67c35132b9166f4dc1c418e5b7263dcfa3b69e153e56f8ad4ba8b400166ca6a1",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:13: error: Unknown module type: priority_encoder_2_level_chain",
+      "raw_completion": "// 4-bit priority encoder. Same as a 2-bit priority encoder on a 8-bit input,\n// but in a nested chain of 2-bit encoders. Same function as the direct\n// 4-bit one, just split up and arranged in a different way.\nmodule TopModule(\n    input [3:0] in,\n    output reg [1:0] pos\n);\n    wire [1:0] p0_pos;\n    wire [1:0] p1_pos;\n    wire [1:0] p2_pos;\n    wire [1:0] p3_pos;\n    reg [1:0] pos2;\n    reg [1:0] pos3;\n    reg [1:0] pos4;\n    wire [1:0] p4_pos;\n    priority_encoder_2_level_chain p0(.in(in[0]), .pos(p0_pos));\n    priority_encoder_2_level_chain p1(.in(in[1]), .pos(p1_pos));\n    priority_encoder_2_level_chain p2(.in(in[2]), .pos(p2_pos));\n    priority_encoder_2_level_chain p3(.in(in[3]), .pos(p3_pos));\n    priority_encoder_2_level_chain p4(.in({1'b0, p0_pos, p1_pos, p2_pos, p3_pos}), .pos(p4_pos));\n    always @* begin\n        if (in == 4'b0000) pos = 2'd0;\n        else pos = p4_pos;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "1afc73c308bcb86ad16f6a337f18af9134a31af5115849cdf7f95326c7542f52",
+      "rtl": "module TopModule(\n    input [3:0] in,\n    output reg [1:0] pos\n);\n    wire [1:0] p0_pos;\n    wire [1:0] p1_pos;\n    wire [1:0] p2_pos;\n    wire [1:0] p3_pos;\n    reg [1:0] pos2;\n    reg [1:0] pos3;\n    reg [1:0] pos4;\n    wire [1:0] p4_pos;\n    priority_encoder_2_level_chain p0(.in(in[0]), .pos(p0_pos));\n    priority_encoder_2_level_chain p1(.in(in[1]), .pos(p1_pos));\n    priority_encoder_2_level_chain p2(.in(in[2]), .pos(p2_pos));\n    priority_encoder_2_level_chain p3(.in(in[3]), .pos(p3_pos));\n    priority_encoder_2_level_chain p4(.in({1'b0, p0_pos, p1_pos, p2_pos, p3_pos}), .pos(p4_pos));\n    always @* begin\n        if (in == 4'b0000) pos = 2'd0;\n        else pos = p4_pos;\n    end\nendmodule",
+      "rtl_raw_sha256": "7655356ebfec9ee79ab5ad43ddbb764ad3e8ebaa94f23a3074fa6aae392a2c9d",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:13: error: Expression width 2 does not match width 1 of logic gate array port 1.",
+      "raw_completion": "// 4-bit priority encoder, with combinational (unrelated to register-to-register\n// delay) chain: goes from 2 stages to 1 stage per stage (the long chain goes\n// to around 0.1ns per stage, the short chain goes to around 0.2ns).\nmodule TopModule(input [3:0] in, output reg [1:0] pos);\n    wire [1:0] p0;\n    wire [1:0] p1;\n    wire [1:0] p2;\n    wire [1:0] p3;\n    and a0 (p0[0], in[0], 1'b1);\n    and a1 (p0[1], in[1], ~in[0]);\n    and a2 (p1[0], in[2], ~in[1], ~in[0]);\n    and a3 (p1[1], in[3], ~in[2], ~in[1], ~in[0]);\n    and a4 (p2[0], ~in[3], ~in[2], ~in[1], ~in[0]);\n    and a5 (p2[1], 1'b1, ~in[3], ~in[2], ~in[1], ~in[0]);\n    and a6 (p3[0], 1'b1, 1'b1, 1'b1, 1'b1);\n    or  o0 (pos, p0[1:0], p1[1:0], p2[1:0], p3[1:0]);\nendmodule",
+      "raw_completion_raw_sha256": "eb0280c14f1a3e52b748aec1780d9e99b66f4e9c36c4ccdfad4010d4adc54c0e",
+      "rtl": "module TopModule(input [3:0] in, output reg [1:0] pos);\n    wire [1:0] p0;\n    wire [1:0] p1;\n    wire [1:0] p2;\n    wire [1:0] p3;\n    and a0 (p0[0], in[0], 1'b1);\n    and a1 (p0[1], in[1], ~in[0]);\n    and a2 (p1[0], in[2], ~in[1], ~in[0]);\n    and a3 (p1[1], in[3], ~in[2], ~in[1], ~in[0]);\n    and a4 (p2[0], ~in[3], ~in[2], ~in[1], ~in[0]);\n    and a5 (p2[1], 1'b1, ~in[3], ~in[2], ~in[1], ~in[0]);\n    and a6 (p3[0], 1'b1, 1'b1, 1'b1, 1'b1);\n    or  o0 (pos, p0[1:0], p1[1:0], p2[1:0], p3[1:0]);\nendmodule",
+      "rtl_raw_sha256": "d99f494f53f0d25a36fc4329e3ecdf6e650d1d64c37c0e166be304a8e40d7845",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "61/94 mismatches",
+      "raw_completion": "module TopModule (\n  input  [3:0] in,\n  output reg [1:0] pos\n);\n  always @(*) begin\n    casez(in)\n      4'b0001: pos = 2'd0;\n      4'b0010: pos = 2'd1;\n      4'b0100: pos = 2'd2;\n      4'b1000: pos = 2'd3;\n      4'b0011: pos = 2'd1;\n      4'b0101: pos = 2'd2;\n      4'b0110: pos = 2'd3;\n      4'b1001: pos = 2'd3;\n      4'b0111: pos = 2'd3;\n      4'b1010: pos = 2'd3;\n      4'b1100: pos = 2'd3;\n      4'b1000: pos = 2'd3;\n      4'b1011: pos = 2'd3;\n      4'b1101: pos = 2'd3;\n      4'b1110: pos = 2'd3;\n      4'b0000: pos = 2'd0;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "2ad9c28710a99d1bb7ca65bf5460700c75d5a9c5d1bb8a4b2a10cefd5ad59b7f",
+      "rtl": "module TopModule (\n  input  [3:0] in,\n  output reg [1:0] pos\n);\n  always @(*) begin\n    casez(in)\n      4'b0001: pos = 2'd0;\n      4'b0010: pos = 2'd1;\n      4'b0100: pos = 2'd2;\n      4'b1000: pos = 2'd3;\n      4'b0011: pos = 2'd1;\n      4'b0101: pos = 2'd2;\n      4'b0110: pos = 2'd3;\n      4'b1001: pos = 2'd3;\n      4'b0111: pos = 2'd3;\n      4'b1010: pos = 2'd3;\n      4'b1100: pos = 2'd3;\n      4'b1000: pos = 2'd3;\n      4'b1011: pos = 2'd3;\n      4'b1101: pos = 2'd3;\n      4'b1110: pos = 2'd3;\n      4'b0000: pos = 2'd0;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "2ad9c28710a99d1bb7ca65bf5460700c75d5a9c5d1bb8a4b2a10cefd5ad59b7f",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 4-bit priority encoder, zero-based counting (0 -> 15). If all inputs are 0,\n// outputs 0.\nmodule TopModule(\n    input [3:0] in,\n    output reg [1:0] pos\n);\n    always @(*) begin\n        case (in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0011: pos = 2'd0;\n            4'b0100: pos = 2'd2;\n            4'b0101: pos = 2'd0;\n            4'b0110: pos = 2'd1;\n            4'b0111: pos = 2'd0;\n            4'b1000: pos = 2'd3;\n            4'b1001: pos = 2'd0;\n            4'b1010: pos = 2'd1;\n            4'b1011: pos = 2'd0;\n            4'b1100: pos = 2'd2;\n            4'b1101: pos = 2'd0;\n            4'b1110: pos = 2'd1;\n            4'b1111: pos = 2'd0;\n            default: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "8ab29bf2540c50af06b8124b0282a24aa86e5b911a4dc039c88498986ee56f83",
+      "rtl": "module TopModule(\n    input [3:0] in,\n    output reg [1:0] pos\n);\n    always @(*) begin\n        case (in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0011: pos = 2'd0;\n            4'b0100: pos = 2'd2;\n            4'b0101: pos = 2'd0;\n            4'b0110: pos = 2'd1;\n            4'b0111: pos = 2'd0;\n            4'b1000: pos = 2'd3;\n            4'b1001: pos = 2'd0;\n            4'b1010: pos = 2'd1;\n            4'b1011: pos = 2'd0;\n            4'b1100: pos = 2'd2;\n            4'b1101: pos = 2'd0;\n            4'b1110: pos = 2'd1;\n            4'b1111: pos = 2'd0;\n            default: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "1fc3c878263ca23667de075eef1ec5acf15e5026050e18052f5c33c3fec29ff1",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "61/94 mismatches",
+      "raw_completion": "module TopModule(\n    input [3:0] in,\n    output reg [1:0] pos\n);\n    always @* begin\n        casez(in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0100: pos = 2'd2;\n            4'b1000: pos = 2'd3;\n            4'b0011: pos = 2'd1;\n            4'b0101: pos = 2'd2;\n            4'b0110: pos = 2'd3;\n            4'b1001: pos = 2'd3;\n            4'b0111: pos = 2'd3;\n            4'b1010: pos = 2'd3;\n            4'b1011: pos = 2'd3;\n            4'b1100: pos = 2'd3;\n            4'b1101: pos = 2'd3;\n            4'b1110: pos = 2'd3;\n            4'b0000: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "975057d55417e7a68260f44d3054be8668a3097bbd3f9247935ba4b755d21529",
+      "rtl": "module TopModule(\n    input [3:0] in,\n    output reg [1:0] pos\n);\n    always @* begin\n        casez(in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0100: pos = 2'd2;\n            4'b1000: pos = 2'd3;\n            4'b0011: pos = 2'd1;\n            4'b0101: pos = 2'd2;\n            4'b0110: pos = 2'd3;\n            4'b1001: pos = 2'd3;\n            4'b0111: pos = 2'd3;\n            4'b1010: pos = 2'd3;\n            4'b1011: pos = 2'd3;\n            4'b1100: pos = 2'd3;\n            4'b1101: pos = 2'd3;\n            4'b1110: pos = 2'd3;\n            4'b0000: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "975057d55417e7a68260f44d3054be8668a3097bbd3f9247935ba4b755d21529",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 4-bit priority encoder, with a special zero-input case.\nmodule TopModule(input [3:0] in, output reg [1:0] pos);\n  always @* begin\n    casez(in)\n      4'b0001: pos = 2'd0;\n      4'b0010: pos = 2'd1;\n      4'b0011: pos = 2'd0;\n      4'b0100: pos = 2'd2;\n      4'b0101: pos = 2'd0;\n      4'b0110: pos = 2'd1;\n      4'b0111: pos = 2'd0;\n      4'b1000: pos = 2'd3;\n      4'b1001: pos = 2'd0;\n      4'b1010: pos = 2'd1;\n      4'b1011: pos = 2'd0;\n      4'b1100: pos = 2'd2;\n      4'b1101: pos = 2'd0;\n      4'b1110: pos = 2'd1;\n      4'b1111: pos = 2'd0;\n      default: pos = 2'd0;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "eb98b7a7988df461cfae30c65ad5ad8753708e5bb69802be852307f09d03ac77",
+      "rtl": "module TopModule(input [3:0] in, output reg [1:0] pos);\n  always @* begin\n    casez(in)\n      4'b0001: pos = 2'd0;\n      4'b0010: pos = 2'd1;\n      4'b0011: pos = 2'd0;\n      4'b0100: pos = 2'd2;\n      4'b0101: pos = 2'd0;\n      4'b0110: pos = 2'd1;\n      4'b0111: pos = 2'd0;\n      4'b1000: pos = 2'd3;\n      4'b1001: pos = 2'd0;\n      4'b1010: pos = 2'd1;\n      4'b1011: pos = 2'd0;\n      4'b1100: pos = 2'd2;\n      4'b1101: pos = 2'd0;\n      4'b1110: pos = 2'd1;\n      4'b1111: pos = 2'd0;\n      default: pos = 2'd0;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "d28dec2362a9f15d72f92e324928ba3d3e9e38c7e6ee14655b59b59448668123",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "57/94 mismatches",
+      "raw_completion": "module TopModule(\n    input  [3:0] in,\n    output reg [1:0] pos\n);\n    always @(*) begin\n        casez(in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0100: pos = 2'd2;\n            4'b1000: pos = 2'd3;\n            4'b0011: pos = 2'd1;\n            4'b0101: pos = 2'd2;\n            4'b1001: pos = 2'd3;\n            4'b0110: pos = 2'd2;\n            4'b1010: pos = 2'd3;\n            4'b0111: pos = 2'd2;\n            4'b1011: pos = 2'd3;\n            4'b1100: pos = 2'd3;\n            4'b0100: pos = 2'd2;\n            4'b1000: pos = 2'd3;\n            4'b1110: pos = 2'd3;\n            4'b1101: pos = 2'd3;\n            default: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "d4e55110c6a088356a80d8be3614bd39e94c2a907ccda462ffc57bf66b295c04",
+      "rtl": "module TopModule(\n    input  [3:0] in,\n    output reg [1:0] pos\n);\n    always @(*) begin\n        casez(in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0100: pos = 2'd2;\n            4'b1000: pos = 2'd3;\n            4'b0011: pos = 2'd1;\n            4'b0101: pos = 2'd2;\n            4'b1001: pos = 2'd3;\n            4'b0110: pos = 2'd2;\n            4'b1010: pos = 2'd3;\n            4'b0111: pos = 2'd2;\n            4'b1011: pos = 2'd3;\n            4'b1100: pos = 2'd3;\n            4'b0100: pos = 2'd2;\n            4'b1000: pos = 2'd3;\n            4'b1110: pos = 2'd3;\n            4'b1101: pos = 2'd3;\n            default: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "d4e55110c6a088356a80d8be3614bd39e94c2a907ccda462ffc57bf66b295c04",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob112_always_case2_test.sv:86: error: Unknown module type: TopModule",
+      "raw_completion": "module PriorityEncoder (\n    input [3:0] in,\n    output reg [1:0] pos\n);\n    always @* begin\n        case (in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0011: pos = 2'd0;\n            4'b0100: pos = 2'd2;\n            4'b0101: pos = 2'd0;\n            4'b0110: pos = 2'd1;\n            4'b0111: pos = 2'd0;\n            4'b1000: pos = 2'd3;\n            4'b1001: pos = 2'd0;\n            4'b1010: pos = 2'd1;\n            4'b1011: pos = 2'd0;\n            4'b1100: pos = 2'd2;\n            4'b1101: pos = 2'd0;\n            4'b1110: pos = 2'd1;\n            4'b1111: pos = 2'd0;\n            default: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "5c4230efd6f944b025e0f4ccd417f8a1c1e89c915de80264c1cb0abcfceb6dcc",
+      "rtl": "module PriorityEncoder (\n    input [3:0] in,\n    output reg [1:0] pos\n);\n    always @* begin\n        case (in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0011: pos = 2'd0;\n            4'b0100: pos = 2'd2;\n            4'b0101: pos = 2'd0;\n            4'b0110: pos = 2'd1;\n            4'b0111: pos = 2'd0;\n            4'b1000: pos = 2'd3;\n            4'b1001: pos = 2'd0;\n            4'b1010: pos = 2'd1;\n            4'b1011: pos = 2'd0;\n            4'b1100: pos = 2'd2;\n            4'b1101: pos = 2'd0;\n            4'b1110: pos = 2'd1;\n            4'b1111: pos = 2'd0;\n            default: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "5c4230efd6f944b025e0f4ccd417f8a1c1e89c915de80264c1cb0abcfceb6dcc",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 4-bit priority encoder, combinational (no register, no FF). Same as a\n// multiplexer with a constant select (the \"shortcut\" MUX).\nmodule TopModule(input [3:0] in, output reg [1:0] pos);\n    always @* begin\n        casez(in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0011: pos = 2'd0;\n            4'b0100: pos = 2'd2;\n            4'b0101: pos = 2'd0;\n            4'b0110: pos = 2'd1;\n            4'b0111: pos = 2'd0;\n            4'b1000: pos = 2'd3;\n            4'b1001: pos = 2'd0;\n            4'b1010: pos = 2'd1;\n            4'b1011: pos = 2'd0;\n            4'b1100: pos = 2'd2;\n            4'b1101: pos = 2'd0;\n            4'b1110: pos = 2'd1;\n            4'b1111: pos = 2'd0;\n            default: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "6882cca72fe36821d691bfe206b669f974aaa9eebd9eb0b74c1c7ea14b3a1ad1",
+      "rtl": "module TopModule(input [3:0] in, output reg [1:0] pos);\n    always @* begin\n        casez(in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0011: pos = 2'd0;\n            4'b0100: pos = 2'd2;\n            4'b0101: pos = 2'd0;\n            4'b0110: pos = 2'd1;\n            4'b0111: pos = 2'd0;\n            4'b1000: pos = 2'd3;\n            4'b1001: pos = 2'd0;\n            4'b1010: pos = 2'd1;\n            4'b1011: pos = 2'd0;\n            4'b1100: pos = 2'd2;\n            4'b1101: pos = 2'd0;\n            4'b1110: pos = 2'd1;\n            4'b1111: pos = 2'd0;\n            default: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "cba9f1bd240725771d8ac979ebbf6049b8e675a980c48bf021d997487dc7d87c",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "61/94 mismatches",
+      "raw_completion": "module TopModule(\n    input [3:0] in,\n    output reg [1:0] pos\n);\n    always @* begin\n        case (in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0100: pos = 2'd2;\n            4'b1000: pos = 2'd3;\n            4'b0011: pos = 2'd1;\n            4'b0101: pos = 2'd2;\n            4'b1001: pos = 2'd3;\n            4'b0110: pos = 2'd2;\n            4'b1010: pos = 2'd3;\n            4'b0111: pos = 2'd2;\n            4'b1011: pos = 2'd3;\n            4'b1100: pos = 2'd3;\n            4'b0101: pos = 2'd2;\n            4'b1001: pos = 2'd3;\n            4'b1101: pos = 2'd3;\n            4'b1110: pos = 2'd3;\n            4'b1111: pos = 2'd3;\n            default: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "753de842bda52e2cb29c1d756cf0dc43e8102c410879069d5521c75fa206e5e5",
+      "rtl": "module TopModule(\n    input [3:0] in,\n    output reg [1:0] pos\n);\n    always @* begin\n        case (in)\n            4'b0001: pos = 2'd0;\n            4'b0010: pos = 2'd1;\n            4'b0100: pos = 2'd2;\n            4'b1000: pos = 2'd3;\n            4'b0011: pos = 2'd1;\n            4'b0101: pos = 2'd2;\n            4'b1001: pos = 2'd3;\n            4'b0110: pos = 2'd2;\n            4'b1010: pos = 2'd3;\n            4'b0111: pos = 2'd2;\n            4'b1011: pos = 2'd3;\n            4'b1100: pos = 2'd3;\n            4'b0101: pos = 2'd2;\n            4'b1001: pos = 2'd3;\n            4'b1101: pos = 2'd3;\n            4'b1110: pos = 2'd3;\n            4'b1111: pos = 2'd3;\n            default: pos = 2'd0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "753de842bda52e2cb29c1d756cf0dc43e8102c410879069d5521c75fa206e5e5",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "6/94 mismatches",
+      "raw_completion": "// 4-bit priority encoder. Same as a 2-bit priority encoder on the first half\n// of the inputs, and the same as a 2-bit priority encoder on the second half\n// of the inputs, combined.\nmodule TopModule(\n  input  [3:0] in,\n  output reg [1:0] pos\n);\n  reg [1:0] p0, p1;\n  always @* begin\n    p0 = (in[0]) ? 2'd0 : ((in[1]) ? 2'd1 : ((in[2]) ? 2'd2 : ((in[3]) ? 2'd3 : 2'd0)));\n    p1 = (in[4]) ? 2'd0 : ((in[5]) ? 2'd1 : ((in[6]) ? 2'd2 : ((in[7]) ? 2'd3 : 2'd0)));\n    pos = (in[0] | in[1] | in[2] | in[3]) ? p0 : p1;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "01a5df25aa6d8292e8eaed4ae06c3c4fb606f5d070a2c1bab6ff7e69ebad5d4c",
+      "rtl": "module TopModule(\n  input  [3:0] in,\n  output reg [1:0] pos\n);\n  reg [1:0] p0, p1;\n  always @* begin\n    p0 = (in[0]) ? 2'd0 : ((in[1]) ? 2'd1 : ((in[2]) ? 2'd2 : ((in[3]) ? 2'd3 : 2'd0)));\n    p1 = (in[4]) ? 2'd0 : ((in[5]) ? 2'd1 : ((in[6]) ? 2'd2 : ((in[7]) ? 2'd3 : 2'd0)));\n    pos = (in[0] | in[1] | in[2] | in[3]) ? p0 : p1;\n  end\nendmodule",
+      "rtl_raw_sha256": "f314e79c7468e44891e41786a6e97a90ce1b95ae1d298e96357b16f7103fffce",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "4/94 mismatches",
+      "raw_completion": "// 4-bit priority encoder, combinational: goes through the inputs in order\n// (registerless, 2 pipeline stages -> high Fmax).\nmodule TopModule(input [3:0] in, output reg [1:0] pos);\n  always @(*) begin\n    case(1'b1)\n      in[0]: pos = 2'd0;\n      in[1]: pos = 2'd1;\n      in[2]: pos = 2'd2;\n      in[3]: pos = 2'd3;\n      in[4]: pos = 2'd4;\n      in[5]: pos = 2'd5;\n      in[6]: pos = 2'd6;\n      in[7]: pos = 2'd7;\n      in[8]: pos = 2'd8;\n      in[9]: pos = 2'd9;\n      in[10]: pos = 2'd10;\n      in[11]: pos = 2'd11;\n      in[12]: pos = 2'd12;\n      in[13]: pos = 2'd13;\n      in[14]: pos = 2'd14;\n      in[15]: pos = 2'd15;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "0f8d1c25a528bf246b674bcc62716cd49f11ad6da208dd2edcb01df5a802e66a",
+      "rtl": "module TopModule(input [3:0] in, output reg [1:0] pos);\n  always @(*) begin\n    case(1'b1)\n      in[0]: pos = 2'd0;\n      in[1]: pos = 2'd1;\n      in[2]: pos = 2'd2;\n      in[3]: pos = 2'd3;\n      in[4]: pos = 2'd4;\n      in[5]: pos = 2'd5;\n      in[6]: pos = 2'd6;\n      in[7]: pos = 2'd7;\n      in[8]: pos = 2'd8;\n      in[9]: pos = 2'd9;\n      in[10]: pos = 2'd10;\n      in[11]: pos = 2'd11;\n      in[12]: pos = 2'd12;\n      in[13]: pos = 2'd13;\n      in[14]: pos = 2'd14;\n      in[15]: pos = 2'd15;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "9403887bc30aae5b040f7ea28274c384da11137b677edd70749b0590a961d348",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 6,
+    "compile_fail": 3,
+    "fail": 11
+  },
+  "testbench_raw_sha256": "baf60f2facbac768d2e6e88fbdd4eecd7b5061d5f58059cf8432fd5834463086",
+  "training_seed": 1
+}

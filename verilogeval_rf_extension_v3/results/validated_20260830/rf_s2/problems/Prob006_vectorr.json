@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob006_vectorr",
+  "problem_seed": 1591732319695049482,
+  "prompt_raw_sha256": "586f1649f75aa0d7713f22b402d7aee19e45ec7fcac5761156eec32634a5b6e1",
+  "reference_raw_sha256": "45cdcb65da3b4a2c7bdc46f0b17cdd288350fdf724553b5eec8f34d42616c42c",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob006_vectorr_test.sv:91: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit wide bit-reversed register: reverses the order of the bits in one\n// register stage.\nmodule BitRev8(input [7:0] in, output [7:0] out);\n  wire [7:0] stage0 = in;\n  wire [7:0] stage1 = {stage0[0], stage0[1], stage0[2], stage0[3], stage0[4], stage0[5], stage0[6], stage0[7]};\n  wire [7:0] stage2 = {stage1[0], stage1[1], stage1[2], stage1[3], stage1[4], stage1[5], stage1[6], stage1[7]};\n  wire [7:0] stage3 = {stage2[0], stage2[1], stage2[2], stage2[3], stage2[4], stage2[5], stage2[6], stage2[7]};\n  wire [7:0] stage4 = {stage3[0], stage3[1], stage3[2], stage3[3], stage3[4], stage3[5], stage3[6], stage3[7]};\n  wire [7:0] stage5 = {stage4[0], stage4[1], stage4[2], stage4[3], stage4[4], stage4[5], stage4[6], stage4[7]};\n  wire [7:0] stage6 = {stage5[0], stage5[1], stage5[2], stage5[3], stage5[4], stage5[5], stage5[6], stage5[7]};\n  wire [7:0] stage7 = {stage6[0], stage6[1], stage6[2], stage6[3], stage6[4], stage6[5], stage6[6], stage6[7]};\n  assign out = stage7;\nendmodule",
+      "raw_completion_raw_sha256": "1da00758ec3710b64d564b0c50567d2d5bbe84cc8301084d0186d80ab86f4294",
+      "rtl": "module BitRev8(input [7:0] in, output [7:0] out);\n  wire [7:0] stage0 = in;\n  wire [7:0] stage1 = {stage0[0], stage0[1], stage0[2], stage0[3], stage0[4], stage0[5], stage0[6], stage0[7]};\n  wire [7:0] stage2 = {stage1[0], stage1[1], stage1[2], stage1[3], stage1[4], stage1[5], stage1[6], stage1[7]};\n  wire [7:0] stage3 = {stage2[0], stage2[1], stage2[2], stage2[3], stage2[4], stage2[5], stage2[6], stage2[7]};\n  wire [7:0] stage4 = {stage3[0], stage3[1], stage3[2], stage3[3], stage3[4], stage3[5], stage3[6], stage3[7]};\n  wire [7:0] stage5 = {stage4[0], stage4[1], stage4[2], stage4[3], stage4[4], stage4[5], stage4[6], stage4[7]};\n  wire [7:0] stage6 = {stage5[0], stage5[1], stage5[2], stage5[3], stage5[4], stage5[5], stage5[6], stage5[7]};\n  wire [7:0] stage7 = {stage6[0], stage6[1], stage6[2], stage6[3], stage6[4], stage6[5], stage6[6], stage6[7]};\n  assign out = stage7;\nendmodule",
+      "rtl_raw_sha256": "da46593ab17f289965e66e7709ab833707f3c6e2584c8a7e5c30e71c5fd32c4a",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n  input  [7:0] in,\n  output [7:0] out\n);\n  assign out = {in[0], in[1], in[2], in[3], in[4], in[5], in[6], in[7]};\nendmodule",
+      "raw_completion_raw_sha256": "b777475726c6ee993f1d3d6129b0109626c2b635c009a79752b6ff75ab0834cd",
+      "rtl": "module TopModule(\n  input  [7:0] in,\n  output [7:0] out\n);\n  assign out = {in[0], in[1], in[2], in[3], in[4], in[5], in[6], in[7]};\nendmodule",
+      "rtl_raw_sha256": "b777475726c6ee993f1d3d6129b0109626c2b635c009a79752b6ff75ab0834cd",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n  input  [7:0] in,\n  output [7:0] out\n);\n  // Bit-reversed copy of the input\n  reg [7:0] rev;\n  integer i;\n  always @(*) begin\n    for (i = 0; i < 8; i = i + 1)\n      rev[i] = in[7 - i];\n  end\n  assign out = rev;\nendmodule",
+      "raw_completion_raw_sha256": "bf7dcce6b8ddd0b7ecdeddc784ebfb58d3952e619c1e70695b7b43f04f3c0dc3",
+      "rtl": "module TopModule(\n  input  [7:0] in,\n  output [7:0] out\n);\n  // Bit-reversed copy of the input\n  reg [7:0] rev;\n  integer i;\n  always @(*) begin\n    for (i = 0; i < 8; i = i + 1)\n      rev[i] = in[7 - i];\n  end\n  assign out = rev;\nendmodule",
+      "rtl_raw_sha256": "bf7dcce6b8ddd0b7ecdeddc784ebfb58d3952e619c1e70695b7b43f04f3c0dc3",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "203/218 mismatches",
+      "raw_completion": "// This is a one-line bit-reversal: the same as the long-form bit-reversal\n// in the question, but written in a single line.\nmodule TopModule(input [7:0] in, output [7:0] out);\n    assign out = {in[7], in[6], in[5], in[4], in[3], in[2], in[1], in[0]};\nendmodule",
+      "raw_completion_raw_sha256": "b40c752fa3e7fb6d07bb65d68676086cd2dafb74526594116cf79ff5719d912c",
+      "rtl": "module TopModule(input [7:0] in, output [7:0] out);\n    assign out = {in[7], in[6], in[5], in[4], in[3], in[2], in[1], in[0]};\nendmodule",
+      "rtl_raw_sha256": "c9ca0ffd40ff4e0f03bfbcc0ff9862eda4f4257f78bf2262fc4a78929fee7951",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob006_vectorr_test.sv:91: error: Unknown module type: TopModule",
+      "raw_completion": "// Bit-reversed register-based pipeline stage (half-register latency).\nmodule BitRevPipeReg (input [7:0] in, output reg [7:0] out);\n  reg [7:0] t0;\n  reg [7:0] t1;\n  reg [7:0] t2;\n  reg [7:0] t3;\n  reg [7:0] t4;\n  reg [7:0] t5;\n  reg [7:0] t6;\n  reg [7:0] t7;\n  always @(*) begin\n    t0 = in;\n    t1 = {t0[0], t0[1], t0[2], t0[3], t0[4], t0[5], t0[6], t0[7]};\n    t2 = {t1[0], t1[1], t1[2], t1[3], t1[4], t1[5], t1[6], t1[7]};\n    t3 = {t2[0], t2[1], t2[2], t2[3], t2[4], t2[5], t2[6], t2[7]};\n    t4 = {t3[0], t3[1], t3[2], t3[3], t3[4], t3[5], t3[6], t3[7]};\n    t5 = {t4[0], t4[1], t4[2], t4[3], t4[4], t4[5], t4[6], t4[7]};\n    t6 = {t5[0], t5[1], t5[2], t5[3], t5[4], t5[5], t5[6], t5[7]};\n    t7 = {t6[0], t6[1], t6[2], t6[3], t6[4], t6[5], t6[6], t6[7]};\n    out = t7;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "afe73778d6d37cf899d6983fb5cd7ee6c91e1f9f77e79ea7d2b8661d5aa9148f",
+      "rtl": "module BitRevPipeReg (input [7:0] in, output reg [7:0] out);\n  reg [7:0] t0;\n  reg [7:0] t1;\n  reg [7:0] t2;\n  reg [7:0] t3;\n  reg [7:0] t4;\n  reg [7:0] t5;\n  reg [7:0] t6;\n  reg [7:0] t7;\n  always @(*) begin\n    t0 = in;\n    t1 = {t0[0], t0[1], t0[2], t0[3], t0[4], t0[5], t0[6], t0[7]};\n    t2 = {t1[0], t1[1], t1[2], t1[3], t1[4], t1[5], t1[6], t1[7]};\n    t3 = {t2[0], t2[1], t2[2], t2[3], t2[4], t2[5], t2[6], t2[7]};\n    t4 = {t3[0], t3[1], t3[2], t3[3], t3[4], t3[5], t3[6], t3[7]};\n    t5 = {t4[0], t4[1], t4[2], t4[3], t4[4], t4[5], t4[6], t4[7]};\n    t6 = {t5[0], t5[1], t5[2], t5[3], t5[4], t5[5], t5[6], t5[7]};\n    t7 = {t6[0], t6[1], t6[2], t6[3], t6[4], t6[5], t6[6], t6[7]};\n    out = t7;\n  end\nendmodule",
+      "rtl_raw_sha256": "a269b1d9cb6b1b1b6b7d1ea3a0cfd85988a80a4548f22e0533ef444239364af1",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:5: syntax error",
+      "raw_completion": "module TopModule(input [7:0] in, output [7:0] out);\n  integer i;\n  reg [7:0] temp = 8'b0;\n  for (i = 0; i < 8; i = i + 1) begin\n    temp[i] = in[7-i];\n  end\n  assign out = temp;\nendmodule",
+      "raw_completion_raw_sha256": "f6537e7934bbc4b36167c3f07597f8216fcb4297bd5e4f3b37f63cf3b1a8341a",
+      "rtl": "module TopModule(input [7:0] in, output [7:0] out);\n  integer i;\n  reg [7:0] temp = 8'b0;\n  for (i = 0; i < 8; i = i + 1) begin\n    temp[i] = in[7-i];\n  end\n  assign out = temp;\nendmodule",
+      "rtl_raw_sha256": "f6537e7934bbc4b36167c3f07597f8216fcb4297bd5e4f3b37f63cf3b1a8341a",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [7:0] in,\n    output [7:0] out\n);\n    assign out = {in[0], in[1], in[2], in[3], in[4], in[5], in[6], in[7]};\nendmodule",
+      "raw_completion_raw_sha256": "00f5e8ba32fdc21a0ee3cb5c39e60d15fd443a6863ac613ae368c120e80f1455",
+      "rtl": "module TopModule(\n    input  [7:0] in,\n    output [7:0] out\n);\n    assign out = {in[0], in[1], in[2], in[3], in[4], in[5], in[6], in[7]};\nendmodule",
+      "rtl_raw_sha256": "00f5e8ba32fdc21a0ee3cb5c39e60d15fd443a6863ac613ae368c120e80f1455",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(input [7:0] in, output [7:0] out);\n  assign out = {in[0], in[1], in[2], in[3], in[4], in[5], in[6], in[7]};\nendmodule",
+      "raw_completion_raw_sha256": "b249fb63474539f39cbb18b791c6fdf6e33e0fcf1a91405555f5eb25dd78f1f6",
+      "rtl": "module TopModule(input [7:0] in, output [7:0] out);\n  assign out = {in[0], in[1], in[2], in[3], in[4], in[5], in[6], in[7]};\nendmodule",
+      "rtl_raw_sha256": "b249fb63474539f39cbb18b791c6fdf6e33e0fcf1a91405555f5eb25dd78f1f6",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [7:0] in,\n    output [7:0] out\n);\n    assign out = {in[0], in[1], in[2], in[3], in[4], in[5], in[6], in[7]};\nendmodule",
+      "raw_completion_raw_sha256": "00f5e8ba32fdc21a0ee3cb5c39e60d15fd443a6863ac613ae368c120e80f1455",
+      "rtl": "module TopModule(\n    input  [7:0] in,\n    output [7:0] out\n);\n    assign out = {in[0], in[1], in[2], in[3], in[4], in[5], in[6], in[7]};\nendmodule",
+      "rtl_raw_sha256": "00f5e8ba32fdc21a0ee3cb5c39e60d15fd443a6863ac613ae368c120e80f1455",
+      "sample_index": 8,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [7:0] in,\n    output [7:0] out\n);\n    wire [7:0] reversed;\n    genvar i;\n    generate\n        for (i = 0; i < 8; i = i + 1) begin\n            assign reversed[i] = in[7 - i];\n        end\n    endgenerate\n    assign out = reversed;\nendmodule",
+      "raw_completion_raw_sha256": "b1b6a32bf293ff953c0c3d888a093700f663960324c8b94f7b27df7054ef7b93",
+      "rtl": "module TopModule(\n    input  [7:0] in,\n    output [7:0] out\n);\n    wire [7:0] reversed;\n    genvar i;\n    generate\n        for (i = 0; i < 8; i = i + 1) begin\n            assign reversed[i] = in[7 - i];\n        end\n    endgenerate\n    assign out = reversed;\nendmodule",
+      "rtl_raw_sha256": "b1b6a32bf293ff953c0c3d888a093700f663960324c8b94f7b27df7054ef7b93",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [7:0] in,\n    output [7:0] out\n);\n    assign out[0] = in[7];\n    assign out[1] = in[6];\n    assign out[2] = in[5];\n    assign out[3] = in[4];\n    assign out[4] = in[3];\n    assign out[5] = in[2];\n    assign out[6] = in[1];\n    assign out[7] = in[0];\nendmodule",
+      "raw_completion_raw_sha256": "94d2cc98e1735cbe01266d4b8d30eb1dbbbc9e70e40b54cb32f90b7c8f3904b8",
+      "rtl": "module TopModule(\n    input  [7:0] in,\n    output [7:0] out\n);\n    assign out[0] = in[7];\n    assign out[1] = in[6];\n    assign out[2] = in[5];\n    assign out[3] = in[4];\n    assign out[4] = in[3];\n    assign out[5] = in[2];\n    assign out[6] = in[1];\n    assign out[7] = in[0];\nendmodule",
+      "rtl_raw_sha256": "94d2cc98e1735cbe01266d4b8d30eb1dbbbc9e70e40b54cb32f90b7c8f3904b8",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(input [7:0] in, output [7:0] out);\n  assign out = {in[0], in[1], in[2], in[3], in[4], in[5], in[6], in[7]};\nendmodule",
+      "raw_completion_raw_sha256": "b249fb63474539f39cbb18b791c6fdf6e33e0fcf1a91405555f5eb25dd78f1f6",
+      "rtl": "module TopModule(input [7:0] in, output [7:0] out);\n  assign out = {in[0], in[1], in[2], in[3], in[4], in[5], in[6], in[7]};\nendmodule",
+      "rtl_raw_sha256": "b249fb63474539f39cbb18b791c6fdf6e33e0fcf1a91405555f5eb25dd78f1f6",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:18: error: out is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit wide bit-reversed register chain, with a separate register per stage\n// (equivalent to the reference).\nmodule TopModule(input [7:0] in, output [7:0] out);\n  reg [7:0] stage0;\n  reg [7:0] stage1;\n  reg [7:0] stage2;\n  reg [7:0] stage3;\n  reg [7:0] stage4;\n  reg [7:0] stage5;\n  reg [7:0] stage6;\n  reg [7:0] stage7;\n  always @(*) stage0 = in;\n  always @(*) stage1 = {stage0[0], stage0[1], stage0[2], stage0[3], stage0[4], stage0[5], stage0[6], stage0[7]};\n  always @(*) stage2 = {stage1[0], stage1[1], stage1[2], stage1[3], stage1[4], stage1[5], stage1[6], stage1[7]};\n  always @(*) stage3 = {stage2[0], stage2[1], stage2[2], stage2[3], stage2[4], stage2[5], stage2[6], stage2[7]};\n  always @(*) stage4 = {stage3[0], stage3[1], stage3[2], stage3[3], stage3[4], stage3[5], stage3[6], stage3[7]};\n  always @(*) stage5 = {stage4[0], stage4[1], stage4[2], stage4[3], stage4[4], stage4[5], stage4[6], stage4[7]};\n  always @(*) stage6 = {stage5[0], stage5[1], stage5[2], stage5[3], stage5[4], stage5[5], stage5[6], stage5[7]};\n  always @(*) stage7 = {stage6[0], stage6[1], stage6[2], stage6[3], stage6[4], stage6[5], stage6[6], stage6[7]};\n  always @(*) out = stage7;\nendmodule",
+      "raw_completion_raw_sha256": "03f9214fd149617c1e84fffc11e7ba3334e07ce3a318b6e0433e743620c5bdc4",
+      "rtl": "module TopModule(input [7:0] in, output [7:0] out);\n  reg [7:0] stage0;\n  reg [7:0] stage1;\n  reg [7:0] stage2;\n  reg [7:0] stage3;\n  reg [7:0] stage4;\n  reg [7:0] stage5;\n  reg [7:0] stage6;\n  reg [7:0] stage7;\n  always @(*) stage0 = in;\n  always @(*) stage1 = {stage0[0], stage0[1], stage0[2], stage0[3], stage0[4], stage0[5], stage0[6], stage0[7]};\n  always @(*) stage2 = {stage1[0], stage1[1], stage1[2], stage1[3], stage1[4], stage1[5], stage1[6], stage1[7]};\n  always @(*) stage3 = {stage2[0], stage2[1], stage2[2], stage2[3], stage2[4], stage2[5], stage2[6], stage2[7]};\n  always @(*) stage4 = {stage3[0], stage3[1], stage3[2], stage3[3], stage3[4], stage3[5], stage3[6], stage3[7]};\n  always @(*) stage5 = {stage4[0], stage4[1], stage4[2], stage4[3], stage4[4], stage4[5], stage4[6], stage4[7]};\n  always @(*) stage6 = {stage5[0], stage5[1], stage5[2], stage5[3], stage5[4], stage5[5], stage5[6], stage5[7]};\n  always @(*) stage7 = {stage6[0], stage6[1], stage6[2], stage6[3], stage6[4], stage6[5], stage6[6], stage6[7]};\n  always @(*) out = stage7;\nendmodule",
+      "rtl_raw_sha256": "bcef8157b154dbfc9edf5acf4be8071b7321640d09489e08ca4743acfdc44ab3",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "203/218 mismatches",
+      "raw_completion": "module TopModule(\n    input  [7:0] in,\n    output [7:0] out\n);\n    assign out = {in[7], in[6], in[5], in[4], in[3], in[2], in[1], in[0]};\nendmodule",
+      "raw_completion_raw_sha256": "b356403f302d005940d8c0c352f96c2b7be1cb3d85a517db1e4590f0603562ca",
+      "rtl": "module TopModule(\n    input  [7:0] in,\n    output [7:0] out\n);\n    assign out = {in[7], in[6], in[5], in[4], in[3], in[2], in[1], in[0]};\nendmodule",
+      "rtl_raw_sha256": "b356403f302d005940d8c0c352f96c2b7be1cb3d85a517db1e4590f0603562ca",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: error: Unknown module type: stage0_reg",
+      "raw_completion": "// One-bit wide reverse bit order stage, inline with the direct wiring of the\n// register stage.\nmodule TopModule(input [7:0] in, output [7:0] out);\n    reg [7:0] stage0;\n    reg [7:0] stage1;\n    reg [7:0] stage2;\n    reg [7:0] stage3;\n    reg [7:0] stage4;\n    reg [7:0] stage5;\n    reg [7:0] stage6;\n    reg [7:0] stage7;\n    stage0_reg the_stage0_reg(.I(in), .O(stage0));\n    stage1_reg the_stage1_reg(.I(stage0), .O(stage1));\n    stage2_reg the_stage2_reg(.I(stage1), .O(stage2));\n    stage3_reg the_stage3_reg(.I(stage2), .O(stage3));\n    stage4_reg the_stage4_reg(.I(stage3), .O(stage4));\n    stage5_reg the_stage5_reg(.I(stage4), .O(stage5));\n    stage6_reg the_stage6_reg(.I(stage5), .O(stage6));\n    stage7_reg the_stage7_reg(.I(stage6), .O(stage7));\n    assign out = stage7;\nendmodule",
+      "raw_completion_raw_sha256": "88e0663f6c92e474bd927fa66539bad354997a3c3ae30a65c8e7d0eb3e15cced",
+      "rtl": "module TopModule(input [7:0] in, output [7:0] out);\n    reg [7:0] stage0;\n    reg [7:0] stage1;\n    reg [7:0] stage2;\n    reg [7:0] stage3;\n    reg [7:0] stage4;\n    reg [7:0] stage5;\n    reg [7:0] stage6;\n    reg [7:0] stage7;\n    stage0_reg the_stage0_reg(.I(in), .O(stage0));\n    stage1_reg the_stage1_reg(.I(stage0), .O(stage1));\n    stage2_reg the_stage2_reg(.I(stage1), .O(stage2));\n    stage3_reg the_stage3_reg(.I(stage2), .O(stage3));\n    stage4_reg the_stage4_reg(.I(stage3), .O(stage4));\n    stage5_reg the_stage5_reg(.I(stage4), .O(stage5));\n    stage6_reg the_stage6_reg(.I(stage5), .O(stage6));\n    stage7_reg the_stage7_reg(.I(stage6), .O(stage7));\n    assign out = stage7;\nendmodule",
+      "rtl_raw_sha256": "9e699c17fcb34e273a1a82375f74084f53ee54f11645517c6bc926134aff0993",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "215/218 mismatches",
+      "raw_completion": "module TopModule(\n    input  [7:0] in,\n    output [7:0] out\n);\n    wire [7:0] rev;\n    assign rev = 8'b00000001 & in[0] |\n                 8'b00000010 & in[1] |\n                 8'b00000100 & in[2] |\n                 8'b00001000 & in[3] |\n                 8'b00010000 & in[4] |\n                 8'b00100000 & in[5] |\n                 8'b01000000 & in[6] |\n                 8'b10000000 & in[7];\n    assign out = rev;\nendmodule",
+      "raw_completion_raw_sha256": "be79280963e4af17c9f5c30fbb39a87931bb9528562328b005a3ba12e3c3012b",
+      "rtl": "module TopModule(\n    input  [7:0] in,\n    output [7:0] out\n);\n    wire [7:0] rev;\n    assign rev = 8'b00000001 & in[0] |\n                 8'b00000010 & in[1] |\n                 8'b00000100 & in[2] |\n                 8'b00001000 & in[3] |\n                 8'b00010000 & in[4] |\n                 8'b00100000 & in[5] |\n                 8'b01000000 & in[6] |\n                 8'b10000000 & in[7];\n    assign out = rev;\nendmodule",
+      "rtl_raw_sha256": "be79280963e4af17c9f5c30fbb39a87931bb9528562328b005a3ba12e3c3012b",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "203/218 mismatches",
+      "raw_completion": "module TopModule(\n    input  [7:0] in,\n    output [7:0] out\n);\n    assign out = {in[7], in[6], in[5], in[4], in[3], in[2], in[1], in[0]};\nendmodule",
+      "raw_completion_raw_sha256": "b356403f302d005940d8c0c352f96c2b7be1cb3d85a517db1e4590f0603562ca",
+      "rtl": "module TopModule(\n    input  [7:0] in,\n    output [7:0] out\n);\n    assign out = {in[7], in[6], in[5], in[4], in[3], in[2], in[1], in[0]};\nendmodule",
+      "rtl_raw_sha256": "b356403f302d005940d8c0c352f96c2b7be1cb3d85a517db1e4590f0603562ca",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n  input  [7:0] in,\n  output [7:0] out\n);\n  assign out = {in[0], in[1], in[2], in[3], in[4], in[5], in[6], in[7]};\nendmodule",
+      "raw_completion_raw_sha256": "b777475726c6ee993f1d3d6129b0109626c2b635c009a79752b6ff75ab0834cd",
+      "rtl": "module TopModule(\n  input  [7:0] in,\n  output [7:0] out\n);\n  assign out = {in[0], in[1], in[2], in[3], in[4], in[5], in[6], in[7]};\nendmodule",
+      "rtl_raw_sha256": "b777475726c6ee993f1d3d6129b0109626c2b635c009a79752b6ff75ab0834cd",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n  input  [7:0] in,\n  output [7:0] out\n);\n  reg [7:0] tmp;\n  always @(*) tmp = {in[0], in[1], in[2], in[3], in[4], in[5], in[6], in[7]};\n  assign out = tmp;\nendmodule",
+      "raw_completion_raw_sha256": "193293ef056ca1c2fa4fcdc0968bd75861803436ab7e388da88ff26332f54668",
+      "rtl": "module TopModule(\n  input  [7:0] in,\n  output [7:0] out\n);\n  reg [7:0] tmp;\n  always @(*) tmp = {in[0], in[1], in[2], in[3], in[4], in[5], in[6], in[7]};\n  assign out = tmp;\nendmodule",
+      "rtl_raw_sha256": "193293ef056ca1c2fa4fcdc0968bd75861803436ab7e388da88ff26332f54668",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "218/218 mismatches",
+      "raw_completion": "// One-bit wide register array, in series, with a bitwise AND between each\n// register and a constant, to create a clock enable signal.\nmodule TopModule(input [7:0] in, output [7:0] out);\n  reg [7:0] stage0;\n  reg [7:0] stage1;\n  reg [7:0] stage2;\n  reg [7:0] stage3;\n  reg [7:0] stage4;\n  reg [7:0] stage5;\n  reg [7:0] stage6;\n  reg [7:0] stage7;\n  wire ce;\n  reg [7:0] out_reg;\n  assign ce = 1'b1;\n  always @(posedge ce) stage0 <= 8'h01;\n  always @(posedge ce) stage1 <= 8'h02;\n  always @(posedge ce) stage2 <= 8'h04;\n  always @(posedge ce) stage3 <= 8'h08;\n  always @(posedge ce) stage4 <= 8'h10;\n  always @(posedge ce) stage5 <= 8'h20;\n  always @(posedge ce) stage6 <= 8'h40;\n  always @(posedge ce) stage7 <= 8'h80;\n  always @(posedge ce) out_reg <= {in[7], in[6], in[5], in[4], in[3], in[2], in[1], in[0]};\n  assign out = out_reg;\nendmodule",
+      "raw_completion_raw_sha256": "7458d009644ec43a22da2b43d4c09aa85f0d9325dd6193c281e39b29db7a59af",
+      "rtl": "module TopModule(input [7:0] in, output [7:0] out);\n  reg [7:0] stage0;\n  reg [7:0] stage1;\n  reg [7:0] stage2;\n  reg [7:0] stage3;\n  reg [7:0] stage4;\n  reg [7:0] stage5;\n  reg [7:0] stage6;\n  reg [7:0] stage7;\n  wire ce;\n  reg [7:0] out_reg;\n  assign ce = 1'b1;\n  always @(posedge ce) stage0 <= 8'h01;\n  always @(posedge ce) stage1 <= 8'h02;\n  always @(posedge ce) stage2 <= 8'h04;\n  always @(posedge ce) stage3 <= 8'h08;\n  always @(posedge ce) stage4 <= 8'h10;\n  always @(posedge ce) stage5 <= 8'h20;\n  always @(posedge ce) stage6 <= 8'h40;\n  always @(posedge ce) stage7 <= 8'h80;\n  always @(posedge ce) out_reg <= {in[7], in[6], in[5], in[4], in[3], in[2], in[1], in[0]};\n  assign out = out_reg;\nendmodule",
+      "rtl_raw_sha256": "714e6c669d58542ce5ed37c68699726c89cf701e399c7b2e115365be0bcad31b",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 10,
+    "compile_fail": 5,
+    "fail": 5
+  },
+  "testbench_raw_sha256": "b837b81211958f35c5a62632554f6e1806975c1487b8a9e0ba431c8bfa9b1996",
+  "training_seed": 2
+}

@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob034_dff8",
+  "problem_seed": 8861521374106085521,
+  "prompt_raw_sha256": "af4a3759be65a9c2ab59af1cd4b207a64bdf9528cc79953c96c8694ec46432d8",
+  "reference_raw_sha256": "f2cefccbae78a8cd532c6b66eb75eb08b60cf11497b3f89bd09bcb9d892fef69",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob034_dff8_test.sv:85: error: Unknown module type: TopModule",
+      "raw_completion": "// A one-bit D flip-flop.\nmodule DFF (input clk, input d, output reg q);\n    always @(posedge clk) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "5b1f03038f37c4de123ea61cd76c7bfab9b509eb32ef20732432acb9f0789d12",
+      "rtl": "module DFF (input clk, input d, output reg q);\n    always @(posedge clk) q <= d;\nendmodule",
+      "rtl_raw_sha256": "47297d98734e6ec6b2373e1b194f971da060c4976dc780d10625a0c6b1febdb6",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob034_dff8_test.sv:85: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit D flip-flop\nmodule dff (\n    input  clk,\n    input  d,\n    output reg q\n);\n    always @(posedge clk) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "0f59dbae0fcb09726af307ed1a7efb5dd3137938e48bbb7f62d2c2564b8f1784",
+      "rtl": "module dff (\n    input  clk,\n    input  d,\n    output reg q\n);\n    always @(posedge clk) q <= d;\nendmodule",
+      "rtl_raw_sha256": "8dfee5c311800126bac97bd8e3053023497873b44f94df97ba8151ec4ddc1fcf",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "39/41 mismatches",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0;\n    reg [7:0] r1;\n    reg [7:0] r2;\n    reg [7:0] r3;\n    reg [7:0] r4;\n    reg [7:0] r5;\n    reg [7:0] r6;\n    reg [7:0] r7;\n    always @(posedge clk) begin\n        r0 <= d[0];\n        r1 <= d[1];\n        r2 <= d[2];\n        r3 <= d[3];\n        r4 <= d[4];\n        r5 <= d[5];\n        r6 <= d[6];\n        r7 <= d[7];\n    end\n    assign q = {r7, r6, r5, r4, r3, r2, r1, r0};\nendmodule",
+      "raw_completion_raw_sha256": "3b460792fd1a21e44d3bc8701ab216eafe78679588fa8febcf78f931690efa7d",
+      "rtl": "module TopModule (\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0;\n    reg [7:0] r1;\n    reg [7:0] r2;\n    reg [7:0] r3;\n    reg [7:0] r4;\n    reg [7:0] r5;\n    reg [7:0] r6;\n    reg [7:0] r7;\n    always @(posedge clk) begin\n        r0 <= d[0];\n        r1 <= d[1];\n        r2 <= d[2];\n        r3 <= d[3];\n        r4 <= d[4];\n        r5 <= d[5];\n        r6 <= d[6];\n        r7 <= d[7];\n    end\n    assign q = {r7, r6, r5, r4, r3, r2, r1, r0};\nendmodule",
+      "rtl_raw_sha256": "3b460792fd1a21e44d3bc8701ab216eafe78679588fa8febcf78f931690efa7d",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "39/41 mismatches",
+      "raw_completion": "// 8-stage pipeline with 8 D flip-flops, all triggered by the positive edge\n// of the clock.\nmodule TopModule(input clk, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    r0 <= d;\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n  end\n  assign q = r7;\nendmodule",
+      "raw_completion_raw_sha256": "db679f3583a464305ddddddbcb97b1f994528f6bdc4cf1b2d56449dc9df74494",
+      "rtl": "module TopModule(input clk, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    r0 <= d;\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n  end\n  assign q = r7;\nendmodule",
+      "rtl_raw_sha256": "c6f21943820d40e9359f93db030c9f714e5a7a24ffe59eb2b9c19c48073b896c",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "39/41 mismatches",
+      "raw_completion": "// 8-stage delay chain, all DFFs are triggered on positive edge of clock.\nmodule TopModule(input clk, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    r0 <= d;\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n  end\n  assign q = r7;\nendmodule",
+      "raw_completion_raw_sha256": "4150401a42189243d8c251ea83e97cfbd355bdd1299447ee604f2a3cf5379597",
+      "rtl": "module TopModule(input clk, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    r0 <= d;\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n  end\n  assign q = r7;\nendmodule",
+      "rtl_raw_sha256": "c6f21943820d40e9359f93db030c9f714e5a7a24ffe59eb2b9c19c48073b896c",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "39/41 mismatches",
+      "raw_completion": "// 8-stage pipeline register chain, with clock-to-out register stage (the\n// long-path delay pipeline increases with stage count -> lower Fmax;\n// restructure to go faster).\nmodule TopModule(input clk, input [7:0] d, output reg [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n        q <= r7;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "aa0f888db6177333a1cb4f186dfbb2fd224230bef12d2a27bb930215e18b20b6",
+      "rtl": "module TopModule(input clk, input [7:0] d, output reg [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n        q <= r7;\n    end\nendmodule",
+      "rtl_raw_sha256": "63e235cc906d3701226ef61eded5468f99c64bd4482dd41dc3001fa0d7a926df",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob034_dff8_test.sv:85: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit D flip-flop\nmodule DFF (\n    input  clk,\n    input  d,\n    output reg q\n);\n    always @(posedge clk) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "cff3dace79f0bc7032aba10247aef20acdca260921d0c3bf7b7d71a5335e8516",
+      "rtl": "module DFF (\n    input  clk,\n    input  d,\n    output reg q\n);\n    always @(posedge clk) q <= d;\nendmodule",
+      "rtl_raw_sha256": "d0c5629183e464ff98f3fb1335549c6cfa4b74665a74fe3c6608910fbcb94fde",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "39/41 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] ff0;\n    reg [7:0] ff1;\n    reg [7:0] ff2;\n    reg [7:0] ff3;\n    reg [7:0] ff4;\n    reg [7:0] ff5;\n    reg [7:0] ff6;\n    reg [7:0] ff7;\n    always @(posedge clk) begin\n        ff0 <= d[0];\n        ff1 <= d[1];\n        ff2 <= d[2];\n        ff3 <= d[3];\n        ff4 <= d[4];\n        ff5 <= d[5];\n        ff6 <= d[6];\n        ff7 <= d[7];\n    end\n    assign q = {ff7, ff6, ff5, ff4, ff3, ff2, ff1, ff0};\nendmodule",
+      "raw_completion_raw_sha256": "44a4582a729d2330e35c68a5daff19d007221a0d7f70f124e900cfa9056425f9",
+      "rtl": "module TopModule(\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] ff0;\n    reg [7:0] ff1;\n    reg [7:0] ff2;\n    reg [7:0] ff3;\n    reg [7:0] ff4;\n    reg [7:0] ff5;\n    reg [7:0] ff6;\n    reg [7:0] ff7;\n    always @(posedge clk) begin\n        ff0 <= d[0];\n        ff1 <= d[1];\n        ff2 <= d[2];\n        ff3 <= d[3];\n        ff4 <= d[4];\n        ff5 <= d[5];\n        ff6 <= d[6];\n        ff7 <= d[7];\n    end\n    assign q = {ff7, ff6, ff5, ff4, ff3, ff2, ff1, ff0};\nendmodule",
+      "rtl_raw_sha256": "44a4582a729d2330e35c68a5daff19d007221a0d7f70f124e900cfa9056425f9",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "39/41 mismatches",
+      "raw_completion": "// 8-stage pipeline, with one register per stage, plus a register at the end to\n// go to the output. The critical path is approximately 1ns (the register\n// delay + the combinational path between stages).\nmodule TopModule(input clk, input [7:0] d, output [7:0] q);\n  reg [7:0] r0;\n  reg [7:0] r1;\n  reg [7:0] r2;\n  reg [7:0] r3;\n  reg [7:0] r4;\n  reg [7:0] r5;\n  reg [7:0] r6;\n  reg [7:0] r7;\n  always @(posedge clk) begin\n    r0 <= d;\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n  end\n  assign q = r7;\nendmodule",
+      "raw_completion_raw_sha256": "77ccf4f1dc4a2c5b0691cd9ae1a655c0a31f4cd0312b3329ff544a5e795b9027",
+      "rtl": "module TopModule(input clk, input [7:0] d, output [7:0] q);\n  reg [7:0] r0;\n  reg [7:0] r1;\n  reg [7:0] r2;\n  reg [7:0] r3;\n  reg [7:0] r4;\n  reg [7:0] r5;\n  reg [7:0] r6;\n  reg [7:0] r7;\n  always @(posedge clk) begin\n    r0 <= d;\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n  end\n  assign q = r7;\nendmodule",
+      "rtl_raw_sha256": "cf54e68e409a2521e1a6a2ff7d5d130d1342949bd17c72ed8ee2a0b51e1e5786",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob034_dff8_test.sv:85: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit D flip-flop\nmodule dff (\n    input clk,\n    input d,\n    output reg q\n);\n    always @(posedge clk) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "8fa2687bf79438485c85df1b0451cce8bb292db6491d772c34ef5448928985c1",
+      "rtl": "module dff (\n    input clk,\n    input d,\n    output reg q\n);\n    always @(posedge clk) q <= d;\nendmodule",
+      "rtl_raw_sha256": "0cfc6de2bef589c5805729cfd2c75297921f9c53c82fb59eb288f27ce377f3c6",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "39/41 mismatches",
+      "raw_completion": "// 8-stage pipeline of D flip-flops, all triggered by the positive edge of\n// clock. The register stage 0 simply passes the input to the output (with a\n// short path).\nmodule TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n    end\n    assign q = r7;\nendmodule",
+      "raw_completion_raw_sha256": "1445a4dbdde6de78aed54557819b68bee053ddbfa59ff9b419718a9f56afcc55",
+      "rtl": "module TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n    end\n    assign q = r7;\nendmodule",
+      "rtl_raw_sha256": "c367f9d2cf060633313f28e8776a6af924e0d269a6f3d72210f3ee288f9a6ee7",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "39/41 mismatches",
+      "raw_completion": "// 8-stage pipeline register chain, with full fanout -> shorter path, lower\n// register-to-register delay. Same function as the reference.\nmodule TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d[0];\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n    end\n    assign q = {r7, r6, r5, r4, r3, r2, r1, r0};\nendmodule",
+      "raw_completion_raw_sha256": "a89f7e734e9f78ad878f9ab4e01be4f4b140eaafdc20dafba40ba5b01a523fee",
+      "rtl": "module TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d[0];\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n    end\n    assign q = {r7, r6, r5, r4, r3, r2, r1, r0};\nendmodule",
+      "rtl_raw_sha256": "94eb9c20c586693b963fd13effd9664b4ae3f48116c6337a587111be88096742",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "39/41 mismatches",
+      "raw_completion": "// 8-stage pipeline stage, with one register stage at the end (the\n// combinational stage). Same as the long-standing \"one-stage\"\n// pipeline stage.\nmodule TopModule(input  clk, input  [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    r0 <= d;\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n  end\n  assign q = r7;\nendmodule",
+      "raw_completion_raw_sha256": "684c81dc1f585b4325863f97d62ee8c7a71a4cf7458287a2b7fbf7800d96c65b",
+      "rtl": "module TopModule(input  clk, input  [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    r0 <= d;\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n  end\n  assign q = r7;\nendmodule",
+      "rtl_raw_sha256": "0cf3c8d0c8fd23fd4da50b75b008b023db02a7a2fe2c7a7f9694b7abffb12bcc",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:19: error: r0 is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 8-stage synchronous pipeline, with the register stage replaced by a\n// chain of D flip-flops.\nmodule TopModule(\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    wire [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    reg  [7:0] dff0, dff1, dff2, dff3, dff4, dff5, dff6, dff7;\n    always @(posedge clk) begin\n        dff0 <= r0;\n        dff1 <= r1;\n        dff2 <= r2;\n        dff3 <= r3;\n        dff4 <= r4;\n        dff5 <= r5;\n        dff6 <= r6;\n        dff7 <= r7;\n    end\n    always @(*) begin\n        r0 = 8'b0;\n        r1 = dff0;\n        r2 = dff1;\n        r3 = dff2;\n        r4 = dff3;\n        r5 = dff4;\n        r6 = dff5;\n        r7 = dff6;\n    end\n    assign q = dff7;\nendmodule",
+      "raw_completion_raw_sha256": "79999796d3692b422143ab0e8daac0a53b47fe763510e155cbc34831053c5658",
+      "rtl": "module TopModule(\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    wire [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    reg  [7:0] dff0, dff1, dff2, dff3, dff4, dff5, dff6, dff7;\n    always @(posedge clk) begin\n        dff0 <= r0;\n        dff1 <= r1;\n        dff2 <= r2;\n        dff3 <= r3;\n        dff4 <= r4;\n        dff5 <= r5;\n        dff6 <= r6;\n        dff7 <= r7;\n    end\n    always @(*) begin\n        r0 = 8'b0;\n        r1 = dff0;\n        r2 = dff1;\n        r3 = dff2;\n        r4 = dff3;\n        r5 = dff4;\n        r6 = dff5;\n        r7 = dff6;\n    end\n    assign q = dff7;\nendmodule",
+      "rtl_raw_sha256": "78c0ec3594abadc53f2cd448c41927b7fee9498b5ecb7a8289e26c90826e6fcb",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "39/41 mismatches",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d[0];\n        r1 <= d[1];\n        r2 <= d[2];\n        r3 <= d[3];\n        r4 <= d[4];\n        r5 <= d[5];\n        r6 <= d[6];\n        r7 <= d[7];\n    end\n    assign q = {r7, r6, r5, r4, r3, r2, r1, r0};\nendmodule",
+      "raw_completion_raw_sha256": "69f5e10224dc0e7d42e4515372e7b5c9811c5829e3678056e7724db76a8b9f43",
+      "rtl": "module TopModule (\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d[0];\n        r1 <= d[1];\n        r2 <= d[2];\n        r3 <= d[3];\n        r4 <= d[4];\n        r5 <= d[5];\n        r6 <= d[6];\n        r7 <= d[7];\n    end\n    assign q = {r7, r6, r5, r4, r3, r2, r1, r0};\nendmodule",
+      "rtl_raw_sha256": "69f5e10224dc0e7d42e4515372e7b5c9811c5829e3678056e7724db76a8b9f43",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: q is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// A long chain of D flip-flops\nmodule TopModule(input clk, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    r0 <= d[0];\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n    q <= r7;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "5267938afc46877a499301aa569da4d3da0646f5fb64ebd3e98f25bcb4c53513",
+      "rtl": "module TopModule(input clk, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    r0 <= d[0];\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n    q <= r7;\n  end\nendmodule",
+      "rtl_raw_sha256": "29fe1574f9baae72a85de4f76258886a6c2b915c09e972920844496374ab8290",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "39/41 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] ff1, ff2, ff3, ff4, ff5, ff6, ff7, ff8;\n    always @(posedge clk) begin\n        ff1 <= d[0];\n        ff2 <= d[1];\n        ff3 <= d[2];\n        ff4 <= d[3];\n        ff5 <= d[4];\n        ff6 <= d[5];\n        ff7 <= d[6];\n        ff8 <= d[7];\n    end\n    assign q = {ff1, ff2, ff3, ff4, ff5, ff6, ff7, ff8};\nendmodule",
+      "raw_completion_raw_sha256": "d1e419c02fceb9b294414e04b832cc14e4d84ba2852f07aea86ef03afcd06a02",
+      "rtl": "module TopModule(\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] ff1, ff2, ff3, ff4, ff5, ff6, ff7, ff8;\n    always @(posedge clk) begin\n        ff1 <= d[0];\n        ff2 <= d[1];\n        ff3 <= d[2];\n        ff4 <= d[3];\n        ff5 <= d[4];\n        ff6 <= d[5];\n        ff7 <= d[6];\n        ff8 <= d[7];\n    end\n    assign q = {ff1, ff2, ff3, ff4, ff5, ff6, ff7, ff8};\nendmodule",
+      "rtl_raw_sha256": "d1e419c02fceb9b294414e04b832cc14e4d84ba2852f07aea86ef03afcd06a02",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "39/41 mismatches",
+      "raw_completion": "// The reference implementation of the register chain, as described in the\n// problem description.\nmodule TopModule(\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d[0];\n        r1 <= d[1];\n        r2 <= d[2];\n        r3 <= d[3];\n        r4 <= d[4];\n        r5 <= d[5];\n        r6 <= d[6];\n        r7 <= d[7];\n    end\n    assign q = {r0, r1, r2, r3, r4, r5, r6, r7};\nendmodule",
+      "raw_completion_raw_sha256": "ea41dea6f95b2cd7cd84269b0132eadf9828cb8a2e88f9cea9705ce4e5aa2001",
+      "rtl": "module TopModule(\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d[0];\n        r1 <= d[1];\n        r2 <= d[2];\n        r3 <= d[3];\n        r4 <= d[4];\n        r5 <= d[5];\n        r6 <= d[6];\n        r7 <= d[7];\n    end\n    assign q = {r0, r1, r2, r3, r4, r5, r6, r7};\nendmodule",
+      "rtl_raw_sha256": "15c453f357a7d78e38ce9c48305a560d6148fb15bd2f10552ef48abae60d0206",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:13: error: p0 is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 8-stage pipeline, with register at each stage, ANDing together all the\n// register outputs to form the final output.\nmodule TopModule(input clk, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  wire [7:0] p0, p1, p2, p3, p4, p5, p6, p7;\n  always @(posedge clk) begin\n    r0 <= d;\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n    p0 <= r0;\n    p1 <= r1;\n    p2 <= r2;\n    p3 <= r3;\n    p4 <= r4;\n    p5 <= r5;\n    p6 <= r6;\n    p7 <= r7;\n  end\n  assign q = p0 & p1 & p2 & p3 & p4 & p5 & p6 & p7;\nendmodule",
+      "raw_completion_raw_sha256": "477106cfaa4c40d5520d95882ee892728b7e75af85a3d559daf5ab0750fca050",
+      "rtl": "module TopModule(input clk, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  wire [7:0] p0, p1, p2, p3, p4, p5, p6, p7;\n  always @(posedge clk) begin\n    r0 <= d;\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n    p0 <= r0;\n    p1 <= r1;\n    p2 <= r2;\n    p3 <= r3;\n    p4 <= r4;\n    p5 <= r5;\n    p6 <= r6;\n    p7 <= r7;\n  end\n  assign q = p0 & p1 & p2 & p3 & p4 & p5 & p6 & p7;\nendmodule",
+      "rtl_raw_sha256": "8d3d43c8c59490e7dcd8a85a6edc1f25811a1c5636cb9b9aabffcfa514241aa5",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob034_dff8_test.sv:85: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit D flip-flop\nmodule DFF (\n    input  clk,\n    input  d,\n    output reg q\n);\n    always @(posedge clk) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "cff3dace79f0bc7032aba10247aef20acdca260921d0c3bf7b7d71a5335e8516",
+      "rtl": "module DFF (\n    input  clk,\n    input  d,\n    output reg q\n);\n    always @(posedge clk) q <= d;\nendmodule",
+      "rtl_raw_sha256": "d0c5629183e464ff98f3fb1335549c6cfa4b74665a74fe3c6608910fbcb94fde",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 8,
+    "fail": 12
+  },
+  "testbench_raw_sha256": "021b074f53d3d1a1fd6982a73d5460a9151f8b6eb9a5f2034ff821835fe94e1b",
+  "training_seed": 0
+}

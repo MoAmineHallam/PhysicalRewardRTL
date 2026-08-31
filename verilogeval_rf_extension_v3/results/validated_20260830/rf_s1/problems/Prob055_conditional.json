@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob055_conditional",
+  "problem_seed": 4429458873997120696,
+  "prompt_raw_sha256": "a4cb1a6391988c0c0661808b8bafb625160c70dab00c917bc970be65aa9b34c7",
+  "reference_raw_sha256": "2df6d288e7b4439de40d0225546cf1df4a17075bd577a73e6faf25f0ba6d0a2d",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [7:0] a,\n    input [7:0] b,\n    input [7:0] c,\n    input [7:0] d,\n    output reg [7:0] min\n);\n    always @(*) begin\n        if (a < b && a < c && a < d) min = a;\n        else if (b < c && b < d) min = b;\n        else if (c < d) min = c;\n        else min = d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "7e1b3290543613eb6b11b7ac6a5ab6a43e2df257c89577a977e8401f3fab2709",
+      "rtl": "module TopModule(\n    input [7:0] a,\n    input [7:0] b,\n    input [7:0] c,\n    input [7:0] d,\n    output reg [7:0] min\n);\n    always @(*) begin\n        if (a < b && a < c && a < d) min = a;\n        else if (b < c && b < d) min = b;\n        else if (c < d) min = c;\n        else min = d;\n    end\nendmodule",
+      "rtl_raw_sha256": "7e1b3290543613eb6b11b7ac6a5ab6a43e2df257c89577a977e8401f3fab2709",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg [7:0] tmp;\n    always @(*) begin\n        tmp = a;\n        if (b < tmp) tmp = b;\n        if (c < tmp) tmp = c;\n        if (d < tmp) tmp = d;\n    end\n    assign min = tmp;\nendmodule",
+      "raw_completion_raw_sha256": "dc3b597ceeb9b1e49181f655735e24b0e47193569f02920309baa2eaf617f28e",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg [7:0] tmp;\n    always @(*) begin\n        tmp = a;\n        if (b < tmp) tmp = b;\n        if (c < tmp) tmp = c;\n        if (d < tmp) tmp = d;\n    end\n    assign min = tmp;\nendmodule",
+      "rtl_raw_sha256": "dc3b597ceeb9b1e49181f655735e24b0e47193569f02920309baa2eaf617f28e",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg  [7:0] m;\n    always @(*) begin\n        m = a;\n        if (b < m) m = b;\n        if (c < m) m = c;\n        if (d < m) m = d;\n    end\n    assign min = m;\nendmodule",
+      "raw_completion_raw_sha256": "da287041cd2a3def2985190a84f85bad2593362c9ac3b0cf8b9f9f2b43caf0c1",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg  [7:0] m;\n    always @(*) begin\n        m = a;\n        if (b < m) m = b;\n        if (c < m) m = c;\n        if (d < m) m = d;\n    end\n    assign min = m;\nendmodule",
+      "rtl_raw_sha256": "da287041cd2a3def2985190a84f85bad2593362c9ac3b0cf8b9f9f2b43caf0c1",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:15: error: min is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg  [7:0] t0;\n    reg  [7:0] t1;\n    reg  [7:0] t2;\n    always @(*) begin\n        t0 = (a < b) ? a : b;\n        t1 = (c < d) ? c : d;\n        t2 = (t0 < t1) ? t0 : t1;\n        min = t2;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "d9837f5be70f3a825ae6c4a0127a1c137144335104e8ca550674ff044a526e9a",
+      "rtl": "module TopModule (\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg  [7:0] t0;\n    reg  [7:0] t1;\n    reg  [7:0] t2;\n    always @(*) begin\n        t0 = (a < b) ? a : b;\n        t1 = (c < d) ? c : d;\n        t2 = (t0 < t1) ? t0 : t1;\n        min = t2;\n    end\nendmodule",
+      "rtl_raw_sha256": "d9837f5be70f3a825ae6c4a0127a1c137144335104e8ca550674ff044a526e9a",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:17: error: min is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg [7:0] m0, m1, m2, m3, m4, m5, m6;\n    always @(*) begin\n        m0 = a;\n        m1 = (b < a) ? b : a;\n        m2 = (c < m1) ? c : m1;\n        m3 = (d < m2) ? d : m2;\n        m4 = (a < b) ? a : b;\n        m5 = (c < m4) ? c : m4;\n        m6 = (d < m5) ? d : m5;\n        min = (m3 < m6) ? m3 : m6;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "59adfc09bbe481c6488d55767deea4491f211934522104b651a9167b09a8041b",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg [7:0] m0, m1, m2, m3, m4, m5, m6;\n    always @(*) begin\n        m0 = a;\n        m1 = (b < a) ? b : a;\n        m2 = (c < m1) ? c : m1;\n        m3 = (d < m2) ? d : m2;\n        m4 = (a < b) ? a : b;\n        m5 = (c < m4) ? c : m4;\n        m6 = (d < m5) ? d : m5;\n        min = (m3 < m6) ? m3 : m6;\n    end\nendmodule",
+      "rtl_raw_sha256": "59adfc09bbe481c6488d55767deea4491f211934522104b651a9167b09a8041b",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:14: error: min is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg [7:0] m0, m1, m2, m3, m4, m5, m6;\n    always @(*) begin\n        m0 = a;\n        if (b < m0) m0 = b;\n        if (c < m0) m0 = c;\n        if (d < m0) m0 = d;\n        min = m0;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b0cf2ac4707cfdad503f8100aec5e427d6795433d26154e2473ee591a84e9b7b",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg [7:0] m0, m1, m2, m3, m4, m5, m6;\n    always @(*) begin\n        m0 = a;\n        if (b < m0) m0 = b;\n        if (c < m0) m0 = c;\n        if (d < m0) m0 = d;\n        min = m0;\n    end\nendmodule",
+      "rtl_raw_sha256": "b0cf2ac4707cfdad503f8100aec5e427d6795433d26154e2473ee591a84e9b7b",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:2: syntax error",
+      "raw_completion": "// One-bit minimum function. The inline function is a small ternary operator\n// which reduces the depth of the long multiplexer chain.\nmodule TopModule(input [7:0] a, b, c, d, output [7:0] min);\n  inline function [7:0] min2(input [7:0] x, y) = (x < y) ? x : y;\n  function [7:0] min3(input [7:0] x, y, z);\n    #1;\n    return min2(min2(x, y), z);\n  endfunction\n  assign min = min3(min3(a, b, c), d);\nendmodule",
+      "raw_completion_raw_sha256": "62fdb5d7fd09cf3b1af3cf36a2fe14e56e0aa28bc1509112bfaa364f7ab83912",
+      "rtl": "module TopModule(input [7:0] a, b, c, d, output [7:0] min);\n  inline function [7:0] min2(input [7:0] x, y) = (x < y) ? x : y;\n  function [7:0] min3(input [7:0] x, y, z);\n    #1;\n    return min2(min2(x, y), z);\n  endfunction\n  assign min = min3(min3(a, b, c), d);\nendmodule",
+      "rtl_raw_sha256": "e71bb699ddbe004815871c8ad1d688b0616776fc5f81dee31234d6c38236f06c",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg [7:0] m;\n    always @(*) begin\n        m = a;\n        if (b < m) m = b;\n        if (c < m) m = c;\n        if (d < m) m = d;\n    end\n    assign min = m;\nendmodule",
+      "raw_completion_raw_sha256": "1ac79f29543c4dca17a9643a848409c0f166f41bb209b7bee0c9c177af525fb1",
+      "rtl": "module TopModule (\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg [7:0] m;\n    always @(*) begin\n        m = a;\n        if (b < m) m = b;\n        if (c < m) m = c;\n        if (d < m) m = d;\n    end\n    assign min = m;\nendmodule",
+      "rtl_raw_sha256": "1ac79f29543c4dca17a9643a848409c0f166f41bb209b7bee0c9c177af525fb1",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Same as the function in the Python version, but in Verilog.\nmodule TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    wire [7:0] ab = a < b ? a : b;\n    wire [7:0] abcd = ab < c ? ab : c;\n    assign min = abcd < d ? abcd : d;\nendmodule",
+      "raw_completion_raw_sha256": "2fdbbe88084f0cf26902292f46013e9751efa4ecbba7caad1af4ce863ee8f1cd",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    wire [7:0] ab = a < b ? a : b;\n    wire [7:0] abcd = ab < c ? ab : c;\n    assign min = abcd < d ? abcd : d;\nendmodule",
+      "rtl_raw_sha256": "d4bbd4e861631f64dc31dfcb5f1159417b5e4324acb2cf6051aed9baece6aa36",
+      "sample_index": 8,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg [7:0] m;\n    always @(*) begin\n        m = a;\n        if (b < m) m = b;\n        if (c < m) m = c;\n        if (d < m) m = d;\n    end\n    assign min = m;\nendmodule",
+      "raw_completion_raw_sha256": "8a0161ba5e9a07511f7a924813435ba33c2ac44f38c74747dff0d32b3f2285c7",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg [7:0] m;\n    always @(*) begin\n        m = a;\n        if (b < m) m = b;\n        if (c < m) m = c;\n        if (d < m) m = d;\n    end\n    assign min = m;\nendmodule",
+      "rtl_raw_sha256": "8a0161ba5e9a07511f7a924813435ba33c2ac44f38c74747dff0d32b3f2285c7",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-stage minimum function, derived from a linear-feedback shift register:\n// (a <= b && a <= c && a <= d) ||\n// (b <= a && b <= c && b <= d) ||\n// (c <= a && c <= b && c <= d) ||\n// (d <= a && d <= b && d <= c)\nmodule TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    wire [7:0] t0 = (a <= b && a <= c && a <= d) ? a :\n                     (b <= a && b <= c && b <= d) ? b :\n                     (c <= a && c <= b && c <= d) ? c : d;\n    wire [7:0] t1 = (a <= b && a <= c && a <= d) ? a :\n                     (b <= a && b <= c && b <= d) ? b :\n                     (c <= a && c <= b && c <= d) ? c : d;\n    wire [7:0] t2 = (a <= b && a <= c && a <= d) ? a :\n                     (b <= a && b <= c && b <= d) ? b :\n                     (c <= a && c <= b && c <= d) ? c : d;\n    assign min = (t0 <= t1 && t0 <= t2) ? t0 :\n                 (t1 <= t0 && t1 <= t2) ? t1 :\n                 (t2 <= t0 && t2 <= t1) ? t2 : t0;\nendmodule",
+      "raw_completion_raw_sha256": "c4d5ebee8989d02563a4dd916ee154009b14637f17606cb1dea53a68bdebb8d8",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    wire [7:0] t0 = (a <= b && a <= c && a <= d) ? a :\n                     (b <= a && b <= c && b <= d) ? b :\n                     (c <= a && c <= b && c <= d) ? c : d;\n    wire [7:0] t1 = (a <= b && a <= c && a <= d) ? a :\n                     (b <= a && b <= c && b <= d) ? b :\n                     (c <= a && c <= b && c <= d) ? c : d;\n    wire [7:0] t2 = (a <= b && a <= c && a <= d) ? a :\n                     (b <= a && b <= c && b <= d) ? b :\n                     (c <= a && c <= b && c <= d) ? c : d;\n    assign min = (t0 <= t1 && t0 <= t2) ? t0 :\n                 (t1 <= t0 && t1 <= t2) ? t1 :\n                 (t2 <= t0 && t2 <= t1) ? t2 : t0;\nendmodule",
+      "rtl_raw_sha256": "838037f8611c6872b5469648d13007a505c885fad6855b323be5f2f3218a45b9",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: min is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(\n    input [7:0] a,\n    input [7:0] b,\n    input [7:0] c,\n    input [7:0] d,\n    output [7:0] min\n);\n    reg [7:0] m1, m2, m3;\n    always @* begin\n        m1 = (a < b) ? a : b;\n        m2 = (c < d) ? c : d;\n        min = (m1 < m2) ? m1 : m2;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "c437fe735fababb24d6feb673db5d5f9cab61d71ab272c9e162448fe399026e8",
+      "rtl": "module TopModule(\n    input [7:0] a,\n    input [7:0] b,\n    input [7:0] c,\n    input [7:0] d,\n    output [7:0] min\n);\n    reg [7:0] m1, m2, m3;\n    always @* begin\n        m1 = (a < b) ? a : b;\n        m2 = (c < d) ? c : d;\n        min = (m1 < m2) ? m1 : m2;\n    end\nendmodule",
+      "rtl_raw_sha256": "c437fe735fababb24d6feb673db5d5f9cab61d71ab272c9e162448fe399026e8",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg [7:0] m;\n    always @(*) begin\n        m = a;\n        if (b < m) m = b;\n        if (c < m) m = c;\n        if (d < m) m = d;\n    end\n    assign min = m;\nendmodule",
+      "raw_completion_raw_sha256": "8a0161ba5e9a07511f7a924813435ba33c2ac44f38c74747dff0d32b3f2285c7",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg [7:0] m;\n    always @(*) begin\n        m = a;\n        if (b < m) m = b;\n        if (c < m) m = c;\n        if (d < m) m = d;\n    end\n    assign min = m;\nendmodule",
+      "rtl_raw_sha256": "8a0161ba5e9a07511f7a924813435ba33c2ac44f38c74747dff0d32b3f2285c7",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [7:0] a,\n    input [7:0] b,\n    input [7:0] c,\n    input [7:0] d,\n    output reg [7:0] min\n);\n    always @(*) begin\n        if (a < b && a < c && a < d) min = a;\n        else if (b < c && b < d) min = b;\n        else if (c < d) min = c;\n        else min = d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "7e1b3290543613eb6b11b7ac6a5ab6a43e2df257c89577a977e8401f3fab2709",
+      "rtl": "module TopModule(\n    input [7:0] a,\n    input [7:0] b,\n    input [7:0] c,\n    input [7:0] d,\n    output reg [7:0] min\n);\n    always @(*) begin\n        if (a < b && a < c && a < d) min = a;\n        else if (b < c && b < d) min = b;\n        else if (c < d) min = c;\n        else min = d;\n    end\nendmodule",
+      "rtl_raw_sha256": "7e1b3290543613eb6b11b7ac6a5ab6a43e2df257c89577a977e8401f3fab2709",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob055_conditional_test.sv:95: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit minimum finder, specialized for 8-bit arguments.\nmodule Min8 (\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    wire [7:0] ab = a < b ? a : b;\n    wire [7:0] cd = c < d ? c : d;\n    assign min = ab < cd ? ab : cd;\nendmodule",
+      "raw_completion_raw_sha256": "e6877a99973a886c569c147c2164e5362e2cc92bc23075cd660673168a568dd1",
+      "rtl": "module Min8 (\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    wire [7:0] ab = a < b ? a : b;\n    wire [7:0] cd = c < d ? c : d;\n    assign min = ab < cd ? ab : cd;\nendmodule",
+      "rtl_raw_sha256": "fd1167bc8d4bb7c5c309877255afd8407032d974874126d18bf3a9073d8003be",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg [7:0] tmp;\n    always @(*) begin\n        tmp = a;\n        if (b < tmp) tmp = b;\n        if (c < tmp) tmp = c;\n        if (d < tmp) tmp = d;\n    end\n    assign min = tmp;\nendmodule",
+      "raw_completion_raw_sha256": "dc3b597ceeb9b1e49181f655735e24b0e47193569f02920309baa2eaf617f28e",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg [7:0] tmp;\n    always @(*) begin\n        tmp = a;\n        if (b < tmp) tmp = b;\n        if (c < tmp) tmp = c;\n        if (d < tmp) tmp = d;\n    end\n    assign min = tmp;\nendmodule",
+      "rtl_raw_sha256": "dc3b597ceeb9b1e49181f655735e24b0e47193569f02920309baa2eaf617f28e",
+      "sample_index": 15,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    wire [7:0] min0;\n    wire [7:0] min1;\n    wire [7:0] min2;\n    assign min0 = (a < b) ? a : b;\n    assign min1 = (c < d) ? c : d;\n    assign min2 = (min0 < min1) ? min0 : min1;\n    assign min = min2;\nendmodule",
+      "raw_completion_raw_sha256": "217d9fda6a7b7747265365bb483d3279102321456fcade8c711187aed347633d",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    wire [7:0] min0;\n    wire [7:0] min1;\n    wire [7:0] min2;\n    assign min0 = (a < b) ? a : b;\n    assign min1 = (c < d) ? c : d;\n    assign min2 = (min0 < min1) ? min0 : min1;\n    assign min = min2;\nendmodule",
+      "rtl_raw_sha256": "217d9fda6a7b7747265365bb483d3279102321456fcade8c711187aed347633d",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:19: error: m is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg  [7:0] m0, m1, m2, m3, m4, m5, m6;\n    wire [7:0] m;\n    assign min = m;\n    always @(*) begin\n        m0 = a;\n        m1 = (b < a) ? b : a;\n        m2 = (c < m1) ? c : m1;\n        m3 = (d < m2) ? d : m2;\n        m4 = (a < b) ? a : b;\n        m5 = (c < m4) ? c : m4;\n        m6 = (d < m5) ? d : m5;\n        m = (m3 < m6) ? m3 : m6;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b343b6977fde8cfd38f560960c09782ac57ef48d9d0054cc28c9c493c49b2146",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg  [7:0] m0, m1, m2, m3, m4, m5, m6;\n    wire [7:0] m;\n    assign min = m;\n    always @(*) begin\n        m0 = a;\n        m1 = (b < a) ? b : a;\n        m2 = (c < m1) ? c : m1;\n        m3 = (d < m2) ? d : m2;\n        m4 = (a < b) ? a : b;\n        m5 = (c < m4) ? c : m4;\n        m6 = (d < m5) ? d : m5;\n        m = (m3 < m6) ? m3 : m6;\n    end\nendmodule",
+      "rtl_raw_sha256": "b343b6977fde8cfd38f560960c09782ac57ef48d9d0054cc28c9c493c49b2146",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:17: error: min is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg [7:0] min0;\n    reg [7:0] min1;\n    reg [7:0] min2;\n    reg [7:0] min3;\n    always @(*) begin\n        min0 = (a < b) ? a : b;\n        min1 = (c < d) ? c : d;\n        min2 = (min0 < min1) ? min0 : min1;\n        min3 = (min2 < a) ? min2 : a;\n        min = (min3 < b) ? min3 : b;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "fac36c3388e8a3026fd1271948d4259fdae42d667218a3de1caf0d11e8b67add",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    reg [7:0] min0;\n    reg [7:0] min1;\n    reg [7:0] min2;\n    reg [7:0] min3;\n    always @(*) begin\n        min0 = (a < b) ? a : b;\n        min1 = (c < d) ? c : d;\n        min2 = (min0 < min1) ? min0 : min1;\n        min3 = (min2 < a) ? min2 : a;\n        min = (min3 < b) ? min3 : b;\n    end\nendmodule",
+      "rtl_raw_sha256": "fac36c3388e8a3026fd1271948d4259fdae42d667218a3de1caf0d11e8b67add",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    wire [7:0] m1, m2, m3;\n    assign m1 = (a < b) ? a : b;\n    assign m2 = (c < d) ? c : d;\n    assign min = (m1 < m2) ? m1 : m2;\nendmodule",
+      "raw_completion_raw_sha256": "615795a621a660fa6b448a21ce5d526ef7e513021f4092661d1948714515b435",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    input  [7:0] c,\n    input  [7:0] d,\n    output [7:0] min\n);\n    wire [7:0] m1, m2, m3;\n    assign m1 = (a < b) ? a : b;\n    assign m2 = (c < d) ? c : d;\n    assign min = (m1 < m2) ? m1 : m2;\nendmodule",
+      "rtl_raw_sha256": "615795a621a660fa6b448a21ce5d526ef7e513021f4092661d1948714515b435",
+      "sample_index": 19,
+      "status": "PASS"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 12,
+    "compile_fail": 8
+  },
+  "testbench_raw_sha256": "01b9ae5a9b87c2349c37fb9bd616a63c9da460fd672e9ae8aedc8f2c378a7909",
+  "training_seed": 1
+}

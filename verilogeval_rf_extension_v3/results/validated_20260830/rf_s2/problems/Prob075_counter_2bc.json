@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob075_counter_2bc",
+  "problem_seed": 6678743941628167310,
+  "prompt_raw_sha256": "9d815b547817cf0cd204701b6a3882e9671cba3cd63e8741092e7faec9017264",
+  "reference_raw_sha256": "eb3bcfc472f3979166157b577fa6ecae67722ae22eafd409a57b35c92590d0b7",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "5/1051 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) begin\n            if (train_taken) begin\n                if (state < 2'b11) state <= state + 1;\n            end\n            else if (state > 2'b00) state <= state - 1;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "4f0887a3d547f7d27f1e29b26cfe1e68be3ce4ac228fdc2bcbfdb150ce0d70b3",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) begin\n            if (train_taken) begin\n                if (state < 2'b11) state <= state + 1;\n            end\n            else if (state > 2'b00) state <= state - 1;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "4f0887a3d547f7d27f1e29b26cfe1e68be3ce4ac228fdc2bcbfdb150ce0d70b3",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "484/1051 mismatches",
+      "raw_completion": "module TopModule(input  clk, input  areset, input  train_valid, input  train_taken, output reg [1:0] state);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) state <= (train_taken) ? ((state == 2'd2) ? 2'd2 : state + 1) : ((state == 2'd0) ? 2'd0 : state - 1);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "54fe3785a13ce3eff407eabdec2aa934aed3aa184046b80f11b0d6d043cd5b72",
+      "rtl": "module TopModule(input  clk, input  areset, input  train_valid, input  train_taken, output reg [1:0] state);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) state <= (train_taken) ? ((state == 2'd2) ? 2'd2 : state + 1) : ((state == 2'd0) ? 2'd0 : state - 1);\n    end\nendmodule",
+      "rtl_raw_sha256": "54fe3785a13ce3eff407eabdec2aa934aed3aa184046b80f11b0d6d043cd5b72",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "1038/1051 mismatches",
+      "raw_completion": "// Two-bit saturating counter, positive-edge-triggered register-based\n// combinational increment/decrement. Same function as the reference\n// up to a shorter combinational path.\nmodule TopModule(input  clk, input  areset, input  train_valid, input  train_taken, output reg [1:0] state);\n  reg [1:0] next_state;\n  always @(*) begin\n    case ({train_valid, state}) // 6 Fmax (no pipelined register-based\n                                 // increment/decrement chain).\n      // Increment.\n      2'b10: next_state = train_taken ? 2'b11 : 2'b10;\n      2'b11: next_state = train_taken ? 2'b11 : 2'b10;\n      2'b01: next_state = train_taken ? 2'b10 : 2'b01;\n      2'b00: next_state = train_taken ? 2'b01 : 2'b00;\n      // Decrement.\n      default: next_state = train_taken ? (state - 2'b01) : state;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b01;\n    else state <= next_state;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "b8b91d94fd7a86c78963bd99390d44190f69dd292511d49e37a228e3a608f6ba",
+      "rtl": "module TopModule(input  clk, input  areset, input  train_valid, input  train_taken, output reg [1:0] state);\n  reg [1:0] next_state;\n  always @(*) begin\n    case ({train_valid, state}) // 6 Fmax (no pipelined register-based\n                                 // increment/decrement chain).\n      // Increment.\n      2'b10: next_state = train_taken ? 2'b11 : 2'b10;\n      2'b11: next_state = train_taken ? 2'b11 : 2'b10;\n      2'b01: next_state = train_taken ? 2'b10 : 2'b01;\n      2'b00: next_state = train_taken ? 2'b01 : 2'b00;\n      // Decrement.\n      default: next_state = train_taken ? (state - 2'b01) : state;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b01;\n    else state <= next_state;\n  end\nendmodule",
+      "rtl_raw_sha256": "6b05982a00477873748a63b2271695109ccc2c80ec4909f4828157bdc07fbb5a",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "764/1051 mismatches",
+      "raw_completion": "// Two-bit saturating counter. Increments (up to 3) when train_valid = 1 and\n// train_taken = 1, decrements (down to 0) when train_valid = 1 and\n// train_taken = 0, and stays at the current value otherwise. areset resets\n// to 2'b01.\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) state <= state + (train_taken ? 2'b01 : 2'b10);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "335ce32b7799a715c970eb1623938601395c36d46f33e0c717decb70a7565683",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) state <= state + (train_taken ? 2'b01 : 2'b10);\n    end\nendmodule",
+      "rtl_raw_sha256": "9515b9d1f2eb4534d211cd6dc195c5690d91e10bafdad3bf55be07774d07746a",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "5/1051 mismatches",
+      "raw_completion": "// Two-bit saturating counter: counter increments when train_valid = 1 and\n// train_taken = 1, decrements when train_valid = 1 and train_taken = 0.\n// During non-training cycles, the counter retains its value. Asynchronous\n// reset to not-taken (2'b01).\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) state <= (train_taken ? (state < 2'b11 ? state + 1 : 2'b11) : (state > 2'b00 ? state - 1 : 2'b00));\n    end\nendmodule",
+      "raw_completion_raw_sha256": "fbaddf2effe76bed36d1ec5c32aed19ade2527514b4a188b9b3d790142b02601",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) state <= (train_taken ? (state < 2'b11 ? state + 1 : 2'b11) : (state > 2'b00 ? state - 1 : 2'b00));\n    end\nendmodule",
+      "rtl_raw_sha256": "a7fe98548ab9c010af5bdcf0b0213a0bb4f2c70f1e805b9a25acca471b03fa3c",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "5/1051 mismatches",
+      "raw_completion": "// Two-bit saturating counter\nmodule TopModule(\n  input  clk,\n  input  areset,\n  input  train_valid,\n  input  train_taken,\n  output reg [1:0] state\n);\n  always @(posedge clk) begin\n    if (areset) state <= 2'b01;\n    else if (train_valid) begin\n      if (train_taken) begin\n        if (state < 2'b11) state <= state + 1'b1;\n      end else if (state > 2'b00) state <= state - 1'b1;\n    end\n  end\nendmodule",
+      "raw_completion_raw_sha256": "e8b9c7f880ebfafc2580a4060073163365c44782f1d08672ed32ce567429b554",
+      "rtl": "module TopModule(\n  input  clk,\n  input  areset,\n  input  train_valid,\n  input  train_taken,\n  output reg [1:0] state\n);\n  always @(posedge clk) begin\n    if (areset) state <= 2'b01;\n    else if (train_valid) begin\n      if (train_taken) begin\n        if (state < 2'b11) state <= state + 1'b1;\n      end else if (state > 2'b00) state <= state - 1'b1;\n    end\n  end\nendmodule",
+      "rtl_raw_sha256": "8e1b80988179b778898ac006e1fa8ed40e6c421c54c60fb9648d39c6f4b8b5ac",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "5/1051 mismatches",
+      "raw_completion": "// Two-bit saturating counter, incremented on taken branches and decremented on\n// non-taken branches (like a predictor that goes from strong->weak->strong->...\n// to track a certain branching pattern). Asynchronous reset on a positive edge\n// of the clock, independent of the clocked register that increments/decrements\n// the counter.\nmodule TopModule(input  clk, input  areset, input  train_valid, input  train_taken, output reg [1:0] state);\n  always @(posedge clk) begin\n    if (areset) state <= 2'b01;\n    else if (train_valid) state <= (train_taken ? (state == 2'b11 ? 2'b11 : state + 1) : (state == 2'b00 ? 2'b00 : state - 1));\n  end\nendmodule",
+      "raw_completion_raw_sha256": "477a0f7087f7e138f24fcfc3f86a3a94d14636f00422aaecd24acd988d20e928",
+      "rtl": "module TopModule(input  clk, input  areset, input  train_valid, input  train_taken, output reg [1:0] state);\n  always @(posedge clk) begin\n    if (areset) state <= 2'b01;\n    else if (train_valid) state <= (train_taken ? (state == 2'b11 ? 2'b11 : state + 1) : (state == 2'b00 ? 2'b00 : state - 1));\n  end\nendmodule",
+      "rtl_raw_sha256": "b0092a6486567ca29f179d5ccebc08587792a78a7a60f9db81658f24253e6d0a",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "5/1051 mismatches",
+      "raw_completion": "// Two-bit saturating counter, incremented/decremented on a \"train\" signal\n// (train_valid and train_taken). Not training (train_valid = 0) keeps the\n// counter value unchanged. The reset is aynchronous, and it goes to a\n// weakly-not-taken value (2'b01).\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) state <= (train_taken ? ((state == 2'b11) ? 2'b11 : state + 1) : ((state == 2'b00) ? 2'b00 : state - 1));\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b56cb2f9edb0f482f5a4b82bb391022c2281df7aec39df2633794a758778af27",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) state <= (train_taken ? ((state == 2'b11) ? 2'b11 : state + 1) : ((state == 2'b00) ? 2'b00 : state - 1));\n    end\nendmodule",
+      "rtl_raw_sha256": "a1aa438116b2f82e96e29bbc01066bcc492d4d58355e88a03a3e762cbf265e04",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "5/1051 mismatches",
+      "raw_completion": "// Two-bit saturating counter, as described in the prompt. The \"saturating\"\n// means that the counter value cycles back to 0 when it reaches the maximum\n// value (3), and back to 1 when it reaches the minimum value (0).\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) begin\n            if (train_taken) begin\n                if (state == 2'b11) state <= 2'b11;\n                else state <= state + 1;\n            end else begin\n                if (state == 2'b00) state <= 2'b00;\n                else state <= state - 1;\n            end\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "ac69d9a79845295484fc1824add6a66f4b05e60cd09b9a20217f473c07aeb68b",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) begin\n            if (train_taken) begin\n                if (state == 2'b11) state <= 2'b11;\n                else state <= state + 1;\n            end else begin\n                if (state == 2'b00) state <= 2'b00;\n                else state <= state - 1;\n            end\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "e6b9c8e3d0012c37878027471dbed81d41505334db802f70c839120c175774b4",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "333/1051 mismatches",
+      "raw_completion": "// Two-bit saturating counter, up to a maximum of 3.\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) begin\n            if (train_taken) begin\n                if (state < 2'b11) state <= state + 1'b1;\n            end else state <= state - 1'b1;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "80f63a21a7a0f64796852c26b5a590a90d09d8b4abf6bfec25bb2b8fd057ed15",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) begin\n            if (train_taken) begin\n                if (state < 2'b11) state <= state + 1'b1;\n            end else state <= state - 1'b1;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "d2936f94a5dd99bc97fcb52e06fb60e1e23f8d2a293d8af27097570932f6b642",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "5/1051 mismatches",
+      "raw_completion": "// Two-bit saturating counter. Increments (up to a maximum of 3) when\n// train_valid = 1 and train_taken = 1, decrements (down to a minimum of 0)\n// when train_valid = 1 and train_taken = 0. Otherwise, the counter keeps its\n// value unchanged. areset is a positive edge triggered asynchronous reset that\n// resets the counter to weakly not-taken (2'b01). Output state[1:0] is the\n// two-bit counter value.\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) begin\n            if (train_taken) begin\n                if (state < 2'b11) state <= state + 1;\n            end\n            else if (state > 2'b00) state <= state - 1;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "ef9a36080b8b3f70d4d1c9c941a8912ee3290e776b1be2f8e45a1c614f488ec5",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) begin\n            if (train_taken) begin\n                if (state < 2'b11) state <= state + 1;\n            end\n            else if (state > 2'b00) state <= state - 1;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "4f0887a3d547f7d27f1e29b26cfe1e68be3ce4ac228fdc2bcbfdb150ce0d70b3",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:4: error: No function named `min' found in this context (tb.top_module1).",
+      "raw_completion": "// Two-bit saturating counter, up to a maximum of 3.\nmodule TopModule(input  clk, input  areset, input  train_valid, input  train_taken, output reg [1:0] state);\n  always @(posedge clk) begin\n    if (areset) state <= 2'b01;\n    else if (train_valid) state <= (train_taken) ? min(3, state + 1) : max(0, state - 1);\n  end\nendmodule",
+      "raw_completion_raw_sha256": "1f2a976861212c2f45abc731da4bbdb986d6d322ddfcb61215b5c8ff13f2acee",
+      "rtl": "module TopModule(input  clk, input  areset, input  train_valid, input  train_taken, output reg [1:0] state);\n  always @(posedge clk) begin\n    if (areset) state <= 2'b01;\n    else if (train_valid) state <= (train_taken) ? min(3, state + 1) : max(0, state - 1);\n  end\nendmodule",
+      "rtl_raw_sha256": "af7ce5aea16c972ef67b1d2fd750a9f789432246e689248a2b8f273c85822208",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "764/1051 mismatches",
+      "raw_completion": "// Two-bit saturating counter. Increments (up to a maximum of 3) when\n// train_valid = 1 and train_taken = 1. Decrements (down to a minimum\n// of 0) when train_valid = 1 and train_taken = 0. Otherwise, the\n// counter keeps its value unchanged. areset is a positive edge\n// triggered asynchronous reset that resets the counter to weakly\n// not-taken (2'b01). Output state[1:0] is the two-bit counter value.\nmodule TopModule(input  clk, input  areset, input  train_valid, input  train_taken, output reg [1:0] state);\n  always @(posedge clk) begin\n    if (areset) state <= 2'b01;\n    else if (train_valid) state <= state + (train_taken ? 2'b01 : 2'b10);\n  end\nendmodule",
+      "raw_completion_raw_sha256": "ffbb35b887239a5d922fe3a9eb6a69e40c48e657b53d4b5cde9868e9d1ddb5eb",
+      "rtl": "module TopModule(input  clk, input  areset, input  train_valid, input  train_taken, output reg [1:0] state);\n  always @(posedge clk) begin\n    if (areset) state <= 2'b01;\n    else if (train_valid) state <= state + (train_taken ? 2'b01 : 2'b10);\n  end\nendmodule",
+      "rtl_raw_sha256": "0dae73506ce6150485ec1c59254c19e3ed7b2902385ae9ee53d8428c17f52c85",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "5/1051 mismatches",
+      "raw_completion": "// Two-bit saturating counter. Increments (up to a maximum of 3) when\n// train_valid = 1 and train_taken = 1. Decrements (down to a minimum of 0)\n// when train_valid = 1 and train_taken = 0. When not training\n// (train_valid = 0), the counter keeps its value unchanged. areset is a\n// positive edge triggered asynchronous reset that resets the counter to\n// weakly not-taken (2'b01). Output state[1:0] is the two-bit counter value.\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) begin\n            if (train_taken) begin\n                if (state < 2'b11) state <= state + 1;\n            end else begin\n                if (state > 2'b00) state <= state - 1;\n            end\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "05d9efebd9f1bbdda058395f4d8a92f8a6f3d444908d22768c4680d0a4a3ef31",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) begin\n            if (train_taken) begin\n                if (state < 2'b11) state <= state + 1;\n            end else begin\n                if (state > 2'b00) state <= state - 1;\n            end\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "73aaf47d7df14dfe17d98a7aea20d4c23a738034d9db484768cc623dfe204fac",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "5/1051 mismatches",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) begin\n            case (state)\n                2'b00: state <= train_taken ? 2'b01 : 2'b00;\n                2'b01: state <= train_taken ? 2'b10 : 2'b00;\n                2'b10: state <= train_taken ? 2'b11 : 2'b01;\n                2'b11: state <= train_taken ? 2'b11 : 2'b10;\n            endcase\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "153e104bb97b90fc6a0e5c2992466582157241f18bec607f2438c7d6000916fa",
+      "rtl": "module TopModule (\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) begin\n            case (state)\n                2'b00: state <= train_taken ? 2'b01 : 2'b00;\n                2'b01: state <= train_taken ? 2'b10 : 2'b00;\n                2'b10: state <= train_taken ? 2'b11 : 2'b01;\n                2'b11: state <= train_taken ? 2'b11 : 2'b10;\n            endcase\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "153e104bb97b90fc6a0e5c2992466582157241f18bec607f2438c7d6000916fa",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "5/1051 mismatches",
+      "raw_completion": "// Two-bit saturating counter\nmodule TopModule(input  clk, input  areset, input  train_valid, input  train_taken, output reg [1:0] state);\n  always @(posedge clk) begin\n    if (areset) state <= 2'b01;\n    else if (train_valid) state <= (train_taken) ? (state == 2'b11) ? 2'b11 : state + 1 : (state == 2'b00) ? 2'b00 : state - 1;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "fc072b18fb990df7cf5e673024a5933e7859282879f758aca0ee55b26b44124e",
+      "rtl": "module TopModule(input  clk, input  areset, input  train_valid, input  train_taken, output reg [1:0] state);\n  always @(posedge clk) begin\n    if (areset) state <= 2'b01;\n    else if (train_valid) state <= (train_taken) ? (state == 2'b11) ? 2'b11 : state + 1 : (state == 2'b00) ? 2'b00 : state - 1;\n  end\nendmodule",
+      "rtl_raw_sha256": "452bcb84d1ebb9f0b354b01b7c36c34661af7cc18e34e3efa70a3c38d34dc7c1",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: error: No function named `min' found in this context (tb.top_module1).",
+      "raw_completion": "// Two-bit saturating counter, up to a maximum of 3. When not training\n// (train_valid = 0), the counter keeps its value unchanged. Positive\n// edge triggered asynchronous reset on areset resets the counter to\n// weakly not-taken (2'b01).\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) state <= (train_taken ? min(3, state + 1) : max(0, state - 1));\n    end\nendmodule",
+      "raw_completion_raw_sha256": "67e7ec3ae34848e4e373e4de124b5e4b2ef61cb5cbc4479bfc146da11937af98",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) state <= (train_taken ? min(3, state + 1) : max(0, state - 1));\n    end\nendmodule",
+      "rtl_raw_sha256": "1cceeee68a0c29e4ab4cad76534b3016a4e15eb61627e2ea20285342dfc3f1af",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:4: error: No function named `min' found in this context (tb.top_module1).",
+      "raw_completion": "// Two-bit saturating counter. Increments when train_valid & train_taken,\n// decrements otherwise. Asynchronous reset on areset.\nmodule TopModule(input clk, input areset, input train_valid, input train_taken, output reg [1:0] state);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) state <= (train_taken) ? min(3, state + 1) : max(0, state - 1);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "dcfdb0c8b1d204956e6c56932692268f8a1f8b6395e2640d7d67a1badd61473e",
+      "rtl": "module TopModule(input clk, input areset, input train_valid, input train_taken, output reg [1:0] state);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) state <= (train_taken) ? min(3, state + 1) : max(0, state - 1);\n    end\nendmodule",
+      "rtl_raw_sha256": "e3fc770bec2099149954b94a35460638bf4684d4b9e01fcb8b65509a5bc84a5e",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "5/1051 mismatches",
+      "raw_completion": "// Two-bit saturating counter, as described in the prompt.\nmodule TopModule(input clk, input areset, input train_valid, input train_taken, output reg [1:0] state);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) begin\n            if (train_taken) begin\n                if (state < 2'b11) state <= state + 1;\n            end else begin\n                if (state > 2'b00) state <= state - 1;\n            end\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "5c262722c1cd54d880d04529fa0a417681b0dd6bd17dc844a0f50a899e0e6600",
+      "rtl": "module TopModule(input clk, input areset, input train_valid, input train_taken, output reg [1:0] state);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) begin\n            if (train_taken) begin\n                if (state < 2'b11) state <= state + 1;\n            end else begin\n                if (state > 2'b00) state <= state - 1;\n            end\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "d370b932f155c8aec29b614f83cac157444c57b997a58171135c0022ae693b80",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: error: No function named `min' found in this context (tb.top_module1).",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) state <= (train_taken) ? min(3, state + 1) : max(0, state - 1);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "bc6e8544ad9a2bd605ca01c2d925b440d13c9155f3c6ea9a3ad217d914756ba6",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  train_valid,\n    input  train_taken,\n    output reg [1:0] state\n);\n    always @(posedge clk) begin\n        if (areset) state <= 2'b01;\n        else if (train_valid) state <= (train_taken) ? min(3, state + 1) : max(0, state - 1);\n    end\nendmodule",
+      "rtl_raw_sha256": "bc6e8544ad9a2bd605ca01c2d925b440d13c9155f3c6ea9a3ad217d914756ba6",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 4,
+    "fail": 16
+  },
+  "testbench_raw_sha256": "e558e87f31e49e0781afaec0b28fa602d08001e15a3f254ca6c4db7e924ac020",
+  "training_seed": 2
+}

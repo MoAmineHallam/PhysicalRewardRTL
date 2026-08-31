@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob072_thermostat",
+  "problem_seed": 6636377596559342555,
+  "prompt_raw_sha256": "b99d5c7402c3d59b35c3396da199442e9fea075d0e31dd703b901ae97b445ae1",
+  "reference_raw_sha256": "11ab9eccf4df5719e600eca68d15eafd612aecec668a0ff97951f5637d56fd1b",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "// One-bit thermostat controller. Implemented as a combinational function,\n// the output signals (heater, aircon, fan) directly depend on the inputs\n// (mode, too_cold, too_hot, fan_on).\nmodule TopModule (\n    input  mode,\n    input  too_cold,\n    input  too_hot,\n    input  fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    wire heater_on = mode & too_cold;\n    wire ac_on = !mode & too_hot;\n    wire fan_on_i = heater_on | ac_on | fan_on;\n    assign {heater, aircon, fan} = {heater_on, ac_on, fan_on_i};\nendmodule",
+      "raw_completion_raw_sha256": "67b6d99b007dc6f0bb894fe586e85616f531b2c3fce943b29f8ccbfd69b08c2a",
+      "rtl": "module TopModule (\n    input  mode,\n    input  too_cold,\n    input  too_hot,\n    input  fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    wire heater_on = mode & too_cold;\n    wire ac_on = !mode & too_hot;\n    wire fan_on_i = heater_on | ac_on | fan_on;\n    assign {heater, aircon, fan} = {heater_on, ac_on, fan_on_i};\nendmodule",
+      "rtl_raw_sha256": "316aab4079bc6405d47a6e3027ffd5996e72fd4778706c0ccd04773b6c313d79",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "189/248 mismatches",
+      "raw_completion": "// heating/cooling thermostat controller\nmodule TopModule(\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        if (mode) begin\n            heater = 0;\n            aircon = too_hot;\n            fan = too_hot;\n        end else begin\n            heater = too_cold;\n            aircon = 0;\n            fan = too_cold;\n        end\n        fan |= fan_on;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "71f2736fac5546ebb1b98c9e44cefc18ce27afaa0b87198deb4d521696a65ad7",
+      "rtl": "module TopModule(\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        if (mode) begin\n            heater = 0;\n            aircon = too_hot;\n            fan = too_hot;\n        end else begin\n            heater = too_cold;\n            aircon = 0;\n            fan = too_cold;\n        end\n        fan |= fan_on;\n    end\nendmodule",
+      "rtl_raw_sha256": "bd65c3da96a1ae070d2af81d6d0a62bc111971a4745be756221acaaff75d1766",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "207/248 mismatches",
+      "raw_completion": "// Heating/cooling thermostat controller\nmodule TopModule (\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        if (mode) begin // heating mode\n            heater = 1'b0;\n            aircon = 1'b0;\n            fan = too_cold;\n        end else begin // cooling mode\n            heater = too_hot;\n            aircon = 1'b1;\n            fan = too_hot || fan_on;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "81e43488a29c8f1f67be4b65f9da9cb0ba588eaac16bd4456f02b1e8027330c0",
+      "rtl": "module TopModule (\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        if (mode) begin // heating mode\n            heater = 1'b0;\n            aircon = 1'b0;\n            fan = too_cold;\n        end else begin // cooling mode\n            heater = too_hot;\n            aircon = 1'b1;\n            fan = too_hot || fan_on;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "4dcdd383f047af33721b2e3cd46a8edd395c26717bef010084dc7929b7455574",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    wire heater_on = mode & too_cold;\n    wire aircon_on = !mode & too_hot;\n    wire fan_on_internal = heater_on | aircon_on | fan_on;\n    assign heater = heater_on;\n    assign aircon = aircon_on;\n    assign fan = fan_on_internal;\nendmodule",
+      "raw_completion_raw_sha256": "0a380a3f352356c0cb397cff6c0bf1004b7212462229b148729581e3c14da3cb",
+      "rtl": "module TopModule(\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    wire heater_on = mode & too_cold;\n    wire aircon_on = !mode & too_hot;\n    wire fan_on_internal = heater_on | aircon_on | fan_on;\n    assign heater = heater_on;\n    assign aircon = aircon_on;\n    assign fan = fan_on_internal;\nendmodule",
+      "rtl_raw_sha256": "0a380a3f352356c0cb397cff6c0bf1004b7212462229b148729581e3c14da3cb",
+      "sample_index": 3,
+      "status": "PASS"
+    },
+    {
+      "detail": "189/248 mismatches",
+      "raw_completion": "module TopModule (\n    input  mode,\n    input  too_cold,\n    input  too_hot,\n    input  fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    wire heater_on = mode ? 1'b0 : too_cold;\n    wire ac_on = mode ? too_hot : 1'b0;\n    wire fan_on_int = heater_on | ac_on | fan_on;\n    assign heater = heater_on;\n    assign aircon = ac_on;\n    assign fan = fan_on_int;\nendmodule",
+      "raw_completion_raw_sha256": "020edebf117f89f03aaec8edafae18d8bce31a5416ceb782ee54da702b808aea",
+      "rtl": "module TopModule (\n    input  mode,\n    input  too_cold,\n    input  too_hot,\n    input  fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    wire heater_on = mode ? 1'b0 : too_cold;\n    wire ac_on = mode ? too_hot : 1'b0;\n    wire fan_on_int = heater_on | ac_on | fan_on;\n    assign heater = heater_on;\n    assign aircon = ac_on;\n    assign fan = fan_on_int;\nendmodule",
+      "rtl_raw_sha256": "020edebf117f89f03aaec8edafae18d8bce31a5416ceb782ee54da702b808aea",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Heating/cooling thermostat controller\nmodule TopModule(\n    input  mode,\n    input  too_cold,\n    input  too_hot,\n    input  fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    reg heater_reg;\n    reg aircon_reg;\n    reg fan_reg;\n    always @(*) begin\n        if (mode) begin // heating mode\n            heater_reg = too_cold;\n            aircon_reg = 0;\n        end else begin // cooling mode\n            heater_reg = 0;\n            aircon_reg = too_hot;\n        end\n        fan_reg = heater_reg || aircon_reg || fan_on;\n    end\n    assign heater = heater_reg;\n    assign aircon = aircon_reg;\n    assign fan = fan_reg;\nendmodule",
+      "raw_completion_raw_sha256": "f5ecc1b7b9c2e75b3d072d79ff88dc303f9523ea6039972f27213efff90e67c8",
+      "rtl": "module TopModule(\n    input  mode,\n    input  too_cold,\n    input  too_hot,\n    input  fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    reg heater_reg;\n    reg aircon_reg;\n    reg fan_reg;\n    always @(*) begin\n        if (mode) begin // heating mode\n            heater_reg = too_cold;\n            aircon_reg = 0;\n        end else begin // cooling mode\n            heater_reg = 0;\n            aircon_reg = too_hot;\n        end\n        fan_reg = heater_reg || aircon_reg || fan_on;\n    end\n    assign heater = heater_reg;\n    assign aircon = aircon_reg;\n    assign fan = fan_reg;\nendmodule",
+      "rtl_raw_sha256": "aa3db4b7d02757758895b4df3c782ed7a22756ddfe97cc9e4240c5224321e217",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Heating/cooling thermostat controller\nmodule TopModule (\n    input  mode,\n    input  too_cold,\n    input  too_hot,\n    input  fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    wire heater_on  = mode &  too_cold;\n    wire ac_on      = ~mode & too_hot;\n    wire fan_forced = fan_on | heater_on | ac_on;\n    assign heater = heater_on;\n    assign aircon = ac_on;\n    assign fan = fan_forced;\nendmodule",
+      "raw_completion_raw_sha256": "17aa2da6c2ae481d827869acf3b671c55bfff2ef6e5c1db9548a1a02d77fc3ff",
+      "rtl": "module TopModule (\n    input  mode,\n    input  too_cold,\n    input  too_hot,\n    input  fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    wire heater_on  = mode &  too_cold;\n    wire ac_on      = ~mode & too_hot;\n    wire fan_forced = fan_on | heater_on | ac_on;\n    assign heater = heater_on;\n    assign aircon = ac_on;\n    assign fan = fan_forced;\nendmodule",
+      "rtl_raw_sha256": "872124d153c328b8b99fc02f09cb89968c84fa959ec3575e0e5164d5a3dd289a",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "127/248 mismatches",
+      "raw_completion": "module TopModule(\n    input  mode,\n    input  too_cold,\n    input  too_hot,\n    input  fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    reg heater_reg;\n    reg aircon_reg;\n    reg fan_reg;\n    always @(*) begin\n        if (mode) begin\n            heater_reg = 1;\n            aircon_reg = 0;\n        end else begin\n            heater_reg = 0;\n            aircon_reg = 1;\n        end\n        if (too_cold || too_hot || fan_on)\n            fan_reg = 1;\n        else\n            fan_reg = 0;\n    end\n    assign heater = heater_reg;\n    assign aircon = aircon_reg;\n    assign fan = fan_reg;\nendmodule",
+      "raw_completion_raw_sha256": "84776b744a7108aa9d62d2d09c9560c78fbc3530bd53dfd4abecb9bc9868fc00",
+      "rtl": "module TopModule(\n    input  mode,\n    input  too_cold,\n    input  too_hot,\n    input  fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    reg heater_reg;\n    reg aircon_reg;\n    reg fan_reg;\n    always @(*) begin\n        if (mode) begin\n            heater_reg = 1;\n            aircon_reg = 0;\n        end else begin\n            heater_reg = 0;\n            aircon_reg = 1;\n        end\n        if (too_cold || too_hot || fan_on)\n            fan_reg = 1;\n        else\n            fan_reg = 0;\n    end\n    assign heater = heater_reg;\n    assign aircon = aircon_reg;\n    assign fan = fan_reg;\nendmodule",
+      "rtl_raw_sha256": "84776b744a7108aa9d62d2d09c9560c78fbc3530bd53dfd4abecb9bc9868fc00",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "69/248 mismatches",
+      "raw_completion": "// Heating/Cooling Thermostat controller\nmodule TopModule(\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        heater = 1'b0;\n        aircon = 1'b0;\n        fan = 1'b0;\n        if (mode) begin\n            if (too_cold) heater = 1'b1;\n            if (too_hot) fan = 1'b1;\n        end\n        else begin\n            if (too_hot) aircon = 1'b1;\n            if (too_cold) fan = 1'b1;\n        end\n        if (fan_on) fan = 1'b1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "c591d549956b1720a34d7c25b8dc52133d6730cd4278041527941a200cf70ea8",
+      "rtl": "module TopModule(\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        heater = 1'b0;\n        aircon = 1'b0;\n        fan = 1'b0;\n        if (mode) begin\n            if (too_cold) heater = 1'b1;\n            if (too_hot) fan = 1'b1;\n        end\n        else begin\n            if (too_hot) aircon = 1'b1;\n            if (too_cold) fan = 1'b1;\n        end\n        if (fan_on) fan = 1'b1;\n    end\nendmodule",
+      "rtl_raw_sha256": "7eee9acc10cfe6f8057ab5797c465a6b7b753ced7d72771cd146f601561e2e02",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Thermostat controller\nmodule TopModule(\n    input  mode,\n    input  too_cold,\n    input  too_hot,\n    input  fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    reg heater_reg, aircon_reg, fan_reg;\n    always @(*) begin\n        heater_reg = (mode && too_cold) ? 1'b1 : 1'b0;\n        aircon_reg = (!mode && too_hot) ? 1'b1 : 1'b0;\n        fan_reg = (heater_reg || aircon_reg || fan_on) ? 1'b1 : 1'b0;\n    end\n    assign heater = heater_reg;\n    assign aircon = aircon_reg;\n    assign fan = fan_reg;\nendmodule",
+      "raw_completion_raw_sha256": "e0c33178a9a8b160e49a510ce4d259ccc51e44b3daa1f34615add36e73ea2fdc",
+      "rtl": "module TopModule(\n    input  mode,\n    input  too_cold,\n    input  too_hot,\n    input  fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    reg heater_reg, aircon_reg, fan_reg;\n    always @(*) begin\n        heater_reg = (mode && too_cold) ? 1'b1 : 1'b0;\n        aircon_reg = (!mode && too_hot) ? 1'b1 : 1'b0;\n        fan_reg = (heater_reg || aircon_reg || fan_on) ? 1'b1 : 1'b0;\n    end\n    assign heater = heater_reg;\n    assign aircon = aircon_reg;\n    assign fan = fan_reg;\nendmodule",
+      "rtl_raw_sha256": "a8da2ff4c6f5231e29641cbad90202ba1ad879d058744bdfa7d8c631a3d8795c",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// heating/cooling thermostat controller\nmodule TopModule (\n    input  mode,\n    input  too_cold,\n    input  too_hot,\n    input  fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    assign heater = mode & too_cold;\n    assign aircon = ~mode & too_hot;\n    assign fan = (heater | aircon) | fan_on;\nendmodule",
+      "raw_completion_raw_sha256": "50e1b74ad02101412dbe0bb8000b062f3413b96ebfb9e2baadb33d90525c7774",
+      "rtl": "module TopModule (\n    input  mode,\n    input  too_cold,\n    input  too_hot,\n    input  fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    assign heater = mode & too_cold;\n    assign aircon = ~mode & too_hot;\n    assign fan = (heater | aircon) | fan_on;\nendmodule",
+      "rtl_raw_sha256": "ba4a098524a36056080e0ec07abdedce7e4f40610c566b935c3700dff6f43efa",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// heating/cooling thermostat controller\nmodule TopModule (\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        if (mode) begin // heating mode\n            heater = too_cold;\n            aircon = 0;\n        end else begin // cooling mode\n            heater = 0;\n            aircon = too_hot;\n        end\n        fan = heater || aircon || fan_on;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "6533062712831f5e81984773dcd6b9565922195e389464774172297439dfcb08",
+      "rtl": "module TopModule (\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        if (mode) begin // heating mode\n            heater = too_cold;\n            aircon = 0;\n        end else begin // cooling mode\n            heater = 0;\n            aircon = too_hot;\n        end\n        fan = heater || aircon || fan_on;\n    end\nendmodule",
+      "rtl_raw_sha256": "73b492f521a12fff8efdaf224026f8c96e26830916642b3dbc25d62e95cb6cb1",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Heating/cooling thermostat controller. Controls both a heater (during\n// winter) and an air conditioner (during summer). Turns on and off the heater,\n// air conditioner, and blower fan as appropriate.\nmodule TopModule(\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        if (mode) begin // Heating mode\n            heater = too_cold;\n            aircon = 0;\n            fan = too_cold;\n        end else begin // Cooling mode\n            heater = 0;\n            aircon = too_hot;\n            fan = too_hot;\n        end\n        fan = fan || fan_on;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "bdf4f2c8e7096d2376dd258b3013fff7774ff2e4a581a8d911315827b4840e4e",
+      "rtl": "module TopModule(\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        if (mode) begin // Heating mode\n            heater = too_cold;\n            aircon = 0;\n            fan = too_cold;\n        end else begin // Cooling mode\n            heater = 0;\n            aircon = too_hot;\n            fan = too_hot;\n        end\n        fan = fan || fan_on;\n    end\nendmodule",
+      "rtl_raw_sha256": "fe407bec05c826b924352d6182d66e94bd7cb36c0ae8252f0e76b03ee59a6a6a",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "189/248 mismatches",
+      "raw_completion": "module TopModule(\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        if (mode) begin\n            heater = 0;\n            aircon = too_hot;\n            fan = too_hot | fan_on;\n        end else begin\n            heater = too_cold;\n            aircon = 0;\n            fan = too_cold | fan_on;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "dfca37fbbd9f73c5462a1d51e2f7021a743ef6f43f7fb81f476356f80a0b9171",
+      "rtl": "module TopModule(\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        if (mode) begin\n            heater = 0;\n            aircon = too_hot;\n            fan = too_hot | fan_on;\n        end else begin\n            heater = too_cold;\n            aircon = 0;\n            fan = too_cold | fan_on;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "dfca37fbbd9f73c5462a1d51e2f7021a743ef6f43f7fb81f476356f80a0b9171",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:19: error: fan_reg is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit thermostat controller: turns on/off heater, air conditioner, and\n// fan as appropriate.\nmodule TopModule(\n    input  mode,\n    input  too_cold,\n    input  too_hot,\n    input  fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    reg heater_reg;\n    reg aircon_reg;\n    wire fan_reg;\n    assign heater = heater_reg;\n    assign aircon = aircon_reg;\n    assign fan = fan_reg;\n    always @(*) begin\n        heater_reg = (mode && too_cold) ? 1'b1 : 1'b0;\n        aircon_reg = (!mode && too_hot) ? 1'b1 : 1'b0;\n        fan_reg = (fan_on || (heater_reg || aircon_reg));\n    end\nendmodule",
+      "raw_completion_raw_sha256": "02d32b2aa1fa75f05d908719c0fa833c5f87d4e5dcbbefcf004adf5162e8ef81",
+      "rtl": "module TopModule(\n    input  mode,\n    input  too_cold,\n    input  too_hot,\n    input  fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    reg heater_reg;\n    reg aircon_reg;\n    wire fan_reg;\n    assign heater = heater_reg;\n    assign aircon = aircon_reg;\n    assign fan = fan_reg;\n    always @(*) begin\n        heater_reg = (mode && too_cold) ? 1'b1 : 1'b0;\n        aircon_reg = (!mode && too_hot) ? 1'b1 : 1'b0;\n        fan_reg = (fan_on || (heater_reg || aircon_reg));\n    end\nendmodule",
+      "rtl_raw_sha256": "cae2b04c4f98153aba0ed60676899279df700541141bef1a18f9a01f76d1b223",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "212/248 mismatches",
+      "raw_completion": "// Thermostat controller for a heating/cooling system. Turns the heater,\n// air conditioner, and fan on and off as appropriate.\nmodule TopModule(\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        if (mode) begin\n            heater = 0;\n            aircon = too_hot;\n        end else begin\n            heater = too_cold;\n            aircon = 0;\n        end\n        fan = (heater || aircon) && fan_on;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "e5a4e18db143de7d5df46e5d0916a84fab5b463bea00bbf37a3b98541653b6a1",
+      "rtl": "module TopModule(\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        if (mode) begin\n            heater = 0;\n            aircon = too_hot;\n        end else begin\n            heater = too_cold;\n            aircon = 0;\n        end\n        fan = (heater || aircon) && fan_on;\n    end\nendmodule",
+      "rtl_raw_sha256": "5616805802302e0fef3655c88c4153addc2c075c71162094aaa4c3fee2b9783e",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "189/248 mismatches",
+      "raw_completion": "module TopModule(\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        if (mode) begin\n            heater = 0;\n            aircon = too_hot;\n            fan = too_hot;\n        end else begin\n            heater = too_cold;\n            aircon = 0;\n            fan = too_cold;\n        end\n        fan = fan || fan_on;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "d8d9c8f58a81e43f322697a25b5a74eb3902c22a0c9fa8870d9a5469b63ba109",
+      "rtl": "module TopModule(\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        if (mode) begin\n            heater = 0;\n            aircon = too_hot;\n            fan = too_hot;\n        end else begin\n            heater = too_cold;\n            aircon = 0;\n            fan = too_cold;\n        end\n        fan = fan || fan_on;\n    end\nendmodule",
+      "rtl_raw_sha256": "d8d9c8f58a81e43f322697a25b5a74eb3902c22a0c9fa8870d9a5469b63ba109",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "189/248 mismatches",
+      "raw_completion": "module TopModule (\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        if (mode) begin\n            heater = 0;\n            aircon = too_hot;\n            fan = too_hot;\n        end else begin\n            heater = too_cold;\n            aircon = 0;\n            fan = too_cold;\n        end\n        fan |= fan_on;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "3e033bd19777d24af475354871b421e849eba264834e96904cd698f262771e94",
+      "rtl": "module TopModule (\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        if (mode) begin\n            heater = 0;\n            aircon = too_hot;\n            fan = too_hot;\n        end else begin\n            heater = too_cold;\n            aircon = 0;\n            fan = too_cold;\n        end\n        fan |= fan_on;\n    end\nendmodule",
+      "rtl_raw_sha256": "3e033bd19777d24af475354871b421e849eba264834e96904cd698f262771e94",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "189/248 mismatches",
+      "raw_completion": "// A heating/cooling thermostat controller\nmodule TopModule(\n    input  mode,\n    input  too_cold,\n    input  too_hot,\n    input  fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    wire heater_on = mode ? 1'b0 : too_cold;\n    wire ac_on = mode ? too_hot : 1'b0;\n    wire fan_on_combined = fan_on || (heater_on || ac_on);\n    assign heater = heater_on;\n    assign aircon = ac_on;\n    assign fan = fan_on_combined;\nendmodule",
+      "raw_completion_raw_sha256": "48423a250d19fe9e9a120687871c28987bf749242bb83450c26ddc6803883d48",
+      "rtl": "module TopModule(\n    input  mode,\n    input  too_cold,\n    input  too_hot,\n    input  fan_on,\n    output heater,\n    output aircon,\n    output fan\n);\n    wire heater_on = mode ? 1'b0 : too_cold;\n    wire ac_on = mode ? too_hot : 1'b0;\n    wire fan_on_combined = fan_on || (heater_on || ac_on);\n    assign heater = heater_on;\n    assign aircon = ac_on;\n    assign fan = fan_on_combined;\nendmodule",
+      "rtl_raw_sha256": "b36ba576977056d643268796654a70875ddb194564170a19d6e432238546c5ac",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// A heating/cooling thermostat controller. Controls both a heater and an\n// air conditioner, and a blower fan. The fan is always on when the heater\n// or air conditioner are on.\nmodule TopModule(\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        if (mode) begin // Heating mode\n            heater = too_cold;\n            aircon = 0;\n        end else begin // Cooling mode\n            heater = 0;\n            aircon = too_hot;\n        end\n        fan = heater || aircon || fan_on;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "e34ca01b5c844046de1156daa2469d02e66ede28f7f73e30dd45ac0d87c0e4bb",
+      "rtl": "module TopModule(\n    input mode,\n    input too_cold,\n    input too_hot,\n    input fan_on,\n    output reg heater,\n    output reg aircon,\n    output reg fan\n);\n    always @(*) begin\n        if (mode) begin // Heating mode\n            heater = too_cold;\n            aircon = 0;\n        end else begin // Cooling mode\n            heater = 0;\n            aircon = too_hot;\n        end\n        fan = heater || aircon || fan_on;\n    end\nendmodule",
+      "rtl_raw_sha256": "1165045ba16f6d18d3729cc5102b379bd73eb068beab2e7a62bd4a3bb7a3271e",
+      "sample_index": 19,
+      "status": "PASS"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 9,
+    "compile_fail": 1,
+    "fail": 10
+  },
+  "testbench_raw_sha256": "ff9b235a01aaabd6b13e085ef001b552de63dcb64a38e1f618672d740923ede3",
+  "training_seed": 2
+}

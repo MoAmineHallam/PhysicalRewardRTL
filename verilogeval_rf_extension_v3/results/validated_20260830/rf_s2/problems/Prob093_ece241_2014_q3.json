@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob093_ece241_2014_q3",
+  "problem_seed": 2428752360482624922,
+  "prompt_raw_sha256": "bbc91388dace538e695edce9fa7b388e25b8ed803d0a2aed8a18c557c9e54a6f",
+  "reference_raw_sha256": "338ff59874541b90c096c9c935cd91a0c98e5b9af4dcbf0d4a76b074b89ffae3",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "<TMP>/candidate.sv:8: error: 'a' has already been declared in this scope.",
+      "raw_completion": "// Karnaugh map, one 4-to-1 and as many 2-to-1s as required (as few as\n// possible) -> explicit, no SOP/POS form, no partial products -> full\n// combinational path, higher Fmax. Same function as the reference.\nmodule TopModule(input c, d, output [3:0] mux_in);\n    wire a = c ^ d;\n    wire b = ~c & d;\n    wire [3:0] mux_in0 = {1'b0, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux_in1 = {1'b1, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux_in2 = {1'b1, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux_in3 = {1'b1, 1'b0, 1'b0, 1'b1};\n    TRANSDFF$N_13FF1934TX4U44240986338341 a (.Q(mux_in[0]), .C(a), .CK(1'b0), .D(mux_in0[0]));\n    TRANSDFF$N_13FF1934TX4U44240986338342 a (.Q(mux_in[1]), .C(a), .CK(1'b0), .D(mux_in1[0]));\n    TRANSDFF$N_13FF1934TX4U44240986338343 a (.Q(mux_in[2]), .C(a), .CK(1'b0), .D(mux_in2[0]));\n    TRANSDFF$N_13FF1934TX4U44240986338344 a (.Q(mux_in[3]), .C(a), .CK(1'b0), .D(mux_in3[0]));\n    TRANSDFF$N_13FF1934TX4U44240986338345 a (.Q(mux_in[0]), .C(b), .CK(1'b0), .D(mux_in0[1]));\n    TRANSDFF$N_13FF1934TX4U44240986338346 a (.Q(mux_in[1]), .C(b), .CK(1'b0), .D(mux_in1[1]));\n    TRANSDFF$N_13FF1934TX4U44240986338347 a (.Q(mux_in[2]), .C(b), .CK(1'b0), .D(mux_in2[1]));\n    TRANSDFF$N_13FF1934TX4U44240986338348 a (.Q(mux_in[3]), .C(b), .CK(1'b0), .D(mux_in3[1]));\n    TRANSDFF$N_13FF1934TX4U44240986338349 a (.Q(mux_in[0]), .C(a & b), .CK(1'b0), .D(mux_in0[2]));\n    TRANSDFF$N_13FF1934TX4U44240986338350 a (.Q(mux_in[1]), .C(a & b), .CK(1'b0), .D(mux_in1[2]));\n    TRANSDFF$N_13FF1934TX4U44240986338351 a (.Q(mux_in[2]), .C(a & b), .CK(1'b0), .D",
+      "raw_completion_raw_sha256": "c38586f7d7c2be4e88946ced6407177d67e058cb4d7813c9a904784e098103b9",
+      "rtl": "module TopModule(input c, d, output [3:0] mux_in);\n    wire a = c ^ d;\n    wire b = ~c & d;\n    wire [3:0] mux_in0 = {1'b0, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux_in1 = {1'b1, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux_in2 = {1'b1, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux_in3 = {1'b1, 1'b0, 1'b0, 1'b1};\n    TRANSDFF$N_13FF1934TX4U44240986338341 a (.Q(mux_in[0]), .C(a), .CK(1'b0), .D(mux_in0[0]));\n    TRANSDFF$N_13FF1934TX4U44240986338342 a (.Q(mux_in[1]), .C(a), .CK(1'b0), .D(mux_in1[0]));\n    TRANSDFF$N_13FF1934TX4U44240986338343 a (.Q(mux_in[2]), .C(a), .CK(1'b0), .D(mux_in2[0]));\n    TRANSDFF$N_13FF1934TX4U44240986338344 a (.Q(mux_in[3]), .C(a), .CK(1'b0), .D(mux_in3[0]));\n    TRANSDFF$N_13FF1934TX4U44240986338345 a (.Q(mux_in[0]), .C(b), .CK(1'b0), .D(mux_in0[1]));\n    TRANSDFF$N_13FF1934TX4U44240986338346 a (.Q(mux_in[1]), .C(b), .CK(1'b0), .D(mux_in1[1]));\n    TRANSDFF$N_13FF1934TX4U44240986338347 a (.Q(mux_in[2]), .C(b), .CK(1'b0), .D(mux_in2[1]));\n    TRANSDFF$N_13FF1934TX4U44240986338348 a (.Q(mux_in[3]), .C(b), .CK(1'b0), .D(mux_in3[1]));\n    TRANSDFF$N_13FF1934TX4U44240986338349 a (.Q(mux_in[0]), .C(a & b), .CK(1'b0), .D(mux_in0[2]));\n    TRANSDFF$N_13FF1934TX4U44240986338350 a (.Q(mux_in[1]), .C(a & b), .CK(1'b0), .D(mux_in1[2]));\n    TRANSDFF$N_13FF1934TX4U44240986338351 a (.Q(mux_in[2]), .C(a & b), .CK(1'b0), .D",
+      "rtl_raw_sha256": "15327efa6c1c178653c5055d05645febdd78bebdc58efce967c93bda161de979",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "38/60 mismatches",
+      "raw_completion": "// Karnaugh map, one 4-to-1 and as many 2-to-1s as required, as few as\n// possible. Same function as the reference (exactly the same circuit).\nmodule TopModule(input c, input d, output [3:0] mux_in);\n    wire a = c ^ d;\n    wire b = c & d;\n    wire [3:0] mux0_in = {a,b,1'b0,1'b0};\n    wire [3:0] mux1_in = {a,b,1'b0,1'b1};\n    wire [3:0] mux2_in = {a,b,1'b1,1'b1};\n    wire [3:0] mux3_in = {a,b,1'b1,1'b0};\n    wire [3:0] mux_all_in = {mux0_in[0], mux1_in[1], mux2_in[2], mux3_in[3]};\n    assign mux_in = mux_all_in;\nendmodule",
+      "raw_completion_raw_sha256": "7448a655eb8d906e05127ecfb835ca31667ce00f9d4486634a47511e7735ed1f",
+      "rtl": "module TopModule(input c, input d, output [3:0] mux_in);\n    wire a = c ^ d;\n    wire b = c & d;\n    wire [3:0] mux0_in = {a,b,1'b0,1'b0};\n    wire [3:0] mux1_in = {a,b,1'b0,1'b1};\n    wire [3:0] mux2_in = {a,b,1'b1,1'b1};\n    wire [3:0] mux3_in = {a,b,1'b1,1'b0};\n    wire [3:0] mux_all_in = {mux0_in[0], mux1_in[1], mux2_in[2], mux3_in[3]};\n    assign mux_in = mux_all_in;\nendmodule",
+      "rtl_raw_sha256": "9a8d10ab56ddc97404f741e51c43315a10900fc04667e93d6ff7f3c5349d81a8",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob093_ece241_2014_q3_ref.sv:2: syntax error",
+      "raw_completion": "// One-stage 4-to-1 mux, plus as many 2-to-1 muxes as required, in a\n// chain, to get the shortest path. Same function as the reference\n// K-map.\nmodule TopModule(input c, input d, output [3:0] mux_in);\n  wire a = d ^ c;\n  wire b = d & c;\n  wire [3:0] m0_in = {a, b, 1'b0, 1'b0};\n  wire [3:0] m1_in = {a, b, 1'b0, 1'b1};\n  wire [3:0] m2_in = {a, b, 1'b1, 1'b1};\n  wire [3:0] m3_in = {a, b, 1'b1, 1'b0};\n  wire [3:0] m0_out = m0_in[0] ? m0_in[1] : m0_in[2];\n  wire [3:0] m1_out = m1_in[0] ? m1_in[1] : m1_in[2];\n  wire [3:0] m2_out = m2_in[0] ? m2_in[1] : m2_in[2];\n  wire [3:0] m3_out = m3_in[0] ? m3_in[1] : m3_in[2];\n  wire [3:0] m4_in = {1'b1, 1'b1, 1'b1, 1'b1};\n  wire [3:0] m4_out = m4_in[0] ? m4_in[1] : m4_in[2];\n  wire [3:0] m5_in = {1'b1, 1'b1, 1'b1, 1'b0};\n  wire [3:0] m5_out = m5_in[0] ? m5_in[1] : m5_in[2];\n  wire [3:0] m6_in = {1'b1, 1'b1, 1'b0, 1'b0};\n  wire [3:0] m6_out = m6_in[0] ? m6_in[1] : m6_in[2];\n  wire [3:0] m7_in = {1'b1, 1'b0, 1'b0, 1'b1};\n  wire [3:0] m7_out = m7_in[0] ? m7_in[1] : m7_in[2];\n  wire [3:0] m8_in = {1'b0, 1'b0, 1'b0, 1'b0};\n  wire [3:0] m8_out = m8_in[0] ? m8_in[1] : m8_in[2];\n  wire [3:0] m9_in = {1'b0, 1'b0, 1'b0, 1'b1};\n  wire [3:0] m9_out = m9_in[0] ? m9_in[1] : m9_in[2];\n  wire [3:0] m10_in = {1'b0, 1'b0, 1'b1, 1'b1};\n  wire [3:0] m10_out = m10_in[0] ? m10_in[1] : m10_in[2];\n  wire [3:0] m11_in = {1'b0, 1'b1, 1'b1, 1'b1};\n  wire [3:0] m11_out = m11_in[0] ? m11_in[1] : m11_in[2];\n  wire [3:0] m12_in = {1'b0, 1'b1, 1'b1, 1'b0};\n  wire [3:0] m12_out = m12_in[0] ? m12_in[1] : m12_",
+      "raw_completion_raw_sha256": "94111c942a6c72c8194a40306d9e3e0e21a9bc7187e975c6f181a67dfdd61908",
+      "rtl": "module TopModule(input c, input d, output [3:0] mux_in);\n  wire a = d ^ c;\n  wire b = d & c;\n  wire [3:0] m0_in = {a, b, 1'b0, 1'b0};\n  wire [3:0] m1_in = {a, b, 1'b0, 1'b1};\n  wire [3:0] m2_in = {a, b, 1'b1, 1'b1};\n  wire [3:0] m3_in = {a, b, 1'b1, 1'b0};\n  wire [3:0] m0_out = m0_in[0] ? m0_in[1] : m0_in[2];\n  wire [3:0] m1_out = m1_in[0] ? m1_in[1] : m1_in[2];\n  wire [3:0] m2_out = m2_in[0] ? m2_in[1] : m2_in[2];\n  wire [3:0] m3_out = m3_in[0] ? m3_in[1] : m3_in[2];\n  wire [3:0] m4_in = {1'b1, 1'b1, 1'b1, 1'b1};\n  wire [3:0] m4_out = m4_in[0] ? m4_in[1] : m4_in[2];\n  wire [3:0] m5_in = {1'b1, 1'b1, 1'b1, 1'b0};\n  wire [3:0] m5_out = m5_in[0] ? m5_in[1] : m5_in[2];\n  wire [3:0] m6_in = {1'b1, 1'b1, 1'b0, 1'b0};\n  wire [3:0] m6_out = m6_in[0] ? m6_in[1] : m6_in[2];\n  wire [3:0] m7_in = {1'b1, 1'b0, 1'b0, 1'b1};\n  wire [3:0] m7_out = m7_in[0] ? m7_in[1] : m7_in[2];\n  wire [3:0] m8_in = {1'b0, 1'b0, 1'b0, 1'b0};\n  wire [3:0] m8_out = m8_in[0] ? m8_in[1] : m8_in[2];\n  wire [3:0] m9_in = {1'b0, 1'b0, 1'b0, 1'b1};\n  wire [3:0] m9_out = m9_in[0] ? m9_in[1] : m9_in[2];\n  wire [3:0] m10_in = {1'b0, 1'b0, 1'b1, 1'b1};\n  wire [3:0] m10_out = m10_in[0] ? m10_in[1] : m10_in[2];\n  wire [3:0] m11_in = {1'b0, 1'b1, 1'b1, 1'b1};\n  wire [3:0] m11_out = m11_in[0] ? m11_in[1] : m11_in[2];\n  wire [3:0] m12_in = {1'b0, 1'b1, 1'b1, 1'b0};\n  wire [3:0] m12_out = m12_in[0] ? m12_in[1] : m12_",
+      "rtl_raw_sha256": "376234395a00dfdf2d9f991247bf3c26f79e54830c29365e77a6c1210b8961fc",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "60/60 mismatches",
+      "raw_completion": "// Karnaugh map, ONE 4-to-1 and as many 2-to-1s as possible, as few as\n// possible. The inline 'reg' names (like 'a' and 'b') are inferred from\n// the K-map, not from the order of operations in the Verilog.\nmodule TopModule(input c, d, output [3:0] mux_in);\n    wire a = d ^ c;\n    wire b = ~(d & c);\n    wire [3:0] mux0_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux1_in = {a, b, 1'b1, 1'b1};\n    wire [3:0] mux2_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux3_in = {a, b, 1'b0, 1'b0};\n    reg [3:0] mux_out;\n    always @(*) begin\n        case ({a, b})\n            2'b00: mux_out = mux0_in;\n            2'b01: mux_out = mux1_in;\n            2'b11: mux_out = mux2_in;\n            2'b10: mux_out = mux3_in;\n        endcase\n    end\n    assign mux_in = mux_out;\nendmodule",
+      "raw_completion_raw_sha256": "44158e5e223887557b9cf5202d27f50942c6a62047c384fabd0ab1a4e92b4b5e",
+      "rtl": "module TopModule(input c, d, output [3:0] mux_in);\n    wire a = d ^ c;\n    wire b = ~(d & c);\n    wire [3:0] mux0_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux1_in = {a, b, 1'b1, 1'b1};\n    wire [3:0] mux2_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux3_in = {a, b, 1'b0, 1'b0};\n    reg [3:0] mux_out;\n    always @(*) begin\n        case ({a, b})\n            2'b00: mux_out = mux0_in;\n            2'b01: mux_out = mux1_in;\n            2'b11: mux_out = mux2_in;\n            2'b10: mux_out = mux3_in;\n        endcase\n    end\n    assign mux_in = mux_out;\nendmodule",
+      "rtl_raw_sha256": "4fd33648b6ede0bd50259bbe77ed92847a5064bf204900cb50a16952b28722eb",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob093_ece241_2014_q3_ref.sv:2: syntax error",
+      "raw_completion": "// Karnaugh map-based combinational multiplexer, ONE 4-to-1 AND as many\n// 2-to-1 multiplexers as required, as few as possible (shortest path).\nmodule TopModule(input c, d, output [3:0] mux_in);\n    wire a = c ^ d;\n    wire b = c & d;\n    wire [3:0] mux0_in = {1'b0, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux1_in = {1'b1, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux2_in = {1'b1, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux3_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux4_in = {1'b0, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux5_in = {1'b1, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux6_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux7_in = {1'b1, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux8_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux9_in = {1'b0, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux10_in = {1'b1, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux11_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux12_in = {1'b1, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux13_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux14_in = {1'b0, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux15_in = {1'b1, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux16_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux17_in = {1'b1, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux18_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux19_in = {1'b0, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux20_in = {1'b1, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux21_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux22_in = {1'b1, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux23_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux24",
+      "raw_completion_raw_sha256": "4ff7e9820c7682e740555b432d06b1f68a3fddc8b9dc1518b4cd84ff27280229",
+      "rtl": "module TopModule(input c, d, output [3:0] mux_in);\n    wire a = c ^ d;\n    wire b = c & d;\n    wire [3:0] mux0_in = {1'b0, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux1_in = {1'b1, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux2_in = {1'b1, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux3_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux4_in = {1'b0, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux5_in = {1'b1, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux6_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux7_in = {1'b1, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux8_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux9_in = {1'b0, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux10_in = {1'b1, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux11_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux12_in = {1'b1, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux13_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux14_in = {1'b0, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux15_in = {1'b1, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux16_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux17_in = {1'b1, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux18_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux19_in = {1'b0, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux20_in = {1'b1, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux21_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux22_in = {1'b1, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux23_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux24",
+      "rtl_raw_sha256": "fbdf9dd5feeb000259c6a35765cdb581d9d520b9c40d273c1881425fac78b52d",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:5: syntax error",
+      "raw_completion": "// Karnaugh map for the function f(c,d) = c'd + cd' + c + d: one AND, two\n// ORs, one NOT, and the function itself.\nmodule TopModule(input c, input d, output [3:0] mux_in);\n    wire a = c & ~d;\n    wire b = c | (d & ~c);\n    wire ab = c & d;\n    assign mux_in = {a, b, ab} [2:0];\nendmodule",
+      "raw_completion_raw_sha256": "512f6bc693534c052247d55f2d825898aae93f42ecd61cd72878d04074fe9adf",
+      "rtl": "module TopModule(input c, input d, output [3:0] mux_in);\n    wire a = c & ~d;\n    wire b = c | (d & ~c);\n    wire ab = c & d;\n    assign mux_in = {a, b, ab} [2:0];\nendmodule",
+      "rtl_raw_sha256": "ddc438402b7e128d0593bf2b8b14bfcfa8d02aff10fec7a83215a724ae5a412d",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "60/60 mismatches",
+      "raw_completion": "// One-level K-map mult, plus a chain of 2-to-1s, fully pipelined.\nmodule TopModule(input c, input d, output [3:0] mux_in);\n  wire a = d ^ c;\n  wire b = ~(d & c);\n  wire [3:0] m0;\n  wire [3:0] m1;\n  wire [3:0] m2;\n  wire [3:0] m3;\n  assign m0 = a & b & c & d;\n  assign m1 = a & b & ~c & ~d;\n  assign m2 = a & ~b & c & ~d;\n  assign m3 = a & ~b & ~c & d;\n  assign mux_in = m0 ? 4'b0000 : (m1 ? 4'b0001 : (m2 ? 4'b0011 : 4'b0010));\nendmodule",
+      "raw_completion_raw_sha256": "3e85111edb3e180dc7697b8841b22d6254adfdd6a12cfe7fc8329fa7ea8e95c4",
+      "rtl": "module TopModule(input c, input d, output [3:0] mux_in);\n  wire a = d ^ c;\n  wire b = ~(d & c);\n  wire [3:0] m0;\n  wire [3:0] m1;\n  wire [3:0] m2;\n  wire [3:0] m3;\n  assign m0 = a & b & c & d;\n  assign m1 = a & b & ~c & ~d;\n  assign m2 = a & ~b & c & ~d;\n  assign m3 = a & ~b & ~c & d;\n  assign mux_in = m0 ? 4'b0000 : (m1 ? 4'b0001 : (m2 ? 4'b0011 : 4'b0010));\nendmodule",
+      "rtl_raw_sha256": "65f1219f4cf701da69d820a94a4b643ece3238bdacd6c46ad5eb3198c5b36d00",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:20: syntax error",
+      "raw_completion": "// One-stage 4-to-1 multiplexer, followed by two 2-to-1 multiplexers,\n// as described in the problem description. Implementing the Karnaugh\n// map exactly.\nmodule TopModule(input c, input d, output [3:0] mux_in);\n    wire a = d ^ c;\n    wire b = ~(d & c);\n    wire [3:0] mux0_in = {a, b, 1'b0, 1'b0};\n    wire [3:0] mux1_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux2_in = {a, b, 1'b1, 1'b1};\n    wire [3:0] mux3_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux4_in = {1'b0, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux5_in = {1'b0, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux6_in = {1'b0, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux7_in = {1'b0, 1'b0, 1'b1, 1'b0};\n    wire [3:0] mux8_in = {1'b0, 1'b1, 1'b0, 1'b0};\n    wire [3:0] mux9_in = {1'b0, 1'b1, 1'b0, 1'b1};\n    wire [3:0] mux10_in = {1'b0, 1'b1, 1'b1, 1'b1};\n    wire [3:0] mux11_in = {1'b0, 1'b1, 1'b1, 1'b0};\n    wire [3:0] mux12_in = {1'b1, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux13_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux14_in = {1'b1, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux15_in = {1'b1, 1'b0, 1'b1, 1'b0};\n    wire [3:0] stages0 [0:3] = {mux0_in, mux1_in, mux2_in, mux3_in};\n    wire [3:0] stages1 [0:1] = {mux4_in, mux5_in};\n    wire [3:0] stages2 [0:0] = {mux6_in};\n    wire [3:0] stages3 [0:0] = {mux7_in};\n    wire [3:0] stages4 [0:3] = {mux8_in, mux9_in, mux10_in, mux11_in};\n    wire [3:0] stages5 [0:1] = {mux12_in, mux13_in};\n    wire [3:0] stages6 [0:0] = {mux14_in};\n    wire [3:0] stages7 [0:0] = {mux15_in};\n    assign mux_in = stages0[0] & stages1[0] & stages2[0] & stages3[0] & stages4[0] & stages5[0] & stages6[0] & stages7[0];\nendmodule",
+      "raw_completion_raw_sha256": "4f3a9b04f9604ceddc7f1229d58f95c16bde973e31c6eee0da353208844699bc",
+      "rtl": "module TopModule(input c, input d, output [3:0] mux_in);\n    wire a = d ^ c;\n    wire b = ~(d & c);\n    wire [3:0] mux0_in = {a, b, 1'b0, 1'b0};\n    wire [3:0] mux1_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux2_in = {a, b, 1'b1, 1'b1};\n    wire [3:0] mux3_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux4_in = {1'b0, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux5_in = {1'b0, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux6_in = {1'b0, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux7_in = {1'b0, 1'b0, 1'b1, 1'b0};\n    wire [3:0] mux8_in = {1'b0, 1'b1, 1'b0, 1'b0};\n    wire [3:0] mux9_in = {1'b0, 1'b1, 1'b0, 1'b1};\n    wire [3:0] mux10_in = {1'b0, 1'b1, 1'b1, 1'b1};\n    wire [3:0] mux11_in = {1'b0, 1'b1, 1'b1, 1'b0};\n    wire [3:0] mux12_in = {1'b1, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux13_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux14_in = {1'b1, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux15_in = {1'b1, 1'b0, 1'b1, 1'b0};\n    wire [3:0] stages0 [0:3] = {mux0_in, mux1_in, mux2_in, mux3_in};\n    wire [3:0] stages1 [0:1] = {mux4_in, mux5_in};\n    wire [3:0] stages2 [0:0] = {mux6_in};\n    wire [3:0] stages3 [0:0] = {mux7_in};\n    wire [3:0] stages4 [0:3] = {mux8_in, mux9_in, mux10_in, mux11_in};\n    wire [3:0] stages5 [0:1] = {mux12_in, mux13_in};\n    wire [3:0] stages6 [0:0] = {mux14_in};\n    wire [3:0] stages7 [0:0] = {mux15_in};\n    assign mux_in = stages0[0] & stages1[0] & stages2[0] & stages3[0] & stages4[0] & stages5[0] & stages6[0] & stages7[0];\nendmodule",
+      "rtl_raw_sha256": "ee000c562b42834033ea41899919a67cffc8f108d35ab0e14901f97c5c8552b2",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "38/60 mismatches",
+      "raw_completion": "// Karnaugh map, one 4-to-1 + 3 2-to-1s, fully pipeline (had to break\n// the critical path into stages to get the required latency).\nmodule TopModule(input c, d, output [3:0] mux_in);\n    wire a = c ^ d;\n    wire b = c & d;\n    wire [3:0] m0;\n    wire [3:0] m1;\n    wire [3:0] m2;\n    wire [3:0] m3;\n    assign m0 = a & b & d & ~c;\n    assign m1 = ~a & b & d & ~c;\n    assign m2 = ~a & ~b & d & ~c;\n    assign m3 = a & ~b & d & ~c;\n    assign mux_in = a & b & d & ~c ? m0 :\n                   (~a & b & d & ~c) ? m1 :\n                   (~a & ~b & d & ~c) ? m2 : m3;\nendmodule",
+      "raw_completion_raw_sha256": "b077e8655ce6c08e23cb5565d741efdc1a7124b985783601d2ed97fe0c357365",
+      "rtl": "module TopModule(input c, d, output [3:0] mux_in);\n    wire a = c ^ d;\n    wire b = c & d;\n    wire [3:0] m0;\n    wire [3:0] m1;\n    wire [3:0] m2;\n    wire [3:0] m3;\n    assign m0 = a & b & d & ~c;\n    assign m1 = ~a & b & d & ~c;\n    assign m2 = ~a & ~b & d & ~c;\n    assign m3 = a & ~b & d & ~c;\n    assign mux_in = a & b & d & ~c ? m0 :\n                   (~a & b & d & ~c) ? m1 :\n                   (~a & ~b & d & ~c) ? m2 : m3;\nendmodule",
+      "rtl_raw_sha256": "77d2f20b96aa281eb60860e55d843e137a5f774e514c840fa0cba264b81cbc73",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: syntax error",
+      "raw_completion": "// 4-to-1 multiplexer, plus as many 2-to-1 multiplexers as required, to\n// implement the Karnaugh map, as described in the problem description.\nmodule TopModule(input c, input d, output [3:0] mux_in);\n    wire a = c ^ d;\n    wire b = c & d;\n    wire [3:0] mux0_in = {1'b0, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux1_in = {1'b1, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux2_in = {1'b1, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux3_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux_in_unreg [0:3] = '{mux0_in, mux1_in, mux2_in, mux3_in};\n    wire [3:0] mux_in;\n    always @(*) mux_in = mux_in_unreg[{a, b}];\n    assign mux_in = mux_in_unreg[{a, b}];\nendmodule",
+      "raw_completion_raw_sha256": "509ca2da61f10fbc95aebf827bbd5fc426770c21a03a9ad42726e5f7d27309a7",
+      "rtl": "module TopModule(input c, input d, output [3:0] mux_in);\n    wire a = c ^ d;\n    wire b = c & d;\n    wire [3:0] mux0_in = {1'b0, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux1_in = {1'b1, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux2_in = {1'b1, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux3_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux_in_unreg [0:3] = '{mux0_in, mux1_in, mux2_in, mux3_in};\n    wire [3:0] mux_in;\n    always @(*) mux_in = mux_in_unreg[{a, b}];\n    assign mux_in = mux_in_unreg[{a, b}];\nendmodule",
+      "rtl_raw_sha256": "1c1614619edaa0382cc9b85802f51162758b5ea6be097060386a5a3650b3f6bd",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob093_ece241_2014_q3_ref.sv:2: syntax error",
+      "raw_completion": "// TopModule, the block diagram top level, implements the K-map.\nmodule TopModule(input c, input d, output [3:0] mux_in);\n    wire a = d ^ c;\n    wire b = ~(d & c);\n    wire [3:0] mux_0_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux_1_in = {a, b, 1'b1, 1'b1};\n    wire [3:0] mux_2_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux_3_in = {a, b, 1'b0, 1'b0};\n    wire [3:0] mux_4_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux_5_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux_6_in = {a, b, 1'b0, 1'b0};\n    wire [3:0] mux_7_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux_8_in = {a, b, 1'b1, 1'b1};\n    wire [3:0] mux_9_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux_10_in = {a, b, 1'b1, 1'b1};\n    wire [3:0] mux_11_in = {a, b, 1'b0, 1'b0};\n    wire [3:0] mux_12_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux_13_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux_14_in = {a, b, 1'b1, 1'b1};\n    wire [3:0] mux_15_in = {a, b, 1'b0, 1'b0};\n    wire [3:0] mux_16_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux_17_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux_18_in = {a, b, 1'b0, 1'b0};\n    wire [3:0] mux_19_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux_20_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux_21_in = {a, b, 1'b1, 1'b1};\n    wire [3:0] mux_22_in = {a, b, 1'b0, 1'b0};\n    wire [3:0] mux_23_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux_24_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux_25_in = {a, b, 1'b1, 1'b1};\n    wire [3:0] mux_26_in = {a, b, 1'b0, 1'b0};\n    wire [3:0] mux_27_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux_28_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux_29_in = {a,",
+      "raw_completion_raw_sha256": "d5a9e859a6bf18773fe32999d582fcded473294b255905f086cd1c6964d8e20b",
+      "rtl": "module TopModule(input c, input d, output [3:0] mux_in);\n    wire a = d ^ c;\n    wire b = ~(d & c);\n    wire [3:0] mux_0_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux_1_in = {a, b, 1'b1, 1'b1};\n    wire [3:0] mux_2_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux_3_in = {a, b, 1'b0, 1'b0};\n    wire [3:0] mux_4_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux_5_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux_6_in = {a, b, 1'b0, 1'b0};\n    wire [3:0] mux_7_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux_8_in = {a, b, 1'b1, 1'b1};\n    wire [3:0] mux_9_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux_10_in = {a, b, 1'b1, 1'b1};\n    wire [3:0] mux_11_in = {a, b, 1'b0, 1'b0};\n    wire [3:0] mux_12_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux_13_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux_14_in = {a, b, 1'b1, 1'b1};\n    wire [3:0] mux_15_in = {a, b, 1'b0, 1'b0};\n    wire [3:0] mux_16_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux_17_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux_18_in = {a, b, 1'b0, 1'b0};\n    wire [3:0] mux_19_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux_20_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux_21_in = {a, b, 1'b1, 1'b1};\n    wire [3:0] mux_22_in = {a, b, 1'b0, 1'b0};\n    wire [3:0] mux_23_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux_24_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux_25_in = {a, b, 1'b1, 1'b1};\n    wire [3:0] mux_26_in = {a, b, 1'b0, 1'b0};\n    wire [3:0] mux_27_in = {a, b, 1'b0, 1'b1};\n    wire [3:0] mux_28_in = {a, b, 1'b1, 1'b0};\n    wire [3:0] mux_29_in = {a,",
+      "rtl_raw_sha256": "225de5c3fc509e3659d32a5bd681479f90a87b18b062d1454bb4288a7f63c1fb",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "60/60 mismatches",
+      "raw_completion": "// One-stage 4-to-1 multiplexer, followed by a cascade of 2-to-1 multiplexers.\n// The final multiplexer is the one that corresponds to the Karnaugh map.\nmodule TopModule (\n    input  c,\n    input  d,\n    output [3:0] mux_in\n);\n    wire a = d;\n    wire b = c;\n    wire [3:0] mux0_in = {a,b,a,b};\n    wire [3:0] mux1_in = {a,b,b,a};\n    wire [3:0] mux2_in = {a,a,b,b};\n    wire [3:0] mux3_in = {b,b,a,a};\n    wire [3:0] mux4_in = {b,b,b,b};\n    wire [3:0] mux_final = {mux0_in[c&d], mux1_in[c&~d], mux2_in[~c&d], mux3_in[~c&~d]};\n    assign mux_in = mux_final;\nendmodule",
+      "raw_completion_raw_sha256": "e8ce0683d6d02dfcb156f70ecc1d21345da911088579f4e7b7f3695bb42b9ed5",
+      "rtl": "module TopModule (\n    input  c,\n    input  d,\n    output [3:0] mux_in\n);\n    wire a = d;\n    wire b = c;\n    wire [3:0] mux0_in = {a,b,a,b};\n    wire [3:0] mux1_in = {a,b,b,a};\n    wire [3:0] mux2_in = {a,a,b,b};\n    wire [3:0] mux3_in = {b,b,a,a};\n    wire [3:0] mux4_in = {b,b,b,b};\n    wire [3:0] mux_final = {mux0_in[c&d], mux1_in[c&~d], mux2_in[~c&d], mux3_in[~c&~d]};\n    assign mux_in = mux_final;\nendmodule",
+      "rtl_raw_sha256": "30b7c3498070ad3acd17fc266b8cfb75070cd676b1144d216c4282b3e240db5d",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: 'mux2to1' has already been declared in this scope.",
+      "raw_completion": "// One-stage 4-to-1 mux, followed by two 2-to-1 muxes, implementing the K-map.\nmodule TopModule(input c, d, output [3:0] mux_in);\n  wire a = c ^ d;\n  wire b = c & d;\n  wire [3:0] mux_in0 = {1'b0, 1'b0, 1'b0, 1'b1};\n  wire [3:0] mux_in1 = {1'b1, 1'b0, 1'b0, 1'b0};\n  wire [3:0] mux_in2 = {1'b1, 1'b0, 1'b1, 1'b1};\n  wire [3:0] mux_in3 = {1'b1, 1'b0, 1'b0, 1'b1};\n  TRANSLUCENT_4TO1_MUX #(.INIT_AS_IDEAL(1)) mux4to1 (a, b, mux_in0, mux_in1, mux_in2, mux_in3, mux_in);\n  wire [3:0] mux_in4 = {mux_in[0], mux_in[1], mux_in[2], mux_in[3]};\n  wire [3:0] mux_in5 = {mux_in[0], mux_in[1], mux_in[2], mux_in[3]};\n  TRANSLUCENT_2TO1_MUX mux2to1 (a, b, mux_in4[0], mux_in5[0]);\n  TRANSLUCENT_2TO1_MUX mux2to1 (a, b, mux_in4[1], mux_in5[1]);\n  TRANSLUCENT_2TO1_MUX mux2to1 (a, b, mux_in4[2], mux_in5[2]);\n  TRANSLUCENT_2TO1_MUX mux2to1 (a, b, mux_in4[3], mux_in5[3]);\nendmodule",
+      "raw_completion_raw_sha256": "550522da1a7751c8e5dfa66d6d430a768963c163b41330ba592fa9df477cdc35",
+      "rtl": "module TopModule(input c, d, output [3:0] mux_in);\n  wire a = c ^ d;\n  wire b = c & d;\n  wire [3:0] mux_in0 = {1'b0, 1'b0, 1'b0, 1'b1};\n  wire [3:0] mux_in1 = {1'b1, 1'b0, 1'b0, 1'b0};\n  wire [3:0] mux_in2 = {1'b1, 1'b0, 1'b1, 1'b1};\n  wire [3:0] mux_in3 = {1'b1, 1'b0, 1'b0, 1'b1};\n  TRANSLUCENT_4TO1_MUX #(.INIT_AS_IDEAL(1)) mux4to1 (a, b, mux_in0, mux_in1, mux_in2, mux_in3, mux_in);\n  wire [3:0] mux_in4 = {mux_in[0], mux_in[1], mux_in[2], mux_in[3]};\n  wire [3:0] mux_in5 = {mux_in[0], mux_in[1], mux_in[2], mux_in[3]};\n  TRANSLUCENT_2TO1_MUX mux2to1 (a, b, mux_in4[0], mux_in5[0]);\n  TRANSLUCENT_2TO1_MUX mux2to1 (a, b, mux_in4[1], mux_in5[1]);\n  TRANSLUCENT_2TO1_MUX mux2to1 (a, b, mux_in4[2], mux_in5[2]);\n  TRANSLUCENT_2TO1_MUX mux2to1 (a, b, mux_in4[3], mux_in5[3]);\nendmodule",
+      "rtl_raw_sha256": "a2413678225374c614cbe4a1decf4fcad198bed2cf4ff60c033301d3adab0c33",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "60/60 mismatches",
+      "raw_completion": "// Karnaugh map, one 4-to-1 and as many 2-to-1s as required (as few as\n// possible) -> explicit, no FULLY expanded multiplexer (4-to-1 + as many\n// 2-to-1s as required, with a_ and b_ as selectors).\nmodule TopModule (\n    input  c,\n    input  d,\n    output [3:0] mux_in\n);\n    wire a = d ^ c;\n    wire b = d & c;\n    wire [3:0] mux0_in = {1'b0, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux1_in = {1'b1, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux2_in = {1'b1, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux3_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux_mux_in = a ? (b ? mux2_in : mux3_in) : (b ? mux1_in : mux0_in);\n    assign mux_in = mux_mux_in;\nendmodule",
+      "raw_completion_raw_sha256": "1d4d0a3be19b8b6f29c63c4124ebc3d7aee006138f5a89c9ee7298a67249b229",
+      "rtl": "module TopModule (\n    input  c,\n    input  d,\n    output [3:0] mux_in\n);\n    wire a = d ^ c;\n    wire b = d & c;\n    wire [3:0] mux0_in = {1'b0, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux1_in = {1'b1, 1'b0, 1'b0, 1'b0};\n    wire [3:0] mux2_in = {1'b1, 1'b0, 1'b1, 1'b1};\n    wire [3:0] mux3_in = {1'b1, 1'b0, 1'b0, 1'b1};\n    wire [3:0] mux_mux_in = a ? (b ? mux2_in : mux3_in) : (b ? mux1_in : mux0_in);\n    assign mux_in = mux_mux_in;\nendmodule",
+      "rtl_raw_sha256": "628520c9f7fcde0a50ff875e87f70eed3c649cd7358f43244e9d1e5395b4469e",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "60/60 mismatches",
+      "raw_completion": "// One-stage 4-to-1 multiplexer, followed by as many 2-to-1 multiplexers as\n// required, to reduce the number of total gates.\nmodule TopModule(input c, input d, output [3:0] mux_in);\n    wire a = c;\n    wire b = d;\n    wire ab00 = a & b;\n    wire ab01 = a & ~b;\n    wire ab11 = ~a & b;\n    wire ab10 = ~a & ~b;\n    wire [3:0] stage1 = {ab00, ab01, ab11, ab10};\n    wire [3:0] stage2 = {stage1[0], stage1[1], stage1[2], stage1[2]};\n    wire [3:0] stage3 = {stage2[0], stage2[1], stage2[2], stage2[2]};\n    assign mux_in = stage3;\nendmodule",
+      "raw_completion_raw_sha256": "e9493b48401224b1ce3a95c8911876278f9200458c263bad8af1aee432f92e59",
+      "rtl": "module TopModule(input c, input d, output [3:0] mux_in);\n    wire a = c;\n    wire b = d;\n    wire ab00 = a & b;\n    wire ab01 = a & ~b;\n    wire ab11 = ~a & b;\n    wire ab10 = ~a & ~b;\n    wire [3:0] stage1 = {ab00, ab01, ab11, ab10};\n    wire [3:0] stage2 = {stage1[0], stage1[1], stage1[2], stage1[2]};\n    wire [3:0] stage3 = {stage2[0], stage2[1], stage2[2], stage2[2]};\n    assign mux_in = stage3;\nendmodule",
+      "rtl_raw_sha256": "5a7086be3f5ec5a35d35b3c680c0a6a00cb44c0e3d1e3e7a2df084b44ebb423c",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "60/60 mismatches",
+      "raw_completion": "// One-to-four multiplexer, followed by two-to-one multiplexers, fully\n// implementing the Karnaugh map. The name \"TopModule\" must match the\n// top-level module name exactly.\nmodule TopModule (\n    input  c,\n    input  d,\n    output [3:0] mux_in\n);\n    wire a = d ^ c;\n    wire b = d & c;\n    wire [3:0] mux_4to1 = {~(a & b), ~(a & ~b), ~(~a & b), ~(~a & ~b)};\n    wire [3:0] mux_2to1 = {mux_4to1[0], mux_4to1[1], mux_4to1[2], mux_4to1[3]};\n    assign mux_in = mux_2to1;\nendmodule",
+      "raw_completion_raw_sha256": "b4b340a5770cd70dc705556fcf5e43dfbfc23842d774b28c6cef78ea2e0d5b73",
+      "rtl": "module TopModule (\n    input  c,\n    input  d,\n    output [3:0] mux_in\n);\n    wire a = d ^ c;\n    wire b = d & c;\n    wire [3:0] mux_4to1 = {~(a & b), ~(a & ~b), ~(~a & b), ~(~a & ~b)};\n    wire [3:0] mux_2to1 = {mux_4to1[0], mux_4to1[1], mux_4to1[2], mux_4to1[3]};\n    assign mux_in = mux_2to1;\nendmodule",
+      "rtl_raw_sha256": "7a653c52744307888903d8a45e07787b4a053a075ce1a2d49b04e11ed4845b02",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "60/60 mismatches",
+      "raw_completion": "// Karnaugh map:\n//      ab\n//  cd  00  01  11  10\n//  00 | 0 | 0 | 0 | 1 |\n//  01 | 1 | 0 | 0 | 0 |\n//  11 | 1 | 0 | 1 | 1 |\n//  10 | 1 | 0 | 0 | 1 |\n//\n// Equivalent Verilog (using as few 2-to-1 multiplexers as possible):\nmodule TopModule(input c, input d, output [3:0] mux_in);\n    wire a = c;\n    wire b = d;\n    wire [3:0] mux0_in = {a, b};\n    wire [3:0] mux1_in = {a, ~b};\n    wire [3:0] mux2_in = {~a, b};\n    wire [3:0] mux3_in = {~a, ~b};\n    wire [3:0] mux4_in = {a & b, a & ~b, ~a & b, ~a & ~b};\n    assign mux_in = mux4_in;\nendmodule",
+      "raw_completion_raw_sha256": "f0609b00e1d3e2d40529c505acad9af1037f6966a9f0c521d0e8ca3742d0f190",
+      "rtl": "module TopModule(input c, input d, output [3:0] mux_in);\n    wire a = c;\n    wire b = d;\n    wire [3:0] mux0_in = {a, b};\n    wire [3:0] mux1_in = {a, ~b};\n    wire [3:0] mux2_in = {~a, b};\n    wire [3:0] mux3_in = {~a, ~b};\n    wire [3:0] mux4_in = {a & b, a & ~b, ~a & b, ~a & ~b};\n    assign mux_in = mux4_in;\nendmodule",
+      "rtl_raw_sha256": "0828838d7419c0f481e2ed0fbd1fbe128e86f919aeb6a3177a99043696163df5",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:23: syntax error",
+      "raw_completion": "// Karnaugh map:\n//      ab\n//  cd  00  01  11  10\n//  00 | 0 | 0 | 0 | 1 |\n//  01 | 1 | 0 | 0 | 0 |\n//  11 | 1 | 0 | 1 | 1 |\n//  10 | 1 | 0 | 0 | 1 |\n// Boolean expression: (c & ~d) | (~c & d) | (~c & ~d) | (c & d)\nmodule TopModule (\n    input c,\n    input d,\n    output [3:0] mux_in\n);\n    wire a = c & ~d;\n    wire b = ~c & d;\n    wire [3:0] mux_in_00_01_11_10 = {a, b, c & d, ~c & ~d};\n    wire b0 = mux_in_00_01_11_10[0];\n    wire b1 = mux_in_00_01_11_10[1];\n    wire b2 = mux_in_00_01_11_10[2];\n    wire b3 = mux_in_00_01_11_10[3];\n    wire a_b = c & d;\n    wire a_nb = ~c & ~d;\n    wire n_a_b = ~a & ~b;\n    wire n_a_nb = ~a & ~b & ~d;\n    wire [3:0] mux_in_combined = {a_b, a_nb, n_a_b, n_a_nb};\n    wire [1:0] sel = {a, b};\n    wire mux_in0 = mux_in_combined[0];\n    wire mux_in1 = mux_in_combined[1];\n    wire mux_in2 = mux_in_combined[2];\n    wire mux_in3 = mux_in_combined[3];\n    assign mux_in = {mux_in0, mux_in1, mux_in2, mux_in3}[sel];\nendmodule",
+      "raw_completion_raw_sha256": "6bdbc4d90248edb50c264f00a1416d6f38efd5705ad0f12433663f984451ec44",
+      "rtl": "module TopModule (\n    input c,\n    input d,\n    output [3:0] mux_in\n);\n    wire a = c & ~d;\n    wire b = ~c & d;\n    wire [3:0] mux_in_00_01_11_10 = {a, b, c & d, ~c & ~d};\n    wire b0 = mux_in_00_01_11_10[0];\n    wire b1 = mux_in_00_01_11_10[1];\n    wire b2 = mux_in_00_01_11_10[2];\n    wire b3 = mux_in_00_01_11_10[3];\n    wire a_b = c & d;\n    wire a_nb = ~c & ~d;\n    wire n_a_b = ~a & ~b;\n    wire n_a_nb = ~a & ~b & ~d;\n    wire [3:0] mux_in_combined = {a_b, a_nb, n_a_b, n_a_nb};\n    wire [1:0] sel = {a, b};\n    wire mux_in0 = mux_in_combined[0];\n    wire mux_in1 = mux_in_combined[1];\n    wire mux_in2 = mux_in_combined[2];\n    wire mux_in3 = mux_in_combined[3];\n    assign mux_in = {mux_in0, mux_in1, mux_in2, mux_in3}[sel];\nendmodule",
+      "rtl_raw_sha256": "239d45715e990f696c158eff8475597037d76f72f6d9c442b3eca36330a3fc38",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: syntax error",
+      "raw_completion": "// Karnaugh map for the function f(c,d) = c'd + c. One-hot -> fully binary\n// chain (short paths -> short time).\nmodule TopModule(input c, d, output [3:0] mux_in);\n  wire a = !c & d;\n  wire b = c;\n  wire [3:0] mux0_in = {a,b};\n  wire [3:0] mux1_in = {a,~b};\n  wire [3:0] mux2_in = {~a,b};\n  wire [3:0] mux3_in = {~a,~b};\n  wire [3:0] mux_in_array [0:3] = {mux0_in, mux1_in, mux2_in, mux3_in};\n  assign mux_in = mux_in_array[{a, b}];\nendmodule",
+      "raw_completion_raw_sha256": "9ee78a259592f42f9feb2e76f709b6ea82d9668f43f24e8a51e9f03f23b9060a",
+      "rtl": "module TopModule(input c, d, output [3:0] mux_in);\n  wire a = !c & d;\n  wire b = c;\n  wire [3:0] mux0_in = {a,b};\n  wire [3:0] mux1_in = {a,~b};\n  wire [3:0] mux2_in = {~a,b};\n  wire [3:0] mux3_in = {~a,~b};\n  wire [3:0] mux_in_array [0:3] = {mux0_in, mux1_in, mux2_in, mux3_in};\n  assign mux_in = mux_in_array[{a, b}];\nendmodule",
+      "rtl_raw_sha256": "ef1f5ed1e3dfc06521d2cc5200a898277fcecdab6cc82e52f85c9caa80d90f26",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: Unknown module type: TRANSDFF_PS",
+      "raw_completion": "// One-stage 4-to-1 multiplexer, plus some 2-to-1s. Same function as the\n// Karnaugh map.\nmodule TopModule(input c, d, output [3:0] mux_in);\n  wire a = c;\n  wire b = d;\n  wire [3:0] mux_in0;\n  wire [3:0] mux_in1;\n  wire [3:0] mux_in2;\n  wire [3:0] mux_in3;\n  assign mux_in0 = 1'b0;\n  assign mux_in1 = 1'b0;\n  assign mux_in2 = 1'b0;\n  assign mux_in3 = 1'b1;\n  TRANSDFF_PS P0(.Q(mux_in[0]), .C(a & b), .CLK(1'b1));\n  TRANSDFF_PS P1(.Q(mux_in[1]), .C(a & ~b), .CLK(1'b1));\n  TRANSDFF_PS P2(.Q(mux_in[2]), .C(~a & b), .CLK(1'b1));\n  TRANSDFF_PS P3(.Q(mux_in[3]), .C(~a & ~b), .CLK(1'b1));\nendmodule",
+      "raw_completion_raw_sha256": "bebe6393d36e630fcbccacae64a2718e84510bce86beac92f0835c6be2d4849b",
+      "rtl": "module TopModule(input c, d, output [3:0] mux_in);\n  wire a = c;\n  wire b = d;\n  wire [3:0] mux_in0;\n  wire [3:0] mux_in1;\n  wire [3:0] mux_in2;\n  wire [3:0] mux_in3;\n  assign mux_in0 = 1'b0;\n  assign mux_in1 = 1'b0;\n  assign mux_in2 = 1'b0;\n  assign mux_in3 = 1'b1;\n  TRANSDFF_PS P0(.Q(mux_in[0]), .C(a & b), .CLK(1'b1));\n  TRANSDFF_PS P1(.Q(mux_in[1]), .C(a & ~b), .CLK(1'b1));\n  TRANSDFF_PS P2(.Q(mux_in[2]), .C(~a & b), .CLK(1'b1));\n  TRANSDFF_PS P3(.Q(mux_in[3]), .C(~a & ~b), .CLK(1'b1));\nendmodule",
+      "rtl_raw_sha256": "749b39b9ba30d9d54872a5267b60eaea414ea97aca49bf62979c1e26e5c3208d",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 11,
+    "fail": 9
+  },
+  "testbench_raw_sha256": "0ddb80595db2eab28594494a88d258da49e2ed89568536291b4e32edc8798f01",
+  "training_seed": 2
+}

@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob106_always_nolatches",
+  "problem_seed": 223882395459214799,
+  "prompt_raw_sha256": "bca22f47f123f3faafed3372bcec4a5b76e84327375f34464b75746479ac22d6",
+  "reference_raw_sha256": "c224ca40684f97dd739096b361e1d85155a07ae5faf9548c12575d6f0f347ad6",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "<TMP>/candidate.sv:12: warning: ignoring out of bounds l-value array access last2[2].",
+      "raw_completion": "// One-bit register chain, followed by a case statement to implement the\n// function. All registers are named, which makes it easier to verify the\n// register transfer function (the next stage is a combinational function,\n// not a register chain).\nmodule TopModule(\n  input [15:0] scancode,\n  output reg left,\n  output reg down,\n  output reg right,\n  output reg up\n);\n  reg [15:0] last2 [0:1];\n  integer i;\n  always @(*) begin\n    for (i = 0; i < 2; i = i + 1) last2[i] <= last2[i+1];\n    last2[2] <= scancode;\n    case (last2)\n      16'he06b: begin left <= 1; down <= 0; right <= 0; up <= 0; end // left\n      16'he072: begin left <= 0; down <= 1; right <= 0; up <= 0; end // down\n      16'he074: begin left <= 0; down <= 0; right <= 1; up <= 0; end // right\n      16'he075: begin left <= 0; down <= 0; right <= 0; up <= 1; end // up\n      default: begin left <= 0; down <= 0; right <= 0; up <= 0; end // none\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "17785e8c149cd670a15797bfc0f3e5747710bb9c8adca5551b0d3ca06c85b5df",
+      "rtl": "module TopModule(\n  input [15:0] scancode,\n  output reg left,\n  output reg down,\n  output reg right,\n  output reg up\n);\n  reg [15:0] last2 [0:1];\n  integer i;\n  always @(*) begin\n    for (i = 0; i < 2; i = i + 1) last2[i] <= last2[i+1];\n    last2[2] <= scancode;\n    case (last2)\n      16'he06b: begin left <= 1; down <= 0; right <= 0; up <= 0; end // left\n      16'he072: begin left <= 0; down <= 1; right <= 0; up <= 0; end // down\n      16'he074: begin left <= 0; down <= 0; right <= 1; up <= 0; end // right\n      16'he075: begin left <= 0; down <= 0; right <= 0; up <= 1; end // up\n      default: begin left <= 0; down <= 0; right <= 0; up <= 0; end // none\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "2b9b5b5afa5936ac84cd225c7bc8c140d89ed08df68cfd63d56e437181043d62",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:14: error: Array last2 needs an array index here.",
+      "raw_completion": "// One-bit PS/2 keyboard arrow key decoder\nmodule TopModule(\n  input  [15:0] scancode,\n  output left,\n  output down,\n  output right,\n  output up\n);\n  reg [15:0] last2 [0:1];\n  always @(*) begin\n    last2[0] = scancode;\n    last2[1] = last2[0];\n  end\n  always @(*) begin\n    case (last2)\n      16'he06b: begin left = 1; down = 0; right = 0; up = 0; end // left\n      16'he072: begin left = 0; down = 1; right = 0; up = 0; end // down\n      16'he074: begin left = 0; down = 0; right = 1; up = 0; end // right\n      16'he075: begin left = 0; down = 0; right = 0; up = 1; end // up\n      default: begin left = 0; down = 0; right = 0; up = 0; end // none\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "bb0f7d7c0654cd19e3856d9e16ccffff5ef00f7abd7fddac06beb93ddc34d7ea",
+      "rtl": "module TopModule(\n  input  [15:0] scancode,\n  output left,\n  output down,\n  output right,\n  output up\n);\n  reg [15:0] last2 [0:1];\n  always @(*) begin\n    last2[0] = scancode;\n    last2[1] = last2[0];\n  end\n  always @(*) begin\n    case (last2)\n      16'he06b: begin left = 1; down = 0; right = 0; up = 0; end // left\n      16'he072: begin left = 0; down = 1; right = 0; up = 0; end // down\n      16'he074: begin left = 0; down = 0; right = 1; up = 0; end // right\n      16'he075: begin left = 0; down = 0; right = 0; up = 1; end // up\n      default: begin left = 0; down = 0; right = 0; up = 0; end // none\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "52749fa03c5cd202ca01d934460b24225774125060ca279603d2867b7fcf53ff",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:11: error: left is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(\n    input [15:0] scancode,\n    output left,\n    output down,\n    output right,\n    output up\n);\n    reg [15:0] last_two;\n    always @(scancode) last_two = {scancode, last_two[15:1]};\n    always @(*) begin\n        left = 0;\n        down = 0;\n        right = 0;\n        up = 0;\n        case (last_two)\n            16'he06b: left = 1;\n            16'he072: down = 1;\n            16'he074: right = 1;\n            16'he075: up = 1;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "68f46d1ac52bb926437c64f9c14c156af55c513e7ae1e5484594b1215913088e",
+      "rtl": "module TopModule(\n    input [15:0] scancode,\n    output left,\n    output down,\n    output right,\n    output up\n);\n    reg [15:0] last_two;\n    always @(scancode) last_two = {scancode, last_two[15:1]};\n    always @(*) begin\n        left = 0;\n        down = 0;\n        right = 0;\n        up = 0;\n        case (last_two)\n            16'he06b: left = 1;\n            16'he072: down = 1;\n            16'he074: right = 1;\n            16'he075: up = 1;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "68f46d1ac52bb926437c64f9c14c156af55c513e7ae1e5484594b1215913088e",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "4/30020 mismatches",
+      "raw_completion": "// One-bit PS/2 keyboard scancode to arrow key decoder\nmodule TopModule(\n    input  [15:0] scancode,\n    output reg left,\n    output reg down,\n    output reg right,\n    output reg up\n);\n    always @(*) begin\n        case (scancode)\n            16'he06b: left = 1;\n            16'he072: down = 1;\n            16'he074: right = 1;\n            16'he075: up = 1;\n            default: begin left = 0; down = 0; right = 0; up = 0; end\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b80b5b9cbf6d357632067a3621623c2dbce02be8877c63b32fdb55911a7b0703",
+      "rtl": "module TopModule(\n    input  [15:0] scancode,\n    output reg left,\n    output reg down,\n    output reg right,\n    output reg up\n);\n    always @(*) begin\n        case (scancode)\n            16'he06b: left = 1;\n            16'he072: down = 1;\n            16'he074: right = 1;\n            16'he075: up = 1;\n            default: begin left = 0; down = 0; right = 0; up = 0; end\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "41b9b0e0cd56889da75bfc0d6e5b226a70925384d74762867a21ee87f9c8d06a",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: error: Unable to bind wire/reg/memory `clk' in `tb.top_module1'",
+      "raw_completion": "// A one-bit synchronous circuit that decides whether one of the four arrow\n// keys have been pressed, given the last two bytes of a PS/2 scancode.\nmodule TopModule(\n  input [15:0] scancode,\n  output left,\n  output down,\n  output right,\n  output up\n);\n  reg [15:0] last_scancode;\n  reg [15:0] last_last_scancode;\n  always @(posedge clk) begin\n    last_last_scancode <= last_scancode;\n    last_scancode <= scancode;\n  end\n  always @(*) begin\n    left = 0;\n    down = 0;\n    right = 0;\n    up = 0;\n    if (last_last_scancode == 16'he06b && last_scancode == 16'he073) left = 1;\n    if (last_last_scancode == 16'he072 && last_scancode == 16'he073) down = 1;\n    if (last_last_scancode == 16'he074 && last_scancode == 16'he073) right = 1;\n    if (last_last_scancode == 16'he075 && last_scancode == 16'he073) up = 1;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "fd4f3a7209968584022cee2215902e4c83ca9cee0e080788f5efacc23e2fad6a",
+      "rtl": "module TopModule(\n  input [15:0] scancode,\n  output left,\n  output down,\n  output right,\n  output up\n);\n  reg [15:0] last_scancode;\n  reg [15:0] last_last_scancode;\n  always @(posedge clk) begin\n    last_last_scancode <= last_scancode;\n    last_scancode <= scancode;\n  end\n  always @(*) begin\n    left = 0;\n    down = 0;\n    right = 0;\n    up = 0;\n    if (last_last_scancode == 16'he06b && last_scancode == 16'he073) left = 1;\n    if (last_last_scancode == 16'he072 && last_scancode == 16'he073) down = 1;\n    if (last_last_scancode == 16'he074 && last_scancode == 16'he073) right = 1;\n    if (last_last_scancode == 16'he075 && last_scancode == 16'he073) up = 1;\n  end\nendmodule",
+      "rtl_raw_sha256": "5f2772d2f0335454a8548925a4db75ff84b39e70526c5577f68daa645147ee43",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:14: warning: Numeric constant truncated to 2 bits.",
+      "raw_completion": "// One-bit synchronous-reset FIFO, from Chong-Wah Ng (nxp)\nmodule TopModule(\n    input [15:0] scancode,\n    output left,\n    output down,\n    output right,\n    output up\n);\n    reg [15:0] fifo [0:3];\n    reg [1:0] head = 2'd0;\n    reg [1:0] tail = 2'd0;\n    reg [1:0] count = 2'd0;\n    wire [15:0] next_scancode = fifo[head];\n    reg [1:0] next_tail = tail + 2'd1;\n    wire full = (count == 2'd4);\n    wire empty = (count == 2'd0);\n    always @(posedge clk) begin\n        if (rst) begin\n            head <= 2'd0;\n            tail <= 2'd0;\n            count <= 2'd0;\n        end else begin\n            if (!full) begin\n                fifo[head] <= scancode;\n                head <= head + 2'd1;\n                count <= count + 2'd1;\n            end\n            if (!empty) begin\n                tail <= next_tail;\n                count <= count - 2'd1;\n            end\n        end\n    end\n    always @(*) begin\n        case (next_scancode)\n            16'he06b: begin left <= 1; down <= 0; right <= 0; up <= 0; end // left\n            16'he072: begin left <= 0; down <= 1; right <= 0; up <= 0; end // down\n            16'he074: begin left <= 0; down <= 0; right <= 1; up <= 0; end // right\n            16'he075: begin left <= 0; down <= 0; right <= 0; up <= 1; end // up\n            default: begin left <= 0; down <= 0; right <= 0; up <= 0; end // none\n        endcase\n    end\n    reg clk = 0;\n    always #1 clk = ~clk;\n    initial #1000 $finish;\nendmodule",
+      "raw_completion_raw_sha256": "6da0b2593519c94c722f182d32adb6bda10a8ae639c344596391d3dd89fdc662",
+      "rtl": "module TopModule(\n    input [15:0] scancode,\n    output left,\n    output down,\n    output right,\n    output up\n);\n    reg [15:0] fifo [0:3];\n    reg [1:0] head = 2'd0;\n    reg [1:0] tail = 2'd0;\n    reg [1:0] count = 2'd0;\n    wire [15:0] next_scancode = fifo[head];\n    reg [1:0] next_tail = tail + 2'd1;\n    wire full = (count == 2'd4);\n    wire empty = (count == 2'd0);\n    always @(posedge clk) begin\n        if (rst) begin\n            head <= 2'd0;\n            tail <= 2'd0;\n            count <= 2'd0;\n        end else begin\n            if (!full) begin\n                fifo[head] <= scancode;\n                head <= head + 2'd1;\n                count <= count + 2'd1;\n            end\n            if (!empty) begin\n                tail <= next_tail;\n                count <= count - 2'd1;\n            end\n        end\n    end\n    always @(*) begin\n        case (next_scancode)\n            16'he06b: begin left <= 1; down <= 0; right <= 0; up <= 0; end // left\n            16'he072: begin left <= 0; down <= 1; right <= 0; up <= 0; end // down\n            16'he074: begin left <= 0; down <= 0; right <= 1; up <= 0; end // right\n            16'he075: begin left <= 0; down <= 0; right <= 0; up <= 1; end // up\n            default: begin left <= 0; down <= 0; right <= 0; up <= 0; end // none\n        endcase\n    end\n    reg clk = 0;\n    always #1 clk = ~clk;\n    initial #1000 $finish;\nendmodule",
+      "rtl_raw_sha256": "119dd4b62dc371e761d086c36053c266182299c5ab8065d7e33ca12f9f558441",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: syntax error",
+      "raw_completion": "// Simple PS/2 keyboard scan code to arrow key decoder.\nmodule TopModule(\n    input [15:0] scancode,\n    output reg left,\n    output reg down,\n    output reg right,\n    output reg up\n);\n    always @(*) begin\n        case (scancode)\n            16'he06b: left = 1; down = 0; right = 0; up = 0;\n            16'he072: left = 0; down = 1; right = 0; up = 0;\n            16'he074: left = 0; down = 0; right = 1; up = 0;\n            16'he075: left = 0; down = 0; right = 0; up = 1;\n            default:  left = 0; down = 0; right = 0; up = 0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "c419c4331308075c8d48059a71df0355fef5bd24a3eb17c839fcbf8e26e85b88",
+      "rtl": "module TopModule(\n    input [15:0] scancode,\n    output reg left,\n    output reg down,\n    output reg right,\n    output reg up\n);\n    always @(*) begin\n        case (scancode)\n            16'he06b: left = 1; down = 0; right = 0; up = 0;\n            16'he072: left = 0; down = 1; right = 0; up = 0;\n            16'he074: left = 0; down = 0; right = 1; up = 0;\n            16'he075: left = 0; down = 0; right = 0; up = 1;\n            default:  left = 0; down = 0; right = 0; up = 0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "4b862f027843952ce2e6fb4230f2243cb31a5131f21fd631d82f301bede442b4",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: syntax error",
+      "raw_completion": "// One-bit keyboard arrow key decoder, implemented as a case statement\nmodule TopModule(input [15:0] scancode, output reg left, down, right, up);\n  always @(*) begin\n    case (scancode)\n      16'he06b: left = 1;\n      16'he072: down = 1;\n      16'he074: right = 1;\n      16'he075: up = 1;\n      default: left = down = right = up = 0;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "d3a210a211e9ccaf08254b611d597f276493cc88b03b3b37ba1e37942b6a8869",
+      "rtl": "module TopModule(input [15:0] scancode, output reg left, down, right, up);\n  always @(*) begin\n    case (scancode)\n      16'he06b: left = 1;\n      16'he072: down = 1;\n      16'he074: right = 1;\n      16'he075: up = 1;\n      default: left = down = right = up = 0;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "32198fa5eaaec49c68f7db83b0529d8d9d0c42651194f204c82856427a095958",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "11/30020 mismatches",
+      "raw_completion": "// One-bit register chain, with feedback to the input, creates an unstable\n// long-delay chain that can be broken by adding a tiny delay to each register\n// stage. This gives the illusion of a long delay, independent of the register\n// chain length.\nmodule TopModule(input [15:0] scancode, output reg left, down, right, up);\n    reg [15:0] last_two;\n    always @(posedge scancode) last_two <= {scancode, last_two[15:1]};\n    always @(*) begin\n        left <= 1'b0; down <= 1'b0; right <= 1'b0; up <= 1'b0;\n        case(last_two)\n            16'he06b: left <= 1'b1;\n            16'he072: down <= 1'b1;\n            16'he074: right <= 1'b1;\n            16'he075: up <= 1'b1;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b41ac2b7becf732e40fa2c200404fa03269fcbd8c4e8b0589eca201ac472561d",
+      "rtl": "module TopModule(input [15:0] scancode, output reg left, down, right, up);\n    reg [15:0] last_two;\n    always @(posedge scancode) last_two <= {scancode, last_two[15:1]};\n    always @(*) begin\n        left <= 1'b0; down <= 1'b0; right <= 1'b0; up <= 1'b0;\n        case(last_two)\n            16'he06b: left <= 1'b1;\n            16'he072: down <= 1'b1;\n            16'he074: right <= 1'b1;\n            16'he075: up <= 1'b1;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "851308104d163d4d938a3acc38160ddd8808aa7695202fd73392b2077205b090",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input [15:0] scancode,\n    output left,\n    output down,\n    output right,\n    output up\n);\n    wire [15:0] sc = scancode;\n    reg left_r, down_r, right_r, up_r;\n    always @(*) begin\n        case (sc)\n            16'he06b: begin left_r = 1; down_r = 0; right_r = 0; up_r = 0; end\n            16'he072: begin left_r = 0; down_r = 1; right_r = 0; up_r = 0; end\n            16'he074: begin left_r = 0; down_r = 0; right_r = 1; up_r = 0; end\n            16'he075: begin left_r = 0; down_r = 0; right_r = 0; up_r = 1; end\n            default: begin left_r = 0; down_r = 0; right_r = 0; up_r = 0; end\n        endcase\n    end\n    assign left = left_r;\n    assign down = down_r;\n    assign right = right_r;\n    assign up = up_r;\nendmodule",
+      "raw_completion_raw_sha256": "d3151cdb324adb8bb6bc6d812290a42033abe3dccc12360a8e72e90a436f54e7",
+      "rtl": "module TopModule (\n    input [15:0] scancode,\n    output left,\n    output down,\n    output right,\n    output up\n);\n    wire [15:0] sc = scancode;\n    reg left_r, down_r, right_r, up_r;\n    always @(*) begin\n        case (sc)\n            16'he06b: begin left_r = 1; down_r = 0; right_r = 0; up_r = 0; end\n            16'he072: begin left_r = 0; down_r = 1; right_r = 0; up_r = 0; end\n            16'he074: begin left_r = 0; down_r = 0; right_r = 1; up_r = 0; end\n            16'he075: begin left_r = 0; down_r = 0; right_r = 0; up_r = 1; end\n            default: begin left_r = 0; down_r = 0; right_r = 0; up_r = 0; end\n        endcase\n    end\n    assign left = left_r;\n    assign down = down_r;\n    assign right = right_r;\n    assign up = up_r;\nendmodule",
+      "rtl_raw_sha256": "d3151cdb324adb8bb6bc6d812290a42033abe3dccc12360a8e72e90a436f54e7",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit PS/2 arrow key detector, built as a combinational function.\nmodule TopModule(\n  input  [15:0] scancode,\n  output reg    left,\n  output reg    down,\n  output reg    right,\n  output reg    up\n);\n  always @(*) begin\n    case (scancode)\n      16'he06b: begin left = 1; down = 0; right = 0; up = 0; end\n      16'he072: begin left = 0; down = 1; right = 0; up = 0; end\n      16'he074: begin left = 0; down = 0; right = 1; up = 0; end\n      16'he075: begin left = 0; down = 0; right = 0; up = 1; end\n      default:  begin left = 0; down = 0; right = 0; up = 0; end\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "bee84a97834c6f966b04d3cebc8479febf72d636236da45a0a05ba2c79ee67fd",
+      "rtl": "module TopModule(\n  input  [15:0] scancode,\n  output reg    left,\n  output reg    down,\n  output reg    right,\n  output reg    up\n);\n  always @(*) begin\n    case (scancode)\n      16'he06b: begin left = 1; down = 0; right = 0; up = 0; end\n      16'he072: begin left = 0; down = 1; right = 0; up = 0; end\n      16'he074: begin left = 0; down = 0; right = 1; up = 0; end\n      16'he075: begin left = 0; down = 0; right = 0; up = 1; end\n      default:  begin left = 0; down = 0; right = 0; up = 0; end\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "6dd8db7ce9760ccbed1022fa5b6a795c6357b957fac2377e2481ad38c0cb85cd",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: No function named `inline_func' found in this context (tb.top_module1).",
+      "raw_completion": "// One-bit registerless combinational circuit, implemented as a case\n// statement (or if-elseif chain). The @(*) inline sensitivity list\n// triggers the function on every change of the inputs, equivalent to\n// the Verilog inline sensitivity inline_func.\nfunction [3:0] inline_func (input [15:0] scancode, input [15:0] last_scancodes);\n    case ({scancode, last_scancodes})\n        16'he06b16'he06b:   4'b0001;\n        16'he07216'he06b:   4'b0010;\n        16'he07416'he06b:   4'b0100;\n        16'he07516'he06b:   4'b1000;\n        default:            4'b0000;\n    endcase\nendfunction\n\nmodule TopModule (\n    input [15:0] scancode,\n    output reg left,\n    output reg down,\n    output reg right,\n    output reg up\n);\n    reg [15:0] last_scancodes [0:1];\n    always @(*) begin\n        last_scancodes[0] <= scancode;\n        last_scancodes[1] <= last_scancodes[0];\n        {left, down, right, up} = inline_func(scancode, last_scancodes[1]);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "099d9fc9b0e7db33a30eaa3fe25470e3a9d5c84e2428cb4cf8dfb9478d842116",
+      "rtl": "module TopModule (\n    input [15:0] scancode,\n    output reg left,\n    output reg down,\n    output reg right,\n    output reg up\n);\n    reg [15:0] last_scancodes [0:1];\n    always @(*) begin\n        last_scancodes[0] <= scancode;\n        last_scancodes[1] <= last_scancodes[0];\n        {left, down, right, up} = inline_func(scancode, last_scancodes[1]);\n    end\nendmodule",
+      "rtl_raw_sha256": "2d32c90e60a9fa013823661945d769f7bf23e8b264e54fe97eabb547747d6e5b",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:3: error: Unable to bind wire/reg/memory `clk' in `tb.top_module1'",
+      "raw_completion": "// One-bit arrow key circuit for the PS/2 keyboard game\nmodule TopModule(input [15:0] scancode, output left, down, right, up);\n    reg [15:0] last2;\n    always @(posedge clk) last2 <= scancode;\n    always @(*) begin\n        left = 0; down = 0; right = 0; up = 0;\n        case ({scancode, last2})\n            16'he06b: left = 1;\n            16'he072: down = 1;\n            16'he074: right = 1;\n            16'he075: up = 1;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "77a5c95218cba4c1265b37a491365ca5aa5f02ffee77f57c90b2d061459aa7a0",
+      "rtl": "module TopModule(input [15:0] scancode, output left, down, right, up);\n    reg [15:0] last2;\n    always @(posedge clk) last2 <= scancode;\n    always @(*) begin\n        left = 0; down = 0; right = 0; up = 0;\n        case ({scancode, last2})\n            16'he06b: left = 1;\n            16'he072: down = 1;\n            16'he074: right = 1;\n            16'he075: up = 1;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "b63ab596ffff93f64c78abf1898e7f32cb085f7076977efded04f7b7333eb904",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: 'left' has already been declared in this scope.",
+      "raw_completion": "module TopModule (\n    input [15:0] scancode,\n    output left,\n    output down,\n    output right,\n    output up\n);\n    reg left, down, right, up;\n    always @(*) begin\n        case (scancode)\n            16'he06b: left = 1; down = 0; right = 0; up = 0;\n            16'he072: left = 0; down = 1; right = 0; up = 0;\n            16'he074: left = 0; down = 0; right = 1; up = 0;\n            16'he075: left = 0; down = 0; right = 0; up = 1;\n            default: left = 0; down = 0; right = 0; up = 0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "943c98f76b329f84cb0eca7a38d57f1a8cfac67662046532b984888f24c88276",
+      "rtl": "module TopModule (\n    input [15:0] scancode,\n    output left,\n    output down,\n    output right,\n    output up\n);\n    reg left, down, right, up;\n    always @(*) begin\n        case (scancode)\n            16'he06b: left = 1; down = 0; right = 0; up = 0;\n            16'he072: left = 0; down = 1; right = 0; up = 0;\n            16'he074: left = 0; down = 0; right = 1; up = 0;\n            16'he075: left = 0; down = 0; right = 0; up = 1;\n            default: left = 0; down = 0; right = 0; up = 0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "943c98f76b329f84cb0eca7a38d57f1a8cfac67662046532b984888f24c88276",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: error: Unable to bind wire/reg/memory `clk' in `tb.top_module1'",
+      "raw_completion": "// One-bit wide synchronous register chain, with an extra stage at the end to\n// reduce register-to-register path delay.\nmodule TopModule(\n  input  [15:0] scancode,\n  output reg    left,\n  output reg    down,\n  output reg    right,\n  output reg    up\n);\n  reg [15:0] scancode_d1;\n  reg [15:0] scancode_d2;\n  always @(posedge clk) begin\n    scancode_d1 <= scancode;\n    scancode_d2 <= scancode_d1;\n    case (scancode_d2)\n      16'he06b: left <= 1;\n      16'he072: down <= 1;\n      16'he074: right <= 1;\n      16'he075: up <= 1;\n      default: begin left <= 0; down <= 0; right <= 0; up <= 0; end\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "87aadf49f4078ca3f308a7dfb8b87539542480ed6ac80a0a47bf49ce6211a6ae",
+      "rtl": "module TopModule(\n  input  [15:0] scancode,\n  output reg    left,\n  output reg    down,\n  output reg    right,\n  output reg    up\n);\n  reg [15:0] scancode_d1;\n  reg [15:0] scancode_d2;\n  always @(posedge clk) begin\n    scancode_d1 <= scancode;\n    scancode_d2 <= scancode_d1;\n    case (scancode_d2)\n      16'he06b: left <= 1;\n      16'he072: down <= 1;\n      16'he074: right <= 1;\n      16'he075: up <= 1;\n      default: begin left <= 0; down <= 0; right <= 0; up <= 0; end\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "1914a7dd4febb8d1bce661cf6c858d0fbe8d72ecd20c9b260e90f509ce1ae6a2",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:14: error: Array last_scancodes needs an array index here.",
+      "raw_completion": "// Simple PS/2 scancode to arrow key decoder\nmodule TopModule(\n    input [15:0] scancode,\n    output left,\n    output down,\n    output right,\n    output up\n);\n    reg [15:0] last_scancodes [1:2];\n    always @(*) begin\n        last_scancodes[1] = scancode;\n        last_scancodes[2] = last_scancodes[1];\n    end\n    always @(*) begin\n        case (last_scancodes)\n            16'he06b: begin left = 1; down = 0; right = 0; up = 0; end // left\n            16'he072: begin left = 0; down = 1; right = 0; up = 0; end // down\n            16'he074: begin left = 0; down = 0; right = 1; up = 0; end // right\n            16'he075: begin left = 0; down = 0; right = 0; up = 1; end // up\n            default: begin left = 0; down = 0; right = 0; up = 0; end // none\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "19370dec48c6377713f9b28379a24b968a77bc9f848fc8291d0f4957f7402703",
+      "rtl": "module TopModule(\n    input [15:0] scancode,\n    output left,\n    output down,\n    output right,\n    output up\n);\n    reg [15:0] last_scancodes [1:2];\n    always @(*) begin\n        last_scancodes[1] = scancode;\n        last_scancodes[2] = last_scancodes[1];\n    end\n    always @(*) begin\n        case (last_scancodes)\n            16'he06b: begin left = 1; down = 0; right = 0; up = 0; end // left\n            16'he072: begin left = 0; down = 1; right = 0; up = 0; end // down\n            16'he074: begin left = 0; down = 0; right = 1; up = 0; end // right\n            16'he075: begin left = 0; down = 0; right = 0; up = 1; end // up\n            default: begin left = 0; down = 0; right = 0; up = 0; end // none\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "5c9be7523da4618378d0e874aa999285aa152287abd0f070d8ead243fe826581",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: left is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(input [15:0] scancode, output left, down, right, up);\n    reg [15:0] last_scancodes [0:1];\n    reg [1:0] index;\n    always @(*) begin\n        last_scancodes[0] = scancode;\n        last_scancodes[1] = last_scancodes[0];\n        index = 1;\n        left = 0;\n        down = 0;\n        right = 0;\n        up = 0;\n        case (last_scancodes[index])\n            16'he06b: left = 1;\n            16'he072: down = 1;\n            16'he074: right = 1;\n            16'he075: up = 1;\n        endcase\n        index = index - 1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "e5cf91009916e81418dc6b01dfd145bb0a55ae959438f7b0d7b89605bb4ea33a",
+      "rtl": "module TopModule(input [15:0] scancode, output left, down, right, up);\n    reg [15:0] last_scancodes [0:1];\n    reg [1:0] index;\n    always @(*) begin\n        last_scancodes[0] = scancode;\n        last_scancodes[1] = last_scancodes[0];\n        index = 1;\n        left = 0;\n        down = 0;\n        right = 0;\n        up = 0;\n        case (last_scancodes[index])\n            16'he06b: left = 1;\n            16'he072: down = 1;\n            16'he074: right = 1;\n            16'he075: up = 1;\n        endcase\n        index = index - 1;\n    end\nendmodule",
+      "rtl_raw_sha256": "e5cf91009916e81418dc6b01dfd145bb0a55ae959438f7b0d7b89605bb4ea33a",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: error: 'left' has already been declared in this scope.",
+      "raw_completion": "// One-bit TopModule for the PS/2 keyboard arrow key detection\nmodule TopModule (\n    input  [15:0] scancode,\n    output left,\n    output down,\n    output right,\n    output up\n);\n    reg [15:0] last_scancode;\n    reg [15:0] last_scancode2;\n    reg left, down, right, up;\n    always @(*) begin\n        last_scancode2 = last_scancode;\n        last_scancode = scancode;\n        left = 0;\n        down = 0;\n        right = 0;\n        up = 0;\n        case ({last_scancode, last_scancode2})\n            16'he06b: left = 1;\n            16'he072: down = 1;\n            16'he074: right = 1;\n            16'he075: up = 1;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b2bf339333e04768f9a7b5bbb1580569aa13ec0ce6558004e2ab099d04f5bfaa",
+      "rtl": "module TopModule (\n    input  [15:0] scancode,\n    output left,\n    output down,\n    output right,\n    output up\n);\n    reg [15:0] last_scancode;\n    reg [15:0] last_scancode2;\n    reg left, down, right, up;\n    always @(*) begin\n        last_scancode2 = last_scancode;\n        last_scancode = scancode;\n        left = 0;\n        down = 0;\n        right = 0;\n        up = 0;\n        case ({last_scancode, last_scancode2})\n            16'he06b: left = 1;\n            16'he072: down = 1;\n            16'he074: right = 1;\n            16'he075: up = 1;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "0cf837a638b31d2d59171eef42712f293443695bc69790fdd3f8a1d529ba2ccd",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: System function $past not defined in system table or SFT file(s).",
+      "raw_completion": "// One-bit PS/2 keyboard scancode to arrow key decoder. This is a\n// combinational circuit: it computes the output directly from the\n// input, without any clocking or latency.\nmodule TopModule(\n    input [15:0] scancode,\n    output left,\n    output down,\n    output right,\n    output up\n);\n    wire [15:0] scancode_last2 = scancode;\n    wire [15:0] scancode_last1 = $past(scancode_last2, 1);\n    wire [15:0] scancode_last0 = $past(scancode_last1, 1);\n    reg [15:0] scancode_last [0:2];\n    always @(*) begin\n        scancode_last [0] = scancode;\n        scancode_last [1] = scancode_last0;\n        scancode_last [2] = scancode_last1;\n    end\n    reg [15:0] scancode_last3 = scancode_last[0];\n    reg [15:0] scancode_last4 = scancode_last[1];\n    reg [15:0] scancode_last5 = scancode_last[2];\n    always @(*) begin\n        case (scancode_last3)\n            16'he06b: begin left = 1; down = 0; right = 0; up = 0; end\n            16'he072: begin left = 0; down = 1; right = 0; up = 0; end\n            16'he074: begin left = 0; down = 0; right = 1; up = 0; end\n            16'he075: begin left = 0; down = 0; right = 0; up = 1; end\n            default: begin left = 0; down = 0; right = 0; up = 0; end\n        endcase\n    end\n    always @(*) begin\n        case (scancode_last4)\n            16'he06b: begin left = 1; down = 0; right = 0; up = 0; end\n            16'he072: begin left = 0; down = 1; right = 0; up = 0; end\n            16'he074: begin left = 0; down = 0; right = 1; up = 0; end\n            16'he075: begin left = 0; down = 0; right = 0; up = 1; end\n            default: begin left = 0; down = 0; right = 0; up = 0; end\n        endcase\n    end\n    always @(*) begin\n        case (scancode_last5)\n            16'he06b: begin left = 1; down = 0; right = 0; up = 0; end\n            16'he072: begin left = 0; down = 1; right = 0; up = 0; end\n            16'he074: begin left = 0; down = 0; right = 1; up = 0; end\n            16'he075: begin left = 0; down = 0; right = 0; up = 1; end\n            default: begin left = 0; down = 0; right = 0; up = 0; end\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "76a786af42865e43f4b729390feb1468d11854a5a0c91e999e0611fae4cf75c5",
+      "rtl": "module TopModule(\n    input [15:0] scancode,\n    output left,\n    output down,\n    output right,\n    output up\n);\n    wire [15:0] scancode_last2 = scancode;\n    wire [15:0] scancode_last1 = $past(scancode_last2, 1);\n    wire [15:0] scancode_last0 = $past(scancode_last1, 1);\n    reg [15:0] scancode_last [0:2];\n    always @(*) begin\n        scancode_last [0] = scancode;\n        scancode_last [1] = scancode_last0;\n        scancode_last [2] = scancode_last1;\n    end\n    reg [15:0] scancode_last3 = scancode_last[0];\n    reg [15:0] scancode_last4 = scancode_last[1];\n    reg [15:0] scancode_last5 = scancode_last[2];\n    always @(*) begin\n        case (scancode_last3)\n            16'he06b: begin left = 1; down = 0; right = 0; up = 0; end\n            16'he072: begin left = 0; down = 1; right = 0; up = 0; end\n            16'he074: begin left = 0; down = 0; right = 1; up = 0; end\n            16'he075: begin left = 0; down = 0; right = 0; up = 1; end\n            default: begin left = 0; down = 0; right = 0; up = 0; end\n        endcase\n    end\n    always @(*) begin\n        case (scancode_last4)\n            16'he06b: begin left = 1; down = 0; right = 0; up = 0; end\n            16'he072: begin left = 0; down = 1; right = 0; up = 0; end\n            16'he074: begin left = 0; down = 0; right = 1; up = 0; end\n            16'he075: begin left = 0; down = 0; right = 0; up = 1; end\n            default: begin left = 0; down = 0; right = 0; up = 0; end\n        endcase\n    end\n    always @(*) begin\n        case (scancode_last5)\n            16'he06b: begin left = 1; down = 0; right = 0; up = 0; end\n            16'he072: begin left = 0; down = 1; right = 0; up = 0; end\n            16'he074: begin left = 0; down = 0; right = 1; up = 0; end\n            16'he075: begin left = 0; down = 0; right = 0; up = 1; end\n            default: begin left = 0; down = 0; right = 0; up = 0; end\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "8f381b424b74c399f681b26c1e30027461e2fd3ffc6bd625c861a027ee72d857",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n  input  [15:0] scancode,\n  output left,\n  output down,\n  output right,\n  output up\n);\n  reg left_reg, down_reg, right_reg, up_reg;\n  always @(*) begin\n    case (scancode)\n      16'he06b: begin left_reg = 1; down_reg = 0; right_reg = 0; up_reg = 0; end\n      16'he072: begin left_reg = 0; down_reg = 1; right_reg = 0; up_reg = 0; end\n      16'he074: begin left_reg = 0; down_reg = 0; right_reg = 1; up_reg = 0; end\n      16'he075: begin left_reg = 0; down_reg = 0; right_reg = 0; up_reg = 1; end\n      default:  begin left_reg = 0; down_reg = 0; right_reg = 0; up_reg = 0; end\n    endcase\n  end\n  assign left = left_reg;\n  assign down = down_reg;\n  assign right = right_reg;\n  assign up = up_reg;\nendmodule",
+      "raw_completion_raw_sha256": "9f5140234e7738c9cb5adf081f4e12fd08fbf85e1c8ec3299be4292664c47ff3",
+      "rtl": "module TopModule (\n  input  [15:0] scancode,\n  output left,\n  output down,\n  output right,\n  output up\n);\n  reg left_reg, down_reg, right_reg, up_reg;\n  always @(*) begin\n    case (scancode)\n      16'he06b: begin left_reg = 1; down_reg = 0; right_reg = 0; up_reg = 0; end\n      16'he072: begin left_reg = 0; down_reg = 1; right_reg = 0; up_reg = 0; end\n      16'he074: begin left_reg = 0; down_reg = 0; right_reg = 1; up_reg = 0; end\n      16'he075: begin left_reg = 0; down_reg = 0; right_reg = 0; up_reg = 1; end\n      default:  begin left_reg = 0; down_reg = 0; right_reg = 0; up_reg = 0; end\n    endcase\n  end\n  assign left = left_reg;\n  assign down = down_reg;\n  assign right = right_reg;\n  assign up = up_reg;\nendmodule",
+      "rtl_raw_sha256": "9f5140234e7738c9cb5adf081f4e12fd08fbf85e1c8ec3299be4292664c47ff3",
+      "sample_index": 19,
+      "status": "PASS"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 3,
+    "compile_fail": 15,
+    "fail": 2
+  },
+  "testbench_raw_sha256": "fd636060098952703ed11e5d88b56f384a91c0a573d10ed98187db89cdf62136",
+  "training_seed": 1
+}

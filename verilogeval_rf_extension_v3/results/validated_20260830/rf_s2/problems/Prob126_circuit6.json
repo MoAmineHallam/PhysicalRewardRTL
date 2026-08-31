@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob126_circuit6",
+  "problem_seed": 7198195564328972361,
+  "prompt_raw_sha256": "6e97111f20c9e8e87baaa2a0582eaff80e27e5d937088db91fef2aa358c78fc5",
+  "reference_raw_sha256": "d169f6f498141715387a5c30198f9167a62785b7cea08af043bfe587951134e9",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "43/113 mismatches",
+      "raw_completion": "// Combinational circuit, time-resolved: determine the function of the\n// circuit from the simulation waveforms.\nmodule TopModule(\n    input [2:0] a,\n    output [15:0] q\n);\n    reg [15:0] tmp;\n    always @(*) begin\n        case (a)\n            3'd0: tmp = 16'h232;\n            3'd1: tmp = 16'hae0;\n            3'd2: tmp = 16'h7d4;\n            3'd3: tmp = 16'h5a0e;\n            3'd4: tmp = 16'h2066;\n            3'd5: tmp = 16'h64ce;\n            3'd6: tmp = 16'hc526;\n            3'd7: tmp = 16'h2f19;\n            default: tmp = 16'hxxxx;\n        endcase\n    end\n    assign q = tmp;\nendmodule",
+      "raw_completion_raw_sha256": "0932cb06d25fb1db43e1d7af66a7224a06be64f9fa2297caff56869561c80f24",
+      "rtl": "module TopModule(\n    input [2:0] a,\n    output [15:0] q\n);\n    reg [15:0] tmp;\n    always @(*) begin\n        case (a)\n            3'd0: tmp = 16'h232;\n            3'd1: tmp = 16'hae0;\n            3'd2: tmp = 16'h7d4;\n            3'd3: tmp = 16'h5a0e;\n            3'd4: tmp = 16'h2066;\n            3'd5: tmp = 16'h64ce;\n            3'd6: tmp = 16'hc526;\n            3'd7: tmp = 16'h2f19;\n            default: tmp = 16'hxxxx;\n        endcase\n    end\n    assign q = tmp;\nendmodule",
+      "rtl_raw_sha256": "dd804d6a298d0272047a58a50c2647356a1125abd0a11ab49c55585b3d1f3c0e",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob126_circuit6_test.sv:83: error: Unknown module type: TopModule",
+      "raw_completion": "// Combinational circuit that implements the desired function. The function is\n// determined by observing the simulation waveforms.\nmodule CombinationalCircuit (\n  input [2:0] a,\n  output [15:0] q\n);\n  reg [15:0] t;\n  always @(*) begin\n    case (a)\n      0: t = 1232;\n      1: t = 16'hAEE0;\n      2: t = 16'h27D4;\n      3: t = 16'h5A0E;\n      4: t = 16'h2066;\n      5: t = 16'h64CE;\n      6: t = 16'hC526;\n      7: t = 16'h2F19;\n      default: t = 1232;\n    endcase\n  end\n  assign q = t;\nendmodule",
+      "raw_completion_raw_sha256": "21ce095438825f1527a48c77fa1134e428dd078bda0f1ab5be3419c73c89e255",
+      "rtl": "module CombinationalCircuit (\n  input [2:0] a,\n  output [15:0] q\n);\n  reg [15:0] t;\n  always @(*) begin\n    case (a)\n      0: t = 1232;\n      1: t = 16'hAEE0;\n      2: t = 16'h27D4;\n      3: t = 16'h5A0E;\n      4: t = 16'h2066;\n      5: t = 16'h64CE;\n      6: t = 16'hC526;\n      7: t = 16'h2F19;\n      default: t = 1232;\n    endcase\n  end\n  assign q = t;\nendmodule",
+      "rtl_raw_sha256": "892ce6e86f3c4461b89822ce710cc0bd0bcd366c2a932855f74866d44c2f6549",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:19: error: Unable to bind wire/reg/memory `clk' in `tb.top_module1'",
+      "raw_completion": "// One-bit wide combinational circuit. The function of the circuit is to\n// determine the output q as a function of the input a, sampled at the\n// rising edge of a clock. The registers r0, r1, ..., r15 implement a\n// delay chain, which is the function of the input a sampled at a\n// higher rate. The register r16 samples the stage-one function, which\n// is the function of the input a sampled at the clock rate.\nmodule TopModule(input [2:0] a, output [15:0] q);\n  reg [15:0] r0;\n  reg [15:0] r1;\n  reg [15:0] r2;\n  reg [15:0] r3;\n  reg [15:0] r4;\n  reg [15:0] r5;\n  reg [15:0] r6;\n  reg [15:0] r7;\n  reg [15:0] r8;\n  reg [15:0] r9;\n  reg [15:0] r10;\n  reg [15:0] r11;\n  reg [15:0] r12;\n  reg [15:0] r13;\n  reg [15:0] r14;\n  reg [15:0] r15;\n  reg [15:0] r16;\n  always @(posedge clk) begin\n    r0 <= {32'b0, a};\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n    r8 <= r7;\n    r9 <= r8;\n    r10 <= r9;\n    r11 <= r10;\n    r12 <= r11;\n    r13 <= r12;\n    r14 <= r13;\n    r15 <= r14;\n    r16 <= {32'b0, a};\n  end\n  assign q = r16;\nendmodule",
+      "raw_completion_raw_sha256": "299084219afe613b9b47e8dec5b3137f05801883d72ce8188b77369db2508661",
+      "rtl": "module TopModule(input [2:0] a, output [15:0] q);\n  reg [15:0] r0;\n  reg [15:0] r1;\n  reg [15:0] r2;\n  reg [15:0] r3;\n  reg [15:0] r4;\n  reg [15:0] r5;\n  reg [15:0] r6;\n  reg [15:0] r7;\n  reg [15:0] r8;\n  reg [15:0] r9;\n  reg [15:0] r10;\n  reg [15:0] r11;\n  reg [15:0] r12;\n  reg [15:0] r13;\n  reg [15:0] r14;\n  reg [15:0] r15;\n  reg [15:0] r16;\n  always @(posedge clk) begin\n    r0 <= {32'b0, a};\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n    r8 <= r7;\n    r9 <= r8;\n    r10 <= r9;\n    r11 <= r10;\n    r12 <= r11;\n    r13 <= r12;\n    r14 <= r13;\n    r15 <= r14;\n    r16 <= {32'b0, a};\n  end\n  assign q = r16;\nendmodule",
+      "rtl_raw_sha256": "2429739b3765ddbec42ce23fa174fff3a72d56c3e067eec025480e50a47cdceb",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "10/113 mismatches",
+      "raw_completion": "// Combinational circuit as described in the simulation waveforms.\n// (long form, step-by-step, unfolded)\nmodule TopModule(\n    input [2:0] a,\n    output [15:0] q\n);\n    reg [15:0] _q;\n    always @(*) begin\n        case (a)\n            0: _q = 1232;\n            1: _q = 16'hAEE0;\n            2: _q = 16'h27D4;\n            3: _q = 16'h5A0E;\n            4: _q = 16'h2066;\n            5: _q = 16'h64CE;\n            6: _q = 16'hC526;\n            7: _q = 16'h2F19;\n            default: _q = 16'hXXXX;\n        endcase\n    end\n    assign q = _q;\nendmodule",
+      "raw_completion_raw_sha256": "4c349fadaee8f04719ef2021c3a0a2cabc37b7523bb1029ba2b1b4224d2d6f93",
+      "rtl": "module TopModule(\n    input [2:0] a,\n    output [15:0] q\n);\n    reg [15:0] _q;\n    always @(*) begin\n        case (a)\n            0: _q = 1232;\n            1: _q = 16'hAEE0;\n            2: _q = 16'h27D4;\n            3: _q = 16'h5A0E;\n            4: _q = 16'h2066;\n            5: _q = 16'h64CE;\n            6: _q = 16'hC526;\n            7: _q = 16'h2F19;\n            default: _q = 16'hXXXX;\n        endcase\n    end\n    assign q = _q;\nendmodule",
+      "rtl_raw_sha256": "5a6832f26501447eae5335b5ed3b5cc390fa1d77d4fbdfb6e22d3bd8daa289d3",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:21: error: 'q' has already been declared in this scope.",
+      "raw_completion": "// Combinational circuit, read the waveforms to determine what the circuit does\n// (the function named \"foo\" in the Verilog code). The explicit equation (the\n// \"reg q; ... q <= 1232; // time 0\" line) is the shortest possible\n// implementation of the same function.\nmodule TopModule(input [2:0] a, output [15:0] q);\n  // Function determined by simulation (the waveforms).\n  function [15:0] foo;\n    reg [15:0] r;\n    begin\n      case (a)\n        0: r = 1232;\n        1: r = 1664;\n        2: r = 2132;\n        3: r = 2636;\n        4: r = 3176;\n        5: r = 3752;\n        6: r = 4364;\n        7: r = 5012;\n        default: r = 0;\n      endcase\n      foo = r;\n    end\n  endfunction\n  // Equivalent explicit equation.\n  reg [15:0] q;\n  always @(*) begin\n    q <= 1232; // time 0\n    #5 q <= 1664; // time 5\n    #5 q <= 2132; // time 10\n    #5 q <= 2636; // time 15\n    #5 q <= 3176; // time 20\n    #5 q <= 3752; // time 25\n    #5 q <= 4364; // time 30\n    #5 q <= 5012; // time 35\n    #5 q <= 5704; // time 40\n    #5 q <= 6440; // time 45\n    #5 q <= 7220; // time 50\n    #5 q <= 8044; // time 55\n    #5 q <= 8912; // time 60\n    #5 q <= 9824; // time 65\n    #5 q <= 10780; // time 70\n    #5 q <= 11780; // time 75\n    #5 q <= 12824; // time 80\n    #5 q <= 13912; // time 85\n    #5 q <= 15044; // time 90\n    // Continued in a similar fashion, up to time 12320.\n  end\n  assign q = foo(a);\nendmodule",
+      "raw_completion_raw_sha256": "f5d568b7d9f9a2ba5b35b646b6199760356154be60d9d227e7235b7ed9fe9c87",
+      "rtl": "module TopModule(input [2:0] a, output [15:0] q);\n  // Function determined by simulation (the waveforms).\n  function [15:0] foo;\n    reg [15:0] r;\n    begin\n      case (a)\n        0: r = 1232;\n        1: r = 1664;\n        2: r = 2132;\n        3: r = 2636;\n        4: r = 3176;\n        5: r = 3752;\n        6: r = 4364;\n        7: r = 5012;\n        default: r = 0;\n      endcase\n      foo = r;\n    end\n  endfunction\n  // Equivalent explicit equation.\n  reg [15:0] q;\n  always @(*) begin\n    q <= 1232; // time 0\n    #5 q <= 1664; // time 5\n    #5 q <= 2132; // time 10\n    #5 q <= 2636; // time 15\n    #5 q <= 3176; // time 20\n    #5 q <= 3752; // time 25\n    #5 q <= 4364; // time 30\n    #5 q <= 5012; // time 35\n    #5 q <= 5704; // time 40\n    #5 q <= 6440; // time 45\n    #5 q <= 7220; // time 50\n    #5 q <= 8044; // time 55\n    #5 q <= 8912; // time 60\n    #5 q <= 9824; // time 65\n    #5 q <= 10780; // time 70\n    #5 q <= 11780; // time 75\n    #5 q <= 12824; // time 80\n    #5 q <= 13912; // time 85\n    #5 q <= 15044; // time 90\n    // Continued in a similar fashion, up to time 12320.\n  end\n  assign q = foo(a);\nendmodule",
+      "rtl_raw_sha256": "87ed09543ac4abae7aa663b371c924f538d94a2d643b03f1697e86e37f14d58f",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:20: error: q is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Combinational circuit, see the simulation waveforms to determine what the\n// circuit does.\nmodule TopModule(input [2:0] a, output [15:0] q);\n    reg [15:0] r0;\n    reg [15:0] r1;\n    reg [15:0] r2;\n    reg [15:0] r3;\n    reg [15:0] r4;\n    reg [15:0] r5;\n    reg [15:0] r6;\n    reg [15:0] r7;\n    always @(*) begin\n        r0 = 1232;\n        r1 = {4'b1111, 12'b000000000000};\n        r2 = 27332;\n        r3 = 5806;\n        r4 = 2066;\n        r5 = 10446;\n        r6 = 33138;\n        r7 = 31449;\n        case (a)\n            0: q = r0;\n            1: q = r1;\n            2: q = r2;\n            3: q = r3;\n            4: q = r4;\n            5: q = r5;\n            6: q = r6;\n            7: q = r7;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "060d067d0b437e6240022b9999fec4e3b1311096e633a7dad5e940bfd485dee7",
+      "rtl": "module TopModule(input [2:0] a, output [15:0] q);\n    reg [15:0] r0;\n    reg [15:0] r1;\n    reg [15:0] r2;\n    reg [15:0] r3;\n    reg [15:0] r4;\n    reg [15:0] r5;\n    reg [15:0] r6;\n    reg [15:0] r7;\n    always @(*) begin\n        r0 = 1232;\n        r1 = {4'b1111, 12'b000000000000};\n        r2 = 27332;\n        r3 = 5806;\n        r4 = 2066;\n        r5 = 10446;\n        r6 = 33138;\n        r7 = 31449;\n        case (a)\n            0: q = r0;\n            1: q = r1;\n            2: q = r2;\n            3: q = r3;\n            4: q = r4;\n            5: q = r5;\n            6: q = r6;\n            7: q = r7;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "4491fb4d5b8e19683d41393184288ae384bcfb203b92f190b5509d756ceca182",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:22: error: q is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Combinational circuit, derived from the simulation waveforms.\n// The actual circuit is more complex, this is the simplified form.\nmodule TopModule (\n    input [2:0] a,\n    output [15:0] q\n);\n    reg [15:0] r0;\n    reg [15:0] r1;\n    reg [15:0] r2;\n    reg [15:0] r3;\n    reg [15:0] r4;\n    reg [15:0] r5;\n    reg [15:0] r6;\n    reg [15:0] r7;\n    always @(*) begin\n        r0 = 1232;\n        r1 = a == 1 ? 1232 : 2768;\n        r2 = a == 2 ? 2768 : 5536;\n        r3 = a == 3 ? 5536 : 10208;\n        r4 = a == 4 ? 10208 : 20416;\n        r5 = a == 5 ? 20416 : 40832;\n        r6 = a == 6 ? 40832 : 81664;\n        r7 = a == 7 ? 81664 : 163328;\n        q = (a == 0) ? r0 :\n            (a == 1) ? r1 :\n            (a == 2) ? r2 :\n            (a == 3) ? r3 :\n            (a == 4) ? r4 :\n            (a == 5) ? r5 :\n            (a == 6) ? r6 :\n            (a == 7) ? r7 : 0;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "ee403027dcdd7a4e8d2c13105e05c207bc8c0334ee9fa8a7399b802c958d0a7c",
+      "rtl": "module TopModule (\n    input [2:0] a,\n    output [15:0] q\n);\n    reg [15:0] r0;\n    reg [15:0] r1;\n    reg [15:0] r2;\n    reg [15:0] r3;\n    reg [15:0] r4;\n    reg [15:0] r5;\n    reg [15:0] r6;\n    reg [15:0] r7;\n    always @(*) begin\n        r0 = 1232;\n        r1 = a == 1 ? 1232 : 2768;\n        r2 = a == 2 ? 2768 : 5536;\n        r3 = a == 3 ? 5536 : 10208;\n        r4 = a == 4 ? 10208 : 20416;\n        r5 = a == 5 ? 20416 : 40832;\n        r6 = a == 6 ? 40832 : 81664;\n        r7 = a == 7 ? 81664 : 163328;\n        q = (a == 0) ? r0 :\n            (a == 1) ? r1 :\n            (a == 2) ? r2 :\n            (a == 3) ? r3 :\n            (a == 4) ? r4 :\n            (a == 5) ? r5 :\n            (a == 6) ? r6 :\n            (a == 7) ? r7 : 0;\n    end\nendmodule",
+      "rtl_raw_sha256": "1210896b011a7de5c5263332660493426bfedad88db300ffacc3e53d243a5498",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "43/113 mismatches",
+      "raw_completion": "// Combinational circuit, determine the function of the circuit from the\n// simulation waveforms.\nmodule TopModule(\n    input [2:0] a,\n    output [15:0] q\n);\n    reg [15:0] q_reg;\n    always @(*) begin\n        case (a)\n            3'b000: q_reg = 16'h232;\n            3'b001: q_reg = 16'hae0;\n            3'b010: q_reg = 16'h7d4;\n            3'b011: q_reg = 16'h5a0e;\n            3'b100: q_reg = 16'h2066;\n            3'b101: q_reg = 16'h64ce;\n            3'b110: q_reg = 16'hc526;\n            3'b111: q_reg = 16'h2f19;\n            default: q_reg = 16'hxxxx;\n        endcase\n    end\n    assign q = q_reg;\nendmodule",
+      "raw_completion_raw_sha256": "1da674a25c3f5bfbec2b6c61751c53401fdb2ffc603819d629c5d545f152d4af",
+      "rtl": "module TopModule(\n    input [2:0] a,\n    output [15:0] q\n);\n    reg [15:0] q_reg;\n    always @(*) begin\n        case (a)\n            3'b000: q_reg = 16'h232;\n            3'b001: q_reg = 16'hae0;\n            3'b010: q_reg = 16'h7d4;\n            3'b011: q_reg = 16'h5a0e;\n            3'b100: q_reg = 16'h2066;\n            3'b101: q_reg = 16'h64ce;\n            3'b110: q_reg = 16'hc526;\n            3'b111: q_reg = 16'h2f19;\n            default: q_reg = 16'hxxxx;\n        endcase\n    end\n    assign q = q_reg;\nendmodule",
+      "rtl_raw_sha256": "87bed50a6492241d64bc3285526be9a0936c08ebb38ba582aa1e195cbddd391c",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "25/113 mismatches",
+      "raw_completion": "// Combinational circuit, read the simulation waveforms to determine what the\n// circuit does.\nmodule TopModule(input [2:0] a, output [15:0] q);\n  reg [15:0] q_reg;\n  always @(*) begin\n    case (a)\n      3'd0: q_reg = 16'h232;\n      3'd1: q_reg = 16'hae0;\n      3'd2: q_reg = 16'h27d4;\n      3'd3: q_reg = 16'h5a0e;\n      3'd4: q_reg = 16'h2066;\n      3'd5: q_reg = 16'h64ce;\n      3'd6: q_reg = 16'hc526;\n      3'd7: q_reg = 16'h2f19;\n      default: q_reg = 16'hx;\n    endcase\n  end\n  assign q = q_reg;\nendmodule",
+      "raw_completion_raw_sha256": "f709c7174dd48125fbcf67dae29ea7cbf12c4dde31b4e481b0ed9e60583bb7cb",
+      "rtl": "module TopModule(input [2:0] a, output [15:0] q);\n  reg [15:0] q_reg;\n  always @(*) begin\n    case (a)\n      3'd0: q_reg = 16'h232;\n      3'd1: q_reg = 16'hae0;\n      3'd2: q_reg = 16'h27d4;\n      3'd3: q_reg = 16'h5a0e;\n      3'd4: q_reg = 16'h2066;\n      3'd5: q_reg = 16'h64ce;\n      3'd6: q_reg = 16'hc526;\n      3'd7: q_reg = 16'h2f19;\n      default: q_reg = 16'hx;\n    endcase\n  end\n  assign q = q_reg;\nendmodule",
+      "rtl_raw_sha256": "17a0cf8a5ed47b9080ad2c773a03947c29443fb1c3a3009d668256e8f5d89467",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "10/113 mismatches",
+      "raw_completion": "// Combinational circuit, determined by the simulation waveforms\n// (time-independent truth table).\nmodule TopModule(input [2:0] a, output [15:0] q);\n  reg [15:0] tmp;\n  always @(*) begin\n    case (a)\n      0: tmp = 1232;\n      1: tmp = 16'hAEE0;\n      2: tmp = 16'h27D4;\n      3: tmp = 16'h5A0E;\n      4: tmp = 16'h2066;\n      5: tmp = 16'h64CE;\n      6: tmp = 16'hC526;\n      7: tmp = 16'h2F19;\n      default: tmp = 1232;\n    endcase\n  end\n  assign q = tmp;\nendmodule",
+      "raw_completion_raw_sha256": "49bd39841baefd16b513ff86f4051cc31a248d7728526ae75af99065f9b1e4fc",
+      "rtl": "module TopModule(input [2:0] a, output [15:0] q);\n  reg [15:0] tmp;\n  always @(*) begin\n    case (a)\n      0: tmp = 1232;\n      1: tmp = 16'hAEE0;\n      2: tmp = 16'h27D4;\n      3: tmp = 16'h5A0E;\n      4: tmp = 16'h2066;\n      5: tmp = 16'h64CE;\n      6: tmp = 16'hC526;\n      7: tmp = 16'h2F19;\n      default: tmp = 1232;\n    endcase\n  end\n  assign q = tmp;\nendmodule",
+      "rtl_raw_sha256": "fb460148249ced1ba3acaf6c1bfbf25cab36ad6f378d1a13ac04be55688d271f",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob126_circuit6_test.sv:83: error: Unknown module type: TopModule",
+      "raw_completion": "// Combinational circuit, derived from the simulation waveforms.\nmodule CombinationalCircuit (\n    input [2:0] a,\n    output [15:0] q\n);\n    reg [15:0] r0;\n    reg [15:0] r1;\n    reg [15:0] r2;\n    reg [15:0] r3;\n    reg [15:0] r4;\n    reg [15:0] r5;\n    reg [15:0] r6;\n    reg [15:0] r7;\n    always @(*) begin\n        r0 = 1232;\n        r1 = {4'hA, 4'hE, 4'hE, 4'h0};\n        r2 = 27972;\n        r3 = 8910;\n        r4 = 8042;\n        r5 = 25678;\n        r6 = 41478;\n        r7 = 16389;\n        case (a)\n            0: q = r0;\n            1: q = r1;\n            2: q = r2;\n            3: q = r3;\n            4: q = r4;\n            5: q = r5;\n            6: q = r6;\n            7: q = r7;\n            default: q = 16'hx;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "ffc92550e03fb3659a981a359983db6650a09a67502d7a0984307959fa01d39b",
+      "rtl": "module CombinationalCircuit (\n    input [2:0] a,\n    output [15:0] q\n);\n    reg [15:0] r0;\n    reg [15:0] r1;\n    reg [15:0] r2;\n    reg [15:0] r3;\n    reg [15:0] r4;\n    reg [15:0] r5;\n    reg [15:0] r6;\n    reg [15:0] r7;\n    always @(*) begin\n        r0 = 1232;\n        r1 = {4'hA, 4'hE, 4'hE, 4'h0};\n        r2 = 27972;\n        r3 = 8910;\n        r4 = 8042;\n        r5 = 25678;\n        r6 = 41478;\n        r7 = 16389;\n        case (a)\n            0: q = r0;\n            1: q = r1;\n            2: q = r2;\n            3: q = r3;\n            4: q = r4;\n            5: q = r5;\n            6: q = r6;\n            7: q = r7;\n            default: q = 16'hx;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "484280650de646e53726b0975283a00a05928b3b7e7089d74e5437f49b4f5d61",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:5: syntax error",
+      "raw_completion": "// Combinational circuit, derived from the simulation waveforms\nmodule TopModule(\n    input [2:0] a,\n    output [15:0] q\n);\n    reg [15:0] table [0:7];\n    always @* begin\n        table[0] = 1232;\n        table[1] = 4480;\n        table[2] = 7248;\n        table[3] = 10016;\n        table[4] = 12784;\n        table[5] = 15552;\n        table[6] = 18320;\n        table[7] = 21088;\n        q = table[a];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a1f320a9d0f5f6a1956c3340506dd7637309bf189e5ffcd89f68a563159a51e3",
+      "rtl": "module TopModule(\n    input [2:0] a,\n    output [15:0] q\n);\n    reg [15:0] table [0:7];\n    always @* begin\n        table[0] = 1232;\n        table[1] = 4480;\n        table[2] = 7248;\n        table[3] = 10016;\n        table[4] = 12784;\n        table[5] = 15552;\n        table[6] = 18320;\n        table[7] = 21088;\n        q = table[a];\n    end\nendmodule",
+      "rtl_raw_sha256": "576abc52a6da6522f8a988aaca7e46fcaf551501ea79a5d9aedb41963e3b1470",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob126_circuit6_test.sv:83: error: Unknown module type: TopModule",
+      "raw_completion": "// Combinational circuit, derived from the simulation waveforms. The exact\n// circuit is not specified in the problem description.\nmodule CombinationalCircuit (\n    input [2:0] a,\n    output reg [15:0] q\n);\n    always @(*) begin\n        case (a)\n            3'b000: q = 16'h232;\n            3'b001: q = 16'hae0;\n            3'b010: q = 16'h27d4;\n            3'b011: q = 16'h5a0e;\n            3'b100: q = 16'h2066;\n            3'b101: q = 16'h64ce;\n            3'b110: q = 16'hc526;\n            3'b111: q = 16'h2f19;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "c41d8b9a07d358f6543f839d41af1e4de33f8721ae1bfd9a63f634619b56df78",
+      "rtl": "module CombinationalCircuit (\n    input [2:0] a,\n    output reg [15:0] q\n);\n    always @(*) begin\n        case (a)\n            3'b000: q = 16'h232;\n            3'b001: q = 16'hae0;\n            3'b010: q = 16'h27d4;\n            3'b011: q = 16'h5a0e;\n            3'b100: q = 16'h2066;\n            3'b101: q = 16'h64ce;\n            3'b110: q = 16'hc526;\n            3'b111: q = 16'h2f19;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "fc5001e7d3985efee8b6a8018f9f902f2b7d12deffa13c569a95f9a083ef63f1",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "43/113 mismatches",
+      "raw_completion": "// Combinational circuit, determined by simulation waveforms.\nmodule TopModule(input [2:0] a, output [15:0] q);\n  wire [15:0] s0, s1, s2, s3, s4, s5, s6, s7;\n  assign s0 = 16'h3232;\n  assign s1 = {8'hae, 8'h0};\n  assign s2 = {8'h27, 8'h4};\n  assign s3 = {8'h5a, 8'he};\n  assign s4 = {8'h20, 8'h66};\n  assign s5 = {8'h64, 8'hce};\n  assign s6 = {8'hc5, 8'h26};\n  assign s7 = {8'h2f, 8'h19};\n  assign q = a ? (a == 1 ? s1 : (a == 2 ? s2 : (a == 3 ? s3 : (a == 4 ? s4 : (a == 5 ? s5 : (a == 6 ? s6 : (a == 7 ? s7 : s0))))))) : s0;\nendmodule",
+      "raw_completion_raw_sha256": "7974fbb2710c6b1e585cf011596f820e0bee7192b5c1fc475c8e8273b0ad83c6",
+      "rtl": "module TopModule(input [2:0] a, output [15:0] q);\n  wire [15:0] s0, s1, s2, s3, s4, s5, s6, s7;\n  assign s0 = 16'h3232;\n  assign s1 = {8'hae, 8'h0};\n  assign s2 = {8'h27, 8'h4};\n  assign s3 = {8'h5a, 8'he};\n  assign s4 = {8'h20, 8'h66};\n  assign s5 = {8'h64, 8'hce};\n  assign s6 = {8'hc5, 8'h26};\n  assign s7 = {8'h2f, 8'h19};\n  assign q = a ? (a == 1 ? s1 : (a == 2 ? s2 : (a == 3 ? s3 : (a == 4 ? s4 : (a == 5 ? s5 : (a == 6 ? s6 : (a == 7 ? s7 : s0))))))) : s0;\nendmodule",
+      "rtl_raw_sha256": "e95f80d0f7039a81347d9df669592a409e7abd7056ef0ed6297b9f534a0b82bf",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:15: error: q is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Combinational circuit, determined by simulation waveforms\nmodule TopModule(\n    input [2:0] a,\n    output [15:0] q\n);\n    reg [15:0] r0;\n    reg [15:0] r1;\n    reg [15:0] r2;\n    reg [15:0] r3;\n    reg [15:0] r4;\n    reg [15:0] r5;\n    reg [15:0] r6;\n    reg [15:0] r7;\n    always @(*) begin\n        case (a)\n            3'b000: q = r0;\n            3'b001: q = r1;\n            3'b010: q = r2;\n            3'b011: q = r3;\n            3'b100: q = r4;\n            3'b101: q = r5;\n            3'b110: q = r6;\n            3'b111: q = r7;\n        endcase\n    end\n    initial begin\n        #5 r0 = 16'h232;\n        #5 r1 = 16'haee0;\n        #5 r2 = 16'h27d4;\n        #5 r3 = 16'h5a0e;\n        #5 r4 = 16'h2066;\n        #5 r5 = 16'h64ce;\n        #5 r6 = 16'hc526;\n        #5 r7 = 16'h2f19;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "43060842e73c01be4a3ba1d230e898254919ef3e504f0d6955cf08986ede05db",
+      "rtl": "module TopModule(\n    input [2:0] a,\n    output [15:0] q\n);\n    reg [15:0] r0;\n    reg [15:0] r1;\n    reg [15:0] r2;\n    reg [15:0] r3;\n    reg [15:0] r4;\n    reg [15:0] r5;\n    reg [15:0] r6;\n    reg [15:0] r7;\n    always @(*) begin\n        case (a)\n            3'b000: q = r0;\n            3'b001: q = r1;\n            3'b010: q = r2;\n            3'b011: q = r3;\n            3'b100: q = r4;\n            3'b101: q = r5;\n            3'b110: q = r6;\n            3'b111: q = r7;\n        endcase\n    end\n    initial begin\n        #5 r0 = 16'h232;\n        #5 r1 = 16'haee0;\n        #5 r2 = 16'h27d4;\n        #5 r3 = 16'h5a0e;\n        #5 r4 = 16'h2066;\n        #5 r5 = 16'h64ce;\n        #5 r6 = 16'hc526;\n        #5 r7 = 16'h2f19;\n    end\nendmodule",
+      "rtl_raw_sha256": "2cfc03bd24c5f70c0bcf16407e6e16dc0366a85e20c7dcc8a1a23b37cdea75c2",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:2: error: No function named `f_q' found in this context (tb.top_module1).",
+      "raw_completion": "// Combinational circuit, implemented as a Verilog function. The function has\n// the same behavior as the combinational circuit described in the problem\n// description.\nfunction [15:0] f_q;\n  input [2:0] a;\n  begin\n    case (a)\n      3'b000: f_q = 16'h232;\n      3'b001: f_q = 16'hae0;\n      3'b010: f_q = 16'h7d4;\n      3'b011: f_q = 16'ha0e;\n      3'b100: f_q = 16'h266;\n      3'b101: f_q = 16'h4ce;\n      3'b110: f_q = 16'h526;\n      3'b111: f_q = 16'h19;\n      default: f_q = 16'hx;\n    endcase\n  end\nendfunction\n\nmodule TopModule(input [2:0] a, output [15:0] q);\n  assign q = f_q(a);\nendmodule",
+      "raw_completion_raw_sha256": "ae5422823fa20084cc20bd7906ef122783b41bc6680917fa4da3a052247e73f7",
+      "rtl": "module TopModule(input [2:0] a, output [15:0] q);\n  assign q = f_q(a);\nendmodule",
+      "rtl_raw_sha256": "e06fc17b49157c4d3f12277ceb8b8b09f2921956ee4d4f710c6dbd62c6dbd2a8",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "110/113 mismatches",
+      "raw_completion": "// Combinational circuit with the same functionality as the reference\n// circuit, derived through simulation waveform inspection.\nmodule TopModule(\n    input [2:0] a,\n    output [15:0] q\n);\n    wire [15:0] t0, t1, t2, t3, t4, t5, t6, t7;\n    assign t0 = 1232;\n    assign t1 = 1232 + a * 32;\n    assign t2 = t1 + a * 8;\n    assign t3 = t2 + a * 2;\n    assign t4 = t3 + a * 1;\n    assign t5 = t4 + a * 4;\n    assign t6 = t5 + a * 2;\n    assign t7 = t6 + a * 1;\n    assign q = (a == 0) ? t0 :\n               (a == 1) ? t1 :\n               (a == 2) ? t2 :\n               (a == 3) ? t3 :\n               (a == 4) ? t4 :\n               (a == 5) ? t5 :\n               (a == 6) ? t6 : t7;\nendmodule",
+      "raw_completion_raw_sha256": "d3b696dfc6a916c4d917a61da23a9ad10e8960dd8e52c12cdc2f2616da606910",
+      "rtl": "module TopModule(\n    input [2:0] a,\n    output [15:0] q\n);\n    wire [15:0] t0, t1, t2, t3, t4, t5, t6, t7;\n    assign t0 = 1232;\n    assign t1 = 1232 + a * 32;\n    assign t2 = t1 + a * 8;\n    assign t3 = t2 + a * 2;\n    assign t4 = t3 + a * 1;\n    assign t5 = t4 + a * 4;\n    assign t6 = t5 + a * 2;\n    assign t7 = t6 + a * 1;\n    assign q = (a == 0) ? t0 :\n               (a == 1) ? t1 :\n               (a == 2) ? t2 :\n               (a == 3) ? t3 :\n               (a == 4) ? t4 :\n               (a == 5) ? t5 :\n               (a == 6) ? t6 : t7;\nendmodule",
+      "rtl_raw_sha256": "07cb17f47d1b80e3a00d2711f61fc62602cc9c336cadb56155b231bc7cbb5b42",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "10/113 mismatches",
+      "raw_completion": "// Combinational circuit, the function it implements is determined by the\n// simulation waveforms. The name \"reg\" is reserved in Verilog, so we use the\n// name \"r\".\nmodule TopModule(input [2:0] a, output [15:0] q);\n  reg [15:0] r;\n  always @(*) begin\n    case (a)\n      3'd0: r = 16'h232;\n      3'd1: r = 16'haee0;\n      3'd2: r = 16'h27d4;\n      3'd3: r = 16'h5a0e;\n      3'd4: r = 16'h2066;\n      3'd5: r = 16'h64ce;\n      3'd6: r = 16'hc526;\n      3'd7: r = 16'h2f19;\n      default: r = 16'h232;\n    endcase\n  end\n  assign q = r;\nendmodule",
+      "raw_completion_raw_sha256": "e35e985ceb87a71ce16b5c9917424f9af8443399ca09e642626bb50984dc0d2d",
+      "rtl": "module TopModule(input [2:0] a, output [15:0] q);\n  reg [15:0] r;\n  always @(*) begin\n    case (a)\n      3'd0: r = 16'h232;\n      3'd1: r = 16'haee0;\n      3'd2: r = 16'h27d4;\n      3'd3: r = 16'h5a0e;\n      3'd4: r = 16'h2066;\n      3'd5: r = 16'h64ce;\n      3'd6: r = 16'hc526;\n      3'd7: r = 16'h2f19;\n      default: r = 16'h232;\n    endcase\n  end\n  assign q = r;\nendmodule",
+      "rtl_raw_sha256": "3c35c5896bd02c9b1f19efa7532203406f03644120d4be74c1f22b620b163d13",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "25/113 mismatches",
+      "raw_completion": "// Combinational circuit, derived from the simulation waveforms. The full\n// circuit is a mess of nested multicycle chains, so this is the equivalent\n// combinational circuit.\nmodule TopModule(input [2:0] a, output [15:0] q);\n    wire [15:0] t0, t1, t2, t3, t4, t5, t6, t7;\n    assign t0 = 1232;\n    assign t1 = {8'hA, 8'hEE, 8'h0};\n    assign t2 = {8'h27, 8'hD4};\n    assign t3 = {8'h5A, 8'h0E};\n    assign t4 = {8'h20, 8'h66};\n    assign t5 = {8'h64, 8'hCE};\n    assign t6 = {8'hC5, 8'h26};\n    assign t7 = {8'h2F, 8'h19};\n    assign q = (a == 0) ? t0 :\n               (a == 1) ? t1 :\n               (a == 2) ? t2 :\n               (a == 3) ? t3 :\n               (a == 4) ? t4 :\n               (a == 5) ? t5 :\n               (a == 6) ? t6 :\n                          t7;\nendmodule",
+      "raw_completion_raw_sha256": "dc11f1b2537acb1e32c7c2866ae51cf0db40993ad359cb1db21b13720eba4b2d",
+      "rtl": "module TopModule(input [2:0] a, output [15:0] q);\n    wire [15:0] t0, t1, t2, t3, t4, t5, t6, t7;\n    assign t0 = 1232;\n    assign t1 = {8'hA, 8'hEE, 8'h0};\n    assign t2 = {8'h27, 8'hD4};\n    assign t3 = {8'h5A, 8'h0E};\n    assign t4 = {8'h20, 8'h66};\n    assign t5 = {8'h64, 8'hCE};\n    assign t6 = {8'hC5, 8'h26};\n    assign t7 = {8'h2F, 8'h19};\n    assign q = (a == 0) ? t0 :\n               (a == 1) ? t1 :\n               (a == 2) ? t2 :\n               (a == 3) ? t3 :\n               (a == 4) ? t4 :\n               (a == 5) ? t5 :\n               (a == 6) ? t6 :\n                          t7;\nendmodule",
+      "rtl_raw_sha256": "d1b21756fffd2be8ac69a3d2665898f8354e9bc1bc9968ec80953ab6c4c66c95",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "110/113 mismatches",
+      "raw_completion": "// Combinational circuit, read the simulation waveforms to determine what the\n// circuit does, then implement it.\nmodule TopModule(\n    input [2:0] a,\n    output [15:0] q\n);\n    reg [15:0] tmp;\n    always @(*) begin\n        case (a)\n            3'b000: tmp = 16'h232;\n            3'b001: tmp = 16'haee;\n            3'b010: tmp = 16'h27d;\n            3'b011: tmp = 16'h5a0;\n            3'b100: tmp = 16'h206;\n            3'b101: tmp = 16'h64c;\n            3'b110: tmp = 16'hc52;\n            3'b111: tmp = 16'h2f1;\n            default: tmp = 16'hxxxx;\n        endcase\n    end\n    assign q = tmp;\nendmodule",
+      "raw_completion_raw_sha256": "e60c6a281d06beb904fc0cd1c25eca9bbb193459ae8b33685b7f1f0583f73415",
+      "rtl": "module TopModule(\n    input [2:0] a,\n    output [15:0] q\n);\n    reg [15:0] tmp;\n    always @(*) begin\n        case (a)\n            3'b000: tmp = 16'h232;\n            3'b001: tmp = 16'haee;\n            3'b010: tmp = 16'h27d;\n            3'b011: tmp = 16'h5a0;\n            3'b100: tmp = 16'h206;\n            3'b101: tmp = 16'h64c;\n            3'b110: tmp = 16'hc52;\n            3'b111: tmp = 16'h2f1;\n            default: tmp = 16'hxxxx;\n        endcase\n    end\n    assign q = tmp;\nendmodule",
+      "rtl_raw_sha256": "22dcff3b5790a53e0054a89b50349aa0a322ef7586c43c7f6bfd87827c23b087",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 10,
+    "fail": 10
+  },
+  "testbench_raw_sha256": "34f2638e5ea185cdf45283bf7e34e404b2d8fb1ef7ae1d27f2992adef6630dfd",
+  "training_seed": 2
+}

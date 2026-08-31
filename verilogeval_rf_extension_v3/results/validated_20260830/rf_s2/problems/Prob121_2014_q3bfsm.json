@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob121_2014_q3bfsm",
+  "problem_seed": 7484704540088905465,
+  "prompt_raw_sha256": "55f19180624ec569e4da671fd0f4835abea587ed2499d63860e4c59363790d80",
+  "reference_raw_sha256": "b990b318e05e2ecb38de41b928533ec10ac3b2648b7ddd4149f97bbc69b4c63b",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "494/1006 mismatches",
+      "raw_completion": "// Finite-state machine with state-assigned registers\nmodule TopModule (\n    input  clk,\n    input  reset,\n    input  x,\n    output reg z\n);\n    reg [2:0] y, ny;\n    always @(*) begin\n        case (y[2:0])\n            3'b000: ny = x ? 3'b001 : 3'b000;\n            3'b001: ny = x ? 3'b100 : 3'b001;\n            3'b010: ny = x ? 3'b001 : 3'b010;\n            3'b011: ny = x ? 3'b010 : 3'b001;\n            3'b100: ny = x ? 3'b100 : 3'b100;\n            default: ny = 3'b000;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (reset) begin\n            y <= 3'b000;\n            z <= 1'b0;\n        end else begin\n            y <= ny;\n            z <= (y == 3'b011);\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "430edcf91e009be3edad6cec9937ac0f7d4f64ef14d0f7b3e0bda09c775e5f36",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    input  x,\n    output reg z\n);\n    reg [2:0] y, ny;\n    always @(*) begin\n        case (y[2:0])\n            3'b000: ny = x ? 3'b001 : 3'b000;\n            3'b001: ny = x ? 3'b100 : 3'b001;\n            3'b010: ny = x ? 3'b001 : 3'b010;\n            3'b011: ny = x ? 3'b010 : 3'b001;\n            3'b100: ny = x ? 3'b100 : 3'b100;\n            default: ny = 3'b000;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (reset) begin\n            y <= 3'b000;\n            z <= 1'b0;\n        end else begin\n            y <= ny;\n            z <= (y == 3'b011);\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "4d7e68e2a5f82e5f200728948712075ad7323da8f0e1670854407e763f236fa9",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "494/1006 mismatches",
+      "raw_completion": "// Finite-state machine with state-assigned table\nmodule TopModule (\n    input  clk,\n    input  reset,\n    input  x,\n    output reg z\n);\n    reg [2:0] y, y_next;\n    always @(*) begin\n        case (y)\n            3'b000: y_next = x ? 3'b001 : 3'b000;\n            3'b001: y_next = x ? 3'b100 : 3'b001;\n            3'b010: y_next = x ? 3'b001 : 3'b010;\n            3'b011: y_next = x ? 3'b010 : 3'b001;\n            3'b100: y_next = x ? 3'b100 : 3'b100;\n            default: y_next = 3'b000;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (reset) begin\n            y <= 3'b000;\n            z <= 1'b0;\n        end else begin\n            y <= y_next;\n            z <= (y == 3'b011);\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "79fd079902ff09116f010ce4b6f47fac138fd976d6045ba3d19b2fe186b3cbc1",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    input  x,\n    output reg z\n);\n    reg [2:0] y, y_next;\n    always @(*) begin\n        case (y)\n            3'b000: y_next = x ? 3'b001 : 3'b000;\n            3'b001: y_next = x ? 3'b100 : 3'b001;\n            3'b010: y_next = x ? 3'b001 : 3'b010;\n            3'b011: y_next = x ? 3'b010 : 3'b001;\n            3'b100: y_next = x ? 3'b100 : 3'b100;\n            default: y_next = 3'b000;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (reset) begin\n            y <= 3'b000;\n            z <= 1'b0;\n        end else begin\n            y <= y_next;\n            z <= (y == 3'b011);\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "0dfac6aba58169d385fd90f8da1214bee73157b538744745e23c99a985e8b230",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:3: syntax error",
+      "raw_completion": "// One-hot state encoding: state 000 is encoded as 3'b000, state 001 as 3'b001, etc.\nreg [2:0] y, y_next;\nalways @(*) begin\n  case (y)\n    3'b000: y_next = x ? 3'b001 : 3'b000;\n    3'b001: y_next = x ? 3'b100 : 3'b001;\n    3'b010: y_next = x ? 3'b001 : 3'b010;\n    3'b011: y_next = x ? 3'b010 : 3'b001;\n    3'b100: y_next = x ? 3'b100 : 3'b100;\n    default: y_next = 3'b000;\n  endcase\nend\nreg z;\nalways @(*) begin\n  case (y)\n    3'b000: z = 1'b0;\n    3'b001: z = 1'b0;\n    3'b010: z = 1'b0;\n    3'b011: z = 1'b1;\n    3'b100: z = 1'b1;\n    default: z = 1'b0;\n  endcase\nend\nalways @(posedge clk) begin\n  if (reset) y <= 3'b000;\n  else y <= y_next;\nend\nTopModule // register-based FSM\n  (input clk, input reset, input x, output z);",
+      "raw_completion_raw_sha256": "d2f55e28137c0901d942863ca60085cdfad20b402d2a978c3194c863159f7263",
+      "rtl": "// One-hot state encoding: state 000 is encoded as 3'b000, state 001 as 3'b001, etc.\nreg [2:0] y, y_next;\nalways @(*) begin\n  case (y)\n    3'b000: y_next = x ? 3'b001 : 3'b000;\n    3'b001: y_next = x ? 3'b100 : 3'b001;\n    3'b010: y_next = x ? 3'b001 : 3'b010;\n    3'b011: y_next = x ? 3'b010 : 3'b001;\n    3'b100: y_next = x ? 3'b100 : 3'b100;\n    default: y_next = 3'b000;\n  endcase\nend\nreg z;\nalways @(*) begin\n  case (y)\n    3'b000: z = 1'b0;\n    3'b001: z = 1'b0;\n    3'b010: z = 1'b0;\n    3'b011: z = 1'b1;\n    3'b100: z = 1'b1;\n    default: z = 1'b0;\n  endcase\nend\nalways @(posedge clk) begin\n  if (reset) y <= 3'b000;\n  else y <= y_next;\nend\nTopModule // register-based FSM\n  (input clk, input reset, input x, output z);",
+      "rtl_raw_sha256": "d2f55e28137c0901d942863ca60085cdfad20b402d2a978c3194c863159f7263",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "472/1006 mismatches",
+      "raw_completion": "// Finite-state machine with state-assigned registers.\nmodule TopModule(\n    input  clk,\n    input  reset,\n    input  x,\n    output reg z\n);\n    reg [2:0] y, y_next;\n    always @(*) begin\n        case (y)\n            3'b000: y_next = x ? 3'b001 : 3'b000;\n            3'b001: y_next = x ? 3'b100 : 3'b001;\n            3'b010: y_next = x ? 3'b001 : 3'b010;\n            3'b011: y_next = x ? 3'b010 : 3'b001;\n            3'b100: y_next = x ? 3'b100 : 3'b100;\n            default: y_next = 3'b000;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (reset) begin\n            y <= 3'b000;\n            z <= 1'b0;\n        end else begin\n            y <= y_next;\n            case (y)\n                3'b000, 3'b001: z <= 1'b0;\n                3'b010: z <= 1'b0;\n                3'b011, 3'b100: z <= 1'b1;\n            endcase\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "906fb802140eda7e57165053b637197636761e46de4e02daca928e2ec95a7e93",
+      "rtl": "module TopModule(\n    input  clk,\n    input  reset,\n    input  x,\n    output reg z\n);\n    reg [2:0] y, y_next;\n    always @(*) begin\n        case (y)\n            3'b000: y_next = x ? 3'b001 : 3'b000;\n            3'b001: y_next = x ? 3'b100 : 3'b001;\n            3'b010: y_next = x ? 3'b001 : 3'b010;\n            3'b011: y_next = x ? 3'b010 : 3'b001;\n            3'b100: y_next = x ? 3'b100 : 3'b100;\n            default: y_next = 3'b000;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (reset) begin\n            y <= 3'b000;\n            z <= 1'b0;\n        end else begin\n            y <= y_next;\n            case (y)\n                3'b000, 3'b001: z <= 1'b0;\n                3'b010: z <= 1'b0;\n                3'b011, 3'b100: z <= 1'b1;\n            endcase\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "477df7b8004f10a92017a9ace2e8f77bd8fa7ef6166f35b1dae20d600fb9ca83",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:18: error: z is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Finite-state machine with state-assigned table. Same as the reference\n// design, but explicitly named all registers and combinational\n// expressions.\nmodule TopModule(input  clk, input  reset, input  x, output z);\n  reg [2:0] y, y_next;\n  always @(*) begin\n    case (y)\n      3'b000: y_next = (x ? 3'b001 : 3'b000);\n      3'b001: y_next = (x ? 3'b100 : 3'b001);\n      3'b010: y_next = (x ? 3'b001 : 3'b010);\n      3'b011: y_next = (x ? 3'b010 : 3'b001);\n      3'b100: y_next = (x ? 3'b100 : 3'b100);\n      default: y_next = 3'b000;\n    endcase\n  end\n  reg z_reg;\n  always @(*) z_reg = (y == 3'b011);\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else       y <= y_next;\n    z <= z_reg;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "be314cf87aab42da848800d7fd400c9b9f9df4631bc2506f15a60b60ade96503",
+      "rtl": "module TopModule(input  clk, input  reset, input  x, output z);\n  reg [2:0] y, y_next;\n  always @(*) begin\n    case (y)\n      3'b000: y_next = (x ? 3'b001 : 3'b000);\n      3'b001: y_next = (x ? 3'b100 : 3'b001);\n      3'b010: y_next = (x ? 3'b001 : 3'b010);\n      3'b011: y_next = (x ? 3'b010 : 3'b001);\n      3'b100: y_next = (x ? 3'b100 : 3'b100);\n      default: y_next = 3'b000;\n    endcase\n  end\n  reg z_reg;\n  always @(*) z_reg = (y == 3'b011);\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else       y <= y_next;\n    z <= z_reg;\n  end\nendmodule",
+      "rtl_raw_sha256": "d36f6b501969ca4ee31e380e96d523a8accfc203b73aa64372b03107d9a54173",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "496/1006 mismatches",
+      "raw_completion": "// Finite-state machine with state-assigned table. Same as the reference\n// design in the question. Synchronous reset, positive-edge-triggered\n// clock.\nmodule TopModule(input clk, input reset, input x, output reg z);\n  reg [2:0] y, y_next;\n  always @(*) begin\n    case (y)\n      3'b000: y_next = x ? 3'b001 : 3'b000;\n      3'b001: y_next = x ? 3'b100 : 3'b001;\n      3'b010: y_next = x ? 3'b001 : 3'b010;\n      3'b011: y_next = x ? 3'b010 : 3'b001;\n      3'b100: y_next = x ? 3'b100 : 3'b100;\n      default: y_next = 3'b000;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else y <= y_next;\n    z <= (y == 3'b011);\n  end\nendmodule",
+      "raw_completion_raw_sha256": "16b60304b6d7ec7cf1fb67015854259bdfc0683f8ea77f828dcc46bb540f2b90",
+      "rtl": "module TopModule(input clk, input reset, input x, output reg z);\n  reg [2:0] y, y_next;\n  always @(*) begin\n    case (y)\n      3'b000: y_next = x ? 3'b001 : 3'b000;\n      3'b001: y_next = x ? 3'b100 : 3'b001;\n      3'b010: y_next = x ? 3'b001 : 3'b010;\n      3'b011: y_next = x ? 3'b010 : 3'b001;\n      3'b100: y_next = x ? 3'b100 : 3'b100;\n      default: y_next = 3'b000;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else y <= y_next;\n    z <= (y == 3'b011);\n  end\nendmodule",
+      "rtl_raw_sha256": "f7d4407ad3cbd810ec6ce47f5dc9811adee9fb5f785e70d824ebd3bf4736bd04",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "494/1006 mismatches",
+      "raw_completion": "// Finite-state machine with state-assigned table, synchronous reset, and\n// register-less positive-edge-triggered combinational next state.\nmodule TopModule(input clk, input reset, input x, output reg z);\n  reg [2:0] y, y_next;\n  always @(*) begin\n    case (y)\n      3'b000: y_next = (x) ? 3'b001 : 3'b000;\n      3'b001: y_next = (x) ? 3'b100 : 3'b001;\n      3'b010: y_next = (x) ? 3'b001 : 3'b010;\n      3'b011: y_next = (x) ? 3'b010 : 3'b001;\n      3'b100: y_next = (x) ? 3'b100 : 3'b100;\n      default: y_next = 3'b000;\n    endcase\n    z = (y == 3'b011) ? 1'b1 : 1'b0;\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else y <= y_next;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "c229dc0d026899349361bcb2f6ddc776fba8b4b324519f2966a677d62b0e9c28",
+      "rtl": "module TopModule(input clk, input reset, input x, output reg z);\n  reg [2:0] y, y_next;\n  always @(*) begin\n    case (y)\n      3'b000: y_next = (x) ? 3'b001 : 3'b000;\n      3'b001: y_next = (x) ? 3'b100 : 3'b001;\n      3'b010: y_next = (x) ? 3'b001 : 3'b010;\n      3'b011: y_next = (x) ? 3'b010 : 3'b001;\n      3'b100: y_next = (x) ? 3'b100 : 3'b100;\n      default: y_next = 3'b000;\n    endcase\n    z = (y == 3'b011) ? 1'b1 : 1'b0;\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else y <= y_next;\n  end\nendmodule",
+      "rtl_raw_sha256": "57931e8d5aed38ffa1e9a4b4ce09e138b4d114b24d921f3ba7033b6fa642122a",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "530/1006 mismatches",
+      "raw_completion": "// Finite-state machine, state-assigned table, synchronous reset, inline next\n// state computation\nmodule TopModule(input  clk, input  reset, input  x, output reg z);\n  reg [2:0] y, ny;\n  always @(*) begin\n    case ({y, x}) // state-assigned table\n      4'b0000: ny = 3'b000;\n      4'b0001: ny = 3'b001;\n      4'b0010: ny = 3'b100;\n      4'b0011: ny = 3'b001;\n      4'b0100: ny = 3'b010;\n      4'b0101: ny = 3'b001;\n      4'b0110: ny = 3'b001;\n      4'b0111: ny = 3'b010;\n      4'b1000: ny = 3'b001;\n      4'b1001: ny = 3'b011;\n      4'b1010: ny = 3'b100;\n      default: ny = 3'b000;\n    endcase\n    z = (y == 3'b011);\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else       y <= ny;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "c0fd00617c53da0d9827cbbcf92e087edfaa7cc0701ec52dc4f633682e57be99",
+      "rtl": "module TopModule(input  clk, input  reset, input  x, output reg z);\n  reg [2:0] y, ny;\n  always @(*) begin\n    case ({y, x}) // state-assigned table\n      4'b0000: ny = 3'b000;\n      4'b0001: ny = 3'b001;\n      4'b0010: ny = 3'b100;\n      4'b0011: ny = 3'b001;\n      4'b0100: ny = 3'b010;\n      4'b0101: ny = 3'b001;\n      4'b0110: ny = 3'b001;\n      4'b0111: ny = 3'b010;\n      4'b1000: ny = 3'b001;\n      4'b1001: ny = 3'b011;\n      4'b1010: ny = 3'b100;\n      default: ny = 3'b000;\n    endcase\n    z = (y == 3'b011);\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else       y <= ny;\n  end\nendmodule",
+      "rtl_raw_sha256": "2b73c631b890a45cd5caeff3ad0be22b37f4ff72bb90eb32049ea4781c0d3baa",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "472/1006 mismatches",
+      "raw_completion": "// Finite-state machine, synchronous reset, one register per stage\nmodule TopModule (\n  input  clk,\n  input  reset,\n  input  x,\n  output reg z\n);\n  reg [2:0] y, y_next;\n  always @(*) begin\n    case (y)\n      3'b000: y_next = x ? 3'b001 : 3'b000;\n      3'b001: y_next = x ? 3'b100 : 3'b001;\n      3'b010: y_next = x ? 3'b001 : 3'b010;\n      3'b011: y_next = x ? 3'b010 : 3'b001;\n      3'b100: y_next = x ? 3'b100 : 3'b100;\n      default: y_next = 3'b000;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (reset) begin\n      y <= 3'b000;\n      z <= 1'b0;\n    end else begin\n      y <= y_next;\n      case (y)\n        3'b000, 3'b001: z <= 1'b0;\n        3'b010: z <= 1'b0;\n        3'b011, 3'b100: z <= 1'b1;\n        default: z <= 1'b0;\n      endcase\n    end\n  end\nendmodule",
+      "raw_completion_raw_sha256": "499f3c0d1c2c2ba2487de2a4fb2579e9821249458d24b4e0603c06b029eeb33a",
+      "rtl": "module TopModule (\n  input  clk,\n  input  reset,\n  input  x,\n  output reg z\n);\n  reg [2:0] y, y_next;\n  always @(*) begin\n    case (y)\n      3'b000: y_next = x ? 3'b001 : 3'b000;\n      3'b001: y_next = x ? 3'b100 : 3'b001;\n      3'b010: y_next = x ? 3'b001 : 3'b010;\n      3'b011: y_next = x ? 3'b010 : 3'b001;\n      3'b100: y_next = x ? 3'b100 : 3'b100;\n      default: y_next = 3'b000;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (reset) begin\n      y <= 3'b000;\n      z <= 1'b0;\n    end else begin\n      y <= y_next;\n      case (y)\n        3'b000, 3'b001: z <= 1'b0;\n        3'b010: z <= 1'b0;\n        3'b011, 3'b100: z <= 1'b1;\n        default: z <= 1'b0;\n      endcase\n    end\n  end\nendmodule",
+      "rtl_raw_sha256": "e1189d10e6f9711f4a9ea2cf25c807678fdf016093e8adda26a214f5ae03ae59",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "653/1006 mismatches",
+      "raw_completion": "// Finite-state machine with state-assigned table\nmodule TopModule(input clk, input reset, input x, output reg z);\n  reg [2:0] y, next_y;\n  always @(*) begin\n    case (y)\n      3'b000: next_y = x ? 3'b001 : 3'b000;\n      3'b001: next_y = x ? 3'b100 : 3'b001;\n      3'b010: next_y = x ? 3'b001 : 3'b010;\n      3'b011: next_y = x ? 3'b010 : 3'b001;\n      3'b100: next_y = x ? 3'b100 : 3'b011;\n      default: next_y = 3'b000;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else y <= next_y;\n    z <= (y == 3'b011);\n  end\nendmodule",
+      "raw_completion_raw_sha256": "f56683e5276dd2eb37b67d2ac398e723474bacb508b6d649aae6841e5b12a44a",
+      "rtl": "module TopModule(input clk, input reset, input x, output reg z);\n  reg [2:0] y, next_y;\n  always @(*) begin\n    case (y)\n      3'b000: next_y = x ? 3'b001 : 3'b000;\n      3'b001: next_y = x ? 3'b100 : 3'b001;\n      3'b010: next_y = x ? 3'b001 : 3'b010;\n      3'b011: next_y = x ? 3'b010 : 3'b001;\n      3'b100: next_y = x ? 3'b100 : 3'b011;\n      default: next_y = 3'b000;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else y <= next_y;\n    z <= (y == 3'b011);\n  end\nendmodule",
+      "rtl_raw_sha256": "cb57ba42bffc64347c428bff6cf772aa2729e94550762fa47f9cf272944a99ef",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "494/1006 mismatches",
+      "raw_completion": "// Finite-state machine with synchronous active-high reset to state 0. The\n// transition table is explicitly given, and the next state and output stage\n// are both combinational functions of the current state and input.\nmodule TopModule(input  clk, input reset, input x, output reg z);\n  reg [2:0] y, y_next;\n  always @(*) begin\n    case (y)\n      3'b000: y_next = x ? 3'b001 : 3'b000;\n      3'b001: y_next = x ? 3'b100 : 3'b001;\n      3'b010: y_next = x ? 3'b001 : 3'b010;\n      3'b011: y_next = x ? 3'b010 : 3'b001;\n      3'b100: y_next = x ? 3'b100 : 3'b100;\n      default: y_next = 3'b000;\n    endcase\n    z = (y == 3'b011);\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else       y <= y_next;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "83ce817683ab4fdadc0ff9421f26c140aa979dd70420cd9680c0246c3a3bd5c1",
+      "rtl": "module TopModule(input  clk, input reset, input x, output reg z);\n  reg [2:0] y, y_next;\n  always @(*) begin\n    case (y)\n      3'b000: y_next = x ? 3'b001 : 3'b000;\n      3'b001: y_next = x ? 3'b100 : 3'b001;\n      3'b010: y_next = x ? 3'b001 : 3'b010;\n      3'b011: y_next = x ? 3'b010 : 3'b001;\n      3'b100: y_next = x ? 3'b100 : 3'b100;\n      default: y_next = 3'b000;\n    endcase\n    z = (y == 3'b011);\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else       y <= y_next;\n  end\nendmodule",
+      "rtl_raw_sha256": "8ebb5ccf3ac37b410d842a18f9c0de89937ec90c90c5242bad77d7b5a3750b0a",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "312/1006 mismatches",
+      "raw_completion": "// Finite-state machine, state-assigned table:\n//   Present state y[2:0] | Next state y[2:0] x=0, Next state y[2:0] x=1 | Output z\n//   000 | 000, 001 | 0\n//   001 | 001, 100 | 0\n//   010 | 010, 001 | 0\n//   011 | 001, 010 | 1\n//   100 | 011, 100 | 1\nmodule TopModule (\n    input  clk,\n    input  reset,\n    input  x,\n    output reg z\n);\n    reg [2:0] y, y_next;\n    always @(*) begin\n        case (y)\n            3'b000: y_next = x ? 3'b001 : 3'b000;\n            3'b001: y_next = x ? 3'b100 : 3'b001;\n            3'b010: y_next = x ? 3'b001 : 3'b010;\n            3'b011: y_next = x ? 3'b010 : 3'b001;\n            3'b100: y_next = x ? 3'b100 : 3'b011;\n            default: y_next = 3'b000;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (reset) begin\n            y <= 3'b000;\n            z <= 1'b0;\n        end else begin\n            y <= y_next;\n            case (y)\n                3'b000: z <= 1'b0;\n                3'b001: z <= 1'b0;\n                3'b010: z <= 1'b0;\n                3'b011: z <= 1'b1;\n                3'b100: z <= 1'b1;\n                default: z <= 1'b0;\n            endcase\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "e07bda87ebf6a8f628dc027386ad27c3e481d521a95a29cebeae0334fa757490",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    input  x,\n    output reg z\n);\n    reg [2:0] y, y_next;\n    always @(*) begin\n        case (y)\n            3'b000: y_next = x ? 3'b001 : 3'b000;\n            3'b001: y_next = x ? 3'b100 : 3'b001;\n            3'b010: y_next = x ? 3'b001 : 3'b010;\n            3'b011: y_next = x ? 3'b010 : 3'b001;\n            3'b100: y_next = x ? 3'b100 : 3'b011;\n            default: y_next = 3'b000;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (reset) begin\n            y <= 3'b000;\n            z <= 1'b0;\n        end else begin\n            y <= y_next;\n            case (y)\n                3'b000: z <= 1'b0;\n                3'b001: z <= 1'b0;\n                3'b010: z <= 1'b0;\n                3'b011: z <= 1'b1;\n                3'b100: z <= 1'b1;\n                default: z <= 1'b0;\n            endcase\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "50298a3bfe6c38818c5d58d5aacbfd80c8f95f580745a1e578222624e64c224d",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "494/1006 mismatches",
+      "raw_completion": "// Finite-state machine with state-assigned table, as in the description.\nmodule TopModule(input clk, input reset, input x, output reg z);\n  reg [2:0] y, y_next;\n  always @(*) begin\n    case (y)\n      3'b000: y_next = x ? 3'b001 : 3'b000;\n      3'b001: y_next = x ? 3'b100 : 3'b001;\n      3'b010: y_next = x ? 3'b001 : 3'b010;\n      3'b011: y_next = x ? 3'b010 : 3'b001;\n      3'b100: y_next = x ? 3'b100 : 3'b100;\n      default: y_next = 3'b000;\n    endcase\n    z = (y == 3'b011);\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else y <= y_next;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "ae11ff4ad076f41fd3d6aef874d569c163d0806385aed208e42138ee92fd8c38",
+      "rtl": "module TopModule(input clk, input reset, input x, output reg z);\n  reg [2:0] y, y_next;\n  always @(*) begin\n    case (y)\n      3'b000: y_next = x ? 3'b001 : 3'b000;\n      3'b001: y_next = x ? 3'b100 : 3'b001;\n      3'b010: y_next = x ? 3'b001 : 3'b010;\n      3'b011: y_next = x ? 3'b010 : 3'b001;\n      3'b100: y_next = x ? 3'b100 : 3'b100;\n      default: y_next = 3'b000;\n    endcase\n    z = (y == 3'b011);\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else y <= y_next;\n  end\nendmodule",
+      "rtl_raw_sha256": "47d3bb2c45c7f22467c91ff6e8368b667e6a408e49bc1d73beeb4a7a46d9cecc",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "652/1006 mismatches",
+      "raw_completion": "// Finite-state machine, state-assigned table, synchronous reset, inline register\n// inline register means the entire FSM is a single clock cycle -> maximal throughput\nmodule TopModule(\n    input  clk,\n    input  reset,\n    input  x,\n    output reg z\n);\n    reg [2:0] y, y_next;\n    always @(*) begin\n        case (y)\n            3'b000: y_next = x ? 3'b001 : 3'b000;\n            3'b001: y_next = x ? 3'b100 : 3'b001;\n            3'b010: y_next = x ? 3'b001 : 3'b001;\n            3'b011: y_next = x ? 3'b010 : 3'b001;\n            3'b100: y_next = x ? 3'b100 : 3'b011;\n            default: y_next = 3'b000;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (reset) begin\n            y <= 3'b000;\n            z <= 1'b0;\n        end else begin\n            y <= y_next;\n            z <= (y == 3'b011);\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "de6d144203165c04cda6431ebebb2a45ceb65fcc0f17c1c37a027cc26a470371",
+      "rtl": "module TopModule(\n    input  clk,\n    input  reset,\n    input  x,\n    output reg z\n);\n    reg [2:0] y, y_next;\n    always @(*) begin\n        case (y)\n            3'b000: y_next = x ? 3'b001 : 3'b000;\n            3'b001: y_next = x ? 3'b100 : 3'b001;\n            3'b010: y_next = x ? 3'b001 : 3'b001;\n            3'b011: y_next = x ? 3'b010 : 3'b001;\n            3'b100: y_next = x ? 3'b100 : 3'b011;\n            default: y_next = 3'b000;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (reset) begin\n            y <= 3'b000;\n            z <= 1'b0;\n        end else begin\n            y <= y_next;\n            z <= (y == 3'b011);\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "98cb46fd462f1b0b9c677d77a07c63582d7850b4835256c7abbf2954e56a3c0f",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "496/1006 mismatches",
+      "raw_completion": "// Finite-state machine with state-assigned table\nmodule TopModule(input clk, input reset, input x, output reg z);\n  reg [2:0] y, y_next;\n  always @(*) begin\n    case ({y, x})\n      3'b0000: y_next = 3'b000;\n      3'b0001: y_next = 3'b001;\n      3'b0010: y_next = 3'b000;\n      3'b0011: y_next = 3'b001;\n      3'b0100: y_next = 3'b010;\n      3'b0101: y_next = 3'b001;\n      3'b0110: y_next = 3'b001;\n      3'b0111: y_next = 3'b010;\n      3'b1000: y_next = 3'b011;\n      3'b1001: y_next = 3'b100;\n      default: y_next = 3'b000;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else y <= y_next;\n    z <= (y == 3'b011);\n  end\nendmodule",
+      "raw_completion_raw_sha256": "63b21e76d4ec03e9706a65bb613d3dad2bbd0103a47e700b547d6ede03b1fb7f",
+      "rtl": "module TopModule(input clk, input reset, input x, output reg z);\n  reg [2:0] y, y_next;\n  always @(*) begin\n    case ({y, x})\n      3'b0000: y_next = 3'b000;\n      3'b0001: y_next = 3'b001;\n      3'b0010: y_next = 3'b000;\n      3'b0011: y_next = 3'b001;\n      3'b0100: y_next = 3'b010;\n      3'b0101: y_next = 3'b001;\n      3'b0110: y_next = 3'b001;\n      3'b0111: y_next = 3'b010;\n      3'b1000: y_next = 3'b011;\n      3'b1001: y_next = 3'b100;\n      default: y_next = 3'b000;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else y <= y_next;\n    z <= (y == 3'b011);\n  end\nendmodule",
+      "rtl_raw_sha256": "4bd85690337feecb7e0ef7de275b707849bb1f1b29207727fcf79b7987cadd4d",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "494/1006 mismatches",
+      "raw_completion": "// Finite-state machine, state-assigned table. Same as the reference.\nmodule TopModule(input clk, input reset, input x, output reg z);\n  reg [2:0] y, yn;\n  always @(*) begin\n    case (y)\n      3'b000: yn = x ? 3'b001 : 3'b000;\n      3'b001: yn = x ? 3'b100 : 3'b001;\n      3'b010: yn = x ? 3'b001 : 3'b010;\n      3'b011: yn = x ? 3'b010 : 3'b001;\n      3'b100: yn = x ? 3'b100 : 3'b100;\n      default: yn = 3'b000;\n    endcase\n    z = (y == 3'b011);\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else       y <= yn;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "7b70c9c4df36dda9fb917c7df4d346af7d4682513271894782f84d93d8ea1684",
+      "rtl": "module TopModule(input clk, input reset, input x, output reg z);\n  reg [2:0] y, yn;\n  always @(*) begin\n    case (y)\n      3'b000: yn = x ? 3'b001 : 3'b000;\n      3'b001: yn = x ? 3'b100 : 3'b001;\n      3'b010: yn = x ? 3'b001 : 3'b010;\n      3'b011: yn = x ? 3'b010 : 3'b001;\n      3'b100: yn = x ? 3'b100 : 3'b100;\n      default: yn = 3'b000;\n    endcase\n    z = (y == 3'b011);\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else       y <= yn;\n  end\nendmodule",
+      "rtl_raw_sha256": "ba68ed8c2304806fd32ee4f54826992791a608b9755a0da73a0811a21e015f10",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "496/1006 mismatches",
+      "raw_completion": "// Finite-state machine with state-assigned table\nmodule TopModule(input clk, input reset, input x, output reg z);\n  reg [2:0] y, ny;\n  always @(*) begin\n    case (y[2:0])\n      3'b000: ny = (x) ? 3'b001 : 3'b000;\n      3'b001: ny = (x) ? 3'b100 : 3'b001;\n      3'b010: ny = (x) ? 3'b001 : 3'b010;\n      3'b011: ny = (x) ? 3'b010 : 3'b001;\n      3'b100: ny = (x) ? 3'b100 : 3'b100;\n      default: ny = 3'b000;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else       y <= ny;\n    z <= (y == 3'b011);\n  end\nendmodule",
+      "raw_completion_raw_sha256": "4cb594199d03071520d8cd6671091e2aa36041640d9f0068b8038cd2eb8bf644",
+      "rtl": "module TopModule(input clk, input reset, input x, output reg z);\n  reg [2:0] y, ny;\n  always @(*) begin\n    case (y[2:0])\n      3'b000: ny = (x) ? 3'b001 : 3'b000;\n      3'b001: ny = (x) ? 3'b100 : 3'b001;\n      3'b010: ny = (x) ? 3'b001 : 3'b010;\n      3'b011: ny = (x) ? 3'b010 : 3'b001;\n      3'b100: ny = (x) ? 3'b100 : 3'b100;\n      default: ny = 3'b000;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else       y <= ny;\n    z <= (y == 3'b011);\n  end\nendmodule",
+      "rtl_raw_sha256": "e787f0149aff02885bacd80adccd4bba1c61bcd2022e7e5c16889358cd2799c3",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "494/1006 mismatches",
+      "raw_completion": "// Finite-state machine, state-assigned table, synchronous reset\nmodule TopModule (\n  input  clk,\n  input  reset,\n  input  x,\n  output reg z\n);\n  reg [2:0] y, ny;\n  always @(*) begin\n    case (y[2:0])\n      3'b000: ny = x ? 3'b001 : 3'b000;\n      3'b001: ny = x ? 3'b100 : 3'b001;\n      3'b010: ny = x ? 3'b001 : 3'b010;\n      3'b011: ny = x ? 3'b010 : 3'b001;\n      3'b100: ny = x ? 3'b100 : 3'b100;\n      default: ny = 3'b000;\n    endcase\n    z = (y == 3'b011);\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else       y <= ny;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "cad447c0b473af21a737c85f14f4071ec0f64faf902ab631ef318a8319afe954",
+      "rtl": "module TopModule (\n  input  clk,\n  input  reset,\n  input  x,\n  output reg z\n);\n  reg [2:0] y, ny;\n  always @(*) begin\n    case (y[2:0])\n      3'b000: ny = x ? 3'b001 : 3'b000;\n      3'b001: ny = x ? 3'b100 : 3'b001;\n      3'b010: ny = x ? 3'b001 : 3'b010;\n      3'b011: ny = x ? 3'b010 : 3'b001;\n      3'b100: ny = x ? 3'b100 : 3'b100;\n      default: ny = 3'b000;\n    endcase\n    z = (y == 3'b011);\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else       y <= ny;\n  end\nendmodule",
+      "rtl_raw_sha256": "220c4a597aa06d4f5d697680fb6048bda6fd6a448c714277ca14366c7f4365af",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: syntax error",
+      "raw_completion": "// Finite-state machine with state-assigned table. Same as the reference\n// design, but explicitly named all registers and wires (no register\n// inferred for the sequential parts, to show explicitly which is a\n// register and which is a wire).\nmodule TopModule(input  clk, input  reset, input  x, output z);\n  reg [2:0] y, yn;\n  wire [2:0] yp;\n  wire [2:0] ypp;\n  reg zp;\n  reg zpp;\n  always @(*) begin\n    case (y)\n      3'b000: yp = 3'b000; ypp = 3'b001;\n      3'b001: yp = 3'b001; ypp = 3'b100;\n      3'b010: yp = 3'b010; ypp = 3'b001;\n      3'b011: yp = 3'b001; ypp = 3'b010;\n      3'b100: yp = 3'b011; ypp = 3'b100;\n      default: yp = 3'b000; ypp = 3'b000;\n    endcase\n  end\n  always @(*) begin\n    case (yp)\n      3'b000: zp = 1'b0;\n      3'b001: zp = 1'b0;\n      3'b010: zp = 1'b0;\n      3'b011: zp = 1'b1;\n      3'b100: zp = 1'b1;\n      default: zp = 1'b0;\n    endcase\n  end\n  always @(*) begin\n    case (ypp)\n      3'b000: zpp = 1'b0;\n      3'b001: zpp = 1'b0;\n      3'b010: zpp = 1'b0;\n      3'b011: zpp = 1'b1;\n      3'b100: zpp = 1'b1;\n      default: zpp = 1'b0;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else y <= yn;\n  end\n  always @(*) yn = yp;\n  assign z = zpp;\nendmodule",
+      "raw_completion_raw_sha256": "95362999d08b7424a8ff15df8df74f180c6dcc35b9e284656c74a4a78d8161ad",
+      "rtl": "module TopModule(input  clk, input  reset, input  x, output z);\n  reg [2:0] y, yn;\n  wire [2:0] yp;\n  wire [2:0] ypp;\n  reg zp;\n  reg zpp;\n  always @(*) begin\n    case (y)\n      3'b000: yp = 3'b000; ypp = 3'b001;\n      3'b001: yp = 3'b001; ypp = 3'b100;\n      3'b010: yp = 3'b010; ypp = 3'b001;\n      3'b011: yp = 3'b001; ypp = 3'b010;\n      3'b100: yp = 3'b011; ypp = 3'b100;\n      default: yp = 3'b000; ypp = 3'b000;\n    endcase\n  end\n  always @(*) begin\n    case (yp)\n      3'b000: zp = 1'b0;\n      3'b001: zp = 1'b0;\n      3'b010: zp = 1'b0;\n      3'b011: zp = 1'b1;\n      3'b100: zp = 1'b1;\n      default: zp = 1'b0;\n    endcase\n  end\n  always @(*) begin\n    case (ypp)\n      3'b000: zpp = 1'b0;\n      3'b001: zpp = 1'b0;\n      3'b010: zpp = 1'b0;\n      3'b011: zpp = 1'b1;\n      3'b100: zpp = 1'b1;\n      default: zpp = 1'b0;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (reset) y <= 3'b000;\n    else y <= yn;\n  end\n  always @(*) yn = yp;\n  assign z = zpp;\nendmodule",
+      "rtl_raw_sha256": "2059f59ad38b3991a89025e003e3c4d0e08bceb5f606dd1bb54207238943d5fe",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "494/1006 mismatches",
+      "raw_completion": "// Finite-state machine, state-assigned table, synchronous reset\nmodule TopModule (\n    input  clk,\n    input  reset,\n    input  x,\n    output reg z\n);\n    reg [2:0] y, y_next;\n    always @(*) begin\n        case (y)\n            3'b000: y_next = x ? 3'b001 : 3'b000;\n            3'b001: y_next = x ? 3'b100 : 3'b001;\n            3'b010: y_next = x ? 3'b001 : 3'b010;\n            3'b011: y_next = x ? 3'b010 : 3'b001;\n            3'b100: y_next = x ? 3'b100 : 3'b100;\n            default: y_next = 3'b000;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (reset) begin\n            y <= 3'b000;\n            z <= 1'b0;\n        end else begin\n            y <= y_next;\n            z <= (y == 3'b011);\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "f4629f91bf6ba746a60a546cca9a79fc5103895e14f84ec39f7adf402d5cc743",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    input  x,\n    output reg z\n);\n    reg [2:0] y, y_next;\n    always @(*) begin\n        case (y)\n            3'b000: y_next = x ? 3'b001 : 3'b000;\n            3'b001: y_next = x ? 3'b100 : 3'b001;\n            3'b010: y_next = x ? 3'b001 : 3'b010;\n            3'b011: y_next = x ? 3'b010 : 3'b001;\n            3'b100: y_next = x ? 3'b100 : 3'b100;\n            default: y_next = 3'b000;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (reset) begin\n            y <= 3'b000;\n            z <= 1'b0;\n        end else begin\n            y <= y_next;\n            z <= (y == 3'b011);\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "0dfac6aba58169d385fd90f8da1214bee73157b538744745e23c99a985e8b230",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 3,
+    "fail": 17
+  },
+  "testbench_raw_sha256": "2cceb5825bb9bec4209b6bded84d312c22e080c83049730669bb0f947a6ed9b3",
+  "training_seed": 2
+}

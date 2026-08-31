@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob110_fsm2",
+  "problem_seed": 8991270692012532960,
+  "prompt_raw_sha256": "afbc3d832ca243dd6bec0fcc85886fdf243dd5606bef486cd9d5885de813fc1f",
+  "reference_raw_sha256": "6971540f20cfd7d212f76470f91469ccc24dae102e62a387b8aabef10a98b9b4",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "70/241 mismatches",
+      "raw_completion": "// Moore state machine, two inputs, one output, asynchronous reset to OFF.\nmodule TopModule(input clk, input areset, input j, input k, output reg out);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'b00: nextstate = (j) ? 2'b01 : 2'b00;\n      2'b01: nextstate = (k) ? 2'b10 : 2'b01;\n      2'b10: nextstate = (k) ? 2'b10 : 2'b00;\n      2'b11: nextstate = (j) ? 2'b01 : 2'b11;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= nextstate;\n  end\n  always @(*) begin\n    case (state)\n      2'b00: out = 1'b0;\n      2'b01: out = 1'b1;\n      2'b10: out = 1'b1;\n      2'b11: out = 1'b0;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "6967888e8d12d26c200e668d183417cffd5ef537fd30ba74ee073f35f7b671d6",
+      "rtl": "module TopModule(input clk, input areset, input j, input k, output reg out);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'b00: nextstate = (j) ? 2'b01 : 2'b00;\n      2'b01: nextstate = (k) ? 2'b10 : 2'b01;\n      2'b10: nextstate = (k) ? 2'b10 : 2'b00;\n      2'b11: nextstate = (j) ? 2'b01 : 2'b11;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= nextstate;\n  end\n  always @(*) begin\n    case (state)\n      2'b00: out = 1'b0;\n      2'b01: out = 1'b1;\n      2'b10: out = 1'b1;\n      2'b11: out = 1'b0;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "d813874409ca2ddd63057fd361dcda1373e33a2bf7f9ecffcbc3e59fe71dcbbd",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "22/241 mismatches",
+      "raw_completion": "// Moore state machine, two inputs, one output, asynchronous reset.\nmodule TopModule (\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output reg out\n);\n    reg [1:0] state, next_state;\n    always @(*) begin\n        case (state)\n            2'b00: next_state = j ? 2'b01 : 2'b00;\n            2'b01: next_state = k ? 2'b00 : 2'b01;\n            default: next_state = 2'b00;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) state <= 2'b00;\n        else state <= next_state;\n    end\n    always @(*) out = (state == 2'b01);\nendmodule",
+      "raw_completion_raw_sha256": "d58cdec2cf83d94feb89c69a42c136db6b1b62d8dcd18dfd7cd45a1b4bbb31f7",
+      "rtl": "module TopModule (\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output reg out\n);\n    reg [1:0] state, next_state;\n    always @(*) begin\n        case (state)\n            2'b00: next_state = j ? 2'b01 : 2'b00;\n            2'b01: next_state = k ? 2'b00 : 2'b01;\n            default: next_state = 2'b00;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) state <= 2'b00;\n        else state <= next_state;\n    end\n    always @(*) out = (state == 2'b01);\nendmodule",
+      "rtl_raw_sha256": "9908c3b249e90963f8247d6f84d7180b9df79443d69d2f0bb7791c58b198e8a2",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "100/241 mismatches",
+      "raw_completion": "// Moore state machine\nmodule TopModule (\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output reg out\n);\n    reg [1:0] state, next_state;\n    always @(*) begin\n        case (state)\n            2'b00: next_state = j ? 2'b01 : 2'b00;\n            2'b01: next_state = k ? 2'b10 : 2'b01;\n            2'b10: next_state = k ? 2'b10 : 2'b00;\n            2'b11: next_state = j ? 2'b01 : 2'b11;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) begin\n            state <= 2'b00;\n            out <= 1'b0;\n        end else begin\n            state <= next_state;\n            out <= (state == 2'b01);\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "5ab4bdf3885e3164d6645d508b05ac64df4b8002f291f82245d8c171769687ce",
+      "rtl": "module TopModule (\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output reg out\n);\n    reg [1:0] state, next_state;\n    always @(*) begin\n        case (state)\n            2'b00: next_state = j ? 2'b01 : 2'b00;\n            2'b01: next_state = k ? 2'b10 : 2'b01;\n            2'b10: next_state = k ? 2'b10 : 2'b00;\n            2'b11: next_state = j ? 2'b01 : 2'b11;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) begin\n            state <= 2'b00;\n            out <= 1'b0;\n        end else begin\n            state <= next_state;\n            out <= (state == 2'b01);\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "a9209e516529660fbbd516310f02cf2251fecf29fa2a19054e43c2ce64157f57",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:13: error: state_next is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Moore state machine, two inputs, one output.\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output out\n);\n    reg [1:0] state, nextstate;\n    wire [1:0] state_next;\n    reg out_reg;\n    always @(*) begin\n        case (state)\n            2'b00: begin out_reg = 1'b0; state_next = (j) ? 2'b01 : 2'b00; end\n            2'b01: begin out_reg = 1'b1; state_next = (k) ? 2'b10 : 2'b01; end\n            2'b10: begin out_reg = 1'b1; state_next = (k) ? 2'b10 : 2'b10; end\n            2'b11: begin out_reg = 1'b0; state_next = (j) ? 2'b01 : 2'b11; end\n            default: begin out_reg = 1'b0; state_next = 2'b00; end\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) state <= 2'b00;\n        else state <= state_next;\n    end\n    assign out = out_reg;\nendmodule",
+      "raw_completion_raw_sha256": "a678596c2f481474d13348b8e07ff8967a993f9168d4530587d3a9fdefed89cf",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output out\n);\n    reg [1:0] state, nextstate;\n    wire [1:0] state_next;\n    reg out_reg;\n    always @(*) begin\n        case (state)\n            2'b00: begin out_reg = 1'b0; state_next = (j) ? 2'b01 : 2'b00; end\n            2'b01: begin out_reg = 1'b1; state_next = (k) ? 2'b10 : 2'b01; end\n            2'b10: begin out_reg = 1'b1; state_next = (k) ? 2'b10 : 2'b10; end\n            2'b11: begin out_reg = 1'b0; state_next = (j) ? 2'b01 : 2'b11; end\n            default: begin out_reg = 1'b0; state_next = 2'b00; end\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) state <= 2'b00;\n        else state <= state_next;\n    end\n    assign out = out_reg;\nendmodule",
+      "rtl_raw_sha256": "d55ef3052de1545b73cf43a46114d5426b600b7a76caec15c2fa3e141c3d6c6c",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "136/241 mismatches",
+      "raw_completion": "// Moore state machine, two inputs, one output, asynchronous reset.\nmodule TopModule(input  clk, input  areset, input  j, input  k, output out);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'd0: nextstate = j ? 2'd0 : 2'd1;\n      2'd1: nextstate = k ? 2'd1 : 2'd0;\n      default: nextstate = 2'd0;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'd0;\n    else state <= nextstate;\n  end\n  assign out = (state == 2'd1);\nendmodule",
+      "raw_completion_raw_sha256": "e8d2b70949902965a4b110fd2d05c8afd9c3a2bc9c1a8e41413669fefa4e25bd",
+      "rtl": "module TopModule(input  clk, input  areset, input  j, input  k, output out);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'd0: nextstate = j ? 2'd0 : 2'd1;\n      2'd1: nextstate = k ? 2'd1 : 2'd0;\n      default: nextstate = 2'd0;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'd0;\n    else state <= nextstate;\n  end\n  assign out = (state == 2'd1);\nendmodule",
+      "rtl_raw_sha256": "a4cf7e5a95b48e4977a1320c8d546c664e4344eefc31c8c9736412fc7aed5ea6",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "120/241 mismatches",
+      "raw_completion": "// Moore state machine, two inputs, one output, with active-high reset\nmodule TopModule(input clk, input areset, input j, input k, output reg out);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: next_state = j ? 2'b00 : 2'b01;\n      2'b01: next_state = j ? 2'b00 : 2'b10;\n      2'b10: next_state = k ? 2'b10 : 2'b01;\n      2'b11: next_state = k ? 2'b10 : 2'b01;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\n  always @(*) begin\n    case (state)\n      2'b00: out = 1'b0;\n      2'b01: out = 1'b0;\n      2'b10: out = 1'b1;\n      2'b11: out = 1'b1;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "a20fcb02731a87df26e4cba59d20e0cfe35d165feb4d177540b1d35793b4ef41",
+      "rtl": "module TopModule(input clk, input areset, input j, input k, output reg out);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: next_state = j ? 2'b00 : 2'b01;\n      2'b01: next_state = j ? 2'b00 : 2'b10;\n      2'b10: next_state = k ? 2'b10 : 2'b01;\n      2'b11: next_state = k ? 2'b10 : 2'b01;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\n  always @(*) begin\n    case (state)\n      2'b00: out = 1'b0;\n      2'b01: out = 1'b0;\n      2'b10: out = 1'b1;\n      2'b11: out = 1'b1;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "f1864fbd5e84cc4e21f490029724e9c472c4be033d685dcca93519d9adcbaf06",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "100/241 mismatches",
+      "raw_completion": "// Moore state machine, one hot state encoding\nmodule TopModule (\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output reg out\n);\n    reg [1:0] state, next_state;\n    always @(*) begin\n        case (state)\n            2'b00: next_state = j ? 2'b01 : 2'b00;\n            2'b01: next_state = k ? 2'b10 : 2'b01;\n            2'b10: next_state = k ? 2'b10 : 2'b00;\n            2'b11: next_state = j ? 2'b01 : 2'b11;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) begin\n            state <= 2'b00;\n            out <= 1'b0;\n        end else begin\n            state <= next_state;\n            out <= (state == 2'b01);\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "48a5913b34db1620458eafd46abfa2a518ed44a7fa418d8f2ca2a9ceefeb331b",
+      "rtl": "module TopModule (\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output reg out\n);\n    reg [1:0] state, next_state;\n    always @(*) begin\n        case (state)\n            2'b00: next_state = j ? 2'b01 : 2'b00;\n            2'b01: next_state = k ? 2'b10 : 2'b01;\n            2'b10: next_state = k ? 2'b10 : 2'b00;\n            2'b11: next_state = j ? 2'b01 : 2'b11;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) begin\n            state <= 2'b00;\n            out <= 1'b0;\n        end else begin\n            state <= next_state;\n            out <= (state == 2'b01);\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "a9209e516529660fbbd516310f02cf2251fecf29fa2a19054e43c2ce64157f57",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "92/241 mismatches",
+      "raw_completion": "// Moore state machine, two inputs, one output.\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output reg out\n);\n    parameter [1:0]\n        OFF = 2'd0,\n        ON  = 2'd1;\n    reg [1:0] state, nextstate;\n    always @(*) begin\n        case (state)\n            OFF: nextstate = j ? ON : OFF;\n            ON:  nextstate = k ? OFF : ON;\n            default: nextstate = OFF;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) begin\n            state <= OFF;\n            out <= 1'b0;\n        end else begin\n            state <= nextstate;\n            out <= (state == ON);\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "277c583388b5797d8af758a3c65f753948c43df61b893eef077f5938ee85dd9b",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output reg out\n);\n    parameter [1:0]\n        OFF = 2'd0,\n        ON  = 2'd1;\n    reg [1:0] state, nextstate;\n    always @(*) begin\n        case (state)\n            OFF: nextstate = j ? ON : OFF;\n            ON:  nextstate = k ? OFF : ON;\n            default: nextstate = OFF;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) begin\n            state <= OFF;\n            out <= 1'b0;\n        end else begin\n            state <= nextstate;\n            out <= (state == ON);\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "ae72e924e799d6ffd99471ac6cebc2f54a545ffdd78633caab946d58b54ea146",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: out is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Moore state machine, two inputs, one output, asynchronous reset to OFF\nmodule TopModule(input  clk, input  areset, input  j, input  k, output out);\n  reg [1:0] state, nextstate;\n  always @(posedge clk)\n    if (areset) state <= 2'b00;\n    else state <= nextstate;\n  always @(j,k,state) begin\n    case (state)\n      2'b00: begin out=0; if (j) nextstate=2'b01; else nextstate=2'b00; end\n      2'b01: begin out=0; if (k) nextstate=2'b10; else nextstate=2'b01; end\n      2'b10: begin out=1; if (k) nextstate=2'b10; else nextstate=2'b10; end\n      2'b11: begin out=1; if (j) nextstate=2'b01; else nextstate=2'b11; end\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "cc486e96020a79d22a569fc60bc0a614320e59996d11d00e31da525b8ad680d8",
+      "rtl": "module TopModule(input  clk, input  areset, input  j, input  k, output out);\n  reg [1:0] state, nextstate;\n  always @(posedge clk)\n    if (areset) state <= 2'b00;\n    else state <= nextstate;\n  always @(j,k,state) begin\n    case (state)\n      2'b00: begin out=0; if (j) nextstate=2'b01; else nextstate=2'b00; end\n      2'b01: begin out=0; if (k) nextstate=2'b10; else nextstate=2'b01; end\n      2'b10: begin out=1; if (k) nextstate=2'b10; else nextstate=2'b10; end\n      2'b11: begin out=1; if (j) nextstate=2'b01; else nextstate=2'b11; end\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "40a407a6760b8f416471de3bc376a719a622f22453d286f4ad58460222770513",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "108/241 mismatches",
+      "raw_completion": "// Moore state machine, two inputs, one output, asynchronous reset to OFF.\nmodule TopModule(input  clk, input  areset, input  j, input  k, output reg out);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'b00: nextstate = j ? 2'b01 : 2'b00;\n      2'b01: nextstate = j ? 2'b01 : 2'b10;\n      2'b10: nextstate = k ? 2'b10 : 2'b00;\n      2'b11: nextstate = k ? 2'b10 : 2'b00;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= nextstate;\n  end\n  always @(*) out = (state == 2'b10);\nendmodule",
+      "raw_completion_raw_sha256": "515feef8609d34dff34d47926bce247def4ea4a811f4d608b4e9ee7bfbc1b89c",
+      "rtl": "module TopModule(input  clk, input  areset, input  j, input  k, output reg out);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'b00: nextstate = j ? 2'b01 : 2'b00;\n      2'b01: nextstate = j ? 2'b01 : 2'b10;\n      2'b10: nextstate = k ? 2'b10 : 2'b00;\n      2'b11: nextstate = k ? 2'b10 : 2'b00;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= nextstate;\n  end\n  always @(*) out = (state == 2'b10);\nendmodule",
+      "rtl_raw_sha256": "03d2defd7ae9abb9287548c4edbc357f10f8c1bb2ef97884d9e3236f9b85f0fc",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "92/241 mismatches",
+      "raw_completion": "// Moore state machine, two inputs, one output.\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output reg out\n);\n    reg [1:0] state, next_state;\n    always @(*) begin\n        case (state)\n            2'b00: next_state = j ? 2'b01 : 2'b00;\n            2'b01: next_state = k ? 2'b00 : 2'b01;\n            default: next_state = 2'b00;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) begin\n            state <= 2'b00;\n            out <= 1'b0;\n        end else begin\n            state <= next_state;\n            out <= (state == 2'b01);\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "ad4edd0b42732a46de5a47c5a43170e36bb8710e308eb29bcf8f7fade7f9174c",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output reg out\n);\n    reg [1:0] state, next_state;\n    always @(*) begin\n        case (state)\n            2'b00: next_state = j ? 2'b01 : 2'b00;\n            2'b01: next_state = k ? 2'b00 : 2'b01;\n            default: next_state = 2'b00;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) begin\n            state <= 2'b00;\n            out <= 1'b0;\n        end else begin\n            state <= next_state;\n            out <= (state == 2'b01);\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "37b948b696e5ec8625416ed3c4e970805abf04ac330cfb1f4e4d1ed42569941a",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "108/241 mismatches",
+      "raw_completion": "// Moore state machine, two inputs, one output, active-high reset.\nmodule TopModule(input  clk, input  areset, input  j, input  k, output reg out);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'b00: nextstate = j ? 2'b01 : 2'b00;\n      2'b01: nextstate = j ? 2'b01 : 2'b10;\n      2'b10: nextstate = k ? 2'b10 : 2'b00;\n      2'b11: nextstate = k ? 2'b10 : 2'b00;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= nextstate;\n  end\n  always @(*) out = (state == 2'b10);\nendmodule",
+      "raw_completion_raw_sha256": "c9784b82f5516f1a8c918668ada33e4912a36a8cdd602279626812fddc518573",
+      "rtl": "module TopModule(input  clk, input  areset, input  j, input  k, output reg out);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'b00: nextstate = j ? 2'b01 : 2'b00;\n      2'b01: nextstate = j ? 2'b01 : 2'b10;\n      2'b10: nextstate = k ? 2'b10 : 2'b00;\n      2'b11: nextstate = k ? 2'b10 : 2'b00;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= nextstate;\n  end\n  always @(*) out = (state == 2'b10);\nendmodule",
+      "rtl_raw_sha256": "03d2defd7ae9abb9287548c4edbc357f10f8c1bb2ef97884d9e3236f9b85f0fc",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "21/241 mismatches",
+      "raw_completion": "// Moore state machine, two inputs, one output, with the register stage\n// explicitly synthesized as a FF (no register stage = first path is the\n// longuest, the register stage is inserted automatically).\nmodule TopModule(input clk, input areset, input j, input k, output reg out);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'b00: begin out = 1'b0; if (j) nextstate = 2'b01; else nextstate = 2'b00; end\n      2'b01: begin out = 1'b1; if (k) nextstate = 2'b10; else nextstate = 2'b01; end\n      2'b10: begin out = 1'b0; if (j) nextstate = 2'b01; else nextstate = 2'b10; end\n      default: begin out = 1'b0; nextstate = 2'b00; end\n    endcase\n  end\n  always @(posedge clk) if (areset) state <= 2'b00; else state <= nextstate;\nendmodule",
+      "raw_completion_raw_sha256": "074123167c2193b921c09ea111ac42b185e26ec972f3a141f9ac2c855fb62ca5",
+      "rtl": "module TopModule(input clk, input areset, input j, input k, output reg out);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'b00: begin out = 1'b0; if (j) nextstate = 2'b01; else nextstate = 2'b00; end\n      2'b01: begin out = 1'b1; if (k) nextstate = 2'b10; else nextstate = 2'b01; end\n      2'b10: begin out = 1'b0; if (j) nextstate = 2'b01; else nextstate = 2'b10; end\n      default: begin out = 1'b0; nextstate = 2'b00; end\n    endcase\n  end\n  always @(posedge clk) if (areset) state <= 2'b00; else state <= nextstate;\nendmodule",
+      "rtl_raw_sha256": "96698598c34f86bca834db432af0859070710db1f8df08a85e0bac2d3aa87124",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "118/241 mismatches",
+      "raw_completion": "// Moore state machine, two inputs, one output.\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output reg out\n);\n    reg [1:0] state, next_state;\n    always @(*) begin\n        case (state)\n            2'b00: next_state = j ? 2'b01 : 2'b00;\n            2'b01: next_state = k ? 2'b00 : 2'b01;\n            default: next_state = 2'b00;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) state <= 2'b00;\n        else state <= next_state;\n    end\n    always @(posedge clk) begin\n        out <= (state == 2'b01);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "7f2295d67702ed96a2d1a740b7fa6a93168272785ed13cc2dff7bddc50f05176",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output reg out\n);\n    reg [1:0] state, next_state;\n    always @(*) begin\n        case (state)\n            2'b00: next_state = j ? 2'b01 : 2'b00;\n            2'b01: next_state = k ? 2'b00 : 2'b01;\n            default: next_state = 2'b00;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) state <= 2'b00;\n        else state <= next_state;\n    end\n    always @(posedge clk) begin\n        out <= (state == 2'b01);\n    end\nendmodule",
+      "rtl_raw_sha256": "5743558b4f3395bbe2d3c1cb6473b9785f50baae83d5931fc39e1d0d943ddbad",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "114/241 mismatches",
+      "raw_completion": "// Moore state machine, two inputs, one output, asynchronous reset to OFF\nmodule TopModule(input  clk, input  areset, input  j, input  k, output reg out);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: next_state = j ? 2'b01 : 2'b00;\n      2'b01: next_state = j ? 2'b01 : 2'b10;\n      2'b10: next_state = k ? 2'b10 : 2'b00;\n      2'b11: next_state = k ? 2'b10 : 2'b00;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\n  always @(posedge clk) begin\n    out <= (state == 2'b00);\n  end\nendmodule",
+      "raw_completion_raw_sha256": "d471c019f60d5c19e091a62bc902f922f83c5e8f3acf1aa4db133f73235eb337",
+      "rtl": "module TopModule(input  clk, input  areset, input  j, input  k, output reg out);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: next_state = j ? 2'b01 : 2'b00;\n      2'b01: next_state = j ? 2'b01 : 2'b10;\n      2'b10: next_state = k ? 2'b10 : 2'b00;\n      2'b11: next_state = k ? 2'b10 : 2'b00;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\n  always @(posedge clk) begin\n    out <= (state == 2'b00);\n  end\nendmodule",
+      "rtl_raw_sha256": "d19bac168bad498e8d70a4f2ba0706e37e2e41706e69cc92a0237a84d7236a75",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "92/241 mismatches",
+      "raw_completion": "// Moore state machine, two inputs, one output.\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output reg out\n);\n    parameter OFF = 2'b00, ON = 2'b01;\n    reg [1:0] state, next_state;\n    always @(*) begin\n        case (state)\n            OFF: next_state = j ? ON : OFF;\n            ON: next_state = k ? OFF : ON;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) begin\n            state <= OFF;\n            out <= 1'b0;\n        end else begin\n            state <= next_state;\n            out <= (state == ON);\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b3da9964bb74bbd35bd9f6c6e3c9a6496f9a0c7b894f4acebc87ebff604975cf",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output reg out\n);\n    parameter OFF = 2'b00, ON = 2'b01;\n    reg [1:0] state, next_state;\n    always @(*) begin\n        case (state)\n            OFF: next_state = j ? ON : OFF;\n            ON: next_state = k ? OFF : ON;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) begin\n            state <= OFF;\n            out <= 1'b0;\n        end else begin\n            state <= next_state;\n            out <= (state == ON);\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "192001c20076515adea0e06e0ab6885aabbba503f166e0bc8433e940a7703190",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "22/241 mismatches",
+      "raw_completion": "// Moore state machine, two inputs, one output, active-high reset.\nmodule TopModule(input clk, input areset, input j, input k, output out);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: next_state = j ? 2'b01 : 2'b00;\n      2'b01: next_state = k ? 2'b00 : 2'b01;\n      default: next_state = 2'b00;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\n  assign out = (state == 2'b01);\nendmodule",
+      "raw_completion_raw_sha256": "d89bd3514474f088647bd9c560a37be2fb5582b9236d2ce497918cae6ddd9ebb",
+      "rtl": "module TopModule(input clk, input areset, input j, input k, output out);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: next_state = j ? 2'b01 : 2'b00;\n      2'b01: next_state = k ? 2'b00 : 2'b01;\n      default: next_state = 2'b00;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\n  assign out = (state == 2'b01);\nendmodule",
+      "rtl_raw_sha256": "a9868914fd0ed41640aa648fde1215e9420abc52ea136beb3aa1cdcecccccff1",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "120/241 mismatches",
+      "raw_completion": "// Moore state machine, two inputs, one output. Same as the long-hand\n// combinational next-state logic.\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output reg out\n);\n    reg [1:0] state;\n    always @(posedge clk) begin\n        if (areset) state <= 2'b00;\n        else case (state)\n            2'b00: begin out <= 1'b0; if (j) state <= 2'b01; end\n            2'b01: begin out <= 1'b1; if (k) state <= 2'b10; else state <= 2'b00; end\n            2'b10: begin out <= 1'b1; if (k) state <= 2'b11; else state <= 2'b01; end\n            2'b11: begin out <= 1'b0; if (j) state <= 2'b00; else state <= 2'b10; end\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "aed4b4f0a2309e2901ae950d9fcf6267c7a7d8b521353b3d5b1f09d62c4d923f",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output reg out\n);\n    reg [1:0] state;\n    always @(posedge clk) begin\n        if (areset) state <= 2'b00;\n        else case (state)\n            2'b00: begin out <= 1'b0; if (j) state <= 2'b01; end\n            2'b01: begin out <= 1'b1; if (k) state <= 2'b10; else state <= 2'b00; end\n            2'b10: begin out <= 1'b1; if (k) state <= 2'b11; else state <= 2'b01; end\n            2'b11: begin out <= 1'b0; if (j) state <= 2'b00; else state <= 2'b10; end\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "cc018409a1862b90de6c6601af303920c8c536f4f52707f77f7e49c2534ede0c",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "38/241 mismatches",
+      "raw_completion": "// Moore state machine, two inputs, one output.\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output reg out\n);\n    // State encoding: OFF=0, ON=1.\n    reg [1:0] state, next_state;\n    always @(*) begin\n        case (state)\n            2'b00: next_state = (j) ? 2'b01 : 2'b00;\n            2'b01: next_state = (k) ? 2'b10 : 2'b01;\n            2'b10: next_state = (k) ? 2'b10 : 2'b00;\n            2'b11: next_state = (j) ? 2'b01 : 2'b00;\n            default: next_state = 2'b00;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) state <= 2'b00;\n        else state <= next_state;\n    end\n    always @(*) out = (state == 2'b01);\nendmodule",
+      "raw_completion_raw_sha256": "8665a50387a29e082cc837e3564f0c4e38648522437b1eba0427a94a3a32d1cf",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  j,\n    input  k,\n    output reg out\n);\n    // State encoding: OFF=0, ON=1.\n    reg [1:0] state, next_state;\n    always @(*) begin\n        case (state)\n            2'b00: next_state = (j) ? 2'b01 : 2'b00;\n            2'b01: next_state = (k) ? 2'b10 : 2'b01;\n            2'b10: next_state = (k) ? 2'b10 : 2'b00;\n            2'b11: next_state = (j) ? 2'b01 : 2'b00;\n            default: next_state = 2'b00;\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) state <= 2'b00;\n        else state <= next_state;\n    end\n    always @(*) out = (state == 2'b01);\nendmodule",
+      "rtl_raw_sha256": "6ec50615138e6d1d5c7257ebc86f42ce20fdc77f065d98ff3221e8f577f503ab",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "172/241 mismatches",
+      "raw_completion": "// Moore state machine, two inputs, one output, asynchronous reset.\nmodule TopModule(input clk, input areset, input j, input k, output reg out);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: next_state = j ? 2'b01 : 2'b00;\n      2'b01: next_state = k ? 2'b10 : 2'b01;\n      2'b10: next_state = k ? 2'b10 : 2'b00;\n      2'b11: next_state = j ? 2'b01 : 2'b11;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\n  always @(*) out = (state == 2'b00);\nendmodule",
+      "raw_completion_raw_sha256": "c04649d7abf0094f4ad8bc3afe9a554b4949bf101cca1503010a0fb67276709f",
+      "rtl": "module TopModule(input clk, input areset, input j, input k, output reg out);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: next_state = j ? 2'b01 : 2'b00;\n      2'b01: next_state = k ? 2'b10 : 2'b01;\n      2'b10: next_state = k ? 2'b10 : 2'b00;\n      2'b11: next_state = j ? 2'b01 : 2'b11;\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\n  always @(*) out = (state == 2'b00);\nendmodule",
+      "rtl_raw_sha256": "5e864ee64e98204f4735c2ece382e73bcf293b7d4498f1551b552872295676c7",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 2,
+    "fail": 18
+  },
+  "testbench_raw_sha256": "4ef6134c6d8919e1bc89489d7c30f1a79bd9c5bfbc266ce560e12a836b49cea1",
+  "training_seed": 2
+}

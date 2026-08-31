@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob023_vector100r",
+  "problem_seed": 2584377103505649612,
+  "prompt_raw_sha256": "bc7e2b7e746c0e5b65c6f15b193407f378c575b59ffbda537c43a19b2e3e540b",
+  "reference_raw_sha256": "368942232ed60c40af48fe467b9982458d2719db5b9af74242bc6fb7f0960263",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "199/200 mismatches",
+      "raw_completion": "// One-hot bit-reverse\nmodule TopModule(\n    input  [99:0] in,\n    output [99:0] out\n);\n    wire [99:0] stage1 [0:9];\n    wire [99:0] stage2 [0:4];\n    wire [99:0] stage3 [0:2];\n    wire [99:0] stage4 [0:1];\n    genvar i, j, k, l;\n    // Stage 1: one-hot bit-reverse network; aka the identity matrix.\n    generate for (i = 0; i < 100; i = i + 1) begin : stage1_loop\n        assign stage1[i] = in[i];\n    end endgenerate\n    // Stage 2\n    generate for (i = 0; i < 100; i = i + 2) begin : stage2_loop\n        assign stage2[i/2] = stage1[i];\n    end endgenerate\n    // Stage 3\n    generate for (i = 0; i < 100; i = i + 4) begin : stage3_loop\n        assign stage3[i/8] = stage2[i/2];\n    end endgenerate\n    // Stage 4\n    generate for (i = 0; i < 100; i = i + 8) begin : stage4_loop\n        assign stage4[i/16] = stage3[i/8];\n    end endgenerate\n    // Stage 5: final one-hot bit-reverse stage.\n    generate for (i = 0; i < 100; i = i + 1) begin : stage5_loop\n        assign out[i] = stage4[i/16];\n    end endgenerate\nendmodule",
+      "raw_completion_raw_sha256": "0145125894b15c499ea7695c2c5bdbf615bf2841136f3e1ac3ba6248f50d34a8",
+      "rtl": "module TopModule(\n    input  [99:0] in,\n    output [99:0] out\n);\n    wire [99:0] stage1 [0:9];\n    wire [99:0] stage2 [0:4];\n    wire [99:0] stage3 [0:2];\n    wire [99:0] stage4 [0:1];\n    genvar i, j, k, l;\n    // Stage 1: one-hot bit-reverse network; aka the identity matrix.\n    generate for (i = 0; i < 100; i = i + 1) begin : stage1_loop\n        assign stage1[i] = in[i];\n    end endgenerate\n    // Stage 2\n    generate for (i = 0; i < 100; i = i + 2) begin : stage2_loop\n        assign stage2[i/2] = stage1[i];\n    end endgenerate\n    // Stage 3\n    generate for (i = 0; i < 100; i = i + 4) begin : stage3_loop\n        assign stage3[i/8] = stage2[i/2];\n    end endgenerate\n    // Stage 4\n    generate for (i = 0; i < 100; i = i + 8) begin : stage4_loop\n        assign stage4[i/16] = stage3[i/8];\n    end endgenerate\n    // Stage 5: final one-hot bit-reverse stage.\n    generate for (i = 0; i < 100; i = i + 1) begin : stage5_loop\n        assign out[i] = stage4[i/16];\n    end endgenerate\nendmodule",
+      "rtl_raw_sha256": "cdbf29e4cf3b8579e458208d72a53b132c0501fcf6dff7471e314dcd555ec58d",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob023_vector100r_test.sv:64: error: Unknown module type: TopModule",
+      "raw_completion": "// Bit reverse: reverses the order of the bits in each word.\nmodule BitReverse(\n  input [99:0] in,\n  output [99:0] out\n);\n  genvar i, j;\n  for (i = 0; i < 100; i = i + 1) begin\n    for (j = 0; j < 50; j = j + 1) begin\n      // Swap bit i and bit 99-i\n      SWAP_BITS(in, i, 99 - i);\n    end\n  end\n  assign out = in;\nendmodule",
+      "raw_completion_raw_sha256": "d69430d1e07d4642c47c11ef3aff1844516029a47b554a5409293672312066a6",
+      "rtl": "module BitReverse(\n  input [99:0] in,\n  output [99:0] out\n);\n  genvar i, j;\n  for (i = 0; i < 100; i = i + 1) begin\n    for (j = 0; j < 50; j = j + 1) begin\n      // Swap bit i and bit 99-i\n      SWAP_BITS(in, i, 99 - i);\n    end\n  end\n  assign out = in;\nendmodule",
+      "rtl_raw_sha256": "8324f2cbbbadc5c916158ef8f197357406b405b784ef68b415b778012e2b9ab5",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob023_vector100r_test.sv:64: error: Unknown module type: TopModule",
+      "raw_completion": "// A one-bit wide register, named r_NAME, where NAME is the argument.\n// The register is initialized to 1'b0 (the Verilog constant for the bit\n// value 0).\n// Incrementing the NAME counter inside the module causes the register to be\n// renamed, so the register has a different name inside the module than it has\n// outside.\nmodule r_1 (output reg out, input reg in);\n  always @(*) begin\n    out <= in;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "d90b89be71f2490734c35efde903d98f6a4dc16a9d8eea1d322830466b78d222",
+      "rtl": "module r_1 (output reg out, input reg in);\n  always @(*) begin\n    out <= in;\n  end\nendmodule",
+      "rtl_raw_sha256": "8f9b30361e65b6234775fbabf494b4e0e9416dec85b8ee683144b37d26396c91",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [99:0] in ,\n    output [99:0] out\n);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin\n            assign out[i] = in[99 - i];\n        end\n    endgenerate\nendmodule",
+      "raw_completion_raw_sha256": "c85ea596e58fb3763c79e227fedfea0f567a0fc721060bea24f101184f179bf2",
+      "rtl": "module TopModule (\n    input  [99:0] in ,\n    output [99:0] out\n);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin\n            assign out[i] = in[99 - i];\n        end\n    endgenerate\nendmodule",
+      "rtl_raw_sha256": "c85ea596e58fb3763c79e227fedfea0f567a0fc721060bea24f101184f179bf2",
+      "sample_index": 3,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n  input  [99:0] in,\n  output [99:0] out\n);\n  genvar i;\n  generate\n    for (i = 0; i < 100; i = i + 1) begin : REVERSE\n      assign out[i] = in[99 - i];\n    end\n  endgenerate\nendmodule",
+      "raw_completion_raw_sha256": "50ab3db2944070002b92f776c8758e445037cfd76c122a67fd0c4a62a9f37783",
+      "rtl": "module TopModule (\n  input  [99:0] in,\n  output [99:0] out\n);\n  genvar i;\n  generate\n    for (i = 0; i < 100; i = i + 1) begin : REVERSE\n      assign out[i] = in[99 - i];\n    end\n  endgenerate\nendmodule",
+      "rtl_raw_sha256": "50ab3db2944070002b92f776c8758e445037cfd76c122a67fd0c4a62a9f37783",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob023_vector100r_ref.sv:2: syntax error",
+      "raw_completion": "// One-bit wide registerless register-transfer-level pipeline stage: it simply\n// passes the input to the output, in reverse order.\nmodule PipelineStage (\n    input [99:0] in,\n    output [99:0] out\n);\n    wire [99:0] tmp;\n    assign tmp[0] = in[99];\n    assign tmp[1] = in[98];\n    assign tmp[2] = in[97];\n    assign tmp[3] = in[96];\n    assign tmp[4] = in[95];\n    assign tmp[5] = in[94];\n    assign tmp[6] = in[93];\n    assign tmp[7] = in[92];\n    assign tmp[8] = in[91];\n    assign tmp[9] = in[90];\n    assign tmp[10] = in[89];\n    assign tmp[11] = in[88];\n    assign tmp[12] = in[87];\n    assign tmp[13] = in[86];\n    assign tmp[14] = in[85];\n    assign tmp[15] = in[84];\n    assign tmp[16] = in[83];\n    assign tmp[17] = in[82];\n    assign tmp[18] = in[81];\n    assign tmp[19] = in[80];\n    assign tmp[20] = in[79];\n    assign tmp[21] = in[78];\n    assign tmp[22] = in[77];\n    assign tmp[23] = in[76];\n    assign tmp[24] = in[75];\n    assign tmp[25] = in[74];\n    assign tmp[26] = in[73];\n    assign tmp[27] = in[72];\n    assign tmp[28] = in[71];\n    assign tmp[29] = in[70];\n    assign tmp[30] = in[69];\n    assign tmp[31] = in[68];\n    assign tmp[32] = in[67];\n    assign tmp[33] = in[66];\n    assign tmp[34] = in[65];\n    assign tmp[35] = in[64];\n    assign tmp[36] = in[63];\n    assign tmp[37] = in[62];\n    assign tmp[38] = in[61];\n    assign tmp[39] = in[60];\n    assign tmp[40] = in[59];\n    assign tmp[41] = in[58];\n    assign tmp[42] = in[57];\n    assign tmp[43] = in[56];\n    assign tmp[44] = in[55];\n    assign tmp[45] = in[54];\n    assign tmp[46] = in[53];\n    assign tmp[47] = in[52];\n    assign tmp[48] = in[51];\n    assign tmp[49] = in[50];\n    assign tmp[50] = in[49];\n    assign tmp[51] = in[48];\n    assign tmp[52] = in[47];\n    assign tmp[53] = in[46];\n    assign tmp[54] = in[45];\n    assign tmp[55] = in[44];\n    assign tmp[56] = in[43];\n    assign tmp[57] = in[42];\n    assign tmp[58] = in[41];\n    assign tmp[59] = in[40];\n    assign tmp[60] = in[39];\n    assign tmp[61] = in[38];\n    assign tmp[62] = in[37];\n    assign tmp[63] = in[36];\n    assign tmp[64] = in[35];\n    assign tmp[65] = in[34];\n    assign tmp[66] = in[33];\n    assign tmp[67] = in[32];\n    assign tmp[68] = in",
+      "raw_completion_raw_sha256": "b85a6ce6570d01d3236b201fe6ca41f7c751decb23dad4052b439bf9b9b00847",
+      "rtl": "module PipelineStage (\n    input [99:0] in,\n    output [99:0] out\n);\n    wire [99:0] tmp;\n    assign tmp[0] = in[99];\n    assign tmp[1] = in[98];\n    assign tmp[2] = in[97];\n    assign tmp[3] = in[96];\n    assign tmp[4] = in[95];\n    assign tmp[5] = in[94];\n    assign tmp[6] = in[93];\n    assign tmp[7] = in[92];\n    assign tmp[8] = in[91];\n    assign tmp[9] = in[90];\n    assign tmp[10] = in[89];\n    assign tmp[11] = in[88];\n    assign tmp[12] = in[87];\n    assign tmp[13] = in[86];\n    assign tmp[14] = in[85];\n    assign tmp[15] = in[84];\n    assign tmp[16] = in[83];\n    assign tmp[17] = in[82];\n    assign tmp[18] = in[81];\n    assign tmp[19] = in[80];\n    assign tmp[20] = in[79];\n    assign tmp[21] = in[78];\n    assign tmp[22] = in[77];\n    assign tmp[23] = in[76];\n    assign tmp[24] = in[75];\n    assign tmp[25] = in[74];\n    assign tmp[26] = in[73];\n    assign tmp[27] = in[72];\n    assign tmp[28] = in[71];\n    assign tmp[29] = in[70];\n    assign tmp[30] = in[69];\n    assign tmp[31] = in[68];\n    assign tmp[32] = in[67];\n    assign tmp[33] = in[66];\n    assign tmp[34] = in[65];\n    assign tmp[35] = in[64];\n    assign tmp[36] = in[63];\n    assign tmp[37] = in[62];\n    assign tmp[38] = in[61];\n    assign tmp[39] = in[60];\n    assign tmp[40] = in[59];\n    assign tmp[41] = in[58];\n    assign tmp[42] = in[57];\n    assign tmp[43] = in[56];\n    assign tmp[44] = in[55];\n    assign tmp[45] = in[54];\n    assign tmp[46] = in[53];\n    assign tmp[47] = in[52];\n    assign tmp[48] = in[51];\n    assign tmp[49] = in[50];\n    assign tmp[50] = in[49];\n    assign tmp[51] = in[48];\n    assign tmp[52] = in[47];\n    assign tmp[53] = in[46];\n    assign tmp[54] = in[45];\n    assign tmp[55] = in[44];\n    assign tmp[56] = in[43];\n    assign tmp[57] = in[42];\n    assign tmp[58] = in[41];\n    assign tmp[59] = in[40];\n    assign tmp[60] = in[39];\n    assign tmp[61] = in[38];\n    assign tmp[62] = in[37];\n    assign tmp[63] = in[36];\n    assign tmp[64] = in[35];\n    assign tmp[65] = in[34];\n    assign tmp[66] = in[33];\n    assign tmp[67] = in[32];\n    assign tmp[68] = in",
+      "rtl_raw_sha256": "d59cf8cd0e330bd1d3d87b2d90ec3e09493f575033e783e08ef14bc67eb2470a",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [99:0] in ,\n    output [99:0] out\n);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin : REVERSE_LOOP\n            assign out[i] = in[99 - i];\n        end\n    endgenerate\nendmodule",
+      "raw_completion_raw_sha256": "2d66aa66dbb2c4568baf879b5e2e434e33c226277d5efe0b676e7522161fb4ca",
+      "rtl": "module TopModule(\n    input  [99:0] in ,\n    output [99:0] out\n);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin : REVERSE_LOOP\n            assign out[i] = in[99 - i];\n        end\n    endgenerate\nendmodule",
+      "rtl_raw_sha256": "2d66aa66dbb2c4568baf879b5e2e434e33c226277d5efe0b676e7522161fb4ca",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(input [99:0] in, output [99:0] out);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin\n            assign out[i] = in[99-i];\n        end\n    endgenerate\nendmodule",
+      "raw_completion_raw_sha256": "cea7ee9c1907d8d077b92dea665495b2fc95c8db25bd9b9c2b8b1b1faccf31c5",
+      "rtl": "module TopModule(input [99:0] in, output [99:0] out);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin\n            assign out[i] = in[99-i];\n        end\n    endgenerate\nendmodule",
+      "rtl_raw_sha256": "cea7ee9c1907d8d077b92dea665495b2fc95c8db25bd9b9c2b8b1b1faccf31c5",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [99:0] in,\n    output [99:0] out\n);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin : reverse_loop\n            assign out[i] = in[99-i];\n        end\n    endgenerate\nendmodule",
+      "raw_completion_raw_sha256": "fef03c846ebf18267d543c518c4d770bb01217cc032af38073f01e44d298d59b",
+      "rtl": "module TopModule(\n    input  [99:0] in,\n    output [99:0] out\n);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin : reverse_loop\n            assign out[i] = in[99-i];\n        end\n    endgenerate\nendmodule",
+      "rtl_raw_sha256": "fef03c846ebf18267d543c518c4d770bb01217cc032af38073f01e44d298d59b",
+      "sample_index": 8,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob023_vector100r_ref.sv:2: syntax error",
+      "raw_completion": "// One-bit wide register chain, in reverse order -> bit-reversed register chain.\nmodule TopModule (\n    input  [99:0] in,\n    output [99:0] out\n);\n    wire [99:0] r0 = in[0];\n    wire [99:0] r1 = in[1];\n    wire [99:0] r2 = in[2];\n    wire [99:0] r3 = in[3];\n    wire [99:0] r4 = in[4];\n    wire [99:0] r5 = in[5];\n    wire [99:0] r6 = in[6];\n    wire [99:0] r7 = in[7];\n    wire [99:0] r8 = in[8];\n    wire [99:0] r9 = in[9];\n    wire [99:0] r10 = in[10];\n    wire [99:0] r11 = in[11];\n    wire [99:0] r12 = in[12];\n    wire [99:0] r13 = in[13];\n    wire [99:0] r14 = in[14];\n    wire [99:0] r15 = in[15];\n    wire [99:0] r16 = in[16];\n    wire [99:0] r17 = in[17];\n    wire [99:0] r18 = in[18];\n    wire [99:0] r19 = in[19];\n    wire [99:0] r20 = in[20];\n    wire [99:0] r21 = in[21];\n    wire [99:0] r22 = in[22];\n    wire [99:0] r23 = in[23];\n    wire [99:0] r24 = in[24];\n    wire [99:0] r25 = in[25];\n    wire [99:0] r26 = in[26];\n    wire [99:0] r27 = in[27];\n    wire [99:0] r28 = in[28];\n    wire [99:0] r29 = in[29];\n    wire [99:0] r30 = in[30];\n    wire [99:0] r31 = in[31];\n    wire [99:0] r32 = in[32];\n    wire [99:0] r33 = in[33];\n    wire [99:0] r34 = in[34];\n    wire [99:0] r35 = in[35];\n    wire [99:0] r36 = in[36];\n    wire [99:0] r37 = in[37];\n    wire [99:0] r38 = in[38];\n    wire [99:0] r39 = in[39];\n    wire [99:0] r40 = in[40];\n    wire [99:0] r41 = in[41];\n    wire [99:0] r42 = in[42];\n    wire [99:0] r43 = in[43];\n    wire [99:0] r44 = in[44];\n    wire [99:0] r45 = in[45];\n    wire [99:0] r46 = in[46];\n    wire [99:0] r47 = in[47];\n    wire [99:0] r48 = in[48];\n    wire [99:0] r49 = in[49];\n    wire [99:0] r50 = in[50];\n    wire [99:0] r51 = in[51];\n    wire [99:0] r52 = in[52];\n    wire [99:0] r53 = in[53];\n    wire [99:0] r54 = in[54];\n    wire [",
+      "raw_completion_raw_sha256": "a05fb6912f0ed105279537c7b5619a4fccdf900b9a3c966398d27d7d6bc3e2da",
+      "rtl": "module TopModule (\n    input  [99:0] in,\n    output [99:0] out\n);\n    wire [99:0] r0 = in[0];\n    wire [99:0] r1 = in[1];\n    wire [99:0] r2 = in[2];\n    wire [99:0] r3 = in[3];\n    wire [99:0] r4 = in[4];\n    wire [99:0] r5 = in[5];\n    wire [99:0] r6 = in[6];\n    wire [99:0] r7 = in[7];\n    wire [99:0] r8 = in[8];\n    wire [99:0] r9 = in[9];\n    wire [99:0] r10 = in[10];\n    wire [99:0] r11 = in[11];\n    wire [99:0] r12 = in[12];\n    wire [99:0] r13 = in[13];\n    wire [99:0] r14 = in[14];\n    wire [99:0] r15 = in[15];\n    wire [99:0] r16 = in[16];\n    wire [99:0] r17 = in[17];\n    wire [99:0] r18 = in[18];\n    wire [99:0] r19 = in[19];\n    wire [99:0] r20 = in[20];\n    wire [99:0] r21 = in[21];\n    wire [99:0] r22 = in[22];\n    wire [99:0] r23 = in[23];\n    wire [99:0] r24 = in[24];\n    wire [99:0] r25 = in[25];\n    wire [99:0] r26 = in[26];\n    wire [99:0] r27 = in[27];\n    wire [99:0] r28 = in[28];\n    wire [99:0] r29 = in[29];\n    wire [99:0] r30 = in[30];\n    wire [99:0] r31 = in[31];\n    wire [99:0] r32 = in[32];\n    wire [99:0] r33 = in[33];\n    wire [99:0] r34 = in[34];\n    wire [99:0] r35 = in[35];\n    wire [99:0] r36 = in[36];\n    wire [99:0] r37 = in[37];\n    wire [99:0] r38 = in[38];\n    wire [99:0] r39 = in[39];\n    wire [99:0] r40 = in[40];\n    wire [99:0] r41 = in[41];\n    wire [99:0] r42 = in[42];\n    wire [99:0] r43 = in[43];\n    wire [99:0] r44 = in[44];\n    wire [99:0] r45 = in[45];\n    wire [99:0] r46 = in[46];\n    wire [99:0] r47 = in[47];\n    wire [99:0] r48 = in[48];\n    wire [99:0] r49 = in[49];\n    wire [99:0] r50 = in[50];\n    wire [99:0] r51 = in[51];\n    wire [99:0] r52 = in[52];\n    wire [99:0] r53 = in[53];\n    wire [99:0] r54 = in[54];\n    wire [",
+      "rtl_raw_sha256": "017f64a74e9c3d3f7910d68f70dfee01ad9a62e7a4ec48e416a87e0082d1db82",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input [99:0] in,\n    output [99:0] out\n);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin : GEN_NAME\n            assign out[i] = in[99-i];\n        end\n    endgenerate\nendmodule",
+      "raw_completion_raw_sha256": "83e7dd080228ba89894e448a1474e81e95a015eabc704a3eb459dce704e56884",
+      "rtl": "module TopModule (\n    input [99:0] in,\n    output [99:0] out\n);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin : GEN_NAME\n            assign out[i] = in[99-i];\n        end\n    endgenerate\nendmodule",
+      "rtl_raw_sha256": "83e7dd080228ba89894e448a1474e81e95a015eabc704a3eb459dce704e56884",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [99:0] in,\n    output [99:0] out\n);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin : REVERSE\n            assign out[i] = in[99-i];\n        end\n    endgenerate\nendmodule",
+      "raw_completion_raw_sha256": "410c9267810fb161702fdade59e5c906b13df04d456c766f490c2839f38c35e6",
+      "rtl": "module TopModule(\n    input [99:0] in,\n    output [99:0] out\n);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin : REVERSE\n            assign out[i] = in[99-i];\n        end\n    endgenerate\nendmodule",
+      "rtl_raw_sha256": "410c9267810fb161702fdade59e5c906b13df04d456c766f490c2839f38c35e6",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob023_vector100r_ref.sv:2: syntax error",
+      "raw_completion": "// One-bit wide register chain, reversed bit order.\nmodule TopModule(\n    input [99:0] in,\n    output [99:0] out\n);\n    wire [99:0] r0 = in[0];\n    wire [99:0] r1 = in[1];\n    wire [99:0] r2 = in[2];\n    wire [99:0] r3 = in[3];\n    wire [99:0] r4 = in[4];\n    wire [99:0] r5 = in[5];\n    wire [99:0] r6 = in[6];\n    wire [99:0] r7 = in[7];\n    wire [99:0] r8 = in[8];\n    wire [99:0] r9 = in[9];\n    wire [99:0] r10 = in[10];\n    wire [99:0] r11 = in[11];\n    wire [99:0] r12 = in[12];\n    wire [99:0] r13 = in[13];\n    wire [99:0] r14 = in[14];\n    wire [99:0] r15 = in[15];\n    wire [99:0] r16 = in[16];\n    wire [99:0] r17 = in[17];\n    wire [99:0] r18 = in[18];\n    wire [99:0] r19 = in[19];\n    wire [99:0] r20 = in[20];\n    wire [99:0] r21 = in[21];\n    wire [99:0] r22 = in[22];\n    wire [99:0] r23 = in[23];\n    wire [99:0] r24 = in[24];\n    wire [99:0] r25 = in[25];\n    wire [99:0] r26 = in[26];\n    wire [99:0] r27 = in[27];\n    wire [99:0] r28 = in[28];\n    wire [99:0] r29 = in[29];\n    wire [99:0] r30 = in[30];\n    wire [99:0] r31 = in[31];\n    wire [99:0] r32 = in[32];\n    wire [99:0] r33 = in[33];\n    wire [99:0] r34 = in[34];\n    wire [99:0] r35 = in[35];\n    wire [99:0] r36 = in[36];\n    wire [99:0] r37 = in[37];\n    wire [99:0] r38 = in[38];\n    wire [99:0] r39 = in[39];\n    wire [99:0] r40 = in[40];\n    wire [99:0] r41 = in[41];\n    wire [99:0] r42 = in[42];\n    wire [99:0] r43 = in[43];\n    wire [99:0] r44 = in[44];\n    wire [99:0] r45 = in[45];\n    wire [99:0] r46 = in[46];\n    wire [99:0] r47 = in[47];\n    wire [99:0] r48 = in[48];\n    wire [99:0] r49 = in[49];\n    wire [99:0] r50 = in[50];\n    wire [99:0] r51 = in[51];\n    wire [99:0] r52 = in[52];\n    wire [99:0] r53 = in[53];\n    wire [99:0] r54 = in[54];\n    wire [99:0] r55 =",
+      "raw_completion_raw_sha256": "6bf03bc40454bba417cc8b9fcce35e9e7d4ec121f0fa5a5ad17142dd30b32b63",
+      "rtl": "module TopModule(\n    input [99:0] in,\n    output [99:0] out\n);\n    wire [99:0] r0 = in[0];\n    wire [99:0] r1 = in[1];\n    wire [99:0] r2 = in[2];\n    wire [99:0] r3 = in[3];\n    wire [99:0] r4 = in[4];\n    wire [99:0] r5 = in[5];\n    wire [99:0] r6 = in[6];\n    wire [99:0] r7 = in[7];\n    wire [99:0] r8 = in[8];\n    wire [99:0] r9 = in[9];\n    wire [99:0] r10 = in[10];\n    wire [99:0] r11 = in[11];\n    wire [99:0] r12 = in[12];\n    wire [99:0] r13 = in[13];\n    wire [99:0] r14 = in[14];\n    wire [99:0] r15 = in[15];\n    wire [99:0] r16 = in[16];\n    wire [99:0] r17 = in[17];\n    wire [99:0] r18 = in[18];\n    wire [99:0] r19 = in[19];\n    wire [99:0] r20 = in[20];\n    wire [99:0] r21 = in[21];\n    wire [99:0] r22 = in[22];\n    wire [99:0] r23 = in[23];\n    wire [99:0] r24 = in[24];\n    wire [99:0] r25 = in[25];\n    wire [99:0] r26 = in[26];\n    wire [99:0] r27 = in[27];\n    wire [99:0] r28 = in[28];\n    wire [99:0] r29 = in[29];\n    wire [99:0] r30 = in[30];\n    wire [99:0] r31 = in[31];\n    wire [99:0] r32 = in[32];\n    wire [99:0] r33 = in[33];\n    wire [99:0] r34 = in[34];\n    wire [99:0] r35 = in[35];\n    wire [99:0] r36 = in[36];\n    wire [99:0] r37 = in[37];\n    wire [99:0] r38 = in[38];\n    wire [99:0] r39 = in[39];\n    wire [99:0] r40 = in[40];\n    wire [99:0] r41 = in[41];\n    wire [99:0] r42 = in[42];\n    wire [99:0] r43 = in[43];\n    wire [99:0] r44 = in[44];\n    wire [99:0] r45 = in[45];\n    wire [99:0] r46 = in[46];\n    wire [99:0] r47 = in[47];\n    wire [99:0] r48 = in[48];\n    wire [99:0] r49 = in[49];\n    wire [99:0] r50 = in[50];\n    wire [99:0] r51 = in[51];\n    wire [99:0] r52 = in[52];\n    wire [99:0] r53 = in[53];\n    wire [99:0] r54 = in[54];\n    wire [99:0] r55 =",
+      "rtl_raw_sha256": "62739e83d576c798fc225a2e2f6e72a912eb2469bc29e66336b0aa65fb402f0e",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [99:0] in,\n    output [99:0] out\n);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin\n            assign out[i] = in[99-i];\n        end\n    endgenerate\nendmodule",
+      "raw_completion_raw_sha256": "251846509616e53d63f940e61c4361393f86e7f94117ca5eadd8817be1ce1b36",
+      "rtl": "module TopModule (\n    input  [99:0] in,\n    output [99:0] out\n);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin\n            assign out[i] = in[99-i];\n        end\n    endgenerate\nendmodule",
+      "rtl_raw_sha256": "251846509616e53d63f940e61c4361393f86e7f94117ca5eadd8817be1ce1b36",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: register ``i'' unknown in tb.top_module1.",
+      "raw_completion": "// One-bit wide register array, in a for-generate loop.\nmodule TopModule (\n    input [99:0] in,\n    output [99:0] out\n);\n    genvar i;\n    reg [99:0] regs;\n    always @(*) begin\n        for (i = 0; i < 100; i = i + 1) begin\n            regs[i] = in[99-i];\n        end\n    end\n    assign out = regs;\nendmodule",
+      "raw_completion_raw_sha256": "679ded2aa9d171bd2bbfa61997bcc211d2d9858a4f4aa5476ca68a369e0af1a5",
+      "rtl": "module TopModule (\n    input [99:0] in,\n    output [99:0] out\n);\n    genvar i;\n    reg [99:0] regs;\n    always @(*) begin\n        for (i = 0; i < 100; i = i + 1) begin\n            regs[i] = in[99-i];\n        end\n    end\n    assign out = regs;\nendmodule",
+      "rtl_raw_sha256": "824d8ed5390e9bcd1b9eb252ffcac15cf25d43bea3162301009856b4bd3adc5d",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob023_vector100r_test.sv:64: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit wide register, named as \"reg0\".\n// The register holds a single bit and can be read and written to,\n// independent of the rest of the register chain.\nmodule reg0 (\n    input  wire       clk,\n    input  wire       en,\n    input  wire       val,\n    output reg        q\n);\n    always @(posedge clk) begin\n        if (en) q <= val;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a0c27b6d6a0aa8c8b5c5e6485e6a88d9144409f0b1805fb44e119939fdcdb010",
+      "rtl": "module reg0 (\n    input  wire       clk,\n    input  wire       en,\n    input  wire       val,\n    output reg        q\n);\n    always @(posedge clk) begin\n        if (en) q <= val;\n    end\nendmodule",
+      "rtl_raw_sha256": "3c7ac815d53c359fa0f1eeb35d20456032128b7a0a09db9a62462c404c263ce1",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob023_vector100r_ref.sv:2: syntax error",
+      "raw_completion": "// Bit-reversed register chain, as a separate stage.\nmodule BitReverseStage (\n    input  [99:0] in,\n    output [99:0] out\n);\n    wire [99:0] stage0 = in;\n    wire [99:0] stage1 = {stage0[49], stage0[48], stage0[47], stage0[46], stage0[45], stage0[44], stage0[43], stage0[42], stage0[41], stage0[40], stage0[39], stage0[38], stage0[37], stage0[36], stage0[35], stage0[34], stage0[33], stage0[32], stage0[31], stage0[30], stage0[29], stage0[28], stage0[27], stage0[26], stage0[25], stage0[24], stage0[23], stage0[22], stage0[21], stage0[20], stage0[19], stage0[18], stage0[17], stage0[16], stage0[15], stage0[14], stage0[13], stage0[12], stage0[11], stage0[10], stage0[9], stage0[8], stage0[7], stage0[6], stage0[5], stage0[4], stage0[3], stage0[2], stage0[1], stage0[0]};\n    wire [99:0] stage2 = {stage1[24], stage1[25], stage1[26], stage1[27], stage1[28], stage1[29], stage1[30], stage1[31], stage1[32], stage1[33], stage1[34], stage1[35], stage1[36], stage1[37], stage1[38], stage1[39], stage1[40], stage1[41], stage1[42], stage1[43], stage1[44], stage1[45], stage1[46], stage1[47], stage1[48], stage1[49], stage1[0], stage1[1], stage1[2], stage1[3], stage1[4], stage1[5], stage1[6], stage1[7], stage1[8], stage1[9], stage1[10], stage1[11], stage1[12], stage1[13], stage1[14], stage1[15], stage1[16], stage1[17], stage1[18], stage1[19], stage1[20], stage1[21], stage1[22], stage1[23]};\n    wire [99:0] stage4 = {stage2[9], stage2[8], stage2[7], stage2[6], stage2[5], stage2[4], stage2[3], stage2[2], stage2[1], stage2[0], stage2[10], stage2[11], stage2[12], stage2[13], stage2[14], stage2[15], stage2[16], stage2[17], stage2[18], stage2[19], stage2[20], stage2[21], stage2[22], stage2[23], stage2[24], stage2[25], stage2[26], stage2[27], stage2[28], stage2[29], stage2[30], stage2[31], stage2[32], stage2[33], stage2[34], stage2[35], stage2[36], stage2[37], stage2[38], stage2[39], stage2[40], stage2[41], stage2[42], stage2[43], stage2[44], stage2[45], stage2[46], stage2[47], stage2[48], stage2[49]};\n    wire [99:0] stage8 = {stage4[4], stage4[3], stage4[2], stage4[1], stage4[0], stage4[5], stage4[6], stage4[",
+      "raw_completion_raw_sha256": "4fd7e966b027cb742610b91665a806ca1d8653640fd8300e5783d2c5b6bc1c19",
+      "rtl": "module BitReverseStage (\n    input  [99:0] in,\n    output [99:0] out\n);\n    wire [99:0] stage0 = in;\n    wire [99:0] stage1 = {stage0[49], stage0[48], stage0[47], stage0[46], stage0[45], stage0[44], stage0[43], stage0[42], stage0[41], stage0[40], stage0[39], stage0[38], stage0[37], stage0[36], stage0[35], stage0[34], stage0[33], stage0[32], stage0[31], stage0[30], stage0[29], stage0[28], stage0[27], stage0[26], stage0[25], stage0[24], stage0[23], stage0[22], stage0[21], stage0[20], stage0[19], stage0[18], stage0[17], stage0[16], stage0[15], stage0[14], stage0[13], stage0[12], stage0[11], stage0[10], stage0[9], stage0[8], stage0[7], stage0[6], stage0[5], stage0[4], stage0[3], stage0[2], stage0[1], stage0[0]};\n    wire [99:0] stage2 = {stage1[24], stage1[25], stage1[26], stage1[27], stage1[28], stage1[29], stage1[30], stage1[31], stage1[32], stage1[33], stage1[34], stage1[35], stage1[36], stage1[37], stage1[38], stage1[39], stage1[40], stage1[41], stage1[42], stage1[43], stage1[44], stage1[45], stage1[46], stage1[47], stage1[48], stage1[49], stage1[0], stage1[1], stage1[2], stage1[3], stage1[4], stage1[5], stage1[6], stage1[7], stage1[8], stage1[9], stage1[10], stage1[11], stage1[12], stage1[13], stage1[14], stage1[15], stage1[16], stage1[17], stage1[18], stage1[19], stage1[20], stage1[21], stage1[22], stage1[23]};\n    wire [99:0] stage4 = {stage2[9], stage2[8], stage2[7], stage2[6], stage2[5], stage2[4], stage2[3], stage2[2], stage2[1], stage2[0], stage2[10], stage2[11], stage2[12], stage2[13], stage2[14], stage2[15], stage2[16], stage2[17], stage2[18], stage2[19], stage2[20], stage2[21], stage2[22], stage2[23], stage2[24], stage2[25], stage2[26], stage2[27], stage2[28], stage2[29], stage2[30], stage2[31], stage2[32], stage2[33], stage2[34], stage2[35], stage2[36], stage2[37], stage2[38], stage2[39], stage2[40], stage2[41], stage2[42], stage2[43], stage2[44], stage2[45], stage2[46], stage2[47], stage2[48], stage2[49]};\n    wire [99:0] stage8 = {stage4[4], stage4[3], stage4[2], stage4[1], stage4[0], stage4[5], stage4[6], stage4[",
+      "rtl_raw_sha256": "55be82a269f94d49767d7cccdbceaa6bff55ca75ec6b5a8621cd9636890ac24f",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [99:0] in,\n    output [99:0] out\n);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin : reverse\n            assign out[i] = in[99 - i];\n        end\n    endgenerate\nendmodule",
+      "raw_completion_raw_sha256": "b63b65edf1f7f3cc6d4b210a1de67fa1e9b72df27738b85c0e7499dd075da67a",
+      "rtl": "module TopModule(\n    input  [99:0] in,\n    output [99:0] out\n);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin : reverse\n            assign out[i] = in[99 - i];\n        end\n    endgenerate\nendmodule",
+      "rtl_raw_sha256": "b63b65edf1f7f3cc6d4b210a1de67fa1e9b72df27738b85c0e7499dd075da67a",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// This is a direct bit-reversal, unpipelined. The reference solution.\nmodule TopModule(input [99:0] in, output [99:0] out);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin : reverse_loop\n            assign out[i] = in[99 - i];\n        end\n    endgenerate\nendmodule",
+      "raw_completion_raw_sha256": "e20f24b6b8a8d6a03d297415c5df11f7c7c04b36f1f18b02748411673cd4ae99",
+      "rtl": "module TopModule(input [99:0] in, output [99:0] out);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin : reverse_loop\n            assign out[i] = in[99 - i];\n        end\n    endgenerate\nendmodule",
+      "rtl_raw_sha256": "6725c5aefc02873e2a46875c96f467d4d0e6cc1d03b50335ed92db14e6559b4a",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [99:0] in,\n    output [99:0] out\n);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin : REVERSE_LOOP\n            assign out[i] = in[99-i];\n        end\n    endgenerate\nendmodule",
+      "raw_completion_raw_sha256": "54fdf3457c38c081ab38a65a86b69560bd7f303f40c25e95ae36195f5fffd02d",
+      "rtl": "module TopModule (\n    input  [99:0] in,\n    output [99:0] out\n);\n    genvar i;\n    generate\n        for (i = 0; i < 100; i = i + 1) begin : REVERSE_LOOP\n            assign out[i] = in[99-i];\n        end\n    endgenerate\nendmodule",
+      "rtl_raw_sha256": "54fdf3457c38c081ab38a65a86b69560bd7f303f40c25e95ae36195f5fffd02d",
+      "sample_index": 19,
+      "status": "PASS"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 11,
+    "compile_fail": 8,
+    "fail": 1
+  },
+  "testbench_raw_sha256": "cbbd405a682a8db7c97f72f642a512ca1397b9e291fa4a6029a4c7e2f8411718",
+  "training_seed": 0
+}

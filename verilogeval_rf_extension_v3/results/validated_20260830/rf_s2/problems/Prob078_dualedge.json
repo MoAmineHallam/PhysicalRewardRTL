@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob078_dualedge",
+  "problem_seed": 7863756015697423595,
+  "prompt_raw_sha256": "7af1e9009de3c8b5433bf3dcfa3dca917f3a0dbc710d4b9d2a17840e8fc2896c",
+  "reference_raw_sha256": "7c9a025f6e11670872f06fed927fb111485bc71f8c52d7fe579508db230460a1",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "223/224 mismatches",
+      "raw_completion": "// Functionally identical to a dual-edge triggered flip-flop.\nmodule TopModule(input clk, input d, output reg q);\n    reg q_next;\n    always @(*) begin\n        q_next = ~q;\n    end\n    always @(posedge clk) begin\n        q <= q_next;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "773727f3dda9a16e0ee5c10b13f136244ca51de94b380f165348260372caa039",
+      "rtl": "module TopModule(input clk, input d, output reg q);\n    reg q_next;\n    always @(*) begin\n        q_next = ~q;\n    end\n    always @(posedge clk) begin\n        q <= q_next;\n    end\nendmodule",
+      "rtl_raw_sha256": "09c7e85f0efd2f3cdbbfde6ac13ac6453255b1027f184fb16fd99f61b7d4b882",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "223/224 mismatches",
+      "raw_completion": "// A functionally identical to a dual-edge triggered flip-flop\nmodule TopModule(input clk, input d, output reg q);\n    reg q_next;\n    always @(*) begin\n        q_next = ~q & d | q & ~d;\n    end\n    always @(posedge clk) begin\n        q <= q_next;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b6d58433e1b33e17cf65a02542c3e3537bc5b235929de111573ba84d068aaf82",
+      "rtl": "module TopModule(input clk, input d, output reg q);\n    reg q_next;\n    always @(*) begin\n        q_next = ~q & d | q & ~d;\n    end\n    always @(posedge clk) begin\n        q <= q_next;\n    end\nendmodule",
+      "rtl_raw_sha256": "2fa6f2eaff7bd27f2ccca180294450e9bb6d21c8e79d73351a5ff96babc1e14f",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "76/224 mismatches",
+      "raw_completion": "// Functionally identical to a dual-edge triggered flip-flop.\nmodule TopModule(input clk, input d, output reg q);\n    reg q2;\n    always @(posedge clk) q <= d;\n    always @(negedge clk) q2 <= d;\n    always @(posedge clk) q <= q2;\nendmodule",
+      "raw_completion_raw_sha256": "8ccf653fe2536fb111fce53ca78c456824f16690b68cd3b5a83f27cf9c60e99b",
+      "rtl": "module TopModule(input clk, input d, output reg q);\n    reg q2;\n    always @(posedge clk) q <= d;\n    always @(negedge clk) q2 <= d;\n    always @(posedge clk) q <= q2;\nendmodule",
+      "rtl_raw_sha256": "c4ac6628b95b249be4e13e62d4a6f1aa11272b4377cc8b36341c59a82c1a751e",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Functionally identical to a dual-edge triggered flip-flop.\nmodule TopModule(input clk, input d, output reg q);\n    reg q_next;\n    always @(*) begin\n        q_next = d;\n    end\n    always @(posedge clk) begin\n        q <= q_next;\n    end\n    always @(negedge clk) begin\n        q <= q_next;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "81aacdd0ef70b35a6058403a7bf1e7747a59af98c81a180be8cc92e8dee3a3e4",
+      "rtl": "module TopModule(input clk, input d, output reg q);\n    reg q_next;\n    always @(*) begin\n        q_next = d;\n    end\n    always @(posedge clk) begin\n        q <= q_next;\n    end\n    always @(negedge clk) begin\n        q <= q_next;\n    end\nendmodule",
+      "rtl_raw_sha256": "fd928c951cb0d612061a10cd71bb13f999617e0319cd3ec53b24e9425bae4b6d",
+      "sample_index": 3,
+      "status": "PASS"
+    },
+    {
+      "detail": "111/224 mismatches",
+      "raw_completion": "// Functionally identical to a dual-edge triggered flip-flop.\nmodule TopModule(input clk, input d, output reg q);\n    reg q2;\n    always @(posedge clk) begin\n        q <= d;\n        q2 <= q;\n    end\n    always @(negedge clk) begin\n        q <= q2;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "5753d15d6c652405c17ac78db9d95225162495bf25779d3933cf1050dfb3ea9c",
+      "rtl": "module TopModule(input clk, input d, output reg q);\n    reg q2;\n    always @(posedge clk) begin\n        q <= d;\n        q2 <= q;\n    end\n    always @(negedge clk) begin\n        q <= q2;\n    end\nendmodule",
+      "rtl_raw_sha256": "5752d26da8a5d855bad9863a1a2524643e1fef87ad43fbe5e30b514e8ce4fd18",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "223/224 mismatches",
+      "raw_completion": "// Functionally identical to a dual-edge triggered flip-flop.\nmodule TopModule(\n    input  clk,\n    input  d,\n    output q\n);\n    reg q1, q2;\n    always @(posedge clk) begin\n        q1 <= d;\n        q2 <= q1;\n    end\n    always @(negedge clk) q1 <= q2;\n    assign q = q2;\nendmodule",
+      "raw_completion_raw_sha256": "0d459285f4d6807b031398140695b62947f7425744c887b5e91e5d6012b4afb0",
+      "rtl": "module TopModule(\n    input  clk,\n    input  d,\n    output q\n);\n    reg q1, q2;\n    always @(posedge clk) begin\n        q1 <= d;\n        q2 <= q1;\n    end\n    always @(negedge clk) q1 <= q2;\n    assign q = q2;\nendmodule",
+      "rtl_raw_sha256": "6665c5fac801b83655c3e99a873f62876f31a3e22d65470d0c486c5ea8cf18b8",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "223/224 mismatches",
+      "raw_completion": "// Dual-edge triggered flip-flop, functionally identical to a\n// dual-edge triggered flip-flop.\nmodule TopModule(input clk, input d, output reg q);\n    reg q_next;\n    always @(*) begin\n        q_next = ~q;\n    end\n    always @(posedge clk) begin\n        q <= q_next;\n    end\n    always @(negedge clk) begin\n        q <= q_next;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "17e108a5787c2603d29c6297f8b55ac1cb81041914d14939670c375109a44b97",
+      "rtl": "module TopModule(input clk, input d, output reg q);\n    reg q_next;\n    always @(*) begin\n        q_next = ~q;\n    end\n    always @(posedge clk) begin\n        q <= q_next;\n    end\n    always @(negedge clk) begin\n        q <= q_next;\n    end\nendmodule",
+      "rtl_raw_sha256": "e19da48ada966f559336ad36019094d0505ed5401ee1e3ddda85f87393fd0de6",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "76/224 mismatches",
+      "raw_completion": "// Functionally identical to a dual-edge-triggered flip-flop.\nmodule TopModule(input clk, input d, output reg q);\n    reg q2;\n    always @(posedge clk) q <= d;\n    always @(negedge clk) q2 <= d;\n    always @(posedge clk) q <= q2;\nendmodule",
+      "raw_completion_raw_sha256": "6ddf5512c19ca6fc4c07c36d1145654cb2b3a880389071b0246c1457dfba76e2",
+      "rtl": "module TopModule(input clk, input d, output reg q);\n    reg q2;\n    always @(posedge clk) q <= d;\n    always @(negedge clk) q2 <= d;\n    always @(posedge clk) q <= q2;\nendmodule",
+      "rtl_raw_sha256": "c4ac6628b95b249be4e13e62d4a6f1aa11272b4377cc8b36341c59a82c1a751e",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "76/224 mismatches",
+      "raw_completion": "// Functionally identical to a dual-edge triggered flip-flop:\nmodule TopModule(input clk, input d, output reg q);\n    reg q2;\n    always @(posedge clk) q <= d;\n    always @(negedge clk) q2 <= d;\n    always @(posedge clk) q <= q2;\nendmodule",
+      "raw_completion_raw_sha256": "2f0a5bcc06269f79f8733e91aa807cf9b67a5dd10fc4ba450e2cb92fb2e7972d",
+      "rtl": "module TopModule(input clk, input d, output reg q);\n    reg q2;\n    always @(posedge clk) q <= d;\n    always @(negedge clk) q2 <= d;\n    always @(posedge clk) q <= q2;\nendmodule",
+      "rtl_raw_sha256": "c4ac6628b95b249be4e13e62d4a6f1aa11272b4377cc8b36341c59a82c1a751e",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "76/224 mismatches",
+      "raw_completion": "// A functional dual-edge-triggered flip-flop.\nmodule TopModule(input clk, input d, output reg q);\n  reg q2;\n  always @(posedge clk) q <= d;\n  always @(negedge clk) q2 <= d;\n  always @(posedge clk) q <= q2;\nendmodule",
+      "raw_completion_raw_sha256": "7b97b826e83387145ded62a20d6e0900d84c823126b57fc85aa2655d448c8bde",
+      "rtl": "module TopModule(input clk, input d, output reg q);\n  reg q2;\n  always @(posedge clk) q <= d;\n  always @(negedge clk) q2 <= d;\n  always @(posedge clk) q <= q2;\nendmodule",
+      "rtl_raw_sha256": "b195c5806ddba59f5c8bb88c27a1942ace981f3709da6942045fd60570f244ca",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "111/224 mismatches",
+      "raw_completion": "// A functionally identical (to a dual-edge triggered flip-flop) circuit.\nmodule TopModule(input clk, input d, output reg q);\n    reg q2;\n    always @(posedge clk) begin\n        q <= d;\n        q2 <= q;\n    end\n    always @(negedge clk) begin\n        q <= q2;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "744ac62b7ac6afa1be17456e63272c99163c516c273cbeb44f5a74389663ec03",
+      "rtl": "module TopModule(input clk, input d, output reg q);\n    reg q2;\n    always @(posedge clk) begin\n        q <= d;\n        q2 <= q;\n    end\n    always @(negedge clk) begin\n        q <= q2;\n    end\nendmodule",
+      "rtl_raw_sha256": "5752d26da8a5d855bad9863a1a2524643e1fef87ad43fbe5e30b514e8ce4fd18",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "223/224 mismatches",
+      "raw_completion": "// Functionally identical to a dual-edge triggered flip-flop\nmodule TopModule(input clk, input d, output reg q);\n    reg q_next;\n    always @(*) begin\n        q_next = ~q;\n    end\n    always @(posedge clk) begin\n        q <= q_next;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "712ee7c4c36f7cc09dbfcbd536e26813bf96d2e657d892950c26145fecdee1d2",
+      "rtl": "module TopModule(input clk, input d, output reg q);\n    reg q_next;\n    always @(*) begin\n        q_next = ~q;\n    end\n    always @(posedge clk) begin\n        q <= q_next;\n    end\nendmodule",
+      "rtl_raw_sha256": "09c7e85f0efd2f3cdbbfde6ac13ac6453255b1027f184fb16fd99f61b7d4b882",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "223/224 mismatches",
+      "raw_completion": "// Functionally identical to a dual-edge triggered flip-flop\nmodule TopModule(input clk, input d, output reg q);\n    reg q_next;\n    always @(*) begin\n        q_next = ~q ^ d;\n    end\n    always @(posedge clk) q <= q_next;\nendmodule",
+      "raw_completion_raw_sha256": "46747bd6d3b84ef7d94db2c3b76749df27858c6e8d93d92e9ace9a5eca0314d0",
+      "rtl": "module TopModule(input clk, input d, output reg q);\n    reg q_next;\n    always @(*) begin\n        q_next = ~q ^ d;\n    end\n    always @(posedge clk) q <= q_next;\nendmodule",
+      "rtl_raw_sha256": "5c09c0f6bedf9f4d5c6fda96bbb7ad1cb396f6c1298c6ed77c85c2d81fe9b00d",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "111/224 mismatches",
+      "raw_completion": "// Functionally identical to a dual-edge triggered flip-flop.\nmodule TopModule(input clk, d, output reg q);\n    reg q2;\n    always @(posedge clk) begin\n        q <= d;\n        q2 <= q;\n    end\n    always @(negedge clk) q <= q2;\nendmodule",
+      "raw_completion_raw_sha256": "de94be645389662c4a10b287523ed2385e4cbffba438a5ba2033044ec358dfa3",
+      "rtl": "module TopModule(input clk, d, output reg q);\n    reg q2;\n    always @(posedge clk) begin\n        q <= d;\n        q2 <= q;\n    end\n    always @(negedge clk) q <= q2;\nendmodule",
+      "rtl_raw_sha256": "44ee52a38995ab32ebbd0d353f7bf29b6ba47a318e3b2cd0ae819f035f2379c6",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Functionally identical to a dual-edge triggered flip-flop.\nmodule TopModule(input clk, input d, output reg q);\n    reg q_next;\n    always @(*) begin\n        q_next = d;\n    end\n    always @(posedge clk) begin\n        q <= q_next;\n    end\n    always @(negedge clk) begin\n        q <= q_next;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "81aacdd0ef70b35a6058403a7bf1e7747a59af98c81a180be8cc92e8dee3a3e4",
+      "rtl": "module TopModule(input clk, input d, output reg q);\n    reg q_next;\n    always @(*) begin\n        q_next = d;\n    end\n    always @(posedge clk) begin\n        q <= q_next;\n    end\n    always @(negedge clk) begin\n        q <= q_next;\n    end\nendmodule",
+      "rtl_raw_sha256": "fd928c951cb0d612061a10cd71bb13f999617e0319cd3ec53b24e9425bae4b6d",
+      "sample_index": 14,
+      "status": "PASS"
+    },
+    {
+      "detail": "111/224 mismatches",
+      "raw_completion": "// Functionally identical to a dual-edge triggered flip-flop.\nmodule TopModule(input clk, input d, output reg q);\n    reg q2;\n    always @(posedge clk) begin\n        q <= d;\n        q2 <= q;\n    end\n    always @(negedge clk) q <= q2;\nendmodule",
+      "raw_completion_raw_sha256": "84a0894ad2757e3bf1b64d64108b78007fee59d698436adc69da108e319ab2ca",
+      "rtl": "module TopModule(input clk, input d, output reg q);\n    reg q2;\n    always @(posedge clk) begin\n        q <= d;\n        q2 <= q;\n    end\n    always @(negedge clk) q <= q2;\nendmodule",
+      "rtl_raw_sha256": "4d415d7ad141419e4eb4c77053243a05b035bb49ac3bf485a69d4b41728065d1",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "111/224 mismatches",
+      "raw_completion": "// Functionally identical to a dual-edge triggered flip-flop.\nmodule TopModule(input clk, input d, output reg q);\n    reg q2;\n    always @(posedge clk) begin\n        q <= d;\n        q2 <= q;\n    end\n    always @(negedge clk) q <= q2;\nendmodule",
+      "raw_completion_raw_sha256": "84a0894ad2757e3bf1b64d64108b78007fee59d698436adc69da108e319ab2ca",
+      "rtl": "module TopModule(input clk, input d, output reg q);\n    reg q2;\n    always @(posedge clk) begin\n        q <= d;\n        q2 <= q;\n    end\n    always @(negedge clk) q <= q2;\nendmodule",
+      "rtl_raw_sha256": "4d415d7ad141419e4eb4c77053243a05b035bb49ac3bf485a69d4b41728065d1",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "warning: Found both default and explicit timescale based delays. Use",
+      "raw_completion": "// A dual-edge triggered flip-flop, implemented functionally as a chain of\n// two stage synchronous registers, with a short transient domain (the\n// register-to-register path) between stages, similar to a\n// dual-edge-triggered flip-flop.\nmodule TopModule(input clk, input d, output reg q);\n    reg q2;\n    always @(posedge clk) begin\n        q <= d;\n    end\n    always @(posedge clk) begin\n        q2 <= q;\n    end\n    assign #1 q = q2;\nendmodule",
+      "raw_completion_raw_sha256": "c6b4603ecc3392e3406b1dacbc0e01e6c694b33bd563ec478a0d982d8ac54ae2",
+      "rtl": "module TopModule(input clk, input d, output reg q);\n    reg q2;\n    always @(posedge clk) begin\n        q <= d;\n    end\n    always @(posedge clk) begin\n        q2 <= q;\n    end\n    assign #1 q = q2;\nendmodule",
+      "rtl_raw_sha256": "1320869659567a6d452179eea488ae04124bdf1d53e03bec0881530f82c2eae4",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "76/224 mismatches",
+      "raw_completion": "// Functionally equivalent to a dual-edge triggered flip-flop\nmodule TopModule(input clk, input d, output reg q);\n    reg q2;\n    always @(posedge clk) q <= d;\n    always @(negedge clk) q2 <= d;\n    always @(posedge clk) q <= q2;\nendmodule",
+      "raw_completion_raw_sha256": "68553265b5715d216b8d43fc11a8a8c16675fea75bc6865ce457e7fbf4ed18b7",
+      "rtl": "module TopModule(input clk, input d, output reg q);\n    reg q2;\n    always @(posedge clk) q <= d;\n    always @(negedge clk) q2 <= d;\n    always @(posedge clk) q <= q2;\nendmodule",
+      "rtl_raw_sha256": "c4ac6628b95b249be4e13e62d4a6f1aa11272b4377cc8b36341c59a82c1a751e",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "118/224 mismatches",
+      "raw_completion": "// Functionally equivalent to a dual-edge-triggered flip-flop\nmodule TopModule (\n    input  clk,\n    input  d,\n    output q\n);\n    reg q1, q2;\n    wire q_int = ~q1 & q2;\n    always @(posedge clk) begin\n        q1 <= d;\n        q2 <= q_int;\n    end\n    assign q = q_int;\nendmodule",
+      "raw_completion_raw_sha256": "9f8d3b503a064c67d4d806d30ed9d4a6ccc00f4dfb551f1185efb5b65e4d2618",
+      "rtl": "module TopModule (\n    input  clk,\n    input  d,\n    output q\n);\n    reg q1, q2;\n    wire q_int = ~q1 & q2;\n    always @(posedge clk) begin\n        q1 <= d;\n        q2 <= q_int;\n    end\n    assign q = q_int;\nendmodule",
+      "rtl_raw_sha256": "fc67fbba91b9f6ce345785f6dff6e86f7d74cc7c7303fcac9d92d1336003ea79",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 2,
+    "compile_fail": 1,
+    "fail": 17
+  },
+  "testbench_raw_sha256": "6785dc69200c9f9bb87fdcb960cfe255600f38faec6fbcc46a868d265cabc06e",
+  "training_seed": 2
+}

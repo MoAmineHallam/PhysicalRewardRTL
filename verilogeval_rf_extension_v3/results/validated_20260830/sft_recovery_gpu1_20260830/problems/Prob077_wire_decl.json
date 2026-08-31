@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob077_wire_decl",
+  "problem_seed": 7901652246256184810,
+  "prompt_raw_sha256": "b92cabb27757f8277be1408ed3cf73f8ac15c0bbcd936d26ca0c170c4d32fee9",
+  "reference_raw_sha256": "e1a5eb13111766369624ce34b5f91393b9d4cb5f9a77fc304713d884a86b172b",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire and0, and1, or0;\n    and and0_inst (and0, a, b);\n    and and1_inst (and1, c, d);\n    or  or0_inst (or0, and0, and1);\n    assign out = or0;\n    assign out_n = ~or0;\nendmodule",
+      "raw_completion_raw_sha256": "7053f9b211258bc6df079f3d01bd5c4e98395d7e1d8e64a9b5a4c0134ca5598a",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire and0, and1, or0;\n    and and0_inst (and0, a, b);\n    and and1_inst (and1, c, d);\n    or  or0_inst (or0, and0, and1);\n    assign out = or0;\n    assign out_n = ~or0;\nendmodule",
+      "rtl_raw_sha256": "7053f9b211258bc6df079f3d01bd5c4e98395d7e1d8e64a9b5a4c0134ca5598a",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input a,\n    input b,\n    input c,\n    input d,\n    output out,\n    output out_n\n);\n    wire w1;\n    wire w2;\n    and gate1 (w1, a, b);\n    and gate2 (w2, c, d);\n    or  gate3 (out, w1, w2);\n    assign out_n = ~out;\nendmodule",
+      "raw_completion_raw_sha256": "0e4e0154dc579c1fa8baccb44bc3f2288b1f9289103fceaf94afa08f29eb1b75",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    input c,\n    input d,\n    output out,\n    output out_n\n);\n    wire w1;\n    wire w2;\n    and gate1 (w1, a, b);\n    and gate2 (w2, c, d);\n    or  gate3 (out, w1, w2);\n    assign out_n = ~out;\nendmodule",
+      "rtl_raw_sha256": "0e4e0154dc579c1fa8baccb44bc3f2288b1f9289103fceaf94afa08f29eb1b75",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// The requested one-bit function as a combinational circuit, no registers, no\n// inferred latches, no unnamed wires (1 Fmax -> 1000 MHz -> ~4ns per gate,\n// per input -> very high frequency combinational circuit).\nmodule TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire and0_out;\n    wire and1_out;\n    wire or0_out;\n    and and0 (and0_out, a, b);\n    and and1 (and1_out, c, d);\n    or  or0  (or0_out, and0_out, and1_out);\n    assign out = or0_out;\n    assign out_n = ~or0_out;\nendmodule",
+      "raw_completion_raw_sha256": "8a593a2ec115ae561a28605e02f9b636cdf749763c9d579c716f43586760948a",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire and0_out;\n    wire and1_out;\n    wire or0_out;\n    and and0 (and0_out, a, b);\n    and and1 (and1_out, c, d);\n    or  or0  (or0_out, and0_out, and1_out);\n    assign out = or0_out;\n    assign out_n = ~or0_out;\nendmodule",
+      "rtl_raw_sha256": "e4e444e48d67599c71f708c58ae61cd5fdd0ea0bc57154712ca13d109ed8a4b4",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "122/122 mismatches",
+      "raw_completion": "// This is a single-level long-path (latch-free) equivalent of the reference\n// circuit, with an extra intermediate wire to split the AND path.\nmodule TopModule(input a, b, c, d, output out, out_n);\n    wire w1, w2, w3;\n    and and0 (w1, a, b);\n    and and1 (w2, c, d);\n    or  or0 (w3, w1, w2);\n    assign out = ~w3;\n    assign out_n = ~w3;\nendmodule",
+      "raw_completion_raw_sha256": "53888720311da5357c21370f2e52cc8948f5304f99179c544f58ddaa93cb1afa",
+      "rtl": "module TopModule(input a, b, c, d, output out, out_n);\n    wire w1, w2, w3;\n    and and0 (w1, a, b);\n    and and1 (w2, c, d);\n    or  or0 (w3, w1, w2);\n    assign out = ~w3;\n    assign out_n = ~w3;\nendmodule",
+      "rtl_raw_sha256": "cb5c87be537f10270ab70108605eaa7318b57d4da5cee10384620fd34ceed266",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "122/122 mismatches",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire and0_out;\n    wire and1_out;\n    wire or_out;\n    and #(1) and0 (and0_out, a, b);\n    and #(1) and1 (and1_out, c, d);\n    or  #(1) or0  (or_out, and0_out, and1_out);\n    assign out = or_out;\n    assign out_n = ~or_out;\nendmodule",
+      "raw_completion_raw_sha256": "7b72c7f6980deeef86d6911f69a007df10447b3421568abe3305917aa80d1b90",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire and0_out;\n    wire and1_out;\n    wire or_out;\n    and #(1) and0 (and0_out, a, b);\n    and #(1) and1 (and1_out, c, d);\n    or  #(1) or0  (or_out, and0_out, and1_out);\n    assign out = or_out;\n    assign out_n = ~or_out;\nendmodule",
+      "rtl_raw_sha256": "7b72c7f6980deeef86d6911f69a007df10447b3421568abe3305917aa80d1b90",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob077_wire_decl_test.sv:101: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit gate with the requested function (the long-named named the same as\n// the module)\nmodule LongNamed (a, b, c, d, out, out_n);\n    input a;\n    input b;\n    input c;\n    input d;\n    output out;\n    output out_n;\n    wire AND0, AND1, OR0;\n    and AND0_gate (AND0, a, b);\n    and AND1_gate (AND1, c, d);\n    or  OR0_gate (OR0, AND0, AND1);\n    assign out = OR0;\n    not NOT0_gate (out_n, OR0);\nendmodule",
+      "raw_completion_raw_sha256": "ac44f744fe84f1316a04f8a34a2a34d87a01c8c6b1d36f5c427bc8fb7f748f6f",
+      "rtl": "module LongNamed (a, b, c, d, out, out_n);\n    input a;\n    input b;\n    input c;\n    input d;\n    output out;\n    output out_n;\n    wire AND0, AND1, OR0;\n    and AND0_gate (AND0, a, b);\n    and AND1_gate (AND1, c, d);\n    or  OR0_gate (OR0, AND0, AND1);\n    assign out = OR0;\n    not NOT0_gate (out_n, OR0);\nendmodule",
+      "rtl_raw_sha256": "74425e1a17d5bfc438b70361a6c935090193b2fb1b3c963876ed94dc061e292f",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "122/122 mismatches",
+      "raw_completion": "module TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire and0, and1;\n    and #1 and0_inst (and0, a, b);\n    and #1 and1_inst (and1, c, d);\n    or #1 or0_inst (out, and0, and1);\n    not #1 not0_inst (out_n, out);\nendmodule",
+      "raw_completion_raw_sha256": "d328c7c91b5444e859ba3668147a17cadfce698c0e247297ffac8525086117cc",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire and0, and1;\n    and #1 and0_inst (and0, a, b);\n    and #1 and1_inst (and1, c, d);\n    or #1 or0_inst (out, and0, and1);\n    not #1 not0_inst (out_n, out);\nendmodule",
+      "rtl_raw_sha256": "d328c7c91b5444e859ba3668147a17cadfce698c0e247297ffac8525086117cc",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:13: error: Unknown module type: AND2AndDFFAnd2",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire and0_out;\n    wire and1_out;\n    wire or0_out;\n    wire not0_out;\n    AND2AndDFFAnd2 stage1_and0 (a, b, and0_out);\n    AND2AndDFFAnd2 stage1_and1 (c, d, and1_out);\n    OR2AndDFFAnd2 stage2_or0 (and0_out, and1_out, or0_out);\n    NOT1AndDFFAnd2 (or0_out, not0_out);\n    assign out = or0_out;\n    assign out_n = not0_out;\nendmodule",
+      "raw_completion_raw_sha256": "b7c55e1ad01626899ab27f5666a1099fc11cbbb81c8f8b04042f97e68ff36b69",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire and0_out;\n    wire and1_out;\n    wire or0_out;\n    wire not0_out;\n    AND2AndDFFAnd2 stage1_and0 (a, b, and0_out);\n    AND2AndDFFAnd2 stage1_and1 (c, d, and1_out);\n    OR2AndDFFAnd2 stage2_or0 (and0_out, and1_out, or0_out);\n    NOT1AndDFFAnd2 (or0_out, not0_out);\n    assign out = or0_out;\n    assign out_n = not0_out;\nendmodule",
+      "rtl_raw_sha256": "b7c55e1ad01626899ab27f5666a1099fc11cbbb81c8f8b04042f97e68ff36b69",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "122/122 mismatches",
+      "raw_completion": "// One-bit combinational circuit as described in the problem description.\nmodule TopModule(input a, b, c, d, output out, output out_n);\n    wire and0_out;\n    wire and1_out;\n    wire or0_out;\n    and #1 and0 (and0_out, a, b);\n    and #1 and1 (and1_out, c, d);\n    or  #1 or0  (or0_out, and0_out, and1_out);\n    assign out = or0_out;\n    assign out_n = ~or0_out;\nendmodule",
+      "raw_completion_raw_sha256": "8f9e34cbe60fbb37b0d1cbda7db99507208cb19176952e7b6b8dd81b75541cca",
+      "rtl": "module TopModule(input a, b, c, d, output out, output out_n);\n    wire and0_out;\n    wire and1_out;\n    wire or0_out;\n    and #1 and0 (and0_out, a, b);\n    and #1 and1 (and1_out, c, d);\n    or  #1 or0  (or0_out, and0_out, and1_out);\n    assign out = or0_out;\n    assign out_n = ~or0_out;\nendmodule",
+      "rtl_raw_sha256": "c2c45da5f3d4cac36173e9858c9b022ab96e04ea6e5e5d654b1f4b570258bc5f",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input a,\n    input b,\n    input c,\n    input d,\n    output out,\n    output out_n\n);\n    wire and0_out;\n    wire and1_out;\n    wire or0_out;\n    and and0(and0_out, a, b);\n    and and1(and1_out, c, d);\n    or or0(or0_out, and0_out, and1_out);\n    assign out = or0_out;\n    assign out_n = ~or0_out;\nendmodule",
+      "raw_completion_raw_sha256": "8dda2a83df767a3b8e8e7401e66f23953f335d751647f512fdf28abf7993807a",
+      "rtl": "module TopModule(\n    input a,\n    input b,\n    input c,\n    input d,\n    output out,\n    output out_n\n);\n    wire and0_out;\n    wire and1_out;\n    wire or0_out;\n    and and0(and0_out, a, b);\n    and and1(and1_out, c, d);\n    or or0(or0_out, and0_out, and1_out);\n    assign out = or0_out;\n    assign out_n = ~or0_out;\nendmodule",
+      "rtl_raw_sha256": "8dda2a83df767a3b8e8e7401e66f23953f335d751647f512fdf28abf7993807a",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit AND-OR gate circuit, manually decomposed to two layers of gates,\n// with the wires connecting the AND gates to the OR gate connected to the\n// output named 'out'. The same wire is also connected to the output inverted\n// ('out_n).\nmodule TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire and0_out;\n    wire and1_out;\n    wire or_out;\n    and and0(and0_out, a, b);\n    and and1(and1_out, c, d);\n    or  or0(or_out, and0_out, and1_out);\n    assign out = or_out;\n    assign out_n = ~or_out;\nendmodule",
+      "raw_completion_raw_sha256": "af53afcfbbf8a97feb10af4b9ba791869ceffdf102d9f7f751c457c459e29057",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire and0_out;\n    wire and1_out;\n    wire or_out;\n    and and0(and0_out, a, b);\n    and and1(and1_out, c, d);\n    or  or0(or_out, and0_out, and1_out);\n    assign out = or_out;\n    assign out_n = ~or_out;\nendmodule",
+      "rtl_raw_sha256": "8dd7c109a00ec4b0474911eed38b9d5f5d9c830bc365f61adcf83f365c59d940",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:2: syntax error",
+      "raw_completion": "// Implements the circuit described in the problem description.\nmodule TopModule(input a, b, c, d, output out, out_n);\n    wire and1, and2, or;\n    and and1_inst (and1, a, b);\n    and and2_inst (and2, c, d);\n    or or_inst (or, and1, and2);\n    assign out = ~or;\n    assign out_n = ~and1 & ~and2;\nendmodule",
+      "raw_completion_raw_sha256": "da37176377eb455fde9880edb24b782f0cd6425fc47f650d382f0f7e1039f8a2",
+      "rtl": "module TopModule(input a, b, c, d, output out, out_n);\n    wire and1, and2, or;\n    and and1_inst (and1, a, b);\n    and and2_inst (and2, c, d);\n    or or_inst (or, and1, and2);\n    assign out = ~or;\n    assign out_n = ~and1 & ~and2;\nendmodule",
+      "rtl_raw_sha256": "011a75f9fe45e007665e353bef73300ecff0f781e1fef8f8c65ce946944f0eb3",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: Unknown module type: AND",
+      "raw_completion": "// One-bit AND-OR gate circuit, as described in the description. The intermediate\n// wire (named anything you want) is used to connect the AND and OR gates\n// together.\nmodule TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire and0_out;\n    wire and1_out;\n    wire or_out;\n    AND and0(and0_out, a, b);\n    AND and1(and1_out, c, d);\n    OR  or0(or_out, and0_out, and1_out);\n    assign out = or_out;\n    NOT not0(out_n, or_out);\nendmodule",
+      "raw_completion_raw_sha256": "58b9e53fb01bea63043eeb960018c7621cda47887c7e8cf60ca346477310f751",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire and0_out;\n    wire and1_out;\n    wire or_out;\n    AND and0(and0_out, a, b);\n    AND and1(and1_out, c, d);\n    OR  or0(or_out, and0_out, and1_out);\n    assign out = or_out;\n    NOT not0(out_n, or_out);\nendmodule",
+      "rtl_raw_sha256": "8bd3f2fc4decccb3fbc57b57023ed8bf6dee8ad3c77e4678e2ca14532bfb75b1",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input a,\n    input b,\n    input c,\n    input d,\n    output out,\n    output out_n\n);\n    wire w1;\n    wire w2;\n    and(w1, a, b);\n    and(w2, c, d);\n    or(out, w1, w2);\n    not(out_n, out);\nendmodule",
+      "raw_completion_raw_sha256": "ccc24902e540b6e3e83e61b4f9517be524d98bd71a1b28fda63d5e41f83d3f8a",
+      "rtl": "module TopModule(\n    input a,\n    input b,\n    input c,\n    input d,\n    output out,\n    output out_n\n);\n    wire w1;\n    wire w2;\n    and(w1, a, b);\n    and(w2, c, d);\n    or(out, w1, w2);\n    not(out_n, out);\nendmodule",
+      "rtl_raw_sha256": "ccc24902e540b6e3e83e61b4f9517be524d98bd71a1b28fda63d5e41f83d3f8a",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit gate-level function: AND-AND-OR-NOT, with intermediate wire\nmodule TopModule(\n    input a,\n    input b,\n    input c,\n    input d,\n    output out,\n    output out_n\n);\n    wire tmp0;\n    wire tmp1;\n    and and0 (tmp0, a, b);\n    and and1 (tmp1, c, d);\n    or  or0 (out, tmp0, tmp1);\n    assign out_n = ~out;\nendmodule",
+      "raw_completion_raw_sha256": "cf079c306c7fc2abb0f38319d6c0bb1123ffd2656f1c6845810650bd289f1e73",
+      "rtl": "module TopModule(\n    input a,\n    input b,\n    input c,\n    input d,\n    output out,\n    output out_n\n);\n    wire tmp0;\n    wire tmp1;\n    and and0 (tmp0, a, b);\n    and and1 (tmp1, c, d);\n    or  or0 (out, tmp0, tmp1);\n    assign out_n = ~out;\nendmodule",
+      "rtl_raw_sha256": "283902df2a36ff162de759fa81ce8eae50731aed6dc1eac8f5b29feff7eb5575",
+      "sample_index": 14,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input a,\n    input b,\n    input c,\n    input d,\n    output out,\n    output out_n\n);\n    wire and0, and1, or0;\n    and and0_gate (and0, a, b);\n    and and1_gate (and1, c, d);\n    or or0_gate (or0, and0, and1);\n    assign out = or0;\n    assign out_n = ~or0;\nendmodule",
+      "raw_completion_raw_sha256": "dcef0c2718cdbf7891d9caaedc1e107b157f0161488543eb655e1994737b9753",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    input c,\n    input d,\n    output out,\n    output out_n\n);\n    wire and0, and1, or0;\n    and and0_gate (and0, a, b);\n    and and1_gate (and1, c, d);\n    or or0_gate (or0, and0, and1);\n    assign out = or0;\n    assign out_n = ~or0;\nendmodule",
+      "rtl_raw_sha256": "dcef0c2718cdbf7891d9caaedc1e107b157f0161488543eb655e1994737b9753",
+      "sample_index": 15,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire and0, and1, or0;\n    and and0_inst (and0, a, b);\n    and and1_inst (and1, c, d);\n    or  or0_inst (or0, and0, and1);\n    assign out =  or0;\n    assign out_n = ~or0;\nendmodule",
+      "raw_completion_raw_sha256": "08956c38f0ca7216d2bf88c98a5d6ff8832ebb4ee9659a3eba8e5fc1485d2c73",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire and0, and1, or0;\n    and and0_inst (and0, a, b);\n    and and1_inst (and1, c, d);\n    or  or0_inst (or0, and0, and1);\n    assign out =  or0;\n    assign out_n = ~or0;\nendmodule",
+      "rtl_raw_sha256": "08956c38f0ca7216d2bf88c98a5d6ff8832ebb4ee9659a3eba8e5fc1485d2c73",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire wire1;\n    wire wire2;\n    and (wire1, a, b);\n    and (wire2, c, d);\n    or  (out, wire1, wire2);\n    not (out_n, out);\nendmodule",
+      "raw_completion_raw_sha256": "e2f71b122b20832c85beab483810cd6169c5d8ebf15ced87a06a8ec4124e42ad",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire wire1;\n    wire wire2;\n    and (wire1, a, b);\n    and (wire2, c, d);\n    or  (out, wire1, wire2);\n    not (out_n, out);\nendmodule",
+      "rtl_raw_sha256": "e2f71b122b20832c85beab483810cd6169c5d8ebf15ced87a06a8ec4124e42ad",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:11: error: Unknown module type: AND",
+      "raw_completion": "// One-bit gate: AND->AND->OR->NOT\nmodule TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire w1;\n    wire w2;\n    AND and0 (w1, a, b);\n    AND and1 (w2, c, d);\n    OR  or0 (out, w1, w2);\n    NOT not0 (out_n, out);\nendmodule",
+      "raw_completion_raw_sha256": "1c8c79b6bd7dec4ee6eb85f79409fc3877887419c192a3e438c6000323be5d74",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire w1;\n    wire w2;\n    AND and0 (w1, a, b);\n    AND and1 (w2, c, d);\n    OR  or0 (out, w1, w2);\n    NOT not0 (out_n, out);\nendmodule",
+      "rtl_raw_sha256": "c626bc3c483ae4c594b34a3066389a788581bcd914682eae6d48d853ed11a7b3",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "122/122 mismatches",
+      "raw_completion": "// One-bit gate: AND-OR-NOT path, two-layer stack, named wires\nmodule TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire and0_out;\n    wire and1_out;\n    wire or_out;\n    and #1 and0 (and0_out, a, b);\n    and #1 and1 (and1_out, c, d);\n    or  #1 or0  (or_out, and0_out, and1_out);\n    assign out = ~or_out;\n    assign out_n = ~and0_out;\nendmodule",
+      "raw_completion_raw_sha256": "6c5383139124be501da50cf721f35183d64aa07970d84e114b50ff348333808e",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out,\n    output out_n\n);\n    wire and0_out;\n    wire and1_out;\n    wire or_out;\n    and #1 and0 (and0_out, a, b);\n    and #1 and1 (and1_out, c, d);\n    or  #1 or0  (or_out, and0_out, and1_out);\n    assign out = ~or_out;\n    assign out_n = ~and0_out;\nendmodule",
+      "rtl_raw_sha256": "f9935caa2d03aeda68c49c88461546e8b17ae5bd2fd3a8adcc6aed17d8ee52f1",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 10,
+    "compile_fail": 5,
+    "fail": 5
+  },
+  "testbench_raw_sha256": "bfb561fd35b14a085f3134cdd3ee7acaf0b4f2213584f048621efc809c93f5f1",
+  "training_seed": 0
+}

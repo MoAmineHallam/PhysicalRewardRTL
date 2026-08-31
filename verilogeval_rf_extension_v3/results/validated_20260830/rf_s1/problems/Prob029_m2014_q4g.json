@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob029_m2014_q4g",
+  "problem_seed": 7195589688000960496,
+  "prompt_raw_sha256": "a2b500b28376a1ca341e9e49bf5a44640e4258cef6a34c4e3ab59e5e1febf9fc",
+  "reference_raw_sha256": "46c5adb0e545bcbeba7d3041aca7f51df223640e7dab8c8d6baa3a45d8181228",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "56/100 mismatches",
+      "raw_completion": "// Two-input XNOR (shorted to a constant 1) followed by a two-input XOR\nmodule TopModule(input in1, input in2, input in3, output out);\n    wire xnor1_out;\n    wire xor_out;\n    assign xnor1_out = 1; // The two-input XNOR shorted to a constant 1\n    assign xor_out = in3 ^ xnor1_out;\n    assign out = xor_out;\nendmodule",
+      "raw_completion_raw_sha256": "14f0beb8b9ec3905bab1b0d72aaaa58cabd8993c508a05b97d7359f2b01743a3",
+      "rtl": "module TopModule(input in1, input in2, input in3, output out);\n    wire xnor1_out;\n    wire xor_out;\n    assign xnor1_out = 1; // The two-input XNOR shorted to a constant 1\n    assign xor_out = in3 ^ xnor1_out;\n    assign out = xor_out;\nendmodule",
+      "rtl_raw_sha256": "c8656056beb32a1bb5fdec1b1faf78099b9a39941f725c817778cfafadb9832b",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:4: error: Unknown module type: XNOR2_X1",
+      "raw_completion": "// Two-input XOR with arbitrary second input\nmodule TopModule(input in1, input in2, input in3, output out);\n    wire xnor1_out;\n    wire xor1_out;\n    XNOR2_X1 u1 ( .A(in1), .B(in2), .Z(xnor1_out) );\n    XOR2_X1 u2 ( .A(xnor1_out), .B(in3), .Z(xor1_out) );\n    assign out = xor1_out;\nendmodule",
+      "raw_completion_raw_sha256": "ce1e66d26d51a122db76387cf882c31fca8f21a4f19ba6e3e536dce023a9f75e",
+      "rtl": "module TopModule(input in1, input in2, input in3, output out);\n    wire xnor1_out;\n    wire xor1_out;\n    XNOR2_X1 u1 ( .A(in1), .B(in2), .Z(xnor1_out) );\n    XOR2_X1 u2 ( .A(xnor1_out), .B(in3), .Z(xor1_out) );\n    assign out = xor1_out;\nendmodule",
+      "rtl_raw_sha256": "391499f812780cf409eee337f5fb95e3c2a0724f1b3ddd5131ce2bb5891fa579",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Two-input XOR, as a function (equivalent to the inline \"wire\"\n// connection in the desired circuit)\nfunction [0:0] xor2_func(input [0:0] a, input [0:0] b);\n    xor2_func = a ^ b;\nendfunction\n\n// The desired circuit, inline:\n//   XNOR2 -> XOR2 -> OUT\n// Same as the function above, but split out stage by stage.\nmodule TopModule(input [0:0] in1, input [0:0] in2, input [0:0] in3, output [0:0] out);\n    wire xnor_out = ~(in1 ^ in2);\n    wire xor_out = xnor_out ^ in3;\n    assign out = xor_out;\nendmodule",
+      "raw_completion_raw_sha256": "b476a6695d6438d3fb33396cad8728ebe7d6e1538d3495bb737cb0d74917f51a",
+      "rtl": "module TopModule(input [0:0] in1, input [0:0] in2, input [0:0] in3, output [0:0] out);\n    wire xnor_out = ~(in1 ^ in2);\n    wire xor_out = xnor_out ^ in3;\n    assign out = xor_out;\nendmodule",
+      "rtl_raw_sha256": "a2b472ef5a64da1819d8ec101a3e41d4f1a2a7ec9240d52d34d0efd9205fbf12",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:11: error: Unknown module type: XNOR2_X1",
+      "raw_completion": "module TopModule(\n    input  in1,\n    input  in2,\n    input  in3,\n    output out\n);\n    wire xnor0_out;\n    wire xor0_out;\n    (* XOR_LATERAL_SUM = \"UNSPECIFIED\" *)\n    (* box_type = \"PRIMARY\" *)\n    XNOR2_X1 xnor0 (.A(in1), .B(in2), .Z(xnor0_out));\n    (* XOR_LATERAL_SUM = \"UNSPECIFIED\" *)\n    (* box_type = \"PRIMARY\" *)\n    XOR2_X1 xor0 (.A(xnor0_out), .B(in3), .Z(out));\nendmodule",
+      "raw_completion_raw_sha256": "27de8bff68f8ef6412c786baaded4da58994bf1db586a34677f8b28237b03a79",
+      "rtl": "module TopModule(\n    input  in1,\n    input  in2,\n    input  in3,\n    output out\n);\n    wire xnor0_out;\n    wire xor0_out;\n    (* XOR_LATERAL_SUM = \"UNSPECIFIED\" *)\n    (* box_type = \"PRIMARY\" *)\n    XNOR2_X1 xnor0 (.A(in1), .B(in2), .Z(xnor0_out));\n    (* XOR_LATERAL_SUM = \"UNSPECIFIED\" *)\n    (* box_type = \"PRIMARY\" *)\n    XOR2_X1 xor0 (.A(xnor0_out), .B(in3), .Z(out));\nendmodule",
+      "rtl_raw_sha256": "27de8bff68f8ef6412c786baaded4da58994bf1db586a34677f8b28237b03a79",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: Unknown module type: XNOR2_X0",
+      "raw_completion": "// Two-input XNOR, connected to a two-input XOR.\nmodule TopModule(\n    input  in1,\n    input  in2,\n    input  in3,\n    output out\n);\n    wire xnor1_out;\n    wire xor_out;\n    XNOR2_X0 u1 ( .A(in1), .B(in2), .Z(xnor1_out) );\n    XOR2_X1 u2 ( .A(xnor1_out), .B(in3), .Z(xor_out) );\n    assign out = xor_out;\nendmodule",
+      "raw_completion_raw_sha256": "2951e054735c9fc3b255046c9bf7d0ef863e4fd1d762eeee84ebb4fa7d907901",
+      "rtl": "module TopModule(\n    input  in1,\n    input  in2,\n    input  in3,\n    output out\n);\n    wire xnor1_out;\n    wire xor_out;\n    XNOR2_X0 u1 ( .A(in1), .B(in2), .Z(xnor1_out) );\n    XOR2_X1 u2 ( .A(xnor1_out), .B(in3), .Z(xor_out) );\n    assign out = xor_out;\nendmodule",
+      "rtl_raw_sha256": "eae4aae36608398173a5439070b450a26e11066d44173d01cbfe6909960a98f3",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: syntax error",
+      "raw_completion": "// One-bit two-input XNOR\nfunction [0:0] xnor2 (input [0:0] a, input [0:0] b);\n    // Same as `a == b`\n    // Same as `~(a ^ b)`\n    return (a == b);\nendfunction\n\n// One-bit two-input XOR\nfunction [0:0] xor2 (input [0:0] a, input [0:0] b);\n    return (a != b);\nendfunction\n\n// Top module\nmodule TopModule (\n    input  in1,\n    input  in2,\n    input  in3,\n    output out\n);\n    wire xnor_out = xnor2(in1, in2);\n    out = xor2(xnor_out, in3);\nendmodule",
+      "raw_completion_raw_sha256": "33da559cdbcb78c2a2f3116280ddf87159ff89e14806d2578d6af0d69dbf0bd7",
+      "rtl": "module TopModule (\n    input  in1,\n    input  in2,\n    input  in3,\n    output out\n);\n    wire xnor_out = xnor2(in1, in2);\n    out = xor2(xnor_out, in3);\nendmodule",
+      "rtl_raw_sha256": "55654ad6a415c3e2687a3735da3740f12691c351f1f96210f8c1b2d4112d4baf",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob029_m2014_q4g_test.sv:70: error: Unknown module type: TopModule",
+      "raw_completion": "// Two-input XOR, as a feedback stage\nmodule feedback (input a, b, output reg out);\n    always @(*) out <= a ^ b;\nendmodule",
+      "raw_completion_raw_sha256": "7c5490c80e635da376d8dfcaaed26c660ebc6de121b58bf86fb521d81f7e420e",
+      "rtl": "module feedback (input a, b, output reg out);\n    always @(*) out <= a ^ b;\nendmodule",
+      "rtl_raw_sha256": "25bbfbf322819181d925b9e4d3e6e67fca8915be232e94a53380aaaa8cafc905",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob029_m2014_q4g_test.sv:70: error: Unknown module type: TopModule",
+      "raw_completion": "// Two-input XNOR\nmodule xnor2 (input a, b, output out);\n    wire n1, n2;\n    not (n1, a);\n    not (n2, b);\n    and (out, n1, n2);\nendmodule",
+      "raw_completion_raw_sha256": "3103af33bae665a87ee720ecc6793205c080ff34470045d4c22c5646ba38dc3c",
+      "rtl": "module xnor2 (input a, b, output out);\n    wire n1, n2;\n    not (n1, a);\n    not (n2, b);\n    and (out, n1, n2);\nendmodule",
+      "rtl_raw_sha256": "44956f4bbd2d6deb41ec40df3d1c1cc32a9b3d0c7209d40a492e3db1141a4ccf",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  in1,\n    input  in2,\n    input  in3,\n    output out\n);\n    wire xnor0_out;\n    wire xor0_out;\n    assign xnor0_out = ~(in1 ^ in2);\n    assign xor0_out = xnor0_out ^ in3;\n    assign out = xor0_out;\nendmodule",
+      "raw_completion_raw_sha256": "4a3bcbe59bfb6ecde497c3c6aae187916b93c4d4475b3d169e05dca9dbd1ff1f",
+      "rtl": "module TopModule(\n    input  in1,\n    input  in2,\n    input  in3,\n    output out\n);\n    wire xnor0_out;\n    wire xor0_out;\n    assign xnor0_out = ~(in1 ^ in2);\n    assign xor0_out = xnor0_out ^ in3;\n    assign out = xor0_out;\nendmodule",
+      "rtl_raw_sha256": "4a3bcbe59bfb6ecde497c3c6aae187916b93c4d4475b3d169e05dca9dbd1ff1f",
+      "sample_index": 8,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob029_m2014_q4g_test.sv:70: error: Unknown module type: TopModule",
+      "raw_completion": "// Two-input XNOR gate\nmodule xnor2 (input a, b, output reg out);\n    always @(*) out = ~(a ^ b);\nendmodule",
+      "raw_completion_raw_sha256": "e2eff4176e7ce0a1b9fddcfeb6eb150c9bf38b12e94fd06e76f9d425b5de87a6",
+      "rtl": "module xnor2 (input a, b, output reg out);\n    always @(*) out = ~(a ^ b);\nendmodule",
+      "rtl_raw_sha256": "d4de1fedfab859a45b502b46d2ba65607d1e28be01a2d4d9c49685a551d0df1f",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "99/100 mismatches",
+      "raw_completion": "// The top-level module.\nmodule TopModule(input in1, input in2, input in3, output out);\n    wire xnor1;\n    wire xor1;\n    // A two-input XNOR.\n    assign xnor1 = ~(in1 ^ in2);\n    // A two-input XOR, the second input is 'in3'.\n    assign xor1 = ~(xnor1 ^ in3);\n    // The output is the result of the XOR.\n    assign out = xor1;\nendmodule",
+      "raw_completion_raw_sha256": "53dea230fa7b22f6ff51e06bb634e83009368468e144bf20bc23cf23bd7e355e",
+      "rtl": "module TopModule(input in1, input in2, input in3, output out);\n    wire xnor1;\n    wire xor1;\n    // A two-input XNOR.\n    assign xnor1 = ~(in1 ^ in2);\n    // A two-input XOR, the second input is 'in3'.\n    assign xor1 = ~(xnor1 ^ in3);\n    // The output is the result of the XOR.\n    assign out = xor1;\nendmodule",
+      "rtl_raw_sha256": "870d45c2db085c3de13765f61876e2d11e3ae22caa13c319717625d325bc7709",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:4: error: Unknown module type: XNOR2_X1",
+      "raw_completion": "// Two-input XNOR, connected to a two-input XOR.\nmodule TopModule(input in1, input in2, input in3, output out);\n  wire xnor1_out;\n  wire xor1_out;\n  XNOR2_X1 u1 ( .A(in1), .B(in2), .Z(xnor1_out) );\n  XOR2_X1 u2 ( .A(xnor1_out), .B(in3), .Z(xor1_out) );\n  assign out = xor1_out;\nendmodule",
+      "raw_completion_raw_sha256": "bf18c3a1b1e1fa2565c4f55e15d09b3702d829d3c544c6a8120f2559b3fbf280",
+      "rtl": "module TopModule(input in1, input in2, input in3, output out);\n  wire xnor1_out;\n  wire xor1_out;\n  XNOR2_X1 u1 ( .A(in1), .B(in2), .Z(xnor1_out) );\n  XOR2_X1 u2 ( .A(xnor1_out), .B(in3), .Z(xor1_out) );\n  assign out = xor1_out;\nendmodule",
+      "rtl_raw_sha256": "8cf9765acca4b2b426e4163215d83cfdf771e6c24fcca492a33c4c2dc85123fa",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: syntax error",
+      "raw_completion": "// Two-input XNOR, then two-input XOR\nmodule TopModule(\n    input  in1,\n    input  in2,\n    input  in3,\n    output out\n);\n    wire xnor1 = ~(in1 ^ in2);\n    wire xor = ~(xnor1 ^ in3);\n    assign out = xor;\nendmodule",
+      "raw_completion_raw_sha256": "8a15a4975a67d0bf19ef3a996c01eab3ca3f6407d50c22ccd68644e692dfccb4",
+      "rtl": "module TopModule(\n    input  in1,\n    input  in2,\n    input  in3,\n    output out\n);\n    wire xnor1 = ~(in1 ^ in2);\n    wire xor = ~(xnor1 ^ in3);\n    assign out = xor;\nendmodule",
+      "rtl_raw_sha256": "d877430f45b3e6ea80557f98f9256abf9e5a751d592aae3cfc54fdb6052d31c6",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  in1,\n    input  in2,\n    input  in3,\n    output out\n);\n    wire xnor0_out;\n    wire xor0_out;\n    assign xnor0_out = ~(in1 ^ in2);\n    assign xor0_out = xnor0_out ^ in3;\n    assign out = xor0_out;\nendmodule",
+      "raw_completion_raw_sha256": "a6ab55a462f8733bb0e9f55e69a9892b20fa6fa12163f9d5594a68d3f8e9b0b3",
+      "rtl": "module TopModule (\n    input  in1,\n    input  in2,\n    input  in3,\n    output out\n);\n    wire xnor0_out;\n    wire xor0_out;\n    assign xnor0_out = ~(in1 ^ in2);\n    assign xor0_out = xnor0_out ^ in3;\n    assign out = xor0_out;\nendmodule",
+      "rtl_raw_sha256": "a6ab55a462f8733bb0e9f55e69a9892b20fa6fa12163f9d5594a68d3f8e9b0b3",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:4: error: Unknown module type: XNOR2_X0",
+      "raw_completion": "// Two-input XNOR, connected to two-input XOR: the full chain.\nmodule TopModule(input in1, input in2, input in3, output out);\n    wire x1;\n    wire x2;\n    XNOR2_X0 u1 (.A(in1), .B(in2), .ZN(x1));\n    XOR2_X1 u2 (.A(x1), .B(in3), .ZN(x2));\n    BUF_X0 u3 (.A(x2), .ZN(out));\nendmodule",
+      "raw_completion_raw_sha256": "1f68ef13e8fa6a34287bc5487d5a6726e5e525d8fde06a24b60ed069845095aa",
+      "rtl": "module TopModule(input in1, input in2, input in3, output out);\n    wire x1;\n    wire x2;\n    XNOR2_X0 u1 (.A(in1), .B(in2), .ZN(x1));\n    XOR2_X1 u2 (.A(x1), .B(in3), .ZN(x2));\n    BUF_X0 u3 (.A(x2), .ZN(out));\nendmodule",
+      "rtl_raw_sha256": "27d7141082d91f602db809a393417df18fa275600df09de67fceb42e88b64d05",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:4: error: Unknown module type: XNOR2_X1",
+      "raw_completion": "// Two-input XOR, with one extra input connected to the first input of the\n// XOR. The output is named \"out\".\nmodule TopModule(input in1, input in2, input in3, output out);\n    wire xnor1_out;\n    wire xor1_out;\n    XNOR2_X1 u1 ( .A(in1), .B(in2), .Z(xnor1_out) );\n    XOR2_X1 u2 ( .A(in3), .B(xnor1_out), .Z(xor1_out) );\n    assign out = xor1_out;\nendmodule",
+      "raw_completion_raw_sha256": "b9406052325bfedb73cbb96a5eea440fd8eba4b083c13d4e61c372031ae994e5",
+      "rtl": "module TopModule(input in1, input in2, input in3, output out);\n    wire xnor1_out;\n    wire xor1_out;\n    XNOR2_X1 u1 ( .A(in1), .B(in2), .Z(xnor1_out) );\n    XOR2_X1 u2 ( .A(in3), .B(xnor1_out), .Z(xor1_out) );\n    assign out = xor1_out;\nendmodule",
+      "rtl_raw_sha256": "fb92efbf3962fdb04ff830122d9833922638c4ee3a3e762ca7445c83247f814c",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "99/100 mismatches",
+      "raw_completion": "// Two-input XOR, with one input connected to a two-input XNOR\nmodule TopModule (\n    input  in1,\n    input  in2,\n    input  in3,\n    output out\n);\n    wire xnor_out;\n    wire xor_out;\n    assign xnor_out = ~(in1 ^ in2);\n    assign xor_out = ~(xnor_out ^ in3);\n    assign out = xor_out;\nendmodule",
+      "raw_completion_raw_sha256": "deb34035551890a6ec852d058103f5062e25114bccf978c258b1a7c87bdd5e26",
+      "rtl": "module TopModule (\n    input  in1,\n    input  in2,\n    input  in3,\n    output out\n);\n    wire xnor_out;\n    wire xor_out;\n    assign xnor_out = ~(in1 ^ in2);\n    assign xor_out = ~(xnor_out ^ in3);\n    assign out = xor_out;\nendmodule",
+      "rtl_raw_sha256": "b94b75531371e47e5c275567b7b641023cbbbfdbea445528a2702a6a66346e43",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-input XOR with one extra input, wired up in a chain\nmodule TopModule(input in1, input in2, input in3, output out);\n    wire x1;\n    wire x2;\n    assign x1 = ~(in1 ^ in2);\n    assign x2 = (x1 ^ in3);\n    assign out = x2;\nendmodule",
+      "raw_completion_raw_sha256": "5aa2b9de0c5ec5b7de9f3f9e02f6ae7c0794aef799a5c45da5d97614a22032d2",
+      "rtl": "module TopModule(input in1, input in2, input in3, output out);\n    wire x1;\n    wire x2;\n    assign x1 = ~(in1 ^ in2);\n    assign x2 = (x1 ^ in3);\n    assign out = x2;\nendmodule",
+      "rtl_raw_sha256": "150a25b13d8d4f3df5f91df3e3bc1692637b907d9edd70b4b67dc0fd4c52c20a",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: Unknown module type: XNOR",
+      "raw_completion": "module TopModule (\n    input  in1,\n    input  in2,\n    input  in3,\n    output out\n);\n    wire xnor1_out;\n    wire xor1_out;\n    XNOR xnor1 (.a(in1), .b(in2), .o(xnor1_out));\n    XOR xor1 (.a(xnor1_out), .b(in3), .o(out));\nendmodule",
+      "raw_completion_raw_sha256": "1d92f1a2ccd7af7a2f93f2a9055353d2996c340b45a913a3a92cecf4a7b8003f",
+      "rtl": "module TopModule (\n    input  in1,\n    input  in2,\n    input  in3,\n    output out\n);\n    wire xnor1_out;\n    wire xor1_out;\n    XNOR xnor1 (.a(in1), .b(in2), .o(xnor1_out));\n    XOR xor1 (.a(xnor1_out), .b(in3), .o(out));\nendmodule",
+      "rtl_raw_sha256": "1d92f1a2ccd7af7a2f93f2a9055353d2996c340b45a913a3a92cecf4a7b8003f",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: Unknown module type: XNOR2_X1",
+      "raw_completion": "// Two-input XNOR, then two-input XOR\nmodule TopModule(\n    input  in1,\n    input  in2,\n    input  in3,\n    output out\n);\n    wire xnor1_out;\n    wire xor_out;\n    XNOR2_X1 u1 ( .A(in1), .B(in2), .Z(xnor1_out) );\n    XOR2_X1 u2 ( .A(xnor1_out), .B(in3), .Z(xor_out) );\n    assign out = xor_out;\nendmodule",
+      "raw_completion_raw_sha256": "e6b7b8461b7a92ffa81491254271c2bff597f6e4fee6eb28f995288d4be72f1b",
+      "rtl": "module TopModule(\n    input  in1,\n    input  in2,\n    input  in3,\n    output out\n);\n    wire xnor1_out;\n    wire xor_out;\n    XNOR2_X1 u1 ( .A(in1), .B(in2), .Z(xnor1_out) );\n    XOR2_X1 u2 ( .A(xnor1_out), .B(in3), .Z(xor_out) );\n    assign out = xor_out;\nendmodule",
+      "rtl_raw_sha256": "d1299b94fcfbfb4a8b2e979e318f3a76f3cad55d9eb4a803f5b0614b88dd4bf0",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 4,
+    "compile_fail": 13,
+    "fail": 3
+  },
+  "testbench_raw_sha256": "7de0c3687b27a0e7d167da37689c3c2559c9fac00d861dc1c995929c16921738",
+  "training_seed": 1
+}

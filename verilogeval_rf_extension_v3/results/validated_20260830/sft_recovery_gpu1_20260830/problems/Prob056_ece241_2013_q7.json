@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob056_ece241_2013_q7",
+  "problem_seed": 2583871726003294561,
+  "prompt_raw_sha256": "6d5f5e0e0a9cd5705728874999ea1364d2e7d14a1d7dd799b188ad8bb54e7c06",
+  "reference_raw_sha256": "8cc3ad47597d42a9969f00a8268f3e487bc404418060217843f7d12603d92232",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "// JK flip-flop with the specified truth table\nmodule TopModule(input clk, input j, input k, output reg Q);\n    always @(posedge clk) begin\n        if (j == 0 && k == 0) Q <= Q;\n        else if (j == 0 && k == 1) Q <= 0;\n        else if (j == 1 && k == 0) Q <= 1;\n        else if (j == 1 && k == 1) Q <= ~Q;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "63d02de181c4066b6c77a038f2864326c1650dac0da30983fc5b85717b0502de",
+      "rtl": "module TopModule(input clk, input j, input k, output reg Q);\n    always @(posedge clk) begin\n        if (j == 0 && k == 0) Q <= Q;\n        else if (j == 0 && k == 1) Q <= 0;\n        else if (j == 1 && k == 0) Q <= 1;\n        else if (j == 1 && k == 1) Q <= ~Q;\n    end\nendmodule",
+      "rtl_raw_sha256": "1cc8bdf970bde06fe8608bd5866e92172164c7cc5d2c8545147904b9d34e6ff8",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// JK flip-flop with the specified truth table\nmodule TopModule(input clk, input j, input k, output reg Q);\n    always @(posedge clk) begin\n        case ({j, k})\n            2'b00: Q <= Q;\n            2'b01: Q <= 1'b0;\n            2'b10: Q <= 1'b1;\n            2'b11: Q <= ~Q;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "0428a581e68a417603fc47b23a079bd387bda4186f144ae4654002e5071020c8",
+      "rtl": "module TopModule(input clk, input j, input k, output reg Q);\n    always @(posedge clk) begin\n        case ({j, k})\n            2'b00: Q <= Q;\n            2'b01: Q <= 1'b0;\n            2'b10: Q <= 1'b1;\n            2'b11: Q <= ~Q;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "1289fc5e946f39ffebc3386a0b379ef92c7a7dc659c29fbc2e2e2794db482fc7",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(input clk, input j, input k, output reg Q);\n    always @(posedge clk) begin\n        case ({j, k})\n            2'b00: Q <= Q;\n            2'b01: Q <= 0;\n            2'b10: Q <= 1;\n            2'b11: Q <= ~Q;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "8c0dc0517749a35d1ffebbb33b5bafc50dba1ae4b0d32c646f08c0560870ab81",
+      "rtl": "module TopModule(input clk, input j, input k, output reg Q);\n    always @(posedge clk) begin\n        case ({j, k})\n            2'b00: Q <= Q;\n            2'b01: Q <= 0;\n            2'b10: Q <= 1;\n            2'b11: Q <= ~Q;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "8c0dc0517749a35d1ffebbb33b5bafc50dba1ae4b0d32c646f08c0560870ab81",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// JK flip-flop with the specified truth table\nmodule TopModule(input  clk, input  j, input  k, output reg Q);\n    always @(posedge clk) begin\n        if (j & k) Q <= ~Q;\n        else if (j) Q <= 1;\n        else if (k) Q <= 0;\n        else Q <= Q;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "22f33d980aee5f93112f30b7ed4eb6a7022c0c7e2b61d4a3b24596ef28131654",
+      "rtl": "module TopModule(input  clk, input  j, input  k, output reg Q);\n    always @(posedge clk) begin\n        if (j & k) Q <= ~Q;\n        else if (j) Q <= 1;\n        else if (k) Q <= 0;\n        else Q <= Q;\n    end\nendmodule",
+      "rtl_raw_sha256": "1d5503e54a4d19ef6dca355a6838960b89c997560c852026c5b00ee2e151b386",
+      "sample_index": 3,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// JK Flip-Flop with the given truth table\nmodule TopModule(input  clk, input  j, input  k, output reg Q);\n    always @(posedge clk) begin\n        if (j & ~k) Q <= 1;\n        else if (~j & k) Q <= 0;\n        else if (j & k) Q <= ~Q;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "0e7a929dd328eeb11af0c4f4b7075fb1d48e25deca8330955ad08fb92bb4b7ad",
+      "rtl": "module TopModule(input  clk, input  j, input  k, output reg Q);\n    always @(posedge clk) begin\n        if (j & ~k) Q <= 1;\n        else if (~j & k) Q <= 0;\n        else if (j & k) Q <= ~Q;\n    end\nendmodule",
+      "rtl_raw_sha256": "58c708146c7d851b8ef039acd73bfa227ba4ba37c007684b8410a63cc752a215",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "56/422 mismatches",
+      "raw_completion": "// JK flip-flop with the specified truth table\nmodule TopModule(input clk, input j, input k, output reg Q);\n  always @(posedge clk) begin\n    if (j & ~k) Q <= ~Q;\n    else if (~j & k) Q <= 0;\n    else if (j & k) Q <= ~Q;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "a6fd1b809178ac27da1a894993aba60c515c9190950f5b1b077e6c3e520d3037",
+      "rtl": "module TopModule(input clk, input j, input k, output reg Q);\n  always @(posedge clk) begin\n    if (j & ~k) Q <= ~Q;\n    else if (~j & k) Q <= 0;\n    else if (j & k) Q <= ~Q;\n  end\nendmodule",
+      "rtl_raw_sha256": "9f3f2f316a3bbbcbdcd7f852b90b4c12d15ba48ade05d84019f757709d6ae9e6",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// JK flip-flop with the specified truth table\nmodule TopModule(input clk, input j, input k, output reg Q);\n  always @(posedge clk) begin\n    case ({j, k})\n      2'b00: Q <= Q;\n      2'b01: Q <= 0;\n      2'b10: Q <= 1;\n      2'b11: Q <= ~Q;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "d7318bd56b1b7b1671fb0a8537436c5b4da87f8662dd09073a51457583747c25",
+      "rtl": "module TopModule(input clk, input j, input k, output reg Q);\n  always @(posedge clk) begin\n    case ({j, k})\n      2'b00: Q <= Q;\n      2'b01: Q <= 0;\n      2'b10: Q <= 1;\n      2'b11: Q <= ~Q;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "f7647095a3c5fe81f0f82c0de3567979b99442c6945431122eaf522c8fb7c34e",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// JK flip-flop with the given truth table.\nmodule TopModule(input  clk, input  j, input  k, output reg Q);\n  always @(posedge clk) begin\n    case ({j, k})\n      2'b00: Q <= Q;\n      2'b01: Q <= 0;\n      2'b10: Q <= 1;\n      2'b11: Q <= ~Q;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "efcbe1995b3f5d600fa62068b2308c9e3b1fb1bf98ff05c75d7edd21f46a8a62",
+      "rtl": "module TopModule(input  clk, input  j, input  k, output reg Q);\n  always @(posedge clk) begin\n    case ({j, k})\n      2'b00: Q <= Q;\n      2'b01: Q <= 0;\n      2'b10: Q <= 1;\n      2'b11: Q <= ~Q;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "561d98c6d4c571c8d5c646fb62e207e2bc996f2685f9b20d40c9c4b7f75588c7",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  j,\n    input  k,\n    output reg Q\n);\n    always @(posedge clk) begin\n        case ({j, k})\n            2'b00: Q <= Q;\n            2'b01: Q <= 0;\n            2'b10: Q <= 1;\n            2'b11: Q <= ~Q;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "453464c8af674933456fbb06bc6f8b3faee9826b50ea8aca459f9bf76df8ea63",
+      "rtl": "module TopModule (\n    input  clk,\n    input  j,\n    input  k,\n    output reg Q\n);\n    always @(posedge clk) begin\n        case ({j, k})\n            2'b00: Q <= Q;\n            2'b01: Q <= 0;\n            2'b10: Q <= 1;\n            2'b11: Q <= ~Q;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "453464c8af674933456fbb06bc6f8b3faee9826b50ea8aca459f9bf76df8ea63",
+      "sample_index": 8,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// JK flip-flop with the given truth table\nmodule TopModule (\n    input  clk,\n    input  j,\n    input  k,\n    output reg Q\n);\n    always @(posedge clk) begin\n        case ({j, k})\n            2'b00: Q <= Q;\n            2'b01: Q <= 0;\n            2'b10: Q <= 1;\n            2'b11: Q <= ~Q;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "97f18a3123e3d577cffdc0a9640a43844c5fb50c6751040c09d046f291186579",
+      "rtl": "module TopModule (\n    input  clk,\n    input  j,\n    input  k,\n    output reg Q\n);\n    always @(posedge clk) begin\n        case ({j, k})\n            2'b00: Q <= Q;\n            2'b01: Q <= 0;\n            2'b10: Q <= 1;\n            2'b11: Q <= ~Q;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "453464c8af674933456fbb06bc6f8b3faee9826b50ea8aca459f9bf76df8ea63",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  j,\n    input  k,\n    output reg Q\n);\n    always @(posedge clk) begin\n        case ({j, k})\n            2'b00: Q <= Q;\n            2'b01: Q <= 1'b0;\n            2'b10: Q <= 1'b1;\n            2'b11: Q <= ~Q;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "32ba45e06f7c939c7e8a88ac96f0364e835e97d86e894768d81d9a259222f368",
+      "rtl": "module TopModule (\n    input  clk,\n    input  j,\n    input  k,\n    output reg Q\n);\n    always @(posedge clk) begin\n        case ({j, k})\n            2'b00: Q <= Q;\n            2'b01: Q <= 1'b0;\n            2'b10: Q <= 1'b1;\n            2'b11: Q <= ~Q;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "32ba45e06f7c939c7e8a88ac96f0364e835e97d86e894768d81d9a259222f368",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "56/422 mismatches",
+      "raw_completion": "// JK flip-flop with the given truth table\nmodule TopModule(input clk, input j, input k, output reg Q);\n    always @(posedge clk) begin\n        if (j & ~k) Q <= ~Q;\n        else if (~j & k) Q <= 0;\n        else if (j & k) Q <= ~Q;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "4e4ded18700d7c3fa186120faafd608fecedd7b9acc045034e162e736052c76b",
+      "rtl": "module TopModule(input clk, input j, input k, output reg Q);\n    always @(posedge clk) begin\n        if (j & ~k) Q <= ~Q;\n        else if (~j & k) Q <= 0;\n        else if (j & k) Q <= ~Q;\n    end\nendmodule",
+      "rtl_raw_sha256": "4f879a52e288b9ddeb0569586c081cb197a687102b9fe0d9399fae32faf18dc5",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// JK flip-flop with the specified truth table\nmodule TopModule (\n    input  clk,\n    input  j,\n    input  k,\n    output reg Q\n);\n    always @(posedge clk) begin\n        case ({j, k})\n            2'b00: Q <= Q;\n            2'b01: Q <= 0;\n            2'b10: Q <= 1;\n            2'b11: Q <= ~Q;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a903c7af3e37058a07ec33fcb973bb12337dc71c1717af846af1d9bc5f02b58f",
+      "rtl": "module TopModule (\n    input  clk,\n    input  j,\n    input  k,\n    output reg Q\n);\n    always @(posedge clk) begin\n        case ({j, k})\n            2'b00: Q <= Q;\n            2'b01: Q <= 0;\n            2'b10: Q <= 1;\n            2'b11: Q <= ~Q;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "453464c8af674933456fbb06bc6f8b3faee9826b50ea8aca459f9bf76df8ea63",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(input clk, input j, input k, output reg Q);\n    always @(posedge clk) begin\n        case({j, k})\n            2'b00: Q <= Q;\n            2'b01: Q <= 0;\n            2'b10: Q <= 1;\n            2'b11: Q <= ~Q;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b9320b3d10f0b7d74280f975cadc5e8ad53a88e43acb4750ef36f1e701d399ac",
+      "rtl": "module TopModule(input clk, input j, input k, output reg Q);\n    always @(posedge clk) begin\n        case({j, k})\n            2'b00: Q <= Q;\n            2'b01: Q <= 0;\n            2'b10: Q <= 1;\n            2'b11: Q <= ~Q;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "b9320b3d10f0b7d74280f975cadc5e8ad53a88e43acb4750ef36f1e701d399ac",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// JK flip-flop with the specified truth table\nmodule TopModule(input clk, input j, input k, output reg Q);\n  always @(posedge clk) begin\n    case ({j, k})\n      2'b00: Q <= Q;\n      2'b01: Q <= 0;\n      2'b10: Q <= 1;\n      2'b11: Q <= ~Q;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "d7318bd56b1b7b1671fb0a8537436c5b4da87f8662dd09073a51457583747c25",
+      "rtl": "module TopModule(input clk, input j, input k, output reg Q);\n  always @(posedge clk) begin\n    case ({j, k})\n      2'b00: Q <= Q;\n      2'b01: Q <= 0;\n      2'b10: Q <= 1;\n      2'b11: Q <= ~Q;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "f7647095a3c5fe81f0f82c0de3567979b99442c6945431122eaf522c8fb7c34e",
+      "sample_index": 14,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// JK flip-flop with the specified truth table.\nmodule TopModule(input clk, input j, input k, output reg Q);\n  always @(posedge clk) begin\n    if (j == 1 && k == 0) Q <= 1;\n    else if (j == 0 && k == 1) Q <= 0;\n    else if (j == 1 && k == 1) Q <= ~Q;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "c472da06da4ab5d455dbb63e42aa3e5081758bd0ce281c9ebe34c14b3595358c",
+      "rtl": "module TopModule(input clk, input j, input k, output reg Q);\n  always @(posedge clk) begin\n    if (j == 1 && k == 0) Q <= 1;\n    else if (j == 0 && k == 1) Q <= 0;\n    else if (j == 1 && k == 1) Q <= ~Q;\n  end\nendmodule",
+      "rtl_raw_sha256": "6a64e1f8f67eece35d481a485273d900902cba5bb2d3fe7c50729846d37fa7ce",
+      "sample_index": 15,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// JK flip-flop with the specified truth table\nmodule TopModule(input clk, input j, input k, output reg Q);\n  always @(posedge clk) begin\n    case ({j, k})\n      2'b00: Q <= Q;\n      2'b01: Q <= 0;\n      2'b10: Q <= 1;\n      2'b11: Q <= ~Q;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "d7318bd56b1b7b1671fb0a8537436c5b4da87f8662dd09073a51457583747c25",
+      "rtl": "module TopModule(input clk, input j, input k, output reg Q);\n  always @(posedge clk) begin\n    case ({j, k})\n      2'b00: Q <= Q;\n      2'b01: Q <= 0;\n      2'b10: Q <= 1;\n      2'b11: Q <= ~Q;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "f7647095a3c5fe81f0f82c0de3567979b99442c6945431122eaf522c8fb7c34e",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// JK flip-flop with the specified truth table\nmodule TopModule(\n    input  clk,\n    input  j,\n    input  k,\n    output reg Q\n);\n    always @(posedge clk) begin\n        case ({j, k})\n            2'b00: Q <= Q;\n            2'b01: Q <= 1'b0;\n            2'b10: Q <= 1'b1;\n            2'b11: Q <= ~Q;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "079ac2fbfa1ce04313f16ee42b823d94d62ec9411761fddb1f4f8ec2886a8e83",
+      "rtl": "module TopModule(\n    input  clk,\n    input  j,\n    input  k,\n    output reg Q\n);\n    always @(posedge clk) begin\n        case ({j, k})\n            2'b00: Q <= Q;\n            2'b01: Q <= 1'b0;\n            2'b10: Q <= 1'b1;\n            2'b11: Q <= ~Q;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "e454a35da294ff7d21795c84208f4e55937eb7410d652379aa0196594c8e5c99",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// JK flip-flop with the specified truth table\nmodule TopModule(input clk, input j, input k, output reg Q);\n    always @(posedge clk) begin\n        case ({j, k})\n            2'b00: Q <= Q;\n            2'b01: Q <= 0;\n            2'b10: Q <= 1;\n            2'b11: Q <= ~Q;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "f5ce1d7c4f53ef49f9ebe9fe81a32a35af8b316dfac10df343b5bd7c3e7dd5e6",
+      "rtl": "module TopModule(input clk, input j, input k, output reg Q);\n    always @(posedge clk) begin\n        case ({j, k})\n            2'b00: Q <= Q;\n            2'b01: Q <= 0;\n            2'b10: Q <= 1;\n            2'b11: Q <= ~Q;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "8c0dc0517749a35d1ffebbb33b5bafc50dba1ae4b0d32c646f08c0560870ab81",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// JK flip-flop with the specified truth table\nmodule TopModule (\n    input  clk,\n    input  j,\n    input  k,\n    output reg Q\n);\n    always @(posedge clk) begin\n        if (j & ~k) Q <= 1;\n        else if (~j & k) Q <= 0;\n        else if (j & k) Q <= ~Q;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "289f2f89811fe1c46226785a509c2ae6d5520e7cf46aee6c8c927f32234425fb",
+      "rtl": "module TopModule (\n    input  clk,\n    input  j,\n    input  k,\n    output reg Q\n);\n    always @(posedge clk) begin\n        if (j & ~k) Q <= 1;\n        else if (~j & k) Q <= 0;\n        else if (j & k) Q <= ~Q;\n    end\nendmodule",
+      "rtl_raw_sha256": "33f18fa61b563ba677525933f4f4a6af1e8d3b36249575bdc96c343de34a1fb0",
+      "sample_index": 19,
+      "status": "PASS"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 18,
+    "fail": 2
+  },
+  "testbench_raw_sha256": "2809fd35cd80fbf1c0b435e16562a01d31c8d68f77a86c30f494d4158ed817ba",
+  "training_seed": 0
+}

@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob067_countslow",
+  "problem_seed": 3343107337412518337,
+  "prompt_raw_sha256": "640bb64c5fd561d03276617ee22269a951e87cf5f19b223ef453ad472ac72fc0",
+  "reference_raw_sha256": "0370512ff67ccc07b5159d1516972c5875b5c2d73bbe25349fb223978bc944f6",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "98/499 mismatches",
+      "raw_completion": "// Decade counter\nmodule TopModule (\n    input  clk,\n    input  reset,\n    input  slowena,\n    output reg [3:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) q <= q + 4'd1;\n    end\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (q == 4'd9 && slowena) q <= 4'd0;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "ced49abb23ff23c7233a05f4e055f986421b14a1ba9654308ab83452cd827f1b",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    input  slowena,\n    output reg [3:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) q <= q + 4'd1;\n    end\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (q == 4'd9 && slowena) q <= 4'd0;\n    end\nendmodule",
+      "rtl_raw_sha256": "fe223a108d996b1ca89f06eb3ca033b67d3d6bbbd4f9e0cacdbdb2eb7d7381a8",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Decade counter, period = 10\nmodule TopModule (\n    input  clk,\n    input  reset,\n    input  slowena,\n    output reg [3:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) begin\n            if (q == 4'd9) q <= 4'd0;\n            else q <= q + 1;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "9d7b4f3a6aef2ed8c48589c99e097546f28d13f6f8b26b134429ad2b9d536e7d",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    input  slowena,\n    output reg [3:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) begin\n            if (q == 4'd9) q <= 4'd0;\n            else q <= q + 1;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "0dbb3a7f023975415140641311e014317efd03cb02d20b321d578b64662692ae",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Decade counter, counts from 0 to 9, inclusive, with a period of 10.\nmodule TopModule(input clk, input reset, input slowena, output reg [3:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) begin\n            if (q == 4'd9) q <= 4'd0;\n            else q <= q + 4'd1;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "0b22b8a12f550c9beb4af24cd9c99a7e5a66a534a794e1b747086ae8663e80ae",
+      "rtl": "module TopModule(input clk, input reset, input slowena, output reg [3:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) begin\n            if (q == 4'd9) q <= 4'd0;\n            else q <= q + 4'd1;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "3a08498e796b720498f27bfd32f9f344795281f077ad23a68e5bc719cc463341",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Decade counter\nmodule TopModule (\n    input  clk,\n    input  reset,\n    input  slowena,\n    output reg [3:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) begin\n            if (q == 4'd9) q <= 4'd0;\n            else q <= q + 1;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "59f4a3525e6a761c73636009a0c0a2a1ec59c48dbcf6121c8c4e7de818f19f76",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    input  slowena,\n    output reg [3:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) begin\n            if (q == 4'd9) q <= 4'd0;\n            else q <= q + 1;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "0dbb3a7f023975415140641311e014317efd03cb02d20b321d578b64662692ae",
+      "sample_index": 3,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Decade counter: counts from 0 to 9, inclusive, with a period of 10.\nmodule TopModule(clk, reset, slowena, q);\n  input clk, reset, slowena;\n  output reg [3:0] q;\n  always @(posedge clk) begin\n    if (reset) q <= 4'd0;\n    else if (slowena) begin\n      if (q == 4'd9) q <= 4'd0;\n      else q <= q + 1;\n    end\n  end\nendmodule",
+      "raw_completion_raw_sha256": "19ed4cffb02e2685c567d40f95226027e40dab70eef1367bce91deb379cae390",
+      "rtl": "module TopModule(clk, reset, slowena, q);\n  input clk, reset, slowena;\n  output reg [3:0] q;\n  always @(posedge clk) begin\n    if (reset) q <= 4'd0;\n    else if (slowena) begin\n      if (q == 4'd9) q <= 4'd0;\n      else q <= q + 1;\n    end\n  end\nendmodule",
+      "rtl_raw_sha256": "96e25de7773706d7af0fd5d9cc2ffcc67464f7eb490370db14bd957f7125635d",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Decade counter, period 10\nmodule TopModule(input clk, input reset, input slowena, output reg [3:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) begin\n            if (q == 4'd9) q <= 4'd0;\n            else q <= q + 4'd1;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "204e69d443a6dd5243fc4da7d0ec5576250d693cda3bcc6c02f6c372b8af5b3d",
+      "rtl": "module TopModule(input clk, input reset, input slowena, output reg [3:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) begin\n            if (q == 4'd9) q <= 4'd0;\n            else q <= q + 4'd1;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "3a08498e796b720498f27bfd32f9f344795281f077ad23a68e5bc719cc463341",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Decade counter, counts from 0 to 9, with a 10-stage per-stage delay.\n// Same function as a Counter10_UP_D1_TRIG0 counter, just written out\n// explicitly.\nmodule TopModule(input clk, input reset, input slowena, output reg [3:0] q);\n  reg [3:0] count;\n  always @(posedge clk) begin\n    if (reset) count <= 4'd0;\n    else if (slowena) begin\n      case (count)\n        4'd0: count <= 4'd1;\n        4'd1: count <= 4'd2;\n        4'd2: count <= 4'd3;\n        4'd3: count <= 4'd4;\n        4'd4: count <= 4'd5;\n        4'd5: count <= 4'd6;\n        4'd6: count <= 4'd7;\n        4'd7: count <= 4'd8;\n        4'd8: count <= 4'd9;\n        4'd9: count <= 4'd0;\n      endcase\n    end\n  end\n  assign q = count;\nendmodule",
+      "raw_completion_raw_sha256": "780f3be127283bb80d00dd177780a7f1342bf76b947b9ffac0cd8eb1d1b8cdb1",
+      "rtl": "module TopModule(input clk, input reset, input slowena, output reg [3:0] q);\n  reg [3:0] count;\n  always @(posedge clk) begin\n    if (reset) count <= 4'd0;\n    else if (slowena) begin\n      case (count)\n        4'd0: count <= 4'd1;\n        4'd1: count <= 4'd2;\n        4'd2: count <= 4'd3;\n        4'd3: count <= 4'd4;\n        4'd4: count <= 4'd5;\n        4'd5: count <= 4'd6;\n        4'd6: count <= 4'd7;\n        4'd7: count <= 4'd8;\n        4'd8: count <= 4'd9;\n        4'd9: count <= 4'd0;\n      endcase\n    end\n  end\n  assign q = count;\nendmodule",
+      "rtl_raw_sha256": "8130f6292b4e5bc5c54a0ae3da83171092130000694e623bb144afe651abb5ab",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 10-stage decade counter\nmodule TopModule(\n    input  clk,\n    input  reset,\n    input  slowena,\n    output reg [3:0] q\n);\n    reg [3:0] nextq;\n    always @(*) begin\n        nextq = (q == 4'd9) ? 4'd0 : q + 1;\n    end\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) q <= nextq;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "691ffa03630ac7efacd2caeb3bcc3ba49e74824e2242c99c0928773d490e2593",
+      "rtl": "module TopModule(\n    input  clk,\n    input  reset,\n    input  slowena,\n    output reg [3:0] q\n);\n    reg [3:0] nextq;\n    always @(*) begin\n        nextq = (q == 4'd9) ? 4'd0 : q + 1;\n    end\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) q <= nextq;\n    end\nendmodule",
+      "rtl_raw_sha256": "321f3def7465bc3a69bd3f94a7883bb5b0a4dd18d86d74c7f93cbb9c87b0e2ff",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Decade counter, period = 10. Same as UP_DOWN_DECADE_COUNTER with\n// UP_DOWN = False, WIDTH = 4, and TRANSITS = 1.\nmodule TopModule(input  clk, input reset, input slowena, output reg [3:0] q);\n  always @(posedge clk) begin\n    if (reset) q <= 4'd0;\n    else if (slowena) begin\n      case (q)\n        4'd0: q <= 4'd1;\n        4'd1: q <= 4'd2;\n        4'd2: q <= 4'd3;\n        4'd3: q <= 4'd4;\n        4'd4: q <= 4'd5;\n        4'd5: q <= 4'd6;\n        4'd6: q <= 4'd7;\n        4'd7: q <= 4'd8;\n        4'd8: q <= 4'd9;\n        4'd9: q <= 4'd0;\n        default: q <= 4'd0;\n      endcase\n    end\n  end\nendmodule",
+      "raw_completion_raw_sha256": "0b8717cf3566aa522785207fcad8424f80bafd950fe2024d8d0a22122bcd5129",
+      "rtl": "module TopModule(input  clk, input reset, input slowena, output reg [3:0] q);\n  always @(posedge clk) begin\n    if (reset) q <= 4'd0;\n    else if (slowena) begin\n      case (q)\n        4'd0: q <= 4'd1;\n        4'd1: q <= 4'd2;\n        4'd2: q <= 4'd3;\n        4'd3: q <= 4'd4;\n        4'd4: q <= 4'd5;\n        4'd5: q <= 4'd6;\n        4'd6: q <= 4'd7;\n        4'd7: q <= 4'd8;\n        4'd8: q <= 4'd9;\n        4'd9: q <= 4'd0;\n        default: q <= 4'd0;\n      endcase\n    end\n  end\nendmodule",
+      "rtl_raw_sha256": "04f453a4a107d0fe788d32015cc443be19d02f91ebad8ce9bc3ade13b68fa1f3",
+      "sample_index": 8,
+      "status": "PASS"
+    },
+    {
+      "detail": "148/499 mismatches",
+      "raw_completion": "// Decade counter, 10-wide, as a 4-bit register that's incremented on every\n// clock edge, with a separate \"slowena\" signal to control the rate of\n// incrementation (goes from 100MHz to ~10Hz with R = 10).\nmodule TopModule (\n    input  clk,\n    input  reset,\n    input  slowena,\n    output reg [3:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) q <= q + 4'd1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "bef872f8d1fd1cfd689b113c2a7ad58cfb04c24a71004dd9e3e626c7ff93f8b4",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    input  slowena,\n    output reg [3:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) q <= q + 4'd1;\n    end\nendmodule",
+      "rtl_raw_sha256": "0a45dec0f0b31055cc646dfe3b3a2a93687a1056526102878108455059e7d8cb",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Decade counter (0-9, period 10)\nmodule TopModule(input clk, input reset, input slowena, output reg [3:0] q);\n  always @(posedge clk) begin\n    if (reset) q <= 4'd0;\n    else if (slowena) begin\n      if (q == 4'd9) q <= 4'd0;\n      else q <= q + 1;\n    end\n  end\nendmodule",
+      "raw_completion_raw_sha256": "456411d9b82b20fbb2c1787ebbfb1ede303b360290cac35c268ef4ef05aad94c",
+      "rtl": "module TopModule(input clk, input reset, input slowena, output reg [3:0] q);\n  always @(posedge clk) begin\n    if (reset) q <= 4'd0;\n    else if (slowena) begin\n      if (q == 4'd9) q <= 4'd0;\n      else q <= q + 1;\n    end\n  end\nendmodule",
+      "rtl_raw_sha256": "3935a0c95de6a761ed4884a16ae5519bc85fab6b15c5f2afd4a35ef4101a2dde",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Decade counter (0-9, period 10)\nmodule TopModule (\n    input  clk,\n    input  reset,\n    input  slowena,\n    output reg [3:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) begin\n            if (q == 4'd9) q <= 4'd0;\n            else q <= q + 4'd1;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "89389908c01b514345e53a5a660b2c0727a245bc2a05e3f4f1d929c6e7619d3f",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    input  slowena,\n    output reg [3:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) begin\n            if (q == 4'd9) q <= 4'd0;\n            else q <= q + 4'd1;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "ce6d57628ac59b3faa4e9ed40f1010b8372dbf44bd1e3d3e8a9a2862d1171c99",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// A 10-stage (period = 10) decade counter\nmodule TopModule(input clk, input reset, input slowena, output reg [3:0] q);\n  always @(posedge clk) begin\n    if (reset) q <= 4'd0;\n    else if (slowena) begin\n      case (q)\n        4'd0: q <= 4'd1;\n        4'd1: q <= 4'd2;\n        4'd2: q <= 4'd3;\n        4'd3: q <= 4'd4;\n        4'd4: q <= 4'd5;\n        4'd5: q <= 4'd6;\n        4'd6: q <= 4'd7;\n        4'd7: q <= 4'd8;\n        4'd8: q <= 4'd9;\n        4'd9: q <= 4'd0;\n      endcase\n    end\n  end\nendmodule",
+      "raw_completion_raw_sha256": "024c4786a904c517cf9294a85592e532a616256670946ea2cc6caa7e49e45c09",
+      "rtl": "module TopModule(input clk, input reset, input slowena, output reg [3:0] q);\n  always @(posedge clk) begin\n    if (reset) q <= 4'd0;\n    else if (slowena) begin\n      case (q)\n        4'd0: q <= 4'd1;\n        4'd1: q <= 4'd2;\n        4'd2: q <= 4'd3;\n        4'd3: q <= 4'd4;\n        4'd4: q <= 4'd5;\n        4'd5: q <= 4'd6;\n        4'd6: q <= 4'd7;\n        4'd7: q <= 4'd8;\n        4'd8: q <= 4'd9;\n        4'd9: q <= 4'd0;\n      endcase\n    end\n  end\nendmodule",
+      "rtl_raw_sha256": "bed5c0ddacfd9407868122de86ec6ed0326c6ce744068a3c443a6cc0036366d0",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "454/499 mismatches",
+      "raw_completion": "// Decade counter with optional slow enable\nmodule TopModule (\n    input  clk,\n    input  reset,\n    input  slowena,\n    output reg [3:0] q\n);\n    reg [3:0] next_q;\n    always @(posedge clk) begin\n        if (reset) next_q <= 4'd0;\n        else if (slowena) next_q <= q + 4'd1;\n    end\n    always @(posedge clk) q <= next_q;\nendmodule",
+      "raw_completion_raw_sha256": "f8cf5d7fbeaae8d319ab44761a1623586c620e7301fe6e01cef874c7f61d5659",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    input  slowena,\n    output reg [3:0] q\n);\n    reg [3:0] next_q;\n    always @(posedge clk) begin\n        if (reset) next_q <= 4'd0;\n        else if (slowena) next_q <= q + 4'd1;\n    end\n    always @(posedge clk) q <= next_q;\nendmodule",
+      "rtl_raw_sha256": "2771d7d760adee3aa712c1a87b22119adde61611517c2ac58dda43e7237e60c8",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Decade counter\nmodule TopModule(\n  input  clk,\n  input  reset,\n  input  slowena,\n  output reg [3:0] q\n);\n  always @(posedge clk) begin\n    if (reset) q <= 4'd0;\n    else if (slowena) begin\n      if (q == 4'd9) q <= 4'd0;\n      else            q <= q + 1;\n    end\n  end\nendmodule",
+      "raw_completion_raw_sha256": "fe2901c99a1a2b8f191aa4a1450ad9f72ecafd41ea7ca0b1d6ba9ccc26483f7c",
+      "rtl": "module TopModule(\n  input  clk,\n  input  reset,\n  input  slowena,\n  output reg [3:0] q\n);\n  always @(posedge clk) begin\n    if (reset) q <= 4'd0;\n    else if (slowena) begin\n      if (q == 4'd9) q <= 4'd0;\n      else            q <= q + 1;\n    end\n  end\nendmodule",
+      "rtl_raw_sha256": "e3f7556bb61716da21bdf37680f72639eca5c57876508fa08f97c69b298ca4bf",
+      "sample_index": 14,
+      "status": "PASS"
+    },
+    {
+      "detail": "154/499 mismatches",
+      "raw_completion": "// Decade counter: counts from 0 to 9 in 10 cycles, with optional pause.\nmodule TopModule(input clk, input reset, input slowena, output reg [3:0] q);\n    reg [3:0] count;\n    always @(posedge clk) begin\n        if (reset) count <= 4'd0;\n        else if (slowena) count <= count + 4'd1;\n        if (count == 4'd9) count <= 4'd0;\n    end\n    assign q = count;\nendmodule",
+      "raw_completion_raw_sha256": "ee1b746bb36ec1bbe1da6927de2ff77376bba15d8d58757eb8fd3b27256ed6f3",
+      "rtl": "module TopModule(input clk, input reset, input slowena, output reg [3:0] q);\n    reg [3:0] count;\n    always @(posedge clk) begin\n        if (reset) count <= 4'd0;\n        else if (slowena) count <= count + 4'd1;\n        if (count == 4'd9) count <= 4'd0;\n    end\n    assign q = count;\nendmodule",
+      "rtl_raw_sha256": "4e66c5be96d7543bef8393b829b73920468df13f4f5a16dcdf9a5004718db9cc",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Decade counter (0-9, period 10).\nmodule TopModule(input clk, input reset, input slowena, output reg [3:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) begin\n            if (q == 4'd9) q <= 4'd0;\n            else q <= q + 4'd1;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "562ff4bdfdb0249ea444762e0ac170fbd2930bd5f1c406f7231929dedc4a39bf",
+      "rtl": "module TopModule(input clk, input reset, input slowena, output reg [3:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) begin\n            if (q == 4'd9) q <= 4'd0;\n            else q <= q + 4'd1;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "3a08498e796b720498f27bfd32f9f344795281f077ad23a68e5bc719cc463341",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob067_countslow_test.sv:141: error: Unknown module type: TopModule",
+      "raw_completion": "// Decade counter, with slow enable - counts from 0 to 9, inclusive, with a\n// period of 10. The reset input is active high synchronous, and the counter\n// is incremented by one every 10 cycles, regardless of the input value.\nmodule DecadeCounter (\n    input  clk,\n    input  reset,\n    input  slowena,\n    output reg [3:0] q\n);\n    reg [3:0] nextq;\n    always @(*) begin\n        if (slowena) nextq = q + 1;\n        else         nextq = q;\n    end\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else       q <= nextq;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "5b294cbd29094c7ef23cd4d85f47f4ac04bbf8067fdcb383d53a35e846d69f39",
+      "rtl": "module DecadeCounter (\n    input  clk,\n    input  reset,\n    input  slowena,\n    output reg [3:0] q\n);\n    reg [3:0] nextq;\n    always @(*) begin\n        if (slowena) nextq = q + 1;\n        else         nextq = q;\n    end\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else       q <= nextq;\n    end\nendmodule",
+      "rtl_raw_sha256": "1319d86b5507ff78f3bed9d0b9518de2a5c053ab1adcfeef2a41e9c25b504573",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob067_countslow_test.sv:141: error: Unknown module type: TopModule",
+      "raw_completion": "// 10-bit decade counter, TRANSPOSED: the counter increments on every\n// clock cycle, but the output is the register stage, i.e. the same as\n// the register stage one stage delayed.\nmodule DecadeCounterTransposed (\n    input  clk,\n    input  reset,\n    input  slowena,\n    output reg [3:0] q\n);\n    reg [3:0] r;\n    always @(posedge clk) begin\n        if (reset) r <= 4'd0;\n        else if (slowena) r <= r + 4'd1;\n    end\n    always @(posedge clk) q <= r;\nendmodule",
+      "raw_completion_raw_sha256": "512f856ad6a2c7b26d75cc491b9fcd589d24542fedafa643cd9915a807e4d088",
+      "rtl": "module DecadeCounterTransposed (\n    input  clk,\n    input  reset,\n    input  slowena,\n    output reg [3:0] q\n);\n    reg [3:0] r;\n    always @(posedge clk) begin\n        if (reset) r <= 4'd0;\n        else if (slowena) r <= r + 4'd1;\n    end\n    always @(posedge clk) q <= r;\nendmodule",
+      "rtl_raw_sha256": "66ce938c214d7cebe6c262d665c64a96056c6a591aa83dd8175bee93f9e183dd",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "374/499 mismatches",
+      "raw_completion": "// Decade counter, incrementing on every clock cycle but with a period of 10\n// (i.e., a \"slow\" counter). The reset input is synchronous and active\n// high, and the \"slowena\" input controls whether the counter actually\n// increments on each clock cycle.\nmodule TopModule(clk, reset, slowena, q);\n    input clk, reset, slowena;\n    output reg [3:0] q;\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) q <= q + 4'd1;\n    end\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (q == 4'd9 && slowena) q <= 4'd0;\n        else if (slowena) q <= q;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "e19e45b09c9e84bc9892fd584d1e6fb62af6ee383c76c5401089fa85b603dd21",
+      "rtl": "module TopModule(clk, reset, slowena, q);\n    input clk, reset, slowena;\n    output reg [3:0] q;\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (slowena) q <= q + 4'd1;\n    end\n    always @(posedge clk) begin\n        if (reset) q <= 4'd0;\n        else if (q == 4'd9 && slowena) q <= 4'd0;\n        else if (slowena) q <= q;\n    end\nendmodule",
+      "rtl_raw_sha256": "480178db0f4e3f85ae92513a264dfc4cbf8118824b7258db4d7b58c476ed0998",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 13,
+    "compile_fail": 2,
+    "fail": 5
+  },
+  "testbench_raw_sha256": "3a54596a1fc3579f795d741ed77ce2cde54f6b3773bcb3aaa59bc3eb5e09cf83",
+  "training_seed": 1
+}

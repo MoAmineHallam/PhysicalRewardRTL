@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob004_vector2",
+  "problem_seed": 1575989196236527757,
+  "prompt_raw_sha256": "109435d228368f04fa0e38b0ec6d6b77a0f883670943bd80ecefc2f579609074",
+  "reference_raw_sha256": "db26922b65f2629f191df37254f0c5e93992f2c920b58a64e78e538a9ad5d53b",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "109/110 mismatches",
+      "raw_completion": "// 32-bit byte reversal\nmodule TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    // Byte-reversed register\n    reg [31:0] byte_reversed;\n    integer i;\n    always @(*) begin\n        for (i = 0; i < 32; i = i + 1)\n            byte_reversed[i] = in[(31 - i) * 8 +: 8];\n    end\n    assign out = byte_reversed;\nendmodule",
+      "raw_completion_raw_sha256": "db68430ef2e47c6f9d097e317b188d9ec52bc6e9ad2a0cea83ecf81890a46c24",
+      "rtl": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    // Byte-reversed register\n    reg [31:0] byte_reversed;\n    integer i;\n    always @(*) begin\n        for (i = 0; i < 32; i = i + 1)\n            byte_reversed[i] = in[(31 - i) * 8 +: 8];\n    end\n    assign out = byte_reversed;\nendmodule",
+      "rtl_raw_sha256": "de2cf93f1563faaa7831b06be8e797baff3606f62f9f7379fb0dd502823e7b64",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: A reference to a wire or reg (`i') is not allowed in a constant expression.",
+      "raw_completion": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] tmp;\n    integer i;\n    always @(*) begin\n        for (i = 0; i < 32; i = i + 8)\n            tmp[i+:8] = in[31-i-7:31-i];\n        out = tmp;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "38b7e53683bbd916e2a16949306cc761a47866fa002d4fd0fb4f5eed77ab2783",
+      "rtl": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] tmp;\n    integer i;\n    always @(*) begin\n        for (i = 0; i < 32; i = i + 8)\n            tmp[i+:8] = in[31-i-7:31-i];\n        out = tmp;\n    end\nendmodule",
+      "rtl_raw_sha256": "38b7e53683bbd916e2a16949306cc761a47866fa002d4fd0fb4f5eed77ab2783",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    assign out = {in[7:0], in[15:8], in[23:16], in[31:24]};\nendmodule",
+      "raw_completion_raw_sha256": "e4228ba39fd67891674364a3431b3e0933d8928a58f35b7d1f4d759a9a35dfdb",
+      "rtl": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    assign out = {in[7:0], in[15:8], in[23:16], in[31:24]};\nendmodule",
+      "rtl_raw_sha256": "e4228ba39fd67891674364a3431b3e0933d8928a58f35b7d1f4d759a9a35dfdb",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: A reference to a wire or reg (`i') is not allowed in a constant expression.",
+      "raw_completion": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] tmp;\n    integer i;\n    always @(*) begin\n        for (i = 0; i < 32; i = i + 8) begin\n            tmp[i+:8] = in[31-i-7:31-i];\n        end\n        out = tmp;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "0de47e564778ab9df301806d41abb6c086923d96faeb1382f5956bc08a509449",
+      "rtl": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] tmp;\n    integer i;\n    always @(*) begin\n        for (i = 0; i < 32; i = i + 8) begin\n            tmp[i+:8] = in[31-i-7:31-i];\n        end\n        out = tmp;\n    end\nendmodule",
+      "rtl_raw_sha256": "0de47e564778ab9df301806d41abb6c086923d96faeb1382f5956bc08a509449",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: syntax error",
+      "raw_completion": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    wire [31:0] rev;\n    genvar i;\n    for (i = 0; i < 32; i = i + 8) begin\n        rev[i +: 8] = in[31 - i -: 8];\n    end\n    assign out = rev;\nendmodule",
+      "raw_completion_raw_sha256": "74d654fe4b21cde1028ab4796320a39060755b794fe68874cdfe837a9b895f89",
+      "rtl": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    wire [31:0] rev;\n    genvar i;\n    for (i = 0; i < 32; i = i + 8) begin\n        rev[i +: 8] = in[31 - i -: 8];\n    end\n    assign out = rev;\nendmodule",
+      "rtl_raw_sha256": "74d654fe4b21cde1028ab4796320a39060755b794fe68874cdfe837a9b895f89",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:18: error: out is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 32-bit byte-reversed register\nmodule TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] reg0;\n    reg [31:0] reg1;\n    reg [31:0] reg2;\n    reg [31:0] reg3;\n    wire [31:0] tmp0;\n    wire [31:0] tmp1;\n    wire [31:0] tmp2;\n    wire [31:0] tmp3;\n    assign tmp0 = {reg0[7:0], reg0[15:8], reg0[23:16], reg0[31:24]};\n    assign tmp1 = {reg1[7:0], reg1[15:8], reg1[23:16], reg1[31:24]};\n    assign tmp2 = {reg2[7:0], reg2[15:8], reg2[23:16], reg2[31:24]};\n    assign tmp3 = {reg3[7:0], reg3[15:8], reg3[23:16], reg3[31:24]};\n    always @(*) begin\n        out = {tmp3, tmp2, tmp1, tmp0};\n    end\n    always @(posedge clk) begin\n        reg0 <= in[7:0];\n        reg1 <= in[15:8];\n        reg2 <= in[23:16];\n        reg3 <= in[31:24];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "cc9bbca69226978fb0044a1f90199e04e3cce0a24f1937d67b2e21af91bf1c63",
+      "rtl": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] reg0;\n    reg [31:0] reg1;\n    reg [31:0] reg2;\n    reg [31:0] reg3;\n    wire [31:0] tmp0;\n    wire [31:0] tmp1;\n    wire [31:0] tmp2;\n    wire [31:0] tmp3;\n    assign tmp0 = {reg0[7:0], reg0[15:8], reg0[23:16], reg0[31:24]};\n    assign tmp1 = {reg1[7:0], reg1[15:8], reg1[23:16], reg1[31:24]};\n    assign tmp2 = {reg2[7:0], reg2[15:8], reg2[23:16], reg2[31:24]};\n    assign tmp3 = {reg3[7:0], reg3[15:8], reg3[23:16], reg3[31:24]};\n    always @(*) begin\n        out = {tmp3, tmp2, tmp1, tmp0};\n    end\n    always @(posedge clk) begin\n        reg0 <= in[7:0];\n        reg1 <= in[15:8];\n        reg2 <= in[23:16];\n        reg3 <= in[31:24];\n    end\nendmodule",
+      "rtl_raw_sha256": "ced0f030ac6495de6645c1a3a4b1f60b8a427b1511f0bb3c024cf67a608ed95a",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "109/110 mismatches",
+      "raw_completion": "// Reverse byte order of a 32-bit vector\nmodule TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] tmp;\n    integer i;\n    always @(*) begin\n        for (i = 0; i < 32; i = i + 4) begin\n            tmp[i] = in[31-i];\n            tmp[i+1] = in[29-i];\n            tmp[i+2] = in[27-i];\n            tmp[i+3] = in[25-i];\n        end\n    end\n    assign out = tmp;\nendmodule",
+      "raw_completion_raw_sha256": "6baff6d07745cae64cf4803d89815019494a92b3cccae5ddb5c1cea8088de68f",
+      "rtl": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] tmp;\n    integer i;\n    always @(*) begin\n        for (i = 0; i < 32; i = i + 4) begin\n            tmp[i] = in[31-i];\n            tmp[i+1] = in[29-i];\n            tmp[i+2] = in[27-i];\n            tmp[i+3] = in[25-i];\n        end\n    end\n    assign out = tmp;\nendmodule",
+      "rtl_raw_sha256": "747c1b22200b0af207a0f4670e8f0d072fa940f10c641944f73c7f6fcf5711ab",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 32-bit byte reversal\nmodule TopModule(input [31:0] in, output [31:0] out);\n    assign out = {in[7:0], in[15:8], in[23:16], in[31:24]};\nendmodule",
+      "raw_completion_raw_sha256": "456d4a15a24055f8c5bddac285efa0ee8a8ff5f51aa68d139f46c922eefbdc01",
+      "rtl": "module TopModule(input [31:0] in, output [31:0] out);\n    assign out = {in[7:0], in[15:8], in[23:16], in[31:24]};\nendmodule",
+      "rtl_raw_sha256": "99d69350ec80560605d1a0fdbfeb31ad6514ff26f8f4039ef06a823181b64ec7",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "109/110 mismatches",
+      "raw_completion": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    // Byte-reversed register\n    reg [31:0] byte_reversed;\n    always @(*) byte_reversed = {in[7:0],   in[15:8],   in[23:16],   in[31:24]};\n\n    // Word-reversed register\n    reg [31:0] word_reversed;\n    always @(*) word_reversed = {byte_reversed[23:0],   byte_reversed[31:24]};\n\n    // Output the word-reversed register\n    assign out = word_reversed;\nendmodule",
+      "raw_completion_raw_sha256": "9439987990aca3010acf3305f9049a2876cfc1e57ebb589b8bf343e73aa0105c",
+      "rtl": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    // Byte-reversed register\n    reg [31:0] byte_reversed;\n    always @(*) byte_reversed = {in[7:0],   in[15:8],   in[23:16],   in[31:24]};\n\n    // Word-reversed register\n    reg [31:0] word_reversed;\n    always @(*) word_reversed = {byte_reversed[23:0],   byte_reversed[31:24]};\n\n    // Output the word-reversed register\n    assign out = word_reversed;\nendmodule",
+      "rtl_raw_sha256": "9439987990aca3010acf3305f9049a2876cfc1e57ebb589b8bf343e73aa0105c",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: A reference to a wire or reg (`i') is not allowed in a constant expression.",
+      "raw_completion": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] tmp;\n    integer i;\n    always @(*) begin\n        for (i = 0; i < 4; i = i + 1)\n            tmp[i*8 + 7:i*8] = in[(3-i)*8 + 7: (3-i)*8];\n        out = tmp;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "85ee2277bbec6087b7d2df0d0e837cc99350e115560d944b07e5ade89d38887c",
+      "rtl": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] tmp;\n    integer i;\n    always @(*) begin\n        for (i = 0; i < 4; i = i + 1)\n            tmp[i*8 + 7:i*8] = in[(3-i)*8 + 7: (3-i)*8];\n        out = tmp;\n    end\nendmodule",
+      "rtl_raw_sha256": "85ee2277bbec6087b7d2df0d0e837cc99350e115560d944b07e5ade89d38887c",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: A reference to a wire or reg (`i') is not allowed in a constant expression.",
+      "raw_completion": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] tmp;\n    integer i;\n    always @(*) begin\n        for (i = 0; i < 32; i = i + 8) begin\n            tmp[i+:8] = in[31-i-7:31-i];\n        end\n        out = tmp;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "0de47e564778ab9df301806d41abb6c086923d96faeb1382f5956bc08a509449",
+      "rtl": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] tmp;\n    integer i;\n    always @(*) begin\n        for (i = 0; i < 32; i = i + 8) begin\n            tmp[i+:8] = in[31-i-7:31-i];\n        end\n        out = tmp;\n    end\nendmodule",
+      "rtl_raw_sha256": "0de47e564778ab9df301806d41abb6c086923d96faeb1382f5956bc08a509449",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "109/110 mismatches",
+      "raw_completion": "// One-hot byte selects: [7, 6, 5, 4, 3, 2, 1, 0]\nmodule TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    wire [31:0] bytes [0:7];\n    genvar i;\n    generate\n        for (i = 0; i < 8; i = i + 1) begin : BYTES\n            assign bytes[i] = in[(i*8)+:8];\n        end\n    endgenerate\n    assign out = {bytes[7], bytes[6], bytes[5], bytes[4], bytes[3], bytes[2], bytes[1], bytes[0]};\nendmodule",
+      "raw_completion_raw_sha256": "9b25f9b0ee8339a40eb55ff2461ca65efbe2602b35e7d73d1fd7db98be3ff533",
+      "rtl": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    wire [31:0] bytes [0:7];\n    genvar i;\n    generate\n        for (i = 0; i < 8; i = i + 1) begin : BYTES\n            assign bytes[i] = in[(i*8)+:8];\n        end\n    endgenerate\n    assign out = {bytes[7], bytes[6], bytes[5], bytes[4], bytes[3], bytes[2], bytes[1], bytes[0]};\nendmodule",
+      "rtl_raw_sha256": "0f2ff9632ac6e6b761cb76b8799973a6b343f2616da1a7c4e6a80c75a06008a6",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: A reference to a wire or reg (`i') is not allowed in a constant expression.",
+      "raw_completion": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] tmp;\n    integer i;\n    always @(*) begin\n        for (i = 0; i < 32; i = i + 8) begin\n            tmp[i+:8] = in[31-i-7:31-i];\n        end\n        out = tmp;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "0de47e564778ab9df301806d41abb6c086923d96faeb1382f5956bc08a509449",
+      "rtl": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] tmp;\n    integer i;\n    always @(*) begin\n        for (i = 0; i < 32; i = i + 8) begin\n            tmp[i+:8] = in[31-i-7:31-i];\n        end\n        out = tmp;\n    end\nendmodule",
+      "rtl_raw_sha256": "0de47e564778ab9df301806d41abb6c086923d96faeb1382f5956bc08a509449",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: A reference to a wire or reg (`i') is not allowed in a constant expression.",
+      "raw_completion": "// Byte-reversed 32-bit vector.\nmodule TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] tmp;\n    integer i;\n    always @(*) begin\n        for (i = 0; i < 32; i = i + 8)\n            tmp[i+:8] = in[31-i-7:31-i];\n        out = tmp;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "57e7f9d64c695f82743c4a0c65a88f2cc246383cce381736c86ebe22d7702894",
+      "rtl": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] tmp;\n    integer i;\n    always @(*) begin\n        for (i = 0; i < 32; i = i + 8)\n            tmp[i+:8] = in[31-i-7:31-i];\n        out = tmp;\n    end\nendmodule",
+      "rtl_raw_sha256": "38b7e53683bbd916e2a16949306cc761a47866fa002d4fd0fb4f5eed77ab2783",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    wire [7:0] b0 = in[7:0];\n    wire [7:0] b1 = in[15:8];\n    wire [7:0] b2 = in[23:16];\n    wire [7:0] b3 = in[31:24];\n    assign out = {b0, b1, b2, b3};\nendmodule",
+      "raw_completion_raw_sha256": "663832c99edbef5f1179043ed67f65cfdab7c600928e481a27c3ca618b16de03",
+      "rtl": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    wire [7:0] b0 = in[7:0];\n    wire [7:0] b1 = in[15:8];\n    wire [7:0] b2 = in[23:16];\n    wire [7:0] b3 = in[31:24];\n    assign out = {b0, b1, b2, b3};\nendmodule",
+      "rtl_raw_sha256": "663832c99edbef5f1179043ed67f65cfdab7c600928e481a27c3ca618b16de03",
+      "sample_index": 14,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:5: error: No function named `reverse_bytes' found in this context (tb.top_module1).",
+      "raw_completion": "// One-hot byte select (from address)\nfunction [31:0] reverse_bytes(input [31:0] data);\n    reg [7:0] bytes [3:0];\n    int i;\n    for (i = 0; i < 4; i = i + 1) bytes[i] = data[i*8 +: 8];\n    reverse_bytes = {bytes[3], bytes[2], bytes[1], bytes[0]};\nendfunction\n\nmodule TopModule(\n    input [31:0] in,\n    output [31:0] out\n);\n    wire [31:0] reversed = reverse_bytes(in);\n    assign out = reversed;\nendmodule",
+      "raw_completion_raw_sha256": "9748d3e14a654b84a27878438fada67be324ecea994ccea3031721102aaf4ec7",
+      "rtl": "module TopModule(\n    input [31:0] in,\n    output [31:0] out\n);\n    wire [31:0] reversed = reverse_bytes(in);\n    assign out = reversed;\nendmodule",
+      "rtl_raw_sha256": "65600560baadb2134e3e56afddf7e0e2cc4deb7b7ce648529cf3329174d960e9",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(input [31:0] in, output [31:0] out);\n  wire [7:0] tmp0;\n  wire [7:0] tmp1;\n  wire [7:0] tmp2;\n  wire [7:0] tmp3;\n  assign tmp0 = in[7:0];\n  assign tmp1 = in[15:8];\n  assign tmp2 = in[23:16];\n  assign tmp3 = in[31:24];\n  assign out = {tmp0, tmp1, tmp2, tmp3};\nendmodule",
+      "raw_completion_raw_sha256": "050f7d67301f89b358213a221d4123bd8187b93c08141d2324ce4a6455ae9d77",
+      "rtl": "module TopModule(input [31:0] in, output [31:0] out);\n  wire [7:0] tmp0;\n  wire [7:0] tmp1;\n  wire [7:0] tmp2;\n  wire [7:0] tmp3;\n  assign tmp0 = in[7:0];\n  assign tmp1 = in[15:8];\n  assign tmp2 = in[23:16];\n  assign tmp3 = in[31:24];\n  assign out = {tmp0, tmp1, tmp2, tmp3};\nendmodule",
+      "rtl_raw_sha256": "050f7d67301f89b358213a221d4123bd8187b93c08141d2324ce4a6455ae9d77",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob004_vector2_test.sv:81: error: Unknown module type: TopModule",
+      "raw_completion": "// This is a 32-bit register, byte-reversed. If you feed it a 32-bit vector\n// in the order {A3, A2, A1, A0, A7, A6, A5, A4, A11, A10, A9, A8, A15, A14,\n// A13, A12}, it will give you the same vector, but with the bytes in reversed\n// order: {A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14,\n// A15}.\nmodule ByteReverse32(input [31:0] in, output [31:0] out);\n    wire [7:0] tmp0 = in[7:0];\n    wire [7:0] tmp1 = in[15:8];\n    wire [7:0] tmp2 = in[23:16];\n    wire [7:0] tmp3 = in[31:24];\n    wire [7:0] tmp4 = in[7:0];\n    wire [7:0] tmp5 = in[15:8];\n    wire [7:0] tmp6 = in[23:16];\n    wire [7:0] tmp7 = in[31:24];\n    wire [7:0] tmp8 = in[7:0];\n    wire [7:0] tmp9 = in[15:8];\n    wire [7:0] tmp10 = in[23:16];\n    wire [7:0] tmp11 = in[31:24];\n    wire [7:0] tmp12 = in[7:0];\n    wire [7:0] tmp13 = in[15:8];\n    wire [7:0] tmp14 = in[23:16];\n    wire [7:0] tmp15 = in[31:24];\n    assign out = {tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8, tmp9, tmp10, tmp11, tmp12, tmp13, tmp14, tmp15};\nendmodule",
+      "raw_completion_raw_sha256": "5442b5107939d5eaa71bc91ced2f220d4b237cdb88542e3b74bb3be32fcbb515",
+      "rtl": "module ByteReverse32(input [31:0] in, output [31:0] out);\n    wire [7:0] tmp0 = in[7:0];\n    wire [7:0] tmp1 = in[15:8];\n    wire [7:0] tmp2 = in[23:16];\n    wire [7:0] tmp3 = in[31:24];\n    wire [7:0] tmp4 = in[7:0];\n    wire [7:0] tmp5 = in[15:8];\n    wire [7:0] tmp6 = in[23:16];\n    wire [7:0] tmp7 = in[31:24];\n    wire [7:0] tmp8 = in[7:0];\n    wire [7:0] tmp9 = in[15:8];\n    wire [7:0] tmp10 = in[23:16];\n    wire [7:0] tmp11 = in[31:24];\n    wire [7:0] tmp12 = in[7:0];\n    wire [7:0] tmp13 = in[15:8];\n    wire [7:0] tmp14 = in[23:16];\n    wire [7:0] tmp15 = in[31:24];\n    assign out = {tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8, tmp9, tmp10, tmp11, tmp12, tmp13, tmp14, tmp15};\nendmodule",
+      "rtl_raw_sha256": "7207e6c4eb2c3d01cd7363700cfd4dd1a622d83c0c6f7644198a4f40ad797d9e",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 32-bit byte-reversed register: reverses the byte order of a 32-bit vector.\nmodule TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] reg0;\n    wire [31:0] byte_reversed;\n    assign byte_reversed = {in[7:0],   in[15:8],   in[23:16],   in[31:24]};\n    always @(*) reg0 = byte_reversed;\n    assign out = reg0;\nendmodule",
+      "raw_completion_raw_sha256": "5d592f73333e8b621e2f13a57f5931cfa142f093cef35ec126245031531fe7c0",
+      "rtl": "module TopModule(\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] reg0;\n    wire [31:0] byte_reversed;\n    assign byte_reversed = {in[7:0],   in[15:8],   in[23:16],   in[31:24]};\n    always @(*) reg0 = byte_reversed;\n    assign out = reg0;\nendmodule",
+      "rtl_raw_sha256": "6c212205bcd8db73989364a404d33d585c0321e78948ca98f5cca3d54a1b13ae",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "109/110 mismatches",
+      "raw_completion": "// Byte-reversed 32-bit register\nmodule TopModule (\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] reg_reversed;\n    always @(*) reg_reversed = {in[7:0],   in[15:8],   in[23:16],   in[31:24],\n                                in[39:32], in[47:40], in[55:48], in[63:56],\n                                in[71:64], in[79:72], in[87:80], in[95:88],\n                                in[103:96], in[111:104], in[119:112], in[127:120],\n                                in[135:128], in[143:136], in[151:144], in[159:152],\n                                in[167:160], in[175:168], in[183:176], in[191:184],\n                                in[199:192], in[207:200], in[215:208], in[223:216],\n                                in[231:224]};\n    assign out = reg_reversed;\nendmodule",
+      "raw_completion_raw_sha256": "cfad7ab819fb3a968263e26dadbdadd6bf66ede3aa720d2b71f5271bb7926c94",
+      "rtl": "module TopModule (\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] reg_reversed;\n    always @(*) reg_reversed = {in[7:0],   in[15:8],   in[23:16],   in[31:24],\n                                in[39:32], in[47:40], in[55:48], in[63:56],\n                                in[71:64], in[79:72], in[87:80], in[95:88],\n                                in[103:96], in[111:104], in[119:112], in[127:120],\n                                in[135:128], in[143:136], in[151:144], in[159:152],\n                                in[167:160], in[175:168], in[183:176], in[191:184],\n                                in[199:192], in[207:200], in[215:208], in[223:216],\n                                in[231:224]};\n    assign out = reg_reversed;\nendmodule",
+      "rtl_raw_sha256": "c7a5caa28d6a6036132780ada6a044ed4948a2b6061e4fa681034186c019a3fc",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 5,
+    "compile_fail": 10,
+    "fail": 5
+  },
+  "testbench_raw_sha256": "ea9a436112683c58afe580a1af5e7be763c5e445649cb856c14a8e3fe8c7d0d4",
+  "training_seed": 2
+}

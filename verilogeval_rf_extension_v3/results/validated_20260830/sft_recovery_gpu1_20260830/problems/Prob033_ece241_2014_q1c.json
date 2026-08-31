@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob033_ece241_2014_q1c",
+  "problem_seed": 2798258001132998321,
+  "prompt_raw_sha256": "e0af17e9255b0a9cc227c1fc506c6def2c13a044e9422a1eae329c766772f68b",
+  "reference_raw_sha256": "70556fcdfe57e54f5a7fe358919e697074cbf7b5f06c305b94e5b4ca8bab61ce",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "55/116 mismatches",
+      "raw_completion": "// 8-bit 2's complement adder, with signed overflow check.\nmodule TopModule(\n    input [7:0] a,\n    input [7:0] b,\n    output reg [7:0] s,\n    output reg overflow\n);\n    always @(*) begin\n        {overflow, s} = a + b;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "57c61f8384fde3a17c51c81292dbac1cbea5e837b426b2ca2c4cc75e7143300f",
+      "rtl": "module TopModule(\n    input [7:0] a,\n    input [7:0] b,\n    output reg [7:0] s,\n    output reg overflow\n);\n    always @(*) begin\n        {overflow, s} = a + b;\n    end\nendmodule",
+      "rtl_raw_sha256": "6c6f5a12cb744316e49b0d6ea93e5587b61c08fc1c45f04dae8312cdeef6b3de",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob033_ece241_2014_q1c_test.sv:97: error: Unknown module type: TopModule",
+      "raw_completion": "// 8-bit 2's complement adder\nmodule Adder8(input [7:0] a, b, output [7:0] s, output overflow);\n    reg [7:0] sum;\n    always @(*) begin\n        sum = a + b;\n        overflow = ((a >= 0 && b >= 0 && sum < 0) || (a < 0 && b < 0 && sum >= 0));\n    end\n    assign s = sum;\nendmodule",
+      "raw_completion_raw_sha256": "8280ed63d8177e284906e2507bf706bba5962f70c21362822a518b9824ce8709",
+      "rtl": "module Adder8(input [7:0] a, b, output [7:0] s, output overflow);\n    reg [7:0] sum;\n    always @(*) begin\n        sum = a + b;\n        overflow = ((a >= 0 && b >= 0 && sum < 0) || (a < 0 && b < 0 && sum >= 0));\n    end\n    assign s = sum;\nendmodule",
+      "rtl_raw_sha256": "7a1d5188925c1af35a1919f2268d01891866daecdb1be95d5f03d621d3917920",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "24/116 mismatches",
+      "raw_completion": "// 8-bit signed addition: the sum s[7:0] and overflow are both one bit per stage\n// (registered), and the overflow at stage i is the carry-in to stage i+1.\nmodule TopModule(\n    input [7:0] a,\n    input [7:0] b,\n    output reg [7:0] s,\n    output reg overflow\n);\n    reg [7:0] s1, s2, s3, s4, s5, s6, s7, s8;\n    reg overflow1, overflow2, overflow3, overflow4, overflow5, overflow6, overflow7;\n    always @(*) begin\n        {overflow1, s1} = a + b;\n        {overflow2, s2} = s1 + 1'b0;\n        {overflow3, s3} = s2 + 1'b0;\n        {overflow4, s4} = s3 + 1'b0;\n        {overflow5, s5} = s4 + 1'b0;\n        {overflow6, s6} = s5 + 1'b0;\n        {overflow7, s7} = s6 + 1'b0;\n        {overflow, s8} = s7 + 1'b0;\n    end\n    always @(*) s = s8;\nendmodule",
+      "raw_completion_raw_sha256": "0c1d2ae3fb46ce6f5b7779a773adc75b261c77039c6f455eba036a4dfb1835aa",
+      "rtl": "module TopModule(\n    input [7:0] a,\n    input [7:0] b,\n    output reg [7:0] s,\n    output reg overflow\n);\n    reg [7:0] s1, s2, s3, s4, s5, s6, s7, s8;\n    reg overflow1, overflow2, overflow3, overflow4, overflow5, overflow6, overflow7;\n    always @(*) begin\n        {overflow1, s1} = a + b;\n        {overflow2, s2} = s1 + 1'b0;\n        {overflow3, s3} = s2 + 1'b0;\n        {overflow4, s4} = s3 + 1'b0;\n        {overflow5, s5} = s4 + 1'b0;\n        {overflow6, s6} = s5 + 1'b0;\n        {overflow7, s7} = s6 + 1'b0;\n        {overflow, s8} = s7 + 1'b0;\n    end\n    always @(*) s = s8;\nendmodule",
+      "rtl_raw_sha256": "1fea051ffe3f7c503b60ffb7bd49569f3ef30af75074f932442663dac7123f8a",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob033_ece241_2014_q1c_test.sv:97: error: Unknown module type: TopModule",
+      "raw_completion": "// 8-bit 2's complement adder, with overflow detection\nmodule Adder8 (\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] s,\n    output        overflow\n);\n    wire [7:0] sum;\n    wire       carry;\n    assign sum = a + b;\n    assign overflow = (a[7] == b[7]) && (sum[7] != a[7]);\n    assign s = sum;\n    assign carry = 1'b0;\nendmodule",
+      "raw_completion_raw_sha256": "e67b3891134280739a18e77070e3be39a9893b85711b4b7d3b03cce6387ef3f7",
+      "rtl": "module Adder8 (\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] s,\n    output        overflow\n);\n    wire [7:0] sum;\n    wire       carry;\n    assign sum = a + b;\n    assign overflow = (a[7] == b[7]) && (sum[7] != a[7]);\n    assign s = sum;\n    assign carry = 1'b0;\nendmodule",
+      "rtl_raw_sha256": "499aa0d66dbf03f02e6d010ff058639cbdf8a2d062f7b382624eb19f0bddd3b4",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:14: error: s is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 8-bit signed 2's complement add, with overflow detect\nmodule TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] s,\n    output        overflow\n);\n    reg  [8:0] t;\n    wire signed [7:0] a_signed = a;\n    wire signed [7:0] b_signed = b;\n    wire signed [7:0] s_signed = a_signed + b_signed;\n    assign overflow = (s_signed[7] != s_signed[6]);\n    always @(*) begin\n        t = a_signed + b_signed;\n        s = t[7:0];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "e51aa49a447e905c4b7f4b89b354b37646be60681dcf1d1b888fc4a396ccf233",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] s,\n    output        overflow\n);\n    reg  [8:0] t;\n    wire signed [7:0] a_signed = a;\n    wire signed [7:0] b_signed = b;\n    wire signed [7:0] s_signed = a_signed + b_signed;\n    assign overflow = (s_signed[7] != s_signed[6]);\n    always @(*) begin\n        t = a_signed + b_signed;\n        s = t[7:0];\n    end\nendmodule",
+      "rtl_raw_sha256": "a751f9001dc96f3eb4012327a5458ed413c6ec8e9119cff402729e06b855f277",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob033_ece241_2014_q1c_test.sv:97: error: Unknown module type: TopModule",
+      "raw_completion": "// 8-bit two's complement adder, with signed overflow detection\nmodule add8(\n    input [7:0] a,\n    input [7:0] b,\n    output [7:0] s,\n    output overflow\n);\n    reg [7:0] u;\n    wire [8:0] u2;\n    assign u2 = a + b;\n    always @(*) begin\n        u <= u2[7:0];\n        overflow <= (a[7] == b[7] && u[7] != a[7]) || (a[7] != b[7]);\n    end\n    assign s = u;\nendmodule",
+      "raw_completion_raw_sha256": "e626cff1388e51a928114dfe085b55fc58321a7e80828fa40515fca47d8f5e76",
+      "rtl": "module add8(\n    input [7:0] a,\n    input [7:0] b,\n    output [7:0] s,\n    output overflow\n);\n    reg [7:0] u;\n    wire [8:0] u2;\n    assign u2 = a + b;\n    always @(*) begin\n        u <= u2[7:0];\n        overflow <= (a[7] == b[7] && u[7] != a[7]) || (a[7] != b[7]);\n    end\n    assign s = u;\nendmodule",
+      "rtl_raw_sha256": "6f49907f8fe563fc35814b956b94efafa2e6e0d5616c42af2e29a545a2a4f1ad",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob033_ece241_2014_q1c_test.sv:97: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit full adder\nmodule FullAdder(\n    input a,\n    input b,\n    input cin,\n    output reg s,\n    output reg cout\n);\n    always @* begin\n        s = a ^ b ^ cin;\n        cout = (a & b) | (a & cin) | (b & cin);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "88b9af87f893cc975db360e42e998bd5df1b3c1b80c629dd16c4f99e9bd10bda",
+      "rtl": "module FullAdder(\n    input a,\n    input b,\n    input cin,\n    output reg s,\n    output reg cout\n);\n    always @* begin\n        s = a ^ b ^ cin;\n        cout = (a & b) | (a & cin) | (b & cin);\n    end\nendmodule",
+      "rtl_raw_sha256": "8c304ab483cc4777ed8367d4f25c943f6aa5ecd0f2bf8bd6c04e6ac156cc441e",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 8-bit 2's complement addition (w/o carry-out or overflow signal)\nmodule TopModule(input [7:0] a, b, output [7:0] s, output overflow);\n  wire [7:0] tmp;\n  assign tmp = a + b;\n  assign s = tmp;\n  assign overflow = (a[7] == b[7] && tmp[7] != a[7]);\nendmodule",
+      "raw_completion_raw_sha256": "bbaaa6b13e94d73e6540a883b0c02594141038d7384582c6af51e63bb24784c2",
+      "rtl": "module TopModule(input [7:0] a, b, output [7:0] s, output overflow);\n  wire [7:0] tmp;\n  assign tmp = a + b;\n  assign s = tmp;\n  assign overflow = (a[7] == b[7] && tmp[7] != a[7]);\nendmodule",
+      "rtl_raw_sha256": "45aa7f81c55728c3bda939130584e5985ae71f5bcd2cdcd54bdb4f58e199d274",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob033_ece241_2014_q1c_test.sv:97: error: Unknown module type: TopModule",
+      "raw_completion": "// 8-bit 2's complement adder, with signed overflow detection\nmodule Add8 (\n    input [7:0] a,\n    input [7:0] b,\n    output reg [7:0] s,\n    output reg overflow\n);\n    always @(*) begin\n        s = a + b;\n        overflow = (a[7] == b[7] && s[7] != a[7]) || (a[7] != b[7] && s[7] == a[7]);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "5a68fded89ca7cfed6510c7c6b22d750de0d553a72b1a9e944ecadada9f148fd",
+      "rtl": "module Add8 (\n    input [7:0] a,\n    input [7:0] b,\n    output reg [7:0] s,\n    output reg overflow\n);\n    always @(*) begin\n        s = a + b;\n        overflow = (a[7] == b[7] && s[7] != a[7]) || (a[7] != b[7] && s[7] == a[7]);\n    end\nendmodule",
+      "rtl_raw_sha256": "3c1956a69174343e570ee151ea09dad0fba769cf0b85dbd0a8e5f11d273daf3a",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "60/116 mismatches",
+      "raw_completion": "// Full 8-bit 2's complement adder, plus overflow detection.\nmodule TopModule(\n    input [7:0] a,\n    input [7:0] b,\n    output reg [7:0] s,\n    output reg overflow\n);\n    reg [8:0] s_reg;\n    always @(*) begin\n        s_reg = a + b;\n        overflow = (s_reg[8] != s_reg[7]);\n        s = s_reg[7:0];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "92db2a228700e216a89e4149b9f48ed55f328de8d8dfc0f93c67f3d41e36482e",
+      "rtl": "module TopModule(\n    input [7:0] a,\n    input [7:0] b,\n    output reg [7:0] s,\n    output reg overflow\n);\n    reg [8:0] s_reg;\n    always @(*) begin\n        s_reg = a + b;\n        overflow = (s_reg[8] != s_reg[7]);\n        s = s_reg[7:0];\n    end\nendmodule",
+      "rtl_raw_sha256": "1fa4f6b0cf388fcce92d51058fb801db13bec8e73618fbe7f63112fd8a598bf4",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob033_ece241_2014_q1c_test.sv:97: error: Unknown module type: TopModule",
+      "raw_completion": "// One bit full adder\nmodule FA1 (\n    input a, b, cin,\n    output reg s, cout\n);\n    always @(*) begin\n        s = a ^ b ^ cin;\n        cout = (a&b) | (a&cin) | (b&cin);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "7d4e2d0dd639ab518b97e283b0ba9b5e564915afd15655dfca88c838889f20fb",
+      "rtl": "module FA1 (\n    input a, b, cin,\n    output reg s, cout\n);\n    always @(*) begin\n        s = a ^ b ^ cin;\n        cout = (a&b) | (a&cin) | (b&cin);\n    end\nendmodule",
+      "rtl_raw_sha256": "f6cdcae307a3deb2ad0b699039c6e6fb2db577cbe5e12d3fe53301ae33b62760",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Full 8-bit 2's complement adder, plus signed overflow check.\nmodule TopModule(\n    input [7:0] a,\n    input [7:0] b,\n    output reg [7:0] s,\n    output reg overflow\n);\n    reg [7:0] u;\n    always @(*) begin\n        u = a + b;\n        overflow = (a[7] == b[7] && u[7] != a[7]) ? 1 : 0;\n    end\n    always @(*) begin\n        s = u;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "868f06577d8a6a0412f9ed15b478dd0265fae8103132468aad101ac14013fa1c",
+      "rtl": "module TopModule(\n    input [7:0] a,\n    input [7:0] b,\n    output reg [7:0] s,\n    output reg overflow\n);\n    reg [7:0] u;\n    always @(*) begin\n        u = a + b;\n        overflow = (a[7] == b[7] && u[7] != a[7]) ? 1 : 0;\n    end\n    always @(*) begin\n        s = u;\n    end\nendmodule",
+      "rtl_raw_sha256": "2626ccf33538b787c1bd97cf14f3f9856db204939ef5cef39553200074b4ddf2",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "55/116 mismatches",
+      "raw_completion": "// 8-bit 2's complement adder with overflow detection\nmodule TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] s,\n    output       overflow\n);\n    wire [8:0] sum;\n    assign sum = a + b;\n    assign s = sum[7:0];\n    assign overflow = sum[8];\nendmodule",
+      "raw_completion_raw_sha256": "42a98d819a33f9d2fa379f4a92f7bba95335f78bb10532c4d8b8b333ac5c1504",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] s,\n    output       overflow\n);\n    wire [8:0] sum;\n    assign sum = a + b;\n    assign s = sum[7:0];\n    assign overflow = sum[8];\nendmodule",
+      "rtl_raw_sha256": "1b0260aa0ffa3b385f5c0ca937c545ddeaba830c550d41a9d8e23755cb689abb",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:3: error: Unknown module type: XOR",
+      "raw_completion": "// One-bit full adder\nmodule FA(input a, b, cin, output s, cout);\n    wire w1, w2, w3;\n    XOR(w1, a, b);\n    XOR(s, w1, cin);\n    AND(w2, a, b);\n    AND(w3, w1, cin);\n    OR(cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "dd16c5b3b3ab4cf58babd1c335031e02857c66eb3f7680bce2b3e9eca0235df1",
+      "rtl": "module FA(input a, b, cin, output s, cout);\n    wire w1, w2, w3;\n    XOR(w1, a, b);\n    XOR(s, w1, cin);\n    AND(w2, a, b);\n    AND(w3, w1, cin);\n    OR(cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "fe08a39d940e8a7dff8462d24fb36af3bf4beca77ad621be054c1eecce2a0710",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: error: s is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 8-bit signed 2's complement addition, with overflow detection\nmodule TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] s,\n    output overflow\n);\n    reg [8:0] s_unsigned;\n    always @(*) begin\n        s_unsigned = a + b;\n        s = s_unsigned[7:0];\n        overflow = s_unsigned[8];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "e91e0a8e7793cc116d7c07cdf904cd668bef6571f6275f1660e5583a5e8d8443",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] s,\n    output overflow\n);\n    reg [8:0] s_unsigned;\n    always @(*) begin\n        s_unsigned = a + b;\n        s = s_unsigned[7:0];\n        overflow = s_unsigned[8];\n    end\nendmodule",
+      "rtl_raw_sha256": "616b3ca1060cb94f8e43a00d13f99d9440e49b402376072c188922783d0d13d8",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 8-bit 2's complement adder with overflow detection.\nmodule TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] s,\n    output       overflow\n);\n    wire [7:0] sum = a + b;\n    wire signed [7:0] sa = a;\n    wire signed [7:0] sb = b;\n    wire signed [7:0] ssum = sa + sb;\n    assign s = sum;\n    assign overflow = (sa > 0 && sb > 0 && ssum <= 0) || (sa < 0 && sb < 0 && ssum >= 0);\nendmodule",
+      "raw_completion_raw_sha256": "9d90dbe21f07c22b41d63f0bba7932cd024b2ee61a705abb59ceaf55f9f6d085",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] s,\n    output       overflow\n);\n    wire [7:0] sum = a + b;\n    wire signed [7:0] sa = a;\n    wire signed [7:0] sb = b;\n    wire signed [7:0] ssum = sa + sb;\n    assign s = sum;\n    assign overflow = (sa > 0 && sb > 0 && ssum <= 0) || (sa < 0 && sb < 0 && ssum >= 0);\nendmodule",
+      "rtl_raw_sha256": "e955b1cb9aafd9cea4d598ca28b981c0332c41a73130fdba7f0fbfffcb9f279b",
+      "sample_index": 15,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:1: syntax error",
+      "raw_completion": "// Full adder\nmodule FullAdder(input a, b, cin, output reg s, reg cout);\n  always @(*) begin\n    s = a ^ b ^ cin;\n    cout = (a & b) | (a & cin) | (b & cin);\n  end\nendmodule",
+      "raw_completion_raw_sha256": "eb0d0aba84678d2c238a77860d8f2f92c172db2ddd8ae03137689b58907f2580",
+      "rtl": "module FullAdder(input a, b, cin, output reg s, reg cout);\n  always @(*) begin\n    s = a ^ b ^ cin;\n    cout = (a & b) | (a & cin) | (b & cin);\n  end\nendmodule",
+      "rtl_raw_sha256": "142993a7388c8becb9aeb6d2f435ebd47a37dd31438c4781f7606d191fcf7a58",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "24/116 mismatches",
+      "raw_completion": "// 8-bit 2's complement addition, with signed overflow check\nmodule TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] s,\n    output        overflow\n);\n    wire [8:0] sum;\n    wire       a_sign = a[7];\n    wire       b_sign = b[7];\n    wire       s_sign = sum[8];\n    wire       a_mag_ge_b_mag = (a_sign == b_sign) ? (a >= b) : a_sign;\n    assign overflow = a_sign == b_sign && a_sign != s_sign;\n    assign sum = {1'b0, a} + {1'b0, b};\n    assign s = sum[7:0];\nendmodule",
+      "raw_completion_raw_sha256": "e12ba21a01dbc7b0d53079fbd3a55371de78e7598db2c2dbc9ee6926c944aa89",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] s,\n    output        overflow\n);\n    wire [8:0] sum;\n    wire       a_sign = a[7];\n    wire       b_sign = b[7];\n    wire       s_sign = sum[8];\n    wire       a_mag_ge_b_mag = (a_sign == b_sign) ? (a >= b) : a_sign;\n    assign overflow = a_sign == b_sign && a_sign != s_sign;\n    assign sum = {1'b0, a} + {1'b0, b};\n    assign s = sum[7:0];\nendmodule",
+      "rtl_raw_sha256": "46364cc8e2cfb5c235ff35469dff626ab19234116f5d5ff0516de85662b9e0b8",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: error: Unknown module type: FullAdder",
+      "raw_completion": "// 8-bit 2's complement adder\n// (signed overflow is implicitly handled by the full adder chain)\nmodule Adder8 (\n    input [7:0] a,\n    input [7:0] b,\n    output [7:0] s\n);\n    wire [7:0] c;\n    FullAdder fa0 (.a(a[0]), .b(b[0]), .c(1'b0), .s(s[0]), .cout(c[0]));\n    FullAdder fa1 (.a(a[1]), .b(b[1]), .c(c[0]), .s(s[1]), .cout(c[1]));\n    FullAdder fa2 (.a(a[2]), .b(b[2]), .c(c[1]), .s(s[2]), .cout(c[2]));\n    FullAdder fa3 (.a(a[3]), .b(b[3]), .c(c[2]), .s(s[3]), .cout(c[3]));\n    FullAdder fa4 (.a(a[4]), .b(b[4]), .c(c[3]), .s(s[4]), .cout(c[4]));\n    FullAdder fa5 (.a(a[5]), .b(b[5]), .c(c[4]), .s(s[5]), .cout(c[5]));\n    FullAdder fa6 (.a(a[6]), .b(b[6]), .c(c[5]), .s(s[6]), .cout(c[6]));\n    FullAdder fa7 (.a(a[7]), .b(b[7]), .c(c[6]), .s(s[7]), .cout(c[7]));\n    // A signed overflow has occurred if the most significant bits of a and b\n    // differ and the sum has the same sign (i.e., a and b have the same sign\n    // and s has a different sign).\n    assign overflow = (a[7] == b[7]) && (a[7] != s[7]);\nendmodule",
+      "raw_completion_raw_sha256": "aecc407f506e3d2377652db19eac532e34febf2d76da4c4b53d269d86883ab34",
+      "rtl": "module Adder8 (\n    input [7:0] a,\n    input [7:0] b,\n    output [7:0] s\n);\n    wire [7:0] c;\n    FullAdder fa0 (.a(a[0]), .b(b[0]), .c(1'b0), .s(s[0]), .cout(c[0]));\n    FullAdder fa1 (.a(a[1]), .b(b[1]), .c(c[0]), .s(s[1]), .cout(c[1]));\n    FullAdder fa2 (.a(a[2]), .b(b[2]), .c(c[1]), .s(s[2]), .cout(c[2]));\n    FullAdder fa3 (.a(a[3]), .b(b[3]), .c(c[2]), .s(s[3]), .cout(c[3]));\n    FullAdder fa4 (.a(a[4]), .b(b[4]), .c(c[3]), .s(s[4]), .cout(c[4]));\n    FullAdder fa5 (.a(a[5]), .b(b[5]), .c(c[4]), .s(s[5]), .cout(c[5]));\n    FullAdder fa6 (.a(a[6]), .b(b[6]), .c(c[5]), .s(s[6]), .cout(c[6]));\n    FullAdder fa7 (.a(a[7]), .b(b[7]), .c(c[6]), .s(s[7]), .cout(c[7]));\n    // A signed overflow has occurred if the most significant bits of a and b\n    // differ and the sum has the same sign (i.e., a and b have the same sign\n    // and s has a different sign).\n    assign overflow = (a[7] == b[7]) && (a[7] != s[7]);\nendmodule",
+      "rtl_raw_sha256": "15561fffec75586ef997d9162da25264c84d5b1b6b7843d68e4d52d042051d74",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 8-bit signed addition (with overflow detection)\nmodule TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] s,\n    output overflow\n);\n    wire [8:0] t;\n    assign t = a + b;\n    assign s = t[7:0];\n    assign overflow = (a[7] == b[7] && t[7] != a[7]) ? 1'b1 : 1'b0;\nendmodule",
+      "raw_completion_raw_sha256": "af49f58efe0854d01e8dc1197ac912afc8945190ee0daee6aee418d25005ee0e",
+      "rtl": "module TopModule(\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] s,\n    output overflow\n);\n    wire [8:0] t;\n    assign t = a + b;\n    assign s = t[7:0];\n    assign overflow = (a[7] == b[7] && t[7] != a[7]) ? 1'b1 : 1'b0;\nendmodule",
+      "rtl_raw_sha256": "eb51897de2d3b90cc54d19fd04f669fb9b3d90a3a4f84d8613a5befd0c07d9b8",
+      "sample_index": 19,
+      "status": "PASS"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 4,
+    "compile_fail": 11,
+    "fail": 5
+  },
+  "testbench_raw_sha256": "973303d62afe9212316566269cf953817527ff7dcb5720959cb10e3e124f7a00",
+  "training_seed": 0
+}

@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob057_kmap2",
+  "problem_seed": 4343601093979821106,
+  "prompt_raw_sha256": "f29262adfbad53bce65307895f5843672ad59e916f0b78bc417317526eb0f7f6",
+  "reference_raw_sha256": "83158896f78e373b197b40a8637334b78a01c740a0df0b2da65452a076bdc4d8",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "142/232 mismatches",
+      "raw_completion": "// One-bit combinational circuit, implemented using a Karnaugh map.\nmodule TopModule(input a, input b, input c, input d, output out);\n    wire w1 = a & b;\n    wire w2 = ~a & ~b;\n    wire w3 = ~c & ~d;\n    wire w4 = ~c & d;\n    wire w5 = ~a & b;\n    wire w6 = a & ~b;\n    wire w7 = c & ~d;\n    wire w8 = c & d;\n    assign out = ~(w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8);\nendmodule",
+      "raw_completion_raw_sha256": "ab2053d02234be2f8625132765b8521d22841a3a453e904b332367ea60354a84",
+      "rtl": "module TopModule(input a, input b, input c, input d, output out);\n    wire w1 = a & b;\n    wire w2 = ~a & ~b;\n    wire w3 = ~c & ~d;\n    wire w4 = ~c & d;\n    wire w5 = ~a & b;\n    wire w6 = a & ~b;\n    wire w7 = c & ~d;\n    wire w8 = c & d;\n    assign out = ~(w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8);\nendmodule",
+      "rtl_raw_sha256": "d35f568ba14e8d54f2ab7159cc02a65296dbc468a81eaace292cc089915014c7",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "163/232 mismatches",
+      "raw_completion": "// Karnaugh map for the function f(a,b,c,d) = (a + b) . (c + d) + a . b\n// corresponds to the transfer function of a boolean logic function.\nmodule TopModule(input a, input b, input c, input d, output out);\n    wire w1 = a + b;\n    wire w2 = c + d;\n    wire w3 = a * b;\n    wire w4 = w1 * w2 + w3;\n    assign out = w4;\nendmodule",
+      "raw_completion_raw_sha256": "3898b9fa4404d4e831cab1c0e8e2c806dab4c7a5274adf1b69ee365f1e6f8aaa",
+      "rtl": "module TopModule(input a, input b, input c, input d, output out);\n    wire w1 = a + b;\n    wire w2 = c + d;\n    wire w3 = a * b;\n    wire w4 = w1 * w2 + w3;\n    assign out = w4;\nendmodule",
+      "rtl_raw_sha256": "79826f7ff4b15737f89703fc23b6b902007bfaf13bb646791a465261c0beb64e",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "56/232 mismatches",
+      "raw_completion": "// One-bit Karnaugh map, truth table directly implemented.\nmodule TopModule(input a, b, c, d, output reg out);\n    always @(*) begin\n        case ({a, b, c, d})\n            4'b0000: out = 1;\n            4'b0001: out = 1;\n            4'b0010: out = 0;\n            4'b0011: out = 0;\n            4'b0100: out = 1;\n            4'b0101: out = 0;\n            4'b0110: out = 1;\n            4'b0111: out = 1;\n            4'b1000: out = 0;\n            4'b1001: out = 1;\n            4'b1010: out = 0;\n            4'b1011: out = 1;\n            4'b1100: out = 1;\n            4'b1101: out = 1;\n            4'b1110: out = 1;\n            4'b1111: out = 1;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "9d30f81f363545379d9d0c3157d99889065bd15a439b3c276291079f9a8100ff",
+      "rtl": "module TopModule(input a, b, c, d, output reg out);\n    always @(*) begin\n        case ({a, b, c, d})\n            4'b0000: out = 1;\n            4'b0001: out = 1;\n            4'b0010: out = 0;\n            4'b0011: out = 0;\n            4'b0100: out = 1;\n            4'b0101: out = 0;\n            4'b0110: out = 1;\n            4'b0111: out = 1;\n            4'b1000: out = 0;\n            4'b1001: out = 1;\n            4'b1010: out = 0;\n            4'b1011: out = 1;\n            4'b1100: out = 1;\n            4'b1101: out = 1;\n            4'b1110: out = 1;\n            4'b1111: out = 1;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "75823388b08c58dcf2d6e3e07eab67b3a2bdc3083bcce223114ce4fe9e7a3e1d",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "142/232 mismatches",
+      "raw_completion": "// Karnaugh map for the function f(a,b,c,d) = (a + b) * (c + d) + a * b\n// is the same as the Karnaugh map for the function f(a,b,c,d) = 1 -> out = 0.\n// So we can directly implement the function f(a,b,c,d) = 0.\nmodule TopModule(input a, b, c, d, output out);\n    assign out = 1'b0;\nendmodule",
+      "raw_completion_raw_sha256": "6765e3015ced04d45ca2b5d96f5529f5e206cdc35733bfa084f9ae9423a5c3ac",
+      "rtl": "module TopModule(input a, b, c, d, output out);\n    assign out = 1'b0;\nendmodule",
+      "rtl_raw_sha256": "5ddd5d7c49d8c76a7d82adfd9526590ca970025d31d710be3a955cb1be05b066",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "142/232 mismatches",
+      "raw_completion": "// One-bit combinational circuit as a SINGLE inline nested ternary (inline)\n// expression (no intermediate named wires).\nmodule TopModule(input a, b, c, d, output reg out);\n    always @(*) out = ((a & b) | (~c & d)) & ((~a & ~b) | (c & ~d)) & ((~a & b) | (~c & d)) & ((a & ~b) | (c & d));\nendmodule",
+      "raw_completion_raw_sha256": "e5ab81aff5ae7088990e7a4ed42225fe69d986e6e5be217167a45332a63bd552",
+      "rtl": "module TopModule(input a, b, c, d, output reg out);\n    always @(*) out = ((a & b) | (~c & d)) & ((~a & ~b) | (c & ~d)) & ((~a & b) | (~c & d)) & ((a & ~b) | (c & d));\nendmodule",
+      "rtl_raw_sha256": "9179210de5ed4be85312426b247d21397864e0dfb46e520fedbb4ead07e852f1",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "150/232 mismatches",
+      "raw_completion": "// One-bit gate Karnaugh map: implement the function given by the Karnaugh\n// map (a AND b) OR (c AND (NOT d))\nmodule TopModule(input a, b, c, d, output out);\n    wire w1 = a & b;\n    wire w2 = c & ~d;\n    assign out = w1 | w2;\nendmodule",
+      "raw_completion_raw_sha256": "d1fb14aae624f6ddffff54f44245bacd39751f0539a86c86f57b7cbf8f187b23",
+      "rtl": "module TopModule(input a, b, c, d, output out);\n    wire w1 = a & b;\n    wire w2 = c & ~d;\n    assign out = w1 | w2;\nendmodule",
+      "rtl_raw_sha256": "5892abb40568afc9a1da6d7b9ae582c17d481a98aa3286bae9f39d9e2b77a17e",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:2: error: No function named `onebit_kmap' found in this context (tb.top_module1).",
+      "raw_completion": "// One-bit Karnaugh map function, implemented as a Verilog function (not\n// inline in the module)\nfunction onebit_kmap (input a, b, c, d);\n    reg [1:0] w;\n    begin\n        w = 2'b00;\n        if (a & b) w = 2'b00;\n        if (c & d) w = 2'b00;\n        if (a & ~b & ~c & d) w = 2'b01;\n        if (~a & b & ~c & d) w = 2'b01;\n        if (a & b & ~c & ~d) w = 2'b10;\n        if (~a & ~b & c & ~d) w = 2'b10;\n        onebit_kmap = w[1];\n    end\nendfunction\n\n// TopModule, the requested one-bit Karnaugh map function inline\nmodule TopModule (input a, b, c, d, output out);\n    wire w = onebit_kmap(a, b, c, d);\n    assign out = w;\nendmodule",
+      "raw_completion_raw_sha256": "5c69733b905ec30cb7b084924e5753479731b20e028044b3ee8cf68e8dc549aa",
+      "rtl": "module TopModule (input a, b, c, d, output out);\n    wire w = onebit_kmap(a, b, c, d);\n    assign out = w;\nendmodule",
+      "rtl_raw_sha256": "50e7de8485764cd997b00fd344e1f177bffe2fe08bc240de46af47f00d0b1245",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob057_kmap2_test.sv:95: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit Karnaugh map function.\nmodule Kmap (\n    input a, b,\n    output reg out\n);\n    always @* begin\n        case ({a, b})\n            2'b00: out = 1;\n            2'b01: out = 1;\n            2'b11: out = 0;\n            2'b10: out = 1;\n            default: out = 1'bx;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "17a207a63c555e5762e33ef64c0b0f88c8b211646c8d9040c9743f452e4dfe9d",
+      "rtl": "module Kmap (\n    input a, b,\n    output reg out\n);\n    always @* begin\n        case ({a, b})\n            2'b00: out = 1;\n            2'b01: out = 1;\n            2'b11: out = 0;\n            2'b10: out = 1;\n            default: out = 1'bx;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "a0b85d7ad13a3686714ba1eda83f3d89cb6c0a464c5695f5d1666a03ad5b0f4c",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "95/232 mismatches",
+      "raw_completion": "// Karnaugh map for the function f(a,b,c,d) = a + b + c'd.\nmodule TopModule(\n    input a,\n    input b,\n    input c,\n    input d,\n    output out\n);\n    wire w1 = a + b;\n    wire w2 = c & ~d;\n    assign out = w1 + w2;\nendmodule",
+      "raw_completion_raw_sha256": "73ffe676b8627c4d3fc61d9d7d968fc29ed8d45b70729536843dd0333cdf1cf7",
+      "rtl": "module TopModule(\n    input a,\n    input b,\n    input c,\n    input d,\n    output out\n);\n    wire w1 = a + b;\n    wire w2 = c & ~d;\n    assign out = w1 + w2;\nendmodule",
+      "rtl_raw_sha256": "264b343cb0417a9d63b00fc92c4a94e02fac8a7f308bdd92a1aae18afd2aa8dd",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "145/232 mismatches",
+      "raw_completion": "// Karnaugh map for the boolean function f(a,b,c,d) = (a+b)*(c+d) + abcd\nmodule TopModule (\n    input a,\n    input b,\n    input c,\n    input d,\n    output out\n);\n    wire ab = a & b;\n    wire cd = c & d;\n    wire abcd = a & b & c & d;\n    wire term1 = ab + cd;\n    wire term2 = abcd;\n    assign out = term1 + term2;\nendmodule",
+      "raw_completion_raw_sha256": "b35f17bd54e7052aa6b45380decd3a165a3171d7ce121ca245db7a905a5e8f9a",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    input c,\n    input d,\n    output out\n);\n    wire ab = a & b;\n    wire cd = c & d;\n    wire abcd = a & b & c & d;\n    wire term1 = ab + cd;\n    wire term2 = abcd;\n    assign out = term1 + term2;\nendmodule",
+      "rtl_raw_sha256": "d5f0d302aaaa106e02b3e810880d132cd2e9fe4b029ed03a61efeae2b373dad3",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob057_kmap2_ref.sv:2: syntax error",
+      "raw_completion": "// One-bit combinational circuit, implemented as a Karnaugh map.\nmodule TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out\n);\n    wire w1 = a & b;\n    wire w2 = ~(c & d);\n    wire w3 = ~(a & ~b);\n    wire w4 = ~(c & b);\n    wire w5 = ~(a & d);\n    wire w6 = c & ~b;\n    wire w7 = ~(a | b);\n    wire w8 = ~(c | d);\n    wire w9 = ~(a | ~b);\n    wire w10 = ~(c | b);\n    wire w11 = ~(a | d);\n    wire w12 = c & b;\n    wire w13 = a | ~b;\n    wire w14 = c | ~b;\n    wire w15 = a | d;\n    wire w16 = c | b;\n    wire w17 = ~(a & b);\n    wire w18 = ~(c & ~d);\n    wire w19 = ~(a & d);\n    wire w20 = ~(c & b);\n    wire w21 = ~(a | ~d);\n    wire w22 = ~(c | b);\n    wire w23 = ~(a | d);\n    wire w24 = c & ~d;\n    wire w25 = a & ~d;\n    wire w26 = c & d;\n    wire w27 = ~(a | b);\n    wire w28 = ~(c | ~d);\n    wire w29 = ~(a | d);\n    wire w30 = ~(c | b);\n    wire w31 = ~(a | ~d);\n    wire w32 = ~(c | b);\n    wire w33 = ~(a | d);\n    wire w34 = c & ~b;\n    wire w35 = a & ~b;\n    wire w36 = c & b;\n    wire w37 = a | ~b;\n    wire w38 = c | ~b;\n    wire w39 = a | b;\n    wire w40 = c | b;\n    wire w41 = ~(a & b);\n    wire w42 = ~(c & ~d);\n    wire w43 = ~(a & d);\n    wire w44 = ~(c & b);\n    wire w45 = ~(a | ~d);\n    wire w46 = ~(c | b);\n    wire w47 = ~(a | d);\n    wire w48 = c & ~d;\n    wire w49 = a & ~d;\n    wire w50 = c & d;\n    wire w51 = ~(a | b);\n    wire w52 = ~(c | ~d);\n    wire w53 = ~(a | d);\n    wire w54 = ~(c | b);\n    wire w55 = ~(a | ~d);\n    wire w56 = ~(c | b);\n    wire w57 = ~(a | d);\n    wire w58 = c & ~b;\n    wire w59 = a & ~b;\n    wire w60 = c & b;\n    wire w61 = a | ~b;\n    wire w62 = c | ~b;\n    wire w63 = a | b;\n    wire w64 = c | b;\n    wire w65 = ~(a & b);\n    wire w66 = ~(c & ~d);\n    wire w67 = ~(a & d);\n    wire w68 = ~(c & b);\n    wire w69 = ~(a | ~d);\n    wire w70 = ~(c | b);\n    wire w71 = ~(a | d);\n    wire w72 = c & ~d;\n    wire w73 = a & ~d;\n    wire w74 = c & d;\n    wire w75 = ~(a | b);\n    wire w76 = ~(c | ~d);\n    wire w77 = ~(a | d);\n    wire w78 = ~(c |",
+      "raw_completion_raw_sha256": "55960b11e704f5703ea7b1c672303e1c6cc1910964b7ead7c3e31c74b5478a1e",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out\n);\n    wire w1 = a & b;\n    wire w2 = ~(c & d);\n    wire w3 = ~(a & ~b);\n    wire w4 = ~(c & b);\n    wire w5 = ~(a & d);\n    wire w6 = c & ~b;\n    wire w7 = ~(a | b);\n    wire w8 = ~(c | d);\n    wire w9 = ~(a | ~b);\n    wire w10 = ~(c | b);\n    wire w11 = ~(a | d);\n    wire w12 = c & b;\n    wire w13 = a | ~b;\n    wire w14 = c | ~b;\n    wire w15 = a | d;\n    wire w16 = c | b;\n    wire w17 = ~(a & b);\n    wire w18 = ~(c & ~d);\n    wire w19 = ~(a & d);\n    wire w20 = ~(c & b);\n    wire w21 = ~(a | ~d);\n    wire w22 = ~(c | b);\n    wire w23 = ~(a | d);\n    wire w24 = c & ~d;\n    wire w25 = a & ~d;\n    wire w26 = c & d;\n    wire w27 = ~(a | b);\n    wire w28 = ~(c | ~d);\n    wire w29 = ~(a | d);\n    wire w30 = ~(c | b);\n    wire w31 = ~(a | ~d);\n    wire w32 = ~(c | b);\n    wire w33 = ~(a | d);\n    wire w34 = c & ~b;\n    wire w35 = a & ~b;\n    wire w36 = c & b;\n    wire w37 = a | ~b;\n    wire w38 = c | ~b;\n    wire w39 = a | b;\n    wire w40 = c | b;\n    wire w41 = ~(a & b);\n    wire w42 = ~(c & ~d);\n    wire w43 = ~(a & d);\n    wire w44 = ~(c & b);\n    wire w45 = ~(a | ~d);\n    wire w46 = ~(c | b);\n    wire w47 = ~(a | d);\n    wire w48 = c & ~d;\n    wire w49 = a & ~d;\n    wire w50 = c & d;\n    wire w51 = ~(a | b);\n    wire w52 = ~(c | ~d);\n    wire w53 = ~(a | d);\n    wire w54 = ~(c | b);\n    wire w55 = ~(a | ~d);\n    wire w56 = ~(c | b);\n    wire w57 = ~(a | d);\n    wire w58 = c & ~b;\n    wire w59 = a & ~b;\n    wire w60 = c & b;\n    wire w61 = a | ~b;\n    wire w62 = c | ~b;\n    wire w63 = a | b;\n    wire w64 = c | b;\n    wire w65 = ~(a & b);\n    wire w66 = ~(c & ~d);\n    wire w67 = ~(a & d);\n    wire w68 = ~(c & b);\n    wire w69 = ~(a | ~d);\n    wire w70 = ~(c | b);\n    wire w71 = ~(a | d);\n    wire w72 = c & ~d;\n    wire w73 = a & ~d;\n    wire w74 = c & d;\n    wire w75 = ~(a | b);\n    wire w76 = ~(c | ~d);\n    wire w77 = ~(a | d);\n    wire w78 = ~(c |",
+      "rtl_raw_sha256": "62b12b036a9909a5264d562544f0ac5ca187124435ca0e461d3d21e279d9a192",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "148/232 mismatches",
+      "raw_completion": "// One-bit Karnaugh map circuit implemented as a Verilog combinational\n// multiplexing (mux) chain.\nmodule TopModule(input a, b, c, d, output out);\n    wire a_and_b = a & b;\n    wire a_and_not_b = a & ~b;\n    wire not_a_and_b = ~a & b;\n    wire not_a_and_not_b = ~a & ~b;\n    wire c_and_d = c & d;\n    wire c_and_not_d = c & ~d;\n    wire not_c_and_d = ~c & d;\n    wire not_c_and_not_d = ~c & ~d;\n    wire sum0 = ~(a_and_b ^ a_and_not_b ^ not_a_and_b ^ not_a_and_not_b);\n    wire sum1 = ~(c_and_d ^ c_and_not_d ^ not_c_and_d ^ not_c_and_not_d);\n    wire sum2 = ~(a_and_b ^ a_and_not_b ^ c_and_d ^ c_and_not_d);\n    wire sum3 = ~(a_and_b ^ not_a_and_b ^ not_c_and_d ^ not_c_and_not_d);\n    assign out = sum0 & sum1 | sum2 & sum3;\nendmodule",
+      "raw_completion_raw_sha256": "3467553d54fe7f4bbb754aa4e15b59ee3fbe03a48c86eebd4e5fa048bd7c4346",
+      "rtl": "module TopModule(input a, b, c, d, output out);\n    wire a_and_b = a & b;\n    wire a_and_not_b = a & ~b;\n    wire not_a_and_b = ~a & b;\n    wire not_a_and_not_b = ~a & ~b;\n    wire c_and_d = c & d;\n    wire c_and_not_d = c & ~d;\n    wire not_c_and_d = ~c & d;\n    wire not_c_and_not_d = ~c & ~d;\n    wire sum0 = ~(a_and_b ^ a_and_not_b ^ not_a_and_b ^ not_a_and_not_b);\n    wire sum1 = ~(c_and_d ^ c_and_not_d ^ not_c_and_d ^ not_c_and_not_d);\n    wire sum2 = ~(a_and_b ^ a_and_not_b ^ c_and_d ^ c_and_not_d);\n    wire sum3 = ~(a_and_b ^ not_a_and_b ^ not_c_and_d ^ not_c_and_not_d);\n    assign out = sum0 & sum1 | sum2 & sum3;\nendmodule",
+      "rtl_raw_sha256": "a228dd6c7534a2efba55fa29cc8e31b68b49f9f9e3e0207623dacc9e49c7300e",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:2: error: No function named `func_Karnaugh_1bit' found in this context (tb.top_module1).",
+      "raw_completion": "// One-bit Karnaugh map function, extracted to a named SOP form.\nfunction [0:0] func_Karnaugh_1bit (input a, b, c, d);\n    // SOP form of the Karnaugh map (same as the function above).\n    // (a + b) * (1 - c) + (1 - a) * (d + b) + (1 - a) * (1 - b) * c + a * b * c * d;\n    return a + b - c + d - a * b - a * c - b * c + a * b * c * d;\nendfunction\n\n// Top level module, which uses the function above.\nmodule TopModule (input a, b, c, d, output out);\n    assign out = func_Karnaugh_1bit(a, b, c, d);\nendmodule",
+      "raw_completion_raw_sha256": "75c06a4f1d53cfb824cf0859a110489be7690feda8317e5283bc71ad47692edf",
+      "rtl": "module TopModule (input a, b, c, d, output out);\n    assign out = func_Karnaugh_1bit(a, b, c, d);\nendmodule",
+      "rtl_raw_sha256": "18732ed1b4931d11b4bed7efe50cbde7eaa622117ce1b5ec25d9c4237f242615",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "88/232 mismatches",
+      "raw_completion": "// The Karnaugh map for the function (a + b) ^ (c + d) -> out is:\n//              ab\n//   cd   00  01  11  10\n//   00 | 1 | 1 | 0 | 1 |\n//   01 | 1 | 0 | 0 | 1 |\n//   11 | 0 | 1 | 1 | 1 |\n//   10 | 1 | 1 | 0 | 0 |\n// So the equivalent combinational logic is:\n// out = (a + b) ^ (c + d) = (a ^ b) ^ (c ^ d).\nmodule TopModule(input a, b, c, d, output out);\n    wire w1 = a ^ b;\n    wire w2 = c ^ d;\n    assign out = w1 ^ w2;\nendmodule",
+      "raw_completion_raw_sha256": "df165aa2723050053960be4a2b0fe55c7897576088f7a44e0c2acf2193e85716",
+      "rtl": "module TopModule(input a, b, c, d, output out);\n    wire w1 = a ^ b;\n    wire w2 = c ^ d;\n    assign out = w1 ^ w2;\nendmodule",
+      "rtl_raw_sha256": "55d5fd9c493731ab9acc2b8d70175efff2df0bb6e062ad14ef34ba0863f98df5",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "69/232 mismatches",
+      "raw_completion": "// One-bit function implemented as a Karnaugh map (no partial\n// combinational tables). Same as the reference.\nmodule TopModule(input a, b, c, d, output reg out);\n    always @(*) begin\n        case ({a, b, c, d})\n            4'b0000: out = 1;\n            4'b0001: out = 1;\n            4'b0010: out = 0;\n            4'b0011: out = 1;\n            4'b0100: out = 1;\n            4'b0101: out = 0;\n            4'b0110: out = 0;\n            4'b0111: out = 1;\n            4'b1000: out = 1;\n            4'b1001: out = 1;\n            4'b1010: out = 0;\n            4'b1011: out = 1;\n            4'b1100: out = 0;\n            4'b1101: out = 1;\n            4'b1110: out = 1;\n            4'b1111: out = 1;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "aaffd63b48fb882892719b91a2269203d74cdf819b5f0c620418f487193a51d4",
+      "rtl": "module TopModule(input a, b, c, d, output reg out);\n    always @(*) begin\n        case ({a, b, c, d})\n            4'b0000: out = 1;\n            4'b0001: out = 1;\n            4'b0010: out = 0;\n            4'b0011: out = 1;\n            4'b0100: out = 1;\n            4'b0101: out = 0;\n            4'b0110: out = 0;\n            4'b0111: out = 1;\n            4'b1000: out = 1;\n            4'b1001: out = 1;\n            4'b1010: out = 0;\n            4'b1011: out = 1;\n            4'b1100: out = 0;\n            4'b1101: out = 1;\n            4'b1110: out = 1;\n            4'b1111: out = 1;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "b1ea2741ba640b571b95edaf95494283734833d957cc4d5daf5117b673cb5579",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "75/232 mismatches",
+      "raw_completion": "// One-bit Karnaugh map, explicitly written out.\nmodule TopModule(input a, b, c, d, output out);\n    wire w1 = a & b;\n    wire w2 = ~a & ~b;\n    wire w3 = ~a & b;\n    wire w4 = a & ~b;\n    wire w5 = c & d;\n    wire w6 = ~c & ~d;\n    wire w7 = ~c & d;\n    wire w8 = c & ~d;\n    wire t1 = w1 & w5;\n    wire t2 = w2 & w6;\n    wire t3 = w3 & w7;\n    wire t4 = w4 & w8;\n    assign out = ~(t1 | t2 | t3 | t4);\nendmodule",
+      "raw_completion_raw_sha256": "2dec19e9fb5263f5dd33038da05059d3b36ca689df4b98a4970f2b0ecddc18a0",
+      "rtl": "module TopModule(input a, b, c, d, output out);\n    wire w1 = a & b;\n    wire w2 = ~a & ~b;\n    wire w3 = ~a & b;\n    wire w4 = a & ~b;\n    wire w5 = c & d;\n    wire w6 = ~c & ~d;\n    wire w7 = ~c & d;\n    wire w8 = c & ~d;\n    wire t1 = w1 & w5;\n    wire t2 = w2 & w6;\n    wire t3 = w3 & w7;\n    wire t4 = w4 & w8;\n    assign out = ~(t1 | t2 | t3 | t4);\nendmodule",
+      "rtl_raw_sha256": "df1d3f4604889762bc889b6d7674cf9af8e9e5f52de78c95488da40fd46cc5e2",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "141/232 mismatches",
+      "raw_completion": "// One-bit Karnaugh-mapped function, inline with combinational\n// multiplexing (CMOS AND + OR trees) -> short combinational path.\nmodule TopModule(input a, b, c, d, output reg out);\n    always @(*) out = (a & b) | (c & ~d) | (~a & d) | (~c & ~b & ~d) | (~a & ~b & d);\nendmodule",
+      "raw_completion_raw_sha256": "222082e44ee5c56ad77c4c3a2aaa9b48a888fce9e34bacc845b7e007cd0a6172",
+      "rtl": "module TopModule(input a, b, c, d, output reg out);\n    always @(*) out = (a & b) | (c & ~d) | (~a & d) | (~c & ~b & ~d) | (~a & ~b & d);\nendmodule",
+      "rtl_raw_sha256": "13bb94105216595e743ae201802c3f71c7e3bd583bcbb6a02cab078252b4c6e0",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "142/232 mismatches",
+      "raw_completion": "// One-bit combinational circuit, implemented as a Karnaugh map (the\n// Boolean product form) of the function (a => out) AND (b => out) AND\n// (c => out) AND (d => out).\nmodule TopModule(input a, b, c, d, output out);\n    wire w1 = a & out;\n    wire w2 = b & out;\n    wire w3 = c & out;\n    wire w4 = d & out;\n    assign out = (1 & w1) | (1 & w2) | (1 & w3) | (0 & w4);\nendmodule",
+      "raw_completion_raw_sha256": "29b5f7e9b4acf965f486543f95db1eb009bcbabf4e76cc72cb41252fe8a2b620",
+      "rtl": "module TopModule(input a, b, c, d, output out);\n    wire w1 = a & out;\n    wire w2 = b & out;\n    wire w3 = c & out;\n    wire w4 = d & out;\n    assign out = (1 & w1) | (1 & w2) | (1 & w3) | (0 & w4);\nendmodule",
+      "rtl_raw_sha256": "274178fb77df7e9b5acf930036c6345ff0485bd8d315d6eea86704fe0a783be9",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "142/232 mismatches",
+      "raw_completion": "// Karnaugh map:\n//              ab\n//   cd   00  01  11  10\n//   00 | 1 | 1 | 0 | 1 |\n//   01 | 1 | 0 | 0 | 1 |\n//   11 | 0 | 1 | 1 | 1 |\n//   10 | 1 | 1 | 0 | 0 |\nmodule TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out\n);\n    wire w1 = a & b;\n    wire w2 = a & ~b;\n    wire w3 = ~a & b;\n    wire w4 = ~a & ~b;\n    wire w5 = c & d;\n    wire w6 = ~c & d;\n    wire w7 = ~c & ~d;\n    wire w8 = c & ~d;\n    assign out = ~(w1 & w5) & ~(w2 & w6) & ~(w3 & w7) & ~(w4 & w8);\nendmodule",
+      "raw_completion_raw_sha256": "8ac0ebb64482a61c99abd411a6114105500b5b5fc5f3664683bc00ca62a4b93a",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output out\n);\n    wire w1 = a & b;\n    wire w2 = a & ~b;\n    wire w3 = ~a & b;\n    wire w4 = ~a & ~b;\n    wire w5 = c & d;\n    wire w6 = ~c & d;\n    wire w7 = ~c & ~d;\n    wire w8 = c & ~d;\n    assign out = ~(w1 & w5) & ~(w2 & w6) & ~(w3 & w7) & ~(w4 & w8);\nendmodule",
+      "rtl_raw_sha256": "bf146dec0d7ee177db64cfdcffd3c26f632bc606c4027cfc3167afbddc81d9f4",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob057_kmap2_test.sv:95: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit combinational circuit as a reference, for testing equivalence\n// to the Karnaugh map.\nmodule Reference (\n    input  a,\n    input  b,\n    output reg out\n);\n    always @(*) out = ~a & ~b | a & b;\nendmodule",
+      "raw_completion_raw_sha256": "52a8fe0d3742ea7a80afdeb16e2fc9d425447c630d6de0aff83d92129a1321df",
+      "rtl": "module Reference (\n    input  a,\n    input  b,\n    output reg out\n);\n    always @(*) out = ~a & ~b | a & b;\nendmodule",
+      "rtl_raw_sha256": "c4d3689943adc2ec9e4469ebdcd28602e11c84c6a37dd2731760ee63f5348a8e",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 5,
+    "fail": 15
+  },
+  "testbench_raw_sha256": "1752d6f03374c971cc2364affd4a0f4052c7956e5d14d1b146c40af886eb2b73",
+  "training_seed": 1
+}

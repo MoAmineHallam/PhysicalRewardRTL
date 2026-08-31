@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob094_gatesv",
+  "problem_seed": 5435324298002037254,
+  "prompt_raw_sha256": "6e699bd5c4e6b9fb053576134ae006118f0b94d9b997cbd46aade8e72318dd83",
+  "reference_raw_sha256": "5a9bf7d169021df9c52559b115ec3aa89d26f68c3beefa85ed8f0b7a2b01cb0f",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "109/213 mismatches",
+      "raw_completion": "// One-hot neighbour relationship example: out[i] is 1 if in[i] is 1 and in[i-1] is 1\n// (same as out_both, but expressed with a different operator). Same for out_any and\n// out_different.\nmodule TopModule (\n    input  [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    wire [3:0] in_shifted;\n    assign in_shifted = {in[0], in[3:1]};\n    assign out_both = in & in_shifted;\n    assign out_any = in | in_shifted;\n    assign out_different = in ^ in_shifted;\nendmodule",
+      "raw_completion_raw_sha256": "813c19801e00ad0eeee3bd1dad4cb28cc73ac18ddca6add450e7cc97a0256c6d",
+      "rtl": "module TopModule (\n    input  [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    wire [3:0] in_shifted;\n    assign in_shifted = {in[0], in[3:1]};\n    assign out_both = in & in_shifted;\n    assign out_any = in | in_shifted;\n    assign out_different = in ^ in_shifted;\nendmodule",
+      "rtl_raw_sha256": "23b147212f5df504ce69727da0db4160750f04206564c4fdf2eae09b1bbf564d",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "207/213 mismatches",
+      "raw_completion": "// The given module, with the requested relationships\nmodule TopModule(\n    input [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    assign out_both[0] = in[0] & in[1];\n    assign out_both[1] = in[1] & in[2];\n    assign out_both[2] = in[2] & in[3];\n    assign out_both[3] = 1'b0;\n    assign out_any[0] = in[0] | in[1];\n    assign out_any[1] = in[1] | in[2];\n    assign out_any[2] = in[2] | in[3];\n    assign out_any[3] = 1'b0;\n    assign out_different[0] = in[0] ^ in[1];\n    assign out_different[1] = in[1] ^ in[2];\n    assign out_different[2] = in[2] ^ in[3];\n    assign out_different[3] = in[3] ^ in[0];\nendmodule",
+      "raw_completion_raw_sha256": "8d9054e9e9ccc37ff8d01828d88493161086efa2bcb342266e888ca457978dd7",
+      "rtl": "module TopModule(\n    input [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    assign out_both[0] = in[0] & in[1];\n    assign out_both[1] = in[1] & in[2];\n    assign out_both[2] = in[2] & in[3];\n    assign out_both[3] = 1'b0;\n    assign out_any[0] = in[0] | in[1];\n    assign out_any[1] = in[1] | in[2];\n    assign out_any[2] = in[2] | in[3];\n    assign out_any[3] = 1'b0;\n    assign out_different[0] = in[0] ^ in[1];\n    assign out_different[1] = in[1] ^ in[2];\n    assign out_different[2] = in[2] ^ in[3];\n    assign out_different[3] = in[3] ^ in[0];\nendmodule",
+      "rtl_raw_sha256": "0b598583387ae5a06a2f3e69720b9e3989bb8c858496e26b7c49a3b6b074c84d",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:11: syntax error",
+      "raw_completion": "// Four-bit wide AND chain, one stage per bit, explicit connections. Same as\n// the one-stage chain, but expanded inline.\nmodule TopModule(\n    input [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    wire [3:0] and0_out;\n    wire [3:0] and1_out;\n    wire [3:0] and2_out;\n    wire [3:0] and3_out;\n    and and0 (and0_out[0] = in[0] & in[1]);\n    and and1 (and1_out[0] = in[0] & in[2]);\n    and and2 (and2_out[0] = in[0] & in[3]);\n    and and3 (and3_out[0] = in[1] & in[2]);\n    and and4 (and0_out[1] = in[1] & in[2]);\n    and and5 (and1_out[1] = in[1] & in[3]);\n    and and6 (and2_out[1] = in[2] & in[3]);\n    and and7 (and0_out[2] = in[0] & in[2]);\n    and and8 (and1_out[2] = in[0] & in[3]);\n    and and9 (and2_out[2] = in[1] & in[3]);\n    and and10 (and0_out[3] = in[0]);\n    and and11 (and1_out[3] = in[1]);\n    and and12 (and2_out[3] = in[2]);\n    and and13 (and3_out[1] = in[2]);\n    and and14 (and0_out[2] = in[0] & in[2]);\n    and and15 (and1_out[2] = in[0] & in[3]);\n    and and16 (and2_out[2] = in[1] & in[3]);\n    and and17 (and3_out[2] = in[2] & in[3]);\n    and and18 (and0_out[3] = in[0]);\n    and and19 (and1_out[3] = in[1]);\n    and and20 (and2_out[3] = in[2]);\n    and and21 (and3_out[3] = in[3]);\n    assign out_both = {and3_out[3], and2_out[2], and1_out[1], and0_out[0]};\n    assign out_any = {in[0] | in[1], in[1] | in[2], in[2] | in[3], 1'b0};\n    assign out_different = {in[0] ^ in[1], in[1] ^ in[2], in[2] ^ in[3], in[3] ^ in[0]};\nendmodule",
+      "raw_completion_raw_sha256": "22ff527f636fc0c97e92ad06a120a1f33e170f1260dae4b49729af6e1405d699",
+      "rtl": "module TopModule(\n    input [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    wire [3:0] and0_out;\n    wire [3:0] and1_out;\n    wire [3:0] and2_out;\n    wire [3:0] and3_out;\n    and and0 (and0_out[0] = in[0] & in[1]);\n    and and1 (and1_out[0] = in[0] & in[2]);\n    and and2 (and2_out[0] = in[0] & in[3]);\n    and and3 (and3_out[0] = in[1] & in[2]);\n    and and4 (and0_out[1] = in[1] & in[2]);\n    and and5 (and1_out[1] = in[1] & in[3]);\n    and and6 (and2_out[1] = in[2] & in[3]);\n    and and7 (and0_out[2] = in[0] & in[2]);\n    and and8 (and1_out[2] = in[0] & in[3]);\n    and and9 (and2_out[2] = in[1] & in[3]);\n    and and10 (and0_out[3] = in[0]);\n    and and11 (and1_out[3] = in[1]);\n    and and12 (and2_out[3] = in[2]);\n    and and13 (and3_out[1] = in[2]);\n    and and14 (and0_out[2] = in[0] & in[2]);\n    and and15 (and1_out[2] = in[0] & in[3]);\n    and and16 (and2_out[2] = in[1] & in[3]);\n    and and17 (and3_out[2] = in[2] & in[3]);\n    and and18 (and0_out[3] = in[0]);\n    and and19 (and1_out[3] = in[1]);\n    and and20 (and2_out[3] = in[2]);\n    and and21 (and3_out[3] = in[3]);\n    assign out_both = {and3_out[3], and2_out[2], and1_out[1], and0_out[0]};\n    assign out_any = {in[0] | in[1], in[1] | in[2], in[2] | in[3], 1'b0};\n    assign out_different = {in[0] ^ in[1], in[1] ^ in[2], in[2] ^ in[3], in[3] ^ in[0]};\nendmodule",
+      "rtl_raw_sha256": "6679078766b1b6dc081f58ed25dff68b4571693ddf5be2bd6b8ff304eb7441a2",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "207/213 mismatches",
+      "raw_completion": "module TopModule(\n    input  [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    wire [3:0] in_wrapped;\n    assign in_wrapped = {in[0], in};\n    assign out_both = {in[0] & in[1], in[1] & in[2], in[2] & in[3], 1'b0};\n    assign out_any = {in[0] | in[1], in[1] | in[2], in[2] | in[3], 1'b0};\n    assign out_different = {in[0] ^ in[1], in[1] ^ in[2], in[2] ^ in[3], 1'b0};\nendmodule",
+      "raw_completion_raw_sha256": "185d3969eecf178e462d01b96bc39a2c09abbf3be0abf544b70a5b09f7550a32",
+      "rtl": "module TopModule(\n    input  [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    wire [3:0] in_wrapped;\n    assign in_wrapped = {in[0], in};\n    assign out_both = {in[0] & in[1], in[1] & in[2], in[2] & in[3], 1'b0};\n    assign out_any = {in[0] | in[1], in[1] | in[2], in[2] | in[3], 1'b0};\n    assign out_different = {in[0] ^ in[1], in[1] ^ in[2], in[2] ^ in[3], 1'b0};\nendmodule",
+      "rtl_raw_sha256": "185d3969eecf178e462d01b96bc39a2c09abbf3be0abf544b70a5b09f7550a32",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "207/213 mismatches",
+      "raw_completion": "// The top-level module, named exactly \"TopModule\" (the name in the\n// problem description). All input and output ports are one bit\n// unless otherwise specified.\nmodule TopModule(\n    input  [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    wire [3:0] in_next;\n    assign in_next = {in[0], in[1], in[2], in[3]};\n    assign out_both = {in[0] & in[1], in[1] & in[2], in[2] & in[3], 1'b0};\n    assign out_any = {in[0] | in[1], in[1] | in[2], in[2] | in[3], 1'b0};\n    assign out_different = {in[0] ^ in[1], in[1] ^ in[2], in[2] ^ in_next[0], 1'b0};\nendmodule",
+      "raw_completion_raw_sha256": "54b0b282f4af71b3832ac85181a96e8fbcbbeee82abcd6d2feff64d0fe8939c8",
+      "rtl": "module TopModule(\n    input  [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    wire [3:0] in_next;\n    assign in_next = {in[0], in[1], in[2], in[3]};\n    assign out_both = {in[0] & in[1], in[1] & in[2], in[2] & in[3], 1'b0};\n    assign out_any = {in[0] | in[1], in[1] | in[2], in[2] | in[3], 1'b0};\n    assign out_different = {in[0] ^ in[1], in[1] ^ in[2], in[2] ^ in_next[0], 1'b0};\nendmodule",
+      "rtl_raw_sha256": "27ffaa3de58a1fb08806cee9ca3508c96321a7faaac14e1a78bc49fde3c89f19",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "178/213 mismatches",
+      "raw_completion": "// One-bit wide combinational circuits can be synthesized in one stage,\n// identical to a multiplexer (MUX). This saves resources and makes the\n// design faster to go through. The exact form of the combinational\n// circuit does not matter; as long as it is identical to a MUX, it can\n// be used in place of the MUX.\nmodule TopModule(input [3:0] in, output [3:0] out_both, output [3:0] out_any, output [3:0] out_different);\n    wire [3:0] n1, n2, n3, n4;\n    assign n1 = ~(in[0] & in[1]);\n    assign n2 = ~(in[1] & in[2]);\n    assign n3 = ~(in[2] & in[3]);\n    assign n4 = ~(in[3] & in[0]);\n    assign out_both = ~(n1 & n2 & n3 & n4);\n    assign out_any = ~(in[0] | in[1] | in[2] | in[3]);\n    assign out_different = ~(in[0] ^ in[1] ^ in[2] ^ in[3]);\nendmodule",
+      "raw_completion_raw_sha256": "af833406a8bb6f4a708b47649ecec75ce05ceae39eb15dcb89dd1d0b7482bb8b",
+      "rtl": "module TopModule(input [3:0] in, output [3:0] out_both, output [3:0] out_any, output [3:0] out_different);\n    wire [3:0] n1, n2, n3, n4;\n    assign n1 = ~(in[0] & in[1]);\n    assign n2 = ~(in[1] & in[2]);\n    assign n3 = ~(in[2] & in[3]);\n    assign n4 = ~(in[3] & in[0]);\n    assign out_both = ~(n1 & n2 & n3 & n4);\n    assign out_any = ~(in[0] | in[1] | in[2] | in[3]);\n    assign out_different = ~(in[0] ^ in[1] ^ in[2] ^ in[3]);\nendmodule",
+      "rtl_raw_sha256": "ccf67a48412d055654692bb4c91822b0e0377a263a2cff7e0a87d2d53de4585e",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: error: part select in[1:3] is out of order.",
+      "raw_completion": "// Same name as the module\nmodule TopModule (\n    input  [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    wire [3:0] in_left;\n    wire [3:0] in_right;\n    assign in_left = {in[0], in[3:1]};\n    assign in_right = {in[1:3], in[0]};\n    assign out_both = in & in_left;\n    assign out_any = in | in_right;\n    assign out_different = in ^ in_left;\nendmodule",
+      "raw_completion_raw_sha256": "7a732ea99163186aa4da75457c62ce48a4ffa303f14bc72f5e09b78bc208db7b",
+      "rtl": "module TopModule (\n    input  [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    wire [3:0] in_left;\n    wire [3:0] in_right;\n    assign in_left = {in[0], in[3:1]};\n    assign in_right = {in[1:3], in[0]};\n    assign out_both = in & in_left;\n    assign out_any = in | in_right;\n    assign out_different = in ^ in_left;\nendmodule",
+      "rtl_raw_sha256": "7c6ff17136d331f1e72f916648740f750135976fa42d94b7c7d960d32a18af03",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "213/213 mismatches",
+      "raw_completion": "// One-bit ANDed together for out_both, ORed together for out_any, XORed\n// together for out_different.\nmodule TopModule(\n    input [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    wire [3:0] anded;\n    wire [3:0] ored;\n    wire [3:0] xored;\n    assign anded[0] = 1'b1;\n    assign ored[0] = in[0];\n    assign xored[0] = ~in[0];\n    genvar i;\n    for (i = 1; i < 4; i = i + 1) begin\n        assign anded[i] = in[i] & in[i-1];\n        assign ored[i] = in[i] | in[i-1];\n        assign xored[i] = in[i] ^ in[i-1];\n    end\n    assign out_both = ~anded[3:0];\n    assign out_any = ~ored[3:0];\n    assign out_different = ~xored[3:0];\nendmodule",
+      "raw_completion_raw_sha256": "71e80f6d1da04c70d0dc81dd15b1316f80eaccbafef4b2425fa5a4d2e39602e8",
+      "rtl": "module TopModule(\n    input [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    wire [3:0] anded;\n    wire [3:0] ored;\n    wire [3:0] xored;\n    assign anded[0] = 1'b1;\n    assign ored[0] = in[0];\n    assign xored[0] = ~in[0];\n    genvar i;\n    for (i = 1; i < 4; i = i + 1) begin\n        assign anded[i] = in[i] & in[i-1];\n        assign ored[i] = in[i] | in[i-1];\n        assign xored[i] = in[i] ^ in[i-1];\n    end\n    assign out_both = ~anded[3:0];\n    assign out_any = ~ored[3:0];\n    assign out_different = ~xored[3:0];\nendmodule",
+      "rtl_raw_sha256": "7662ebe4bcf03d98e32059dc7120da3a6bcc6c00a7d5b85ff04ed7bc9372f69f",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: error: Concatenation operand \"'sd1\" has indefinite width.",
+      "raw_completion": "// Four-bit vector, bit-to-bit AND and OR, and XOR of neighbours. Same as\n// the reference solution, but written in a more explicitly nested form.\nmodule TopModule(\n    input [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    wire [3:0] in_shifted;\n    assign in_shifted = {in[0], in[3:1]};\n    wire [3:0] both0 = in & in_shifted;\n    wire [3:0] both1 = {1, 1, 1, 1} & both0;\n    wire [3:0] any0 = ~(in | in_shifted);\n    wire [3:0] any1 = {1, 1, 1, 1} & any0;\n    wire [3:0] diff0 = in ^ in_shifted;\n    wire [3:0] diff1 = {1, 1, 1, 1} & diff0;\n    assign out_both = both1;\n    assign out_any = any1;\n    assign out_different = diff1;\nendmodule",
+      "raw_completion_raw_sha256": "46a61a7302e8af3780e60b7d67df98282e18c23a26334f5af492d3b8721af2cd",
+      "rtl": "module TopModule(\n    input [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    wire [3:0] in_shifted;\n    assign in_shifted = {in[0], in[3:1]};\n    wire [3:0] both0 = in & in_shifted;\n    wire [3:0] both1 = {1, 1, 1, 1} & both0;\n    wire [3:0] any0 = ~(in | in_shifted);\n    wire [3:0] any1 = {1, 1, 1, 1} & any0;\n    wire [3:0] diff0 = in ^ in_shifted;\n    wire [3:0] diff1 = {1, 1, 1, 1} & diff0;\n    assign out_both = both1;\n    assign out_any = any1;\n    assign out_different = diff1;\nendmodule",
+      "rtl_raw_sha256": "079be3c5a55aae3e985c6337b43c4b7cfa8ce12cc90a72d9b72bcab5763aa484",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "195/213 mismatches",
+      "raw_completion": "// Same as the description: the relationship between each bit and its\n// neighbour is explicitly computed and the output is the same as the\n// corresponding \"out_both\", \"out_any\", or \"out_different\" bit.\nmodule TopModule (\n    input [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    wire [3:0] in_l;\n    wire [3:0] in_r;\n    assign in_l = {in[3], in};\n    assign in_r = {in, in[0]};\n    assign out_both = in & in_l;\n    assign out_any = in | in_r;\n    assign out_different = in ^ in_l;\nendmodule",
+      "raw_completion_raw_sha256": "f2be6dbbee7c2b33978c21c5608668880f47a59a71272a20901320be29359387",
+      "rtl": "module TopModule (\n    input [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    wire [3:0] in_l;\n    wire [3:0] in_r;\n    assign in_l = {in[3], in};\n    assign in_r = {in, in[0]};\n    assign out_both = in & in_l;\n    assign out_any = in | in_r;\n    assign out_different = in ^ in_l;\nendmodule",
+      "rtl_raw_sha256": "0f5a81a76c98f91fb197c928183bab619a0f09c6bdd852163fa94a025febabe0",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:5: error: out_both['sd0] is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Same as the reference solution, but with a single nested always block.\nmodule TopModule(input [3:0] in, output [3:0] out_both, output [3:0] out_any, output [3:0] out_different);\n  reg [3:0] in_unreg;\n  always @(*) in_unreg = in;\n  always @(*) begin\n    out_both[0] = in_unreg[0] & in_unreg[1];\n    out_both[1] = in_unreg[1] & in_unreg[2];\n    out_both[2] = in_unreg[2] & in_unreg[3];\n    out_both[3] = in_unreg[3] & in_unreg[0];\n    out_any[0] = in_unreg[0] | in_unreg[1];\n    out_any[1] = in_unreg[1] | in_unreg[2];\n    out_any[2] = in_unreg[2] | in_unreg[3];\n    out_any[3] = in_unreg[3] | in_unreg[0];\n    out_different[0] = in_unreg[0] ^ in_unreg[1];\n    out_different[1] = in_unreg[1] ^ in_unreg[2];\n    out_different[2] = in_unreg[2] ^ in_unreg[3];\n    out_different[3] = in_unreg[3] ^ in_unreg[0];\n  end\nendmodule",
+      "raw_completion_raw_sha256": "a439ebb14de826c60c1edae456d2fa5f5ff747139c46bd99755e46b9826e7822",
+      "rtl": "module TopModule(input [3:0] in, output [3:0] out_both, output [3:0] out_any, output [3:0] out_different);\n  reg [3:0] in_unreg;\n  always @(*) in_unreg = in;\n  always @(*) begin\n    out_both[0] = in_unreg[0] & in_unreg[1];\n    out_both[1] = in_unreg[1] & in_unreg[2];\n    out_both[2] = in_unreg[2] & in_unreg[3];\n    out_both[3] = in_unreg[3] & in_unreg[0];\n    out_any[0] = in_unreg[0] | in_unreg[1];\n    out_any[1] = in_unreg[1] | in_unreg[2];\n    out_any[2] = in_unreg[2] | in_unreg[3];\n    out_any[3] = in_unreg[3] | in_unreg[0];\n    out_different[0] = in_unreg[0] ^ in_unreg[1];\n    out_different[1] = in_unreg[1] ^ in_unreg[2];\n    out_different[2] = in_unreg[2] ^ in_unreg[3];\n    out_different[3] = in_unreg[3] ^ in_unreg[0];\n  end\nendmodule",
+      "rtl_raw_sha256": "37fb61aa7078e9fd0195dad1985fe8e2a06a75b885aa80c3b24ca8496ad3dd73",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "207/213 mismatches",
+      "raw_completion": "module TopModule (\n  input  [3:0] in,\n  output [3:0] out_both,\n  output [3:0] out_any,\n  output [3:0] out_different\n);\n  wire [3:0] in_wrapped;\n  assign in_wrapped = {in[0], in[3:1]};\n  assign out_both = {in[0] & in[1], in[1] & in[2], in[2] & in_wrapped[0], 1'b0};\n  assign out_any = {in[0] | in[1], in[1] | in[2], in[2] | in_wrapped[0], 1'b0};\n  assign out_different = {in[0] ^ in[1], in[1] ^ in[2], in[2] ^ in_wrapped[0], 1'b0};\nendmodule",
+      "raw_completion_raw_sha256": "89ecbe8c82f9f7749a594ff1d9ddf173596ddc47280cef1871a8a26dcea051ab",
+      "rtl": "module TopModule (\n  input  [3:0] in,\n  output [3:0] out_both,\n  output [3:0] out_any,\n  output [3:0] out_different\n);\n  wire [3:0] in_wrapped;\n  assign in_wrapped = {in[0], in[3:1]};\n  assign out_both = {in[0] & in[1], in[1] & in[2], in[2] & in_wrapped[0], 1'b0};\n  assign out_any = {in[0] | in[1], in[1] | in[2], in[2] | in_wrapped[0], 1'b0};\n  assign out_different = {in[0] ^ in[1], in[1] ^ in[2], in[2] ^ in_wrapped[0], 1'b0};\nendmodule",
+      "rtl_raw_sha256": "89ecbe8c82f9f7749a594ff1d9ddf173596ddc47280cef1871a8a26dcea051ab",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "207/213 mismatches",
+      "raw_completion": "// Same-named wires have the same behavior as the corresponding registers,\n// i.e. they're sampled at the same times.\nmodule TopModule (\n    input [3:0] in,\n    output reg [3:0] out_both,\n    output reg [3:0] out_any,\n    output reg [3:0] out_different\n);\n    wire [3:0] in_shifted;\n    assign in_shifted = {in[0], in[3:1]};\n    always @(*) begin\n        out_both[0] = in[0] & in[1];\n        out_both[1] = in[1] & in[2];\n        out_both[2] = in[2] & in[3];\n        out_both[3] = 1'b0;\n        out_any[0] = in[0] | in[1];\n        out_any[1] = in[1] | in[2];\n        out_any[2] = in[2] | in[3];\n        out_any[3] = 1'b0;\n        out_different[0] = in[0] ^ in[1];\n        out_different[1] = in[1] ^ in[2];\n        out_different[2] = in[2] ^ in[3];\n        out_different[3] = in[3] ^ in[0];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "dd8e466c87ce83cbe6f8ae0e2fb3e44dbf46239107656a1cf19c44e42f19755d",
+      "rtl": "module TopModule (\n    input [3:0] in,\n    output reg [3:0] out_both,\n    output reg [3:0] out_any,\n    output reg [3:0] out_different\n);\n    wire [3:0] in_shifted;\n    assign in_shifted = {in[0], in[3:1]};\n    always @(*) begin\n        out_both[0] = in[0] & in[1];\n        out_both[1] = in[1] & in[2];\n        out_both[2] = in[2] & in[3];\n        out_both[3] = 1'b0;\n        out_any[0] = in[0] | in[1];\n        out_any[1] = in[1] | in[2];\n        out_any[2] = in[2] | in[3];\n        out_any[3] = 1'b0;\n        out_different[0] = in[0] ^ in[1];\n        out_different[1] = in[1] ^ in[2];\n        out_different[2] = in[2] ^ in[3];\n        out_different[3] = in[3] ^ in[0];\n    end\nendmodule",
+      "rtl_raw_sha256": "4f21b69ee1bc60ebdca842747dc3229dfcf2f409ec5b100aad8c091ffe5e35fa",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:3: syntax error",
+      "raw_completion": "// Same function as out_both, but with a different name. Used twice to\n// demonstrate that the same function can be reused.\nwire [3:0] both0 = ~(in[0] & in[1]);\nwire [3:0] both1 = ~(in[1] & in[2]);\nwire [3:0] both2 = ~(in[2] & in[3]);\nwire [3:0] both3 = ~(in[3] & in[0]);\n\n// Same function as out_any, but with a different name.\nwire [3:0] any0 = ~(in[0] | in[1]);\nwire [3:0] any1 = ~(in[1] | in[2]);\nwire [3:0] any2 = ~(in[2] | in[3]);\nwire [3:0] any3 = ~(in[3] | in[0]);\n\n// Same function as out_different, but with a different name.\nwire [3:0] diff0 = ~(in[0] ^ in[1]);\nwire [3:0] diff1 = ~(in[1] ^ in[2]);\nwire [3:0] diff2 = ~(in[2] ^ in[3]);\nwire [3:0] diff3 = ~(in[3] ^ in[0]);\n\nTopModule the_module (\n    .in(in),\n    .out_both({both3, both0, both1, both2}),\n    .out_any({any3, any0, any1, any2}),\n    .out_different({diff3, diff0, diff1, diff2})\n);",
+      "raw_completion_raw_sha256": "7bd11fd0bfb3a7d19be80e6858132a771ac7a3d863e296d442ee54932f3da671",
+      "rtl": "// Same function as out_both, but with a different name. Used twice to\n// demonstrate that the same function can be reused.\nwire [3:0] both0 = ~(in[0] & in[1]);\nwire [3:0] both1 = ~(in[1] & in[2]);\nwire [3:0] both2 = ~(in[2] & in[3]);\nwire [3:0] both3 = ~(in[3] & in[0]);\n\n// Same function as out_any, but with a different name.\nwire [3:0] any0 = ~(in[0] | in[1]);\nwire [3:0] any1 = ~(in[1] | in[2]);\nwire [3:0] any2 = ~(in[2] | in[3]);\nwire [3:0] any3 = ~(in[3] | in[0]);\n\n// Same function as out_different, but with a different name.\nwire [3:0] diff0 = ~(in[0] ^ in[1]);\nwire [3:0] diff1 = ~(in[1] ^ in[2]);\nwire [3:0] diff2 = ~(in[2] ^ in[3]);\nwire [3:0] diff3 = ~(in[3] ^ in[0]);\n\nTopModule the_module (\n    .in(in),\n    .out_both({both3, both0, both1, both2}),\n    .out_any({any3, any0, any1, any2}),\n    .out_different({diff3, diff0, diff1, diff2})\n);",
+      "rtl_raw_sha256": "7bd11fd0bfb3a7d19be80e6858132a771ac7a3d863e296d442ee54932f3da671",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "213/213 mismatches",
+      "raw_completion": "// The given problem can be solved by using the XOR, AND and IOR gates in\n// Verilog. The XOR gate gives 1 if the two inputs are different, the AND\n// gate gives 1 if both inputs are 1, and the IOR gate gives 1 if any of\n// the inputs are 1. These can be chained together in the desired order to\n// get the three output signals.\nmodule TopModule (\n  input  [3:0] in,\n  output [3:0] out_both,\n  output [3:0] out_any,\n  output [3:0] out_different\n);\n  wire [3:0] x1 = in ^ {in[0], in[1], in[2], in[3]};\n  wire [3:0] b1 = in & {in[0], in[1], in[2], in[3]};\n  wire [3:0] a1 = in | {in[1], in[2], in[3], in[0]};\n  wire [3:0] x2 = {x1[3], x1[0], x1[1], x1[2]};\n  wire [3:0] b2 = {b1[3], b1[0], b1[1], b1[2]};\n  wire [3:0] a2 = {a1[3], a1[0], a1[1], a1[2]};\n  assign out_both = ~b2;\n  assign out_any = ~a2;\n  assign out_different = ~x2;\nendmodule",
+      "raw_completion_raw_sha256": "b20e7fbb05c05999dfbd96e5de0adfeda5c0fcfb0abed8dcc60fbc9390b27936",
+      "rtl": "module TopModule (\n  input  [3:0] in,\n  output [3:0] out_both,\n  output [3:0] out_any,\n  output [3:0] out_different\n);\n  wire [3:0] x1 = in ^ {in[0], in[1], in[2], in[3]};\n  wire [3:0] b1 = in & {in[0], in[1], in[2], in[3]};\n  wire [3:0] a1 = in | {in[1], in[2], in[3], in[0]};\n  wire [3:0] x2 = {x1[3], x1[0], x1[1], x1[2]};\n  wire [3:0] b2 = {b1[3], b1[0], b1[1], b1[2]};\n  wire [3:0] a2 = {a1[3], a1[0], a1[1], a1[2]};\n  assign out_both = ~b2;\n  assign out_any = ~a2;\n  assign out_different = ~x2;\nendmodule",
+      "rtl_raw_sha256": "d987b2c88def6a32b32ed8234972b164c75e247c95408bc496a6c468f6e0c61f",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob094_gatesv_test.sv:102: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit AND gate, unrolled to save area.\nmodule and2 (output reg o, input a, b);\n    always @(*) begin\n        o = a & b;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b23dab401257096169251c9b6009751c8416cd6e157f3029a9811bd8bd4e8c25",
+      "rtl": "module and2 (output reg o, input a, b);\n    always @(*) begin\n        o = a & b;\n    end\nendmodule",
+      "rtl_raw_sha256": "9ea5c3ce75d32caa71f843563c8afee32d32d02a6af65601bff4b51592b036d5",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "207/213 mismatches",
+      "raw_completion": "// The module as described in the problem description\nmodule TopModule(\n    input [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    wire [3:0] in_wrap;\n    assign in_wrap = {in[0], in[1], in[2], in[3]};\n    assign out_both = {in[0] & in[1], in[1] & in[2], in[2] & in[3], 1'b0};\n    assign out_any = {in[0] | in[1], in[1] | in[2], in[2] | in[3], 1'b0};\n    assign out_different = {in[0] ^ in[1], in[1] ^ in[2], in[2] ^ in_wrap[3], 1'b0};\nendmodule",
+      "raw_completion_raw_sha256": "87375c7118efacfa3448418aff4c6626a3e3edc9abcb50710bd8e61d5492ab40",
+      "rtl": "module TopModule(\n    input [3:0] in,\n    output [3:0] out_both,\n    output [3:0] out_any,\n    output [3:0] out_different\n);\n    wire [3:0] in_wrap;\n    assign in_wrap = {in[0], in[1], in[2], in[3]};\n    assign out_both = {in[0] & in[1], in[1] & in[2], in[2] & in[3], 1'b0};\n    assign out_any = {in[0] | in[1], in[1] | in[2], in[2] | in[3], 1'b0};\n    assign out_different = {in[0] ^ in[1], in[1] ^ in[2], in[2] ^ in_wrap[3], 1'b0};\nendmodule",
+      "rtl_raw_sha256": "9ee6536f358ee76d8c2e00b3d15738a5d909ba22a6fdfe7e8f235a7c7a1a26be",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob094_gatesv_test.sv:102: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit wide multiplexer: selects one of 2^N different inputs, depending\n// on the 1-hot \"sel\" input. The \"sel\" input is N bits wide, and each bit\n// selects one input bit. For example, sel=00...1 -> out = in[0],\n// sel=01...0 -> out = in[1], etc.\nmodule mux_1hot_wide_N (\n  input  [15:0] in,\n  input  [3:0]  sel,\n  output reg [3:0] out\n);\n  always @* begin\n    case (sel)\n      4'b0000: out = in[0];\n      4'b0001: out = in[1];\n      4'b0010: out = in[2];\n      4'b0011: out = in[3];\n      4'b0100: out = in[4];\n      4'b0101: out = in[5];\n      4'b0110: out = in[6];\n      4'b0111: out = in[7];\n      4'b1000: out = in[8];\n      4'b1001: out = in[9];\n      4'b1010: out = in[10];\n      4'b1011: out = in[11];\n      4'b1100: out = in[12];\n      4'b1101: out = in[13];\n      4'b1110: out = in[14];\n      4'b1111: out = in[15];\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "1229c577758bbbd72da2d5732598a28e66300fe9b7de7290eef5e3c2835794cc",
+      "rtl": "module mux_1hot_wide_N (\n  input  [15:0] in,\n  input  [3:0]  sel,\n  output reg [3:0] out\n);\n  always @* begin\n    case (sel)\n      4'b0000: out = in[0];\n      4'b0001: out = in[1];\n      4'b0010: out = in[2];\n      4'b0011: out = in[3];\n      4'b0100: out = in[4];\n      4'b0101: out = in[5];\n      4'b0110: out = in[6];\n      4'b0111: out = in[7];\n      4'b1000: out = in[8];\n      4'b1001: out = in[9];\n      4'b1010: out = in[10];\n      4'b1011: out = in[11];\n      4'b1100: out = in[12];\n      4'b1101: out = in[13];\n      4'b1110: out = in[14];\n      4'b1111: out = in[15];\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "4441d27b412ce5330c83c323a9945e7f2145b7eac9d3b09372b85d4b46390f6e",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "109/213 mismatches",
+      "raw_completion": "// Four-bit vector with all relationships described in the task description\nmodule TopModule(\n    input [3:0] in,\n    output reg [3:0] out_both,\n    output reg [3:0] out_any,\n    output reg [3:0] out_different\n);\n    integer i;\n    always @(*) begin\n        for (i = 0; i < 4; i = i + 1) begin\n            out_both[i] = in[i] & in[(i + 1) % 4];\n            out_any[i] = in[i] | in[(i + 1) % 4];\n            out_different[i] = in[i] ^ in[(i + 1) % 4];\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "00bf607e3705d7cc669915f4353cc318012b5ce6edd252155227dc0d29bd851b",
+      "rtl": "module TopModule(\n    input [3:0] in,\n    output reg [3:0] out_both,\n    output reg [3:0] out_any,\n    output reg [3:0] out_different\n);\n    integer i;\n    always @(*) begin\n        for (i = 0; i < 4; i = i + 1) begin\n            out_both[i] = in[i] & in[(i + 1) % 4];\n            out_any[i] = in[i] | in[(i + 1) % 4];\n            out_different[i] = in[i] ^ in[(i + 1) % 4];\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "e610ce4c11441e092d689d4bfedc475cfd6bf1650ddb0139b70b2aebe501e8b6",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:14: error: No function named `f_both' found in this context (tb.top_module1.both[1]).",
+      "raw_completion": "// One-bit logic function: f(x, y) = x & y\n// (replacing the AND gate with a logic function gives the same delay\n// as the AND gate, but allows for a more complex design)\nfunction bit f_both (bit x, bit y);\n  f_both = x & y;\nendfunction\nfunction bit f_any (bit x, bit y);\n  f_any = x | y;\nendfunction\nfunction bit f_different (bit x, bit y);\n  f_different = x ^ y;\nendfunction\n\nmodule TopModule(\n  input [3:0] in,\n  output [3:0] out_both,\n  output [3:0] out_any,\n  output [3:0] out_different\n);\n  genvar i;\n  // Use a generate block to apply the function to all bits,\n  // excluding the first and last (where there is no neighbour).\n  // (Function calls are evaluated in order, so the delay is the\n  // same as if the ANDs were in parallel.)\n  generate\n    for (i = 1; i < 3; i = i + 1) begin : both\n      assign out_both[i] = f_both(in[i], in[i-1]);\n    end\n    for (i = 0; i < 3; i = i + 1) begin : any\n      assign out_any[i] = f_any(in[i], in[i+1]);\n    end\n    for (i = 1; i < 4; i = i + 1) begin : different\n      assign out_different[i] = f_different(in[i], in[i-1]);\n    end\n  // Wrap around the end\n  assign out_different[0] = f_different(in[0], in[3]);\n  endgenerate\nendmodule",
+      "raw_completion_raw_sha256": "3a27173eeea2df67ab66b8a9d23af06055e47b5643d1ef4c4ee6837505430e2f",
+      "rtl": "module TopModule(\n  input [3:0] in,\n  output [3:0] out_both,\n  output [3:0] out_any,\n  output [3:0] out_different\n);\n  genvar i;\n  // Use a generate block to apply the function to all bits,\n  // excluding the first and last (where there is no neighbour).\n  // (Function calls are evaluated in order, so the delay is the\n  // same as if the ANDs were in parallel.)\n  generate\n    for (i = 1; i < 3; i = i + 1) begin : both\n      assign out_both[i] = f_both(in[i], in[i-1]);\n    end\n    for (i = 0; i < 3; i = i + 1) begin : any\n      assign out_any[i] = f_any(in[i], in[i+1]);\n    end\n    for (i = 1; i < 4; i = i + 1) begin : different\n      assign out_different[i] = f_different(in[i], in[i-1]);\n    end\n  // Wrap around the end\n  assign out_different[0] = f_different(in[0], in[3]);\n  endgenerate\nendmodule",
+      "rtl_raw_sha256": "a730a635be826a15a6677d6dc2b5b3d8e6c275f2dba9bb1f6c042a1ad518de50",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 8,
+    "fail": 12
+  },
+  "testbench_raw_sha256": "cdd60ca258c7f1ba120a97731b86c7a34582cb596a36ee2449af9e316478e592",
+  "training_seed": 1
+}

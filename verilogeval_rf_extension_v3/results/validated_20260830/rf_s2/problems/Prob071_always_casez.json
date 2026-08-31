@@ -1,0 +1,200 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob071_always_casez",
+  "problem_seed": 5283489073847567676,
+  "prompt_raw_sha256": "bd14f7fa05e5db09dc82db362762860b4f092f069b989eb40dcc6038877ca86d",
+  "reference_raw_sha256": "00e69b3385011c20361f76a5f68aa225b0c1fda479444c429e0f24653f4773d5",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "147/346 mismatches",
+      "raw_completion": "module TopModule (\n    input  [7:0] in,\n    output reg [2:0] pos\n);\n    always @(*) begin\n        casez(in)\n            8'b00000001: pos = 3'd0;\n            8'b00000010: pos = 3'd1;\n            8'b00000100: pos = 3'd2;\n            8'b00001000: pos = 3'd3;\n            8'b00010000: pos = 3'd4;\n            8'b00100000: pos = 3'd5;\n            8'b01000000: pos = 3'd6;\n            8'b10000000: pos = 3'd7;\n            default:     pos = 3'd0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "8c7f9eb2c17b871d5f8fc9a4d3405471976c13833d9a4d590870b31bca5372a3",
+      "rtl": "module TopModule (\n    input  [7:0] in,\n    output reg [2:0] pos\n);\n    always @(*) begin\n        casez(in)\n            8'b00000001: pos = 3'd0;\n            8'b00000010: pos = 3'd1;\n            8'b00000100: pos = 3'd2;\n            8'b00001000: pos = 3'd3;\n            8'b00010000: pos = 3'd4;\n            8'b00100000: pos = 3'd5;\n            8'b01000000: pos = 3'd6;\n            8'b10000000: pos = 3'd7;\n            default:     pos = 3'd0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "8c7f9eb2c17b871d5f8fc9a4d3405471976c13833d9a4d590870b31bca5372a3",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:6: syntax error",
+      "raw_completion": "module TopModule(\n    input  [7:0] in,\n    output [2:0] pos\n);\n    reg  [7:0] reversed;\n    wire [2:0] priority;\n    // Priority encoder, finds first bit that is high\n    priority_encoder pe(reversed, priority);\n    // Reverse the input to get a priority encoder that reports the highest\n    // bit that is high first.\n    genvar i;\n    generate\n        for (i = 0; i < 8; i = i + 1) begin : reverse_loop\n            assign reversed[i] = in[7 - i];\n        end\n    endgenerate\n    assign pos = 3'd7 - priority;\nendmodule",
+      "raw_completion_raw_sha256": "1e9084d90a1767f6061e625fcef625100d664e5929888129189702884625f00d",
+      "rtl": "module TopModule(\n    input  [7:0] in,\n    output [2:0] pos\n);\n    reg  [7:0] reversed;\n    wire [2:0] priority;\n    // Priority encoder, finds first bit that is high\n    priority_encoder pe(reversed, priority);\n    // Reverse the input to get a priority encoder that reports the highest\n    // bit that is high first.\n    genvar i;\n    generate\n        for (i = 0; i < 8; i = i + 1) begin : reverse_loop\n            assign reversed[i] = in[7 - i];\n        end\n    endgenerate\n    assign pos = 3'd7 - priority;\nendmodule",
+      "rtl_raw_sha256": "1e9084d90a1767f6061e625fcef625100d664e5929888129189702884625f00d",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "147/346 mismatches",
+      "raw_completion": "module TopModule(\n    input  [7:0] in,\n    output reg [2:0] pos\n);\n    always @* begin\n        casez(in)\n            8'b00000001: pos = 3'd0;\n            8'b00000010: pos = 3'd1;\n            8'b00000100: pos = 3'd2;\n            8'b00001000: pos = 3'd3;\n            8'b00010000: pos = 3'd4;\n            8'b00100000: pos = 3'd5;\n            8'b01000000: pos = 3'd6;\n            8'b10000000: pos = 3'd7;\n            default:     pos = 3'd0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "4bcbcb71c11ae3326c62329a26e27bcad58e6f3b2846f95c19de3ca503215481",
+      "rtl": "module TopModule(\n    input  [7:0] in,\n    output reg [2:0] pos\n);\n    always @* begin\n        casez(in)\n            8'b00000001: pos = 3'd0;\n            8'b00000010: pos = 3'd1;\n            8'b00000100: pos = 3'd2;\n            8'b00001000: pos = 3'd3;\n            8'b00010000: pos = 3'd4;\n            8'b00100000: pos = 3'd5;\n            8'b01000000: pos = 3'd6;\n            8'b10000000: pos = 3'd7;\n            default:     pos = 3'd0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "4bcbcb71c11ae3326c62329a26e27bcad58e6f3b2846f95c19de3ca503215481",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "291/346 mismatches",
+      "raw_completion": "module TopModule (\n  input  [7:0] in,\n  output [2:0] pos\n);\n  wire [2:0] lut_out;\n  assign lut_out = {1'b0, in[0], in[1], in[2], in[3], in[4], in[5], in[6], in[7]};\n  assign pos = 3'd0 + lut_out;\nendmodule",
+      "raw_completion_raw_sha256": "55814cc2593bcea6bf08524edf9cfd271d1f23ab28dff64e28cdb20a41c3a999",
+      "rtl": "module TopModule (\n  input  [7:0] in,\n  output [2:0] pos\n);\n  wire [2:0] lut_out;\n  assign lut_out = {1'b0, in[0], in[1], in[2], in[3], in[4], in[5], in[6], in[7]};\n  assign pos = 3'd0 + lut_out;\nendmodule",
+      "rtl_raw_sha256": "55814cc2593bcea6bf08524edf9cfd271d1f23ab28dff64e28cdb20a41c3a999",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:14: syntax error",
+      "raw_completion": "module TopModule(\n  input  [7:0] in,\n  output [2:0] pos\n);\n  wire [7:0] in_inv = ~in;\n  wire [2:0] and0 = in_inv[0] ? 3'd0 : 3'd1;\n  wire [2:0] and1 = in_inv[1] ? 3'd1 : 3'd2;\n  wire [2:0] and2 = in_inv[2] ? 3'd2 : 3'd3;\n  wire [2:0] and3 = in_inv[3] ? 3'd3 : 3'd4;\n  wire [2:0] and4 = in_inv[4] ? 3'd4 : 3'd5;\n  wire [2:0] and5 = in_inv[5] ? 3'd5 : 3'd6;\n  wire [2:0] and6 = in_inv[6] ? 3'd6 : 3'd7;\n  wire [2:0] and7 = in_inv[7] ? 3'd7 : 3'd0;\n  wire [2:0] ands [0:7] = {and0, and1, and2, and3, and4, and5, and6, and7};\n  wire [2:0] min_and = ands.min();\n  assign pos = min_and;\nendmodule",
+      "raw_completion_raw_sha256": "5162cc9b6967111914a004fbd88ea33542ea6c4bd192fe0bb84c2affa4dc6faa",
+      "rtl": "module TopModule(\n  input  [7:0] in,\n  output [2:0] pos\n);\n  wire [7:0] in_inv = ~in;\n  wire [2:0] and0 = in_inv[0] ? 3'd0 : 3'd1;\n  wire [2:0] and1 = in_inv[1] ? 3'd1 : 3'd2;\n  wire [2:0] and2 = in_inv[2] ? 3'd2 : 3'd3;\n  wire [2:0] and3 = in_inv[3] ? 3'd3 : 3'd4;\n  wire [2:0] and4 = in_inv[4] ? 3'd4 : 3'd5;\n  wire [2:0] and5 = in_inv[5] ? 3'd5 : 3'd6;\n  wire [2:0] and6 = in_inv[6] ? 3'd6 : 3'd7;\n  wire [2:0] and7 = in_inv[7] ? 3'd7 : 3'd0;\n  wire [2:0] ands [0:7] = {and0, and1, and2, and3, and4, and5, and6, and7};\n  wire [2:0] min_and = ands.min();\n  assign pos = min_and;\nendmodule",
+      "rtl_raw_sha256": "5162cc9b6967111914a004fbd88ea33542ea6c4bd192fe0bb84c2affa4dc6faa",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(input [7:0] in, output reg [2:0] pos);\n  reg [7:0] p;\n  always @(*) begin\n    p = 8'b11111111 & ({8'b0, in} ^ {8'b0, in << 1});\n    pos = (p[0]) ? 3'd0 :\n          (p[1]) ? 3'd1 :\n          (p[2]) ? 3'd2 :\n          (p[3]) ? 3'd3 :\n          (p[4]) ? 3'd4 :\n          (p[5]) ? 3'd5 :\n          (p[6]) ? 3'd6 :\n          (p[7]) ? 3'd7 : 3'd0;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "0763c02f833afb4b11bfc576891e56fc432a52bb518fa880dfeb9738a38114cd",
+      "rtl": "module TopModule(input [7:0] in, output reg [2:0] pos);\n  reg [7:0] p;\n  always @(*) begin\n    p = 8'b11111111 & ({8'b0, in} ^ {8'b0, in << 1});\n    pos = (p[0]) ? 3'd0 :\n          (p[1]) ? 3'd1 :\n          (p[2]) ? 3'd2 :\n          (p[3]) ? 3'd3 :\n          (p[4]) ? 3'd4 :\n          (p[5]) ? 3'd5 :\n          (p[6]) ? 3'd6 :\n          (p[7]) ? 3'd7 : 3'd0;\n  end\nendmodule",
+      "rtl_raw_sha256": "0763c02f833afb4b11bfc576891e56fc432a52bb518fa880dfeb9738a38114cd",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "173/346 mismatches",
+      "raw_completion": "module TopModule(input [7:0] in, output reg [2:0] pos);\n  reg [7:0] mask;\n  always @(*) begin\n    mask = 8'h01;\n    pos = 3'd0;\n    while (pos < 3'd8 && !in[pos]) pos = pos + 3'd1;\n    if (pos < 3'd8) pos = pos;\n    else            pos = 3'd0;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "0ac7ef5fd6708ec347bd5bf3cd8a32be56d634ddc25b7af05f29c730cde7de3d",
+      "rtl": "module TopModule(input [7:0] in, output reg [2:0] pos);\n  reg [7:0] mask;\n  always @(*) begin\n    mask = 8'h01;\n    pos = 3'd0;\n    while (pos < 3'd8 && !in[pos]) pos = pos + 3'd1;\n    if (pos < 3'd8) pos = pos;\n    else            pos = 3'd0;\n  end\nendmodule",
+      "rtl_raw_sha256": "0ac7ef5fd6708ec347bd5bf3cd8a32be56d634ddc25b7af05f29c730cde7de3d",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n  input  [7:0] in,\n  output [2:0] pos\n);\n  reg [7:0] inv;\n  reg [2:0] i;\n  reg [2:0] res;\n  always @(*) inv = ~in;\n  always @(*) for (i = 0; i < 8; i = i + 1) begin\n    if (inv[i]) res = i;\n  end\n  assign pos = res;\nendmodule",
+      "raw_completion_raw_sha256": "409022b02c1b4005ea94157076c97e28ad5eac154dcb6dc02010d620ae233b8d",
+      "rtl": "module TopModule(\n  input  [7:0] in,\n  output [2:0] pos\n);\n  reg [7:0] inv;\n  reg [2:0] i;\n  reg [2:0] res;\n  always @(*) inv = ~in;\n  always @(*) for (i = 0; i < 8; i = i + 1) begin\n    if (inv[i]) res = i;\n  end\n  assign pos = res;\nendmodule",
+      "rtl_raw_sha256": "409022b02c1b4005ea94157076c97e28ad5eac154dcb6dc02010d620ae233b8d",
+      "sample_index": 7,
+      "status": "sim_timeout"
+    },
+    {
+      "detail": "173/346 mismatches",
+      "raw_completion": "// Priority encoder: finds the first high bit.\nmodule TopModule(input [7:0] in, output reg [2:0] pos);\n    wire [7:0] masked;\n    assign masked = in & 8'h01;\n    always @* begin\n        if (masked[0]) pos = 3'd0;\n        else if (masked[1]) pos = 3'd1;\n        else if (masked[2]) pos = 3'd2;\n        else if (masked[3]) pos = 3'd3;\n        else if (masked[4]) pos = 3'd4;\n        else if (masked[5]) pos = 3'd5;\n        else if (masked[6]) pos = 3'd6;\n        else if (masked[7]) pos = 3'd7;\n        else pos = 3'd0;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "e8d451d2177d1fa588bb29134f9b59a524760cb397549bb4e175185e2a158c2c",
+      "rtl": "module TopModule(input [7:0] in, output reg [2:0] pos);\n    wire [7:0] masked;\n    assign masked = in & 8'h01;\n    always @* begin\n        if (masked[0]) pos = 3'd0;\n        else if (masked[1]) pos = 3'd1;\n        else if (masked[2]) pos = 3'd2;\n        else if (masked[3]) pos = 3'd3;\n        else if (masked[4]) pos = 3'd4;\n        else if (masked[5]) pos = 3'd5;\n        else if (masked[6]) pos = 3'd6;\n        else if (masked[7]) pos = 3'd7;\n        else pos = 3'd0;\n    end\nendmodule",
+      "rtl_raw_sha256": "f9b844aff7be4bbf22a5d727722808abf4a3da0270a2dbcde7b59906263cdac6",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "147/346 mismatches",
+      "raw_completion": "module TopModule(\n    input  [7:0] in,\n    output reg [2:0] pos\n);\n    always @* begin\n        casez(in)\n            8'b00000001: pos = 3'd0;\n            8'b00000010: pos = 3'd1;\n            8'b00000100: pos = 3'd2;\n            8'b00001000: pos = 3'd3;\n            8'b00010000: pos = 3'd4;\n            8'b00100000: pos = 3'd5;\n            8'b01000000: pos = 3'd6;\n            8'b10000000: pos = 3'd7;\n            default:     pos = 3'd0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "4bcbcb71c11ae3326c62329a26e27bcad58e6f3b2846f95c19de3ca503215481",
+      "rtl": "module TopModule(\n    input  [7:0] in,\n    output reg [2:0] pos\n);\n    always @* begin\n        casez(in)\n            8'b00000001: pos = 3'd0;\n            8'b00000010: pos = 3'd1;\n            8'b00000100: pos = 3'd2;\n            8'b00001000: pos = 3'd3;\n            8'b00010000: pos = 3'd4;\n            8'b00100000: pos = 3'd5;\n            8'b01000000: pos = 3'd6;\n            8'b10000000: pos = 3'd7;\n            default:     pos = 3'd0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "4bcbcb71c11ae3326c62329a26e27bcad58e6f3b2846f95c19de3ca503215481",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: Unknown module type: priority_encoder",
+      "raw_completion": "module TopModule (\n    input  [7:0] in,\n    output [2:0] pos\n);\n    wire [2:0] pos_1;\n    wire [2:0] pos_2;\n    wire [2:0] pos_3;\n    wire [2:0] pos_4;\n    wire [2:0] pos_5;\n    wire [2:0] pos_6;\n    wire [2:0] pos_7;\n    priority_encoder pe0 (.in(in), .pos(pos_1));\n    priority_encoder pe1 (.in({in[7], in[6], in[5], in[4], in[3], in[2], in[1], 1'b0}), .pos(pos_2));\n    priority_encoder pe2 (.in({in[7], in[6], in[5], in[4], in[3], in[2], 1'b0, 1'b0}), .pos(pos_3));\n    priority_encoder pe3 (.in({in[7], in[6], in[5], in[4], in[3], 1'b0, 1'b0, 1'b0}), .pos(pos_4));\n    priority_encoder pe4 (.in({in[7], in[6], in[5], in[4], 1'b0, 1'b0, 1'b0, 1'b0}), .pos(pos_5));\n    priority_encoder pe5 (.in({in[7], in[6], in[5], 1'b0, 1'b0, 1'b0, 1'b0, 1'b0}), .pos(pos_6));\n    priority_encoder pe6 (.in({in[7], in[6], 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0}), .pos(pos_7));\n    priority_encoder pe7 (.in({in[7], 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0}), .pos(pos));\n    assign pos = (in == 8'b0) ? 3'd0 : pos_1 < pos_2 ? pos_1 : pos_2;\n    assign pos = (in == 8'b0) ? 3'd0 : pos < pos_3 ? pos : pos_3;\n    assign pos = (in == 8'b0) ? 3'd0 : pos < pos_4 ? pos : pos_4;\n    assign pos = (in == 8'b0) ? 3'd0 : pos < pos_5 ? pos : pos_5;\n    assign pos = (in == 8'b0) ? 3'd0 : pos < pos_6 ? pos : pos_6;\n    assign pos = (in == 8'b0) ? 3'd0 : pos < pos_7 ? pos : pos_7;\nendmodule",
+      "raw_completion_raw_sha256": "6f2c5bc9d54d14972ef7dcf21f0b69900b703cfaa61705765e7b40a96264209c",
+      "rtl": "module TopModule (\n    input  [7:0] in,\n    output [2:0] pos\n);\n    wire [2:0] pos_1;\n    wire [2:0] pos_2;\n    wire [2:0] pos_3;\n    wire [2:0] pos_4;\n    wire [2:0] pos_5;\n    wire [2:0] pos_6;\n    wire [2:0] pos_7;\n    priority_encoder pe0 (.in(in), .pos(pos_1));\n    priority_encoder pe1 (.in({in[7], in[6], in[5], in[4], in[3], in[2], in[1], 1'b0}), .pos(pos_2));\n    priority_encoder pe2 (.in({in[7], in[6], in[5], in[4], in[3], in[2], 1'b0, 1'b0}), .pos(pos_3));\n    priority_encoder pe3 (.in({in[7], in[6], in[5], in[4], in[3], 1'b0, 1'b0, 1'b0}), .pos(pos_4));\n    priority_encoder pe4 (.in({in[7], in[6], in[5], in[4], 1'b0, 1'b0, 1'b0, 1'b0}), .pos(pos_5));\n    priority_encoder pe5 (.in({in[7], in[6], in[5], 1'b0, 1'b0, 1'b0, 1'b0, 1'b0}), .pos(pos_6));\n    priority_encoder pe6 (.in({in[7], in[6], 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0}), .pos(pos_7));\n    priority_encoder pe7 (.in({in[7], 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0}), .pos(pos));\n    assign pos = (in == 8'b0) ? 3'd0 : pos_1 < pos_2 ? pos_1 : pos_2;\n    assign pos = (in == 8'b0) ? 3'd0 : pos < pos_3 ? pos : pos_3;\n    assign pos = (in == 8'b0) ? 3'd0 : pos < pos_4 ? pos : pos_4;\n    assign pos = (in == 8'b0) ? 3'd0 : pos < pos_5 ? pos : pos_5;\n    assign pos = (in == 8'b0) ? 3'd0 : pos < pos_6 ? pos : pos_6;\n    assign pos = (in == 8'b0) ? 3'd0 : pos < pos_7 ? pos : pos_7;\nendmodule",
+      "rtl_raw_sha256": "6f2c5bc9d54d14972ef7dcf21f0b69900b703cfaa61705765e7b40a96264209c",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:15: error: pos_next is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n  input  [7:0] in,\n  output [2:0] pos\n);\n  wire [2:0] pos_reg;\n  wire [2:0] pos_next;\n  reg  [7:0] in_reg;\n  reg  [7:0] in_next;\n  reg         go;\n  reg         done;\n  reg         first;\n  reg         found;\n  integer     i;\n  always @(*) begin\n    pos_next = pos_reg;\n    in_next = in_reg;\n    go = 1'b0;\n    done = 1'b0;\n    first = 1'b1;\n    found = 1'b0;\n    for (i = 0; i < 8; i = i + 1) begin\n      if (first && in_reg[7-i]) begin\n        pos_next = 3'd7 - i;\n        found = 1'b1;\n      end\n      first = 1'b0;\n    end\n    if (!go && !done && !found) begin\n      done = 1'b1;\n    end\n    if (!go && !done) begin\n      go = 1'b1;\n    end\n    if (go) begin\n      in_next = {in_reg[6:0], 1'b0};\n      pos_next = pos_reg - 1'b1;\n    end\n  end\n  always @(posedge clk) begin\n    if (rst) begin\n      pos_reg <= 3'd0;\n      in_reg <= 8'd0;\n    end else begin\n      pos_reg <= pos_next;\n      in_reg <= in_next;\n    end\n  end\n  assign pos = pos_reg;\nendmodule",
+      "raw_completion_raw_sha256": "56489d54326f005ba5e1f340f6937ed4b32f1eb7cdc289956cf7f6c995f04622",
+      "rtl": "module TopModule (\n  input  [7:0] in,\n  output [2:0] pos\n);\n  wire [2:0] pos_reg;\n  wire [2:0] pos_next;\n  reg  [7:0] in_reg;\n  reg  [7:0] in_next;\n  reg         go;\n  reg         done;\n  reg         first;\n  reg         found;\n  integer     i;\n  always @(*) begin\n    pos_next = pos_reg;\n    in_next = in_reg;\n    go = 1'b0;\n    done = 1'b0;\n    first = 1'b1;\n    found = 1'b0;\n    for (i = 0; i < 8; i = i + 1) begin\n      if (first && in_reg[7-i]) begin\n        pos_next = 3'd7 - i;\n        found = 1'b1;\n      end\n      first = 1'b0;\n    end\n    if (!go && !done && !found) begin\n      done = 1'b1;\n    end\n    if (!go && !done) begin\n      go = 1'b1;\n    end\n    if (go) begin\n      in_next = {in_reg[6:0], 1'b0};\n      pos_next = pos_reg - 1'b1;\n    end\n  end\n  always @(posedge clk) begin\n    if (rst) begin\n      pos_reg <= 3'd0;\n      in_reg <= 8'd0;\n    end else begin\n      pos_reg <= pos_next;\n      in_reg <= in_next;\n    end\n  end\n  assign pos = pos_reg;\nendmodule",
+      "rtl_raw_sha256": "56489d54326f005ba5e1f340f6937ed4b32f1eb7cdc289956cf7f6c995f04622",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "147/346 mismatches",
+      "raw_completion": "// 8-bit priority encoder.\nmodule TopModule(\n    input  [7:0] in,\n    output reg [2:0] pos\n);\n    always @* begin\n        casez(in)\n            8'b00000001: pos = 3'd0;\n            8'b00000010: pos = 3'd1;\n            8'b00000100: pos = 3'd2;\n            8'b00001000: pos = 3'd3;\n            8'b00010000: pos = 3'd4;\n            8'b00100000: pos = 3'd5;\n            8'b01000000: pos = 3'd6;\n            8'b10000000: pos = 3'd7;\n            default:     pos = 3'd0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "578d7d68f595834caec35f9d0877541769c8f765c42802a01066697ef9d42aea",
+      "rtl": "module TopModule(\n    input  [7:0] in,\n    output reg [2:0] pos\n);\n    always @* begin\n        casez(in)\n            8'b00000001: pos = 3'd0;\n            8'b00000010: pos = 3'd1;\n            8'b00000100: pos = 3'd2;\n            8'b00001000: pos = 3'd3;\n            8'b00010000: pos = 3'd4;\n            8'b00100000: pos = 3'd5;\n            8'b01000000: pos = 3'd6;\n            8'b10000000: pos = 3'd7;\n            default:     pos = 3'd0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "4bcbcb71c11ae3326c62329a26e27bcad58e6f3b2846f95c19de3ca503215481",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "173/346 mismatches",
+      "raw_completion": "module TopModule(input [7:0] in, output reg [2:0] pos);\n  reg [7:0] masked;\n  always @(*) begin\n    masked = in & 8'h01;\n    casez(masked)\n      8'h01: pos = 3'd0;\n      8'h02: pos = 3'd1;\n      8'h04: pos = 3'd2;\n      8'h08: pos = 3'd3;\n      8'h10: pos = 3'd4;\n      8'h20: pos = 3'd5;\n      8'h40: pos = 3'd6;\n      8'h80: pos = 3'd7;\n      default: pos = 3'd0;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "d5ab5d8c278f1d17f227c230a6cf6391bb105fe12e8633cde61f1bfd56d94a35",
+      "rtl": "module TopModule(input [7:0] in, output reg [2:0] pos);\n  reg [7:0] masked;\n  always @(*) begin\n    masked = in & 8'h01;\n    casez(masked)\n      8'h01: pos = 3'd0;\n      8'h02: pos = 3'd1;\n      8'h04: pos = 3'd2;\n      8'h08: pos = 3'd3;\n      8'h10: pos = 3'd4;\n      8'h20: pos = 3'd5;\n      8'h40: pos = 3'd6;\n      8'h80: pos = 3'd7;\n      default: pos = 3'd0;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "d5ab5d8c278f1d17f227c230a6cf6391bb105fe12e8633cde61f1bfd56d94a35",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "342/346 mismatches",
+      "raw_completion": "// Priority encoder, one-hot to binary (smallest index is highest priority).\nmodule TopModule(\n    input  [7:0] in,\n    output [2:0] pos\n);\n    wire [7:0] onehot;\n    assign onehot = ({8{in[0]}} & 8'b00000001) |\n                    ({8{in[1]}} & 8'b00000010) |\n                    ({8{in[2]}} & 8'b00000100) |\n                    ({8{in[3]}} & 8'b00001000) |\n                    ({8{in[4]}} & 8'b00010000) |\n                    ({8{in[5]}} & 8'b00100000) |\n                    ({8{in[6]}} & 8'b01000000) |\n                    ({8{in[7]}} & 8'b10000000);\n    assign pos = onehot[2:0];\nendmodule",
+      "raw_completion_raw_sha256": "075ad570129936c95c7b29f2dc840ca4d11e943ceadb17ebeb797bc7c2e90a3f",
+      "rtl": "module TopModule(\n    input  [7:0] in,\n    output [2:0] pos\n);\n    wire [7:0] onehot;\n    assign onehot = ({8{in[0]}} & 8'b00000001) |\n                    ({8{in[1]}} & 8'b00000010) |\n                    ({8{in[2]}} & 8'b00000100) |\n                    ({8{in[3]}} & 8'b00001000) |\n                    ({8{in[4]}} & 8'b00010000) |\n                    ({8{in[5]}} & 8'b00100000) |\n                    ({8{in[6]}} & 8'b01000000) |\n                    ({8{in[7]}} & 8'b10000000);\n    assign pos = onehot[2:0];\nendmodule",
+      "rtl_raw_sha256": "45c0442aa9f9bd187b5e088dd15de4bf2b04ee09f0b858dcb0fd8bd542b68ff4",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:21: syntax error",
+      "raw_completion": "module TopModule (\n    input  [7:0] in,\n    output [2:0] pos\n);\n    wire [7:0] inv_in = ~in;\n    wire [7:0] and_chain [0:7];\n    wire [2:0] or_chain [0:6];\n    genvar i, j;\n    // AND chain: AND(in[0], in[1], ..., in[7])\n    assign and_chain[0] = inv_in[0];\n    for (i = 1; i < 8; i = i + 1)\n        assign and_chain[i] = inv_in[i] & and_chain[i-1];\n    // OR chain: OR(AND(in[0], in[1], ..., in[i]), AND(in[0], in[1],\n    // ..., in[i+1]), ..., AND(in[0], in[1], ..., in[7]))\n    assign or_chain[0] = and_chain[0];\n    for (i = 1; i < 7; i = i + 1)\n        assign or_chain[i] = or_chain[i-1] | and_chain[i];\n    // Find the first 1 in the chain (the priority)\n    for (i = 0; i < 8; i = i + 1)\n        if (or_chain[i]) begin\n            pos = i[2:0];\n            break;\n        end\nendmodule",
+      "raw_completion_raw_sha256": "9df0bafd2202b49733a238703503551235deb0fb1877303dc180b9800b5583cd",
+      "rtl": "module TopModule (\n    input  [7:0] in,\n    output [2:0] pos\n);\n    wire [7:0] inv_in = ~in;\n    wire [7:0] and_chain [0:7];\n    wire [2:0] or_chain [0:6];\n    genvar i, j;\n    // AND chain: AND(in[0], in[1], ..., in[7])\n    assign and_chain[0] = inv_in[0];\n    for (i = 1; i < 8; i = i + 1)\n        assign and_chain[i] = inv_in[i] & and_chain[i-1];\n    // OR chain: OR(AND(in[0], in[1], ..., in[i]), AND(in[0], in[1],\n    // ..., in[i+1]), ..., AND(in[0], in[1], ..., in[7]))\n    assign or_chain[0] = and_chain[0];\n    for (i = 1; i < 7; i = i + 1)\n        assign or_chain[i] = or_chain[i-1] | and_chain[i];\n    // Find the first 1 in the chain (the priority)\n    for (i = 0; i < 8; i = i + 1)\n        if (or_chain[i]) begin\n            pos = i[2:0];\n            break;\n        end\nendmodule",
+      "rtl_raw_sha256": "9df0bafd2202b49733a238703503551235deb0fb1877303dc180b9800b5583cd",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "147/346 mismatches",
+      "raw_completion": "module TopModule(\n    input  [7:0] in,\n    output reg [2:0] pos\n);\n    always @(*) begin\n        casez(in)\n            8'b00000001: pos = 3'd0;\n            8'b00000010: pos = 3'd1;\n            8'b00000100: pos = 3'd2;\n            8'b00001000: pos = 3'd3;\n            8'b00010000: pos = 3'd4;\n            8'b00100000: pos = 3'd5;\n            8'b01000000: pos = 3'd6;\n            8'b10000000: pos = 3'd7;\n            default:     pos = 3'd0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "74f8560006e66966866c86112a07ca903b8dbfe2553af404769975052e7d3a24",
+      "rtl": "module TopModule(\n    input  [7:0] in,\n    output reg [2:0] pos\n);\n    always @(*) begin\n        casez(in)\n            8'b00000001: pos = 3'd0;\n            8'b00000010: pos = 3'd1;\n            8'b00000100: pos = 3'd2;\n            8'b00001000: pos = 3'd3;\n            8'b00010000: pos = 3'd4;\n            8'b00100000: pos = 3'd5;\n            8'b01000000: pos = 3'd6;\n            8'b10000000: pos = 3'd7;\n            default:     pos = 3'd0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "74f8560006e66966866c86112a07ca903b8dbfe2553af404769975052e7d3a24",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: sorry: break statements not supported.",
+      "raw_completion": "module TopModule(\n  input  [7:0] in,\n  output reg [2:0] pos\n);\n  integer i;\n  always @(*) begin\n    for (i = 0; i < 8; i = i + 1) begin\n      if (in[i]) begin\n        pos = i;\n        break;\n      end\n    end\n  end\nendmodule",
+      "raw_completion_raw_sha256": "a11de4715f0c022fb2584c563af00944533cfb2a1f2a53ac84a95d262de92649",
+      "rtl": "module TopModule(\n  input  [7:0] in,\n  output reg [2:0] pos\n);\n  integer i;\n  always @(*) begin\n    for (i = 0; i < 8; i = i + 1) begin\n      if (in[i]) begin\n        pos = i;\n        break;\n      end\n    end\n  end\nendmodule",
+      "rtl_raw_sha256": "a11de4715f0c022fb2584c563af00944533cfb2a1f2a53ac84a95d262de92649",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "343/346 mismatches",
+      "raw_completion": "module TopModule(input [7:0] in, output reg [2:0] pos);\n  reg [7:0] v;\n  always @(*) begin\n    v = 8'b11111111 & ({8'b0, in} << 1);\n    casez(v)\n      8'b00000001: pos = 3'd0;\n      8'b00000011: pos = 3'd1;\n      8'b00000111: pos = 3'd2;\n      8'b00001111: pos = 3'd3;\n      8'b00011111: pos = 3'd4;\n      8'b00111111: pos = 3'd5;\n      8'b01111111: pos = 3'd6;\n      8'b11111111: pos = 3'd7;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "c03ad8140de28a1a61b4b696933800efa9dbc9e237cb5d38c8926ca217ba4729",
+      "rtl": "module TopModule(input [7:0] in, output reg [2:0] pos);\n  reg [7:0] v;\n  always @(*) begin\n    v = 8'b11111111 & ({8'b0, in} << 1);\n    casez(v)\n      8'b00000001: pos = 3'd0;\n      8'b00000011: pos = 3'd1;\n      8'b00000111: pos = 3'd2;\n      8'b00001111: pos = 3'd3;\n      8'b00011111: pos = 3'd4;\n      8'b00111111: pos = 3'd5;\n      8'b01111111: pos = 3'd6;\n      8'b11111111: pos = 3'd7;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "c03ad8140de28a1a61b4b696933800efa9dbc9e237cb5d38c8926ca217ba4729",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "147/346 mismatches",
+      "raw_completion": "module TopModule(\n    input  [7:0] in,\n    output reg [2:0] pos\n);\n    always @(*) begin\n        casez(in)\n            8'b00000001: pos = 3'd0;\n            8'b00000010: pos = 3'd1;\n            8'b00000100: pos = 3'd2;\n            8'b00001000: pos = 3'd3;\n            8'b00010000: pos = 3'd4;\n            8'b00100000: pos = 3'd5;\n            8'b01000000: pos = 3'd6;\n            8'b10000000: pos = 3'd7;\n            default:     pos = 3'd0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "74f8560006e66966866c86112a07ca903b8dbfe2553af404769975052e7d3a24",
+      "rtl": "module TopModule(\n    input  [7:0] in,\n    output reg [2:0] pos\n);\n    always @(*) begin\n        casez(in)\n            8'b00000001: pos = 3'd0;\n            8'b00000010: pos = 3'd1;\n            8'b00000100: pos = 3'd2;\n            8'b00001000: pos = 3'd3;\n            8'b00010000: pos = 3'd4;\n            8'b00100000: pos = 3'd5;\n            8'b01000000: pos = 3'd6;\n            8'b10000000: pos = 3'd7;\n            default:     pos = 3'd0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "74f8560006e66966866c86112a07ca903b8dbfe2553af404769975052e7d3a24",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 1,
+    "compile_fail": 6,
+    "fail": 12,
+    "sim_timeout": 1
+  },
+  "testbench_raw_sha256": "3c7e0e7fe0d6120b4246d7ce61b3b56d76c372ed4ca343128c4a91d57e56d346",
+  "training_seed": 2
+}

@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob048_m2014_q4c",
+  "problem_seed": 7931635122952188726,
+  "prompt_raw_sha256": "01faebfe50b95f304c326dd2f7cdc3cd67c3210f69a2de3fe8df02b3edaffb05",
+  "reference_raw_sha256": "f143bdbb4847f35b5baa02f4c8c0242fd244b3daaf1306edd57e2c2c1c5dd908",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "// Simple D flip-flop with synchronous active-high reset\nmodule TopModule(\n    input  clk,\n    input  d,\n    input  r,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "6fa18927144eac5e87eaf40385942a8ed7d974e3c4b55bdd8538b0d232a81c8e",
+      "rtl": "module TopModule(\n    input  clk,\n    input  d,\n    input  r,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "8000303f1d331dfc667f62b03396ff4b99c43f437c31b0704a96103997716ff9",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit D flip-flop with active-high synchronous reset\nmodule TopModule(input clk, input d, input r, output reg q);\n    always @(posedge clk) begin\n        if (r) q <= 0;\n        else   q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "12638a669cd8d3d6a1227bacca37be78b8e0885e083c1dacebf4b833aca05085",
+      "rtl": "module TopModule(input clk, input d, input r, output reg q);\n    always @(posedge clk) begin\n        if (r) q <= 0;\n        else   q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "dc6b10e9627bbfad899be6f616b93058d745438608cfb54310a9ed174e979bbf",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: error: 'q' has already been declared in this scope.",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  d,\n    input  r,\n    output q\n);\n    reg q;\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "c9906afb2aa35049765b781890416de45a3256402ac58b72614479ea03fd932e",
+      "rtl": "module TopModule(\n    input  clk,\n    input  d,\n    input  r,\n    output q\n);\n    reg q;\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "c9906afb2aa35049765b781890416de45a3256402ac58b72614479ea03fd932e",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Simple D flip flop with active high synchronous reset\nmodule TopModule(input clk, input d, input r, output reg q);\n    always @(posedge clk) begin\n        if (r) q <= 0;\n        else q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "f6eb33139d164bdc3617a3399aa9abefc901d33d453b8014a32da544c8b0a853",
+      "rtl": "module TopModule(input clk, input d, input r, output reg q);\n    always @(posedge clk) begin\n        if (r) q <= 0;\n        else q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "08b50b2d48f7bed592e8cd8c5dedd7543cf7cf8cb632182fd8ecb870309a269b",
+      "sample_index": 3,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Simple D flip-flop with synchronous active high reset\nmodule TopModule (\n    input  clk,\n    input  d,\n    input  r,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "12a86cc7ce5a339cda48d007d83d21f57f3a462c6ac9dd83eca1b22940266257",
+      "rtl": "module TopModule (\n    input  clk,\n    input  d,\n    input  r,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "d76b8e4736872f772f90a6fd5fb20866be3d4950dfd0d6a640a0fed86d35bcab",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// D flip-flop with synchronous reset, active high.\nmodule TopModule (\n    input  clk,\n    input  d,\n    input  r,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "f8590ff82fa3fefd5b05783b3d91449c572b57ad941669664f0a32f7a0e63746",
+      "rtl": "module TopModule (\n    input  clk,\n    input  d,\n    input  r,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "d76b8e4736872f772f90a6fd5fb20866be3d4950dfd0d6a640a0fed86d35bcab",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit D flip-flop with synchronous active-high reset\nmodule TopModule(input  clk, input  d, input  r, output reg q);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "2196220b47ece684858ee8d58e314854d32921b9d214edecc006cbc5995910bd",
+      "rtl": "module TopModule(input  clk, input  d, input  r, output reg q);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "b50a829d6e7a86ffaf2ad0250d13450dbd31c782790f367a47f67d4fcbbef6d5",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit D flip-flop with active high synchronous reset.\nmodule TopModule (\n    input  clk,\n    input  d,\n    input  r,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "5639926a4ecd7350d4817365f71503719b24619046adf8f3f1860faa15ae330c",
+      "rtl": "module TopModule (\n    input  clk,\n    input  d,\n    input  r,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "d76b8e4736872f772f90a6fd5fb20866be3d4950dfd0d6a640a0fed86d35bcab",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Simple D flip flop with synchronous active high reset\nmodule TopModule(input clk, input d, input r, output reg q);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "fade841366d2da2753369c8e2ca207cd4febe8cbbbb2210f15f27fdafd431874",
+      "rtl": "module TopModule(input clk, input d, input r, output reg q);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "2c36408e09d974f188739cf68f197e3f4347270d002b6110060af45ebf902838",
+      "sample_index": 8,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:2: error: 'q' has already been declared in this scope.",
+      "raw_completion": "module TopModule(input clk, d, r, output q);\n    reg q;\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "6326373979bc9912920c3fd2e191edd25102849397a479dad0ffe481ae964529",
+      "rtl": "module TopModule(input clk, d, r, output q);\n    reg q;\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "6326373979bc9912920c3fd2e191edd25102849397a479dad0ffe481ae964529",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Simple D flip-flop with synchronous reset (reset goes to 0).\nmodule TopModule(input clk, input d, input r, output reg q);\n    always @(posedge clk) begin\n        if (r) q <= 0;\n        else q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "16dabffeab0d8c38095332481a5529aca12a35889f88f1a9d68ddc4fb2c9a311",
+      "rtl": "module TopModule(input clk, input d, input r, output reg q);\n    always @(posedge clk) begin\n        if (r) q <= 0;\n        else q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "08b50b2d48f7bed592e8cd8c5dedd7543cf7cf8cb632182fd8ecb870309a269b",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// D flip-flop with active high synchronous reset\nmodule TopModule(input clk, input d, input r, output reg q);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "45776b556927d330242383ab48f01c8408c27948ba270857e64cdd53ba6ad1f2",
+      "rtl": "module TopModule(input clk, input d, input r, output reg q);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "b693bdc2d48bd18ce76ca9bb802f47b9a580f660a7d0702e1bbe624310d65429",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Simple D flip-flop with synchronous active-high reset\nmodule TopModule(input clk, input d, input r, output reg q);\n    always @(posedge clk) begin\n        if (r) q <= 0;\n        else   q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "9d185af0280a7a694a6d33c8a4803a4f406912eb1228a909683a1bbac93bbb76",
+      "rtl": "module TopModule(input clk, input d, input r, output reg q);\n    always @(posedge clk) begin\n        if (r) q <= 0;\n        else   q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "dc6b10e9627bbfad899be6f616b93058d745438608cfb54310a9ed174e979bbf",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  d,\n    input  r,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else  q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b4e1cf914aafdb6e8b12c54bd64da7e7af3b909858b4108a9a8c45436925d63e",
+      "rtl": "module TopModule (\n    input  clk,\n    input  d,\n    input  r,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else  q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "b4e1cf914aafdb6e8b12c54bd64da7e7af3b909858b4108a9a8c45436925d63e",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: error: 'q' has already been declared in this scope.",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  d,\n    input  r,\n    output q\n);\n    reg q;\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "c9906afb2aa35049765b781890416de45a3256402ac58b72614479ea03fd932e",
+      "rtl": "module TopModule(\n    input  clk,\n    input  d,\n    input  r,\n    output q\n);\n    reg q;\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "c9906afb2aa35049765b781890416de45a3256402ac58b72614479ea03fd932e",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// D flip-flop with active high synchronous reset\nmodule TopModule (\n    input  clk,\n    input  d,\n    input  r,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "2ec04ca1f68220cfbc162245cbae3f0e45d684312388ccb5388e9c33b1dc38d3",
+      "rtl": "module TopModule (\n    input  clk,\n    input  d,\n    input  r,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "d76b8e4736872f772f90a6fd5fb20866be3d4950dfd0d6a640a0fed86d35bcab",
+      "sample_index": 15,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  d,\n    input  r,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "8000303f1d331dfc667f62b03396ff4b99c43f437c31b0704a96103997716ff9",
+      "rtl": "module TopModule(\n    input  clk,\n    input  d,\n    input  r,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "8000303f1d331dfc667f62b03396ff4b99c43f437c31b0704a96103997716ff9",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Simple D flip-flop with synchronous active-high reset\nmodule TopModule(input clk, d, r, output reg q);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "4b3680ac4581ca99c5febdda4f30d2f56fd9168f4fd996f6d5309714458cb7c5",
+      "rtl": "module TopModule(input clk, d, r, output reg q);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else   q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "d483f042e53685716019de29273dabaa2a1030cd62149cb57221582f35678519",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(input clk, input d, input r, output reg q);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b693bdc2d48bd18ce76ca9bb802f47b9a580f660a7d0702e1bbe624310d65429",
+      "rtl": "module TopModule(input clk, input d, input r, output reg q);\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "b693bdc2d48bd18ce76ca9bb802f47b9a580f660a7d0702e1bbe624310d65429",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:2: error: 'q' has already been declared in this scope.",
+      "raw_completion": "module TopModule(input clk, d, r, output q);\n    reg q;\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "6326373979bc9912920c3fd2e191edd25102849397a479dad0ffe481ae964529",
+      "rtl": "module TopModule(input clk, d, r, output q);\n    reg q;\n    always @(posedge clk) begin\n        if (r) q <= 1'b0;\n        else q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "6326373979bc9912920c3fd2e191edd25102849397a479dad0ffe481ae964529",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 16,
+    "compile_fail": 4
+  },
+  "testbench_raw_sha256": "7d823cdc2b74f0ae6c4d13826c0a5da785a41d493c894cd90a3a7c3b606a7a38",
+  "training_seed": 1
+}

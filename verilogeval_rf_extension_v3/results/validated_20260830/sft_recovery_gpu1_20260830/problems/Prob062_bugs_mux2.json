@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob062_bugs_mux2",
+  "problem_seed": 4176603307433923238,
+  "prompt_raw_sha256": "66ab950ad70efc33e0599cf07644a4fabd6cf4fc2b90c91099ce229ec85c0415",
+  "reference_raw_sha256": "3735cd6a576c3ab365e0b42bcd95198b6ce609792a0ad7cb1765e12667417436",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "110/114 mismatches",
+      "raw_completion": "The bug is in the multiplexing logic. The expression (~sel & a) | (sel & b)\nimplies that when sel is 1, the output should be b, regardless of the value of a.\nHowever, the expression should be (~sel & a) | (sel & b), which means that\nwhen sel is 0, the output should be a, and when sel is 1, the output should be b.\n\nThe corrected module is:\n\n  module TopModule (\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output       out\n  );\n\n      assign out = (~sel & a) | (sel & b);\n\n  endmodule",
+      "raw_completion_raw_sha256": "fe36668073a7a6c5b0458686033261fe7342b7b40d646758b87a5c724e0988f6",
+      "rtl": "module TopModule (\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output       out\n  );\n\n      assign out = (~sel & a) | (sel & b);\n\n  endmodule",
+      "rtl_raw_sha256": "2ff905a35516492fc6adc0f25a706f1281562e7b2a1c557925995ddc4a189bc3",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "85/114 mismatches",
+      "raw_completion": "The given mux is a 2-to-1 mux that selects between two 8-bit inputs, a and b. The output is a function of both the input select signal and the two input bits. The bug in the given implementation is that it incorrectly interprets the select signal. It should select between the two inputs independently of the other input, not depending on the value of the other input.\n\nThe correct implementation is as follows:\n\n```\nmodule TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] out\n);\n\n    wire [7:0] sel_a = (~sel & a);\n    wire [7:0] sel_b = (sel & b);\n    assign out = sel_a | sel_b;\n\nendmodule",
+      "raw_completion_raw_sha256": "cc3526fd1eb5c586b33ba0ec4272b2d722c9b3c1cd96aba706b2ad685608a6c6",
+      "rtl": "module TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] out\n);\n\n    wire [7:0] sel_a = (~sel & a);\n    wire [7:0] sel_b = (sel & b);\n    assign out = sel_a | sel_b;\n\nendmodule",
+      "rtl_raw_sha256": "4a6d0be869b392cda7ca7f8e37b8013f4b45a79580a9f6ab50a35c5c1574943d",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "110/114 mismatches",
+      "raw_completion": "// Corrected 8-bit 2-to-1 mux, no bug.\nmodule TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output       out\n);\n    assign out = (~sel & a) | (sel & b);\nendmodule",
+      "raw_completion_raw_sha256": "1bee0ae8ff17f9d9a97f48e33faab674542c650341ca1bc7fc43849ad7261cc9",
+      "rtl": "module TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output       out\n);\n    assign out = (~sel & a) | (sel & b);\nendmodule",
+      "rtl_raw_sha256": "e0032d6b69782b3a35bf56aff0da33d1b9aa00328c1f9dd205f17db3865eb6d2",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "85/114 mismatches",
+      "raw_completion": "The bug is in the multiplexing logic. The equation should be (~sel & a) | (sel & b), but is actually (~sel & a) | (sel & b) | (~sel & b) | (sel & a), which is equivalent to the original equation but also includes the identity a -> a and b -> b, and thus always selects the same input.\n\nThe correct implementation is:\n\n```\nmodule TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] out\n);\n    assign out = (~sel & a) | (sel & b);\nendmodule",
+      "raw_completion_raw_sha256": "4f40d1d63265cc9eda5964280cf092d22fa0a83710e63da944968c767033b773",
+      "rtl": "module TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] out\n);\n    assign out = (~sel & a) | (sel & b);\nendmodule",
+      "rtl_raw_sha256": "7d0d796b0610302f87d4ae24b3f0cccc9ccd952ddabcf6babeb0b0d3a30c9dd0",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "110/114 mismatches",
+      "raw_completion": "// Fixed version of the 8-bit 2-to-1 mux.\nmodule TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output       out\n);\n    assign out = (~sel & a) | (sel & b);\nendmodule",
+      "raw_completion_raw_sha256": "d6cdd6cdf199dc0b7cb39f2d9ca975bb7ae34e4e7086a607aaa52fa237a1adcf",
+      "rtl": "module TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output       out\n);\n    assign out = (~sel & a) | (sel & b);\nendmodule",
+      "rtl_raw_sha256": "e0032d6b69782b3a35bf56aff0da33d1b9aa00328c1f9dd205f17db3865eb6d2",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "110/114 mismatches",
+      "raw_completion": "The bug is in the multiplexing operation. It should be (~sel & a) | (sel & b), not (~sel & a) | (sel & b). The corrected module is:\n\nmodule TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output       out\n);\n\n    assign out = (~sel & a) | (sel & b);\n\nendmodule",
+      "raw_completion_raw_sha256": "12d58f010dd93a9f7151f778bb6ff0eff842d9be806d78488ec9e6193af7011f",
+      "rtl": "module TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output       out\n);\n\n    assign out = (~sel & a) | (sel & b);\n\nendmodule",
+      "rtl_raw_sha256": "a953dc97fb930ef1b01a420a3b2a28c00c64cb1656daa996cc22aace66dd5917",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "111/114 mismatches",
+      "raw_completion": "// Same 8-bit 2-to-1 mux, but with fixed combinational logic\n// (the buggy one has a pathological delay due to a short-circuited OR\n// in the final expression).\nmodule TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output       out\n);\n    wire [7:0] y;\n    assign y = (sel ? b : a);\n    assign out = y[0];\n    assign out = y[1];\n    assign out = y[2];\n    assign out = y[3];\n    assign out = y[4];\n    assign out = y[5];\n    assign out = y[6];\n    assign out = y[7];\nendmodule",
+      "raw_completion_raw_sha256": "312e2f0bc9900c0280d6b326790307b5962ae19e6a18ce2892d7ac85cdfcc806",
+      "rtl": "module TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output       out\n);\n    wire [7:0] y;\n    assign y = (sel ? b : a);\n    assign out = y[0];\n    assign out = y[1];\n    assign out = y[2];\n    assign out = y[3];\n    assign out = y[4];\n    assign out = y[5];\n    assign out = y[6];\n    assign out = y[7];\nendmodule",
+      "rtl_raw_sha256": "e50bf6acceb189e82b0a27548a63d7e2c6f4989c97fb70833c68da3addbd7ba0",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "85/114 mismatches",
+      "raw_completion": "The original module is a 2-to-1 mux for 8-bit wide data, where the select\nsignal (sel) is inverted (so a selects the \"a\" input, and b selects the \"b\" input).\nThe bug is that the select signal is inverted. To fix the bug, we should not\ninvert the select signal, so that a selects the \"a\" input, and b selects the \"b\"\ninput.\n\nThe corrected module is:\n\n  module TopModule (\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output [7:0] out\n  );\n      assign out = (~sel & a) | (sel & b);\n  endmodule",
+      "raw_completion_raw_sha256": "9734a12d5888244ee2c4d38ffcfbafdb91491ffdb0efe964cc992d0fe05d29fb",
+      "rtl": "module TopModule (\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output [7:0] out\n  );\n      assign out = (~sel & a) | (sel & b);\n  endmodule",
+      "rtl_raw_sha256": "bab4bba40fd4a80701ec99387f1bddf965b354519b25c6a7ff4fb62a761a59a6",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "110/114 mismatches",
+      "raw_completion": "The original module is a direct translation of a truth table into an\nequivalent boolean expression. The bug is in the same line as the output,\nwhere the parentheses are unnecessary and have been omitted. The correct\nboolean expression is the same, but without the extraneous parentheses.\n\nThe corrected module is:\n\n```\n  module TopModule (\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output       out\n  );\n      assign out = (~sel & a) | (sel & b);\n  endmodule",
+      "raw_completion_raw_sha256": "16926c0b508819610ced90462a048fd3a92b8e934f66918779474c192b58c8a7",
+      "rtl": "module TopModule (\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output       out\n  );\n      assign out = (~sel & a) | (sel & b);\n  endmodule",
+      "rtl_raw_sha256": "46528145e5a199a2d1d8b104f670b9b0f3993abaa2dff90ca118c7ea9542fb17",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "110/114 mismatches",
+      "raw_completion": "// The original module is faulty: the condition for the mux is incorrectly\n// specified. The bug is corrected in the fixed version.\nmodule TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output       out\n);\n    assign out = (~sel & a) | (sel & b);\nendmodule",
+      "raw_completion_raw_sha256": "eb5df37fd5264081f9cd48661cd53f8e7d8d431a90d00df39305f1ae1d03d1b0",
+      "rtl": "module TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output       out\n);\n    assign out = (~sel & a) | (sel & b);\nendmodule",
+      "rtl_raw_sha256": "e0032d6b69782b3a35bf56aff0da33d1b9aa00328c1f9dd205f17db3865eb6d2",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "110/114 mismatches",
+      "raw_completion": "The original module is correct. The equation (~sel & a) | (sel & b) correctly implements an 8-bit 2-to-1 multiplexer: it selects the \"a\" input when sel is 0, and the \"b\" input when sel is 1.\n\nHowever, for completeness, here is the module again, in full Verilog syntax:\n\n  module TopModule (\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output       out\n  );\n      assign out = (~sel & a) | (sel & b);\n  endmodule",
+      "raw_completion_raw_sha256": "0c00dd861a4ca69ff24303d6eda475f3226bbdb09a9c14c1ff5327e6d0d9c977",
+      "rtl": "module TopModule (\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output       out\n  );\n      assign out = (~sel & a) | (sel & b);\n  endmodule",
+      "rtl_raw_sha256": "46528145e5a199a2d1d8b104f670b9b0f3993abaa2dff90ca118c7ea9542fb17",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob062_bugs_mux2_test.sv:101: error: port ``out'' is not a port of top_module1.",
+      "raw_completion": "The bug in the original implementation is that the output is not a single wire,\nbut a named signal (out). The named signal cannot be directly used in the\nsame module where it's defined. The same name cannot be used for two different\nwires in the same scope (the same module).\n\nTo fix this, we can simply rename the output signal to something else, for\nexample \"foo\". Here's the corrected module:\n\n  module TopModule (\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output       foo\n  );\n\n      assign foo = (~sel & a) | (sel & b);\n\n  endmodule",
+      "raw_completion_raw_sha256": "196570368b4079b27741056e74f2bdd272214d7167ebd4e8da47d49464c12560",
+      "rtl": "module TopModule (\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output       foo\n  );\n\n      assign foo = (~sel & a) | (sel & b);\n\n  endmodule",
+      "rtl_raw_sha256": "c978e21c7208f87fd8fad78fb36d7a089032f7a262f3cd9599386fbf1cb69b17",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "warning: Found both default and explicit timescale based delays. Use",
+      "raw_completion": "The original module is correct according to the boolean logic used in the\nassign statement. It's an AND-OR gate, equivalent to an AND followed by\nan OR, in disguise.\n\nHowever, if we were to manually implement the same functionality with\nmore explicit combinational logic (i.e., one AND gate per input, one\nOR gate per AND gate, and the final output), the equivalent Verilog code\nwould be:\n\n  module TopModule (\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output       out\n  );\n      wire [7:0] and0_out;\n      wire [7:0] and1_out;\n      wire [7:0] and2_out;\n      wire [7:0] and3_out;\n      wire [7:0] and4_out;\n      wire [7:0] and5_out;\n      wire [7:0] and6_out;\n      wire [7:0] and7_out;\n      wire [7:0] or0_out;\n      wire [7:0] or1_out;\n      wire [7:0] or2_out;\n      wire [7:0] or3_out;\n      wire [7:0] or4_out;\n      wire [7:0] or5_out;\n      wire [7:0] or6_out;\n      wire [7:0] or7_out;\n      and #1 and0 (and0_out, ~sel, a[0]);\n      and #1 and1 (and1_out, ~sel, a[1]);\n      and #1 and2 (and2_out, ~sel, a[2]);\n      and #1 and3 (and3_out, ~sel, a[3]);\n      and #1 and4 (and4_out, ~sel, a[4]);\n      and #1 and5 (and5_out, ~sel, a[5]);\n      and #1 and6 (and6_out, ~sel, a[6]);\n      and #1 and7 (and7_out, ~sel, a[7]);\n      and #1 and8 (or0_out, sel, b[0]);\n      and #1 and9 (or1_out, sel, b[1]);\n      and #1 and10 (or2_out, sel, b[2]);\n      and #1 and11 (or3_out, sel, b[3]);\n      and #1 and12 (or4_out, sel, b[4]);\n      and #1 and13 (or5_out, sel, b[5]);\n      and #1 and14 (or6_out, sel, b[6]);\n      and #1 and15 (or7_out, sel, b[7]);\n      or #1 or0 (or0_out, and0_out, and8_out);\n      or #1 or1 (or1_out, and1_out, and9_out);\n      or #1 or2 (or2_out, and2_out, and10_out);\n      or #1 or3 (or3_out, and3_out, and11_out);\n      or #1 or4 (or4_out, and4_out, and12_out);\n      or #1 or5 (or5_out, and5_out, and13_out);\n      or #1 or6 (or6_out, and6_out, and14_out);\n      or #1 or7 (or7_out, and7_out, and15_out);\n      or #1 or8 (out, or0_out, or1_out, or2_out, or3_out, or4_out, or5_out, or6_out, or7_out);\n  endmodule",
+      "raw_completion_raw_sha256": "c0c0176c608e42be775424a69b37b026611e7c150cfbfaf2b1ed2efbcaf41ac2",
+      "rtl": "module TopModule (\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output       out\n  );\n      wire [7:0] and0_out;\n      wire [7:0] and1_out;\n      wire [7:0] and2_out;\n      wire [7:0] and3_out;\n      wire [7:0] and4_out;\n      wire [7:0] and5_out;\n      wire [7:0] and6_out;\n      wire [7:0] and7_out;\n      wire [7:0] or0_out;\n      wire [7:0] or1_out;\n      wire [7:0] or2_out;\n      wire [7:0] or3_out;\n      wire [7:0] or4_out;\n      wire [7:0] or5_out;\n      wire [7:0] or6_out;\n      wire [7:0] or7_out;\n      and #1 and0 (and0_out, ~sel, a[0]);\n      and #1 and1 (and1_out, ~sel, a[1]);\n      and #1 and2 (and2_out, ~sel, a[2]);\n      and #1 and3 (and3_out, ~sel, a[3]);\n      and #1 and4 (and4_out, ~sel, a[4]);\n      and #1 and5 (and5_out, ~sel, a[5]);\n      and #1 and6 (and6_out, ~sel, a[6]);\n      and #1 and7 (and7_out, ~sel, a[7]);\n      and #1 and8 (or0_out, sel, b[0]);\n      and #1 and9 (or1_out, sel, b[1]);\n      and #1 and10 (or2_out, sel, b[2]);\n      and #1 and11 (or3_out, sel, b[3]);\n      and #1 and12 (or4_out, sel, b[4]);\n      and #1 and13 (or5_out, sel, b[5]);\n      and #1 and14 (or6_out, sel, b[6]);\n      and #1 and15 (or7_out, sel, b[7]);\n      or #1 or0 (or0_out, and0_out, and8_out);\n      or #1 or1 (or1_out, and1_out, and9_out);\n      or #1 or2 (or2_out, and2_out, and10_out);\n      or #1 or3 (or3_out, and3_out, and11_out);\n      or #1 or4 (or4_out, and4_out, and12_out);\n      or #1 or5 (or5_out, and5_out, and13_out);\n      or #1 or6 (or6_out, and6_out, and14_out);\n      or #1 or7 (or7_out, and7_out, and15_out);\n      or #1 or8 (out, or0_out, or1_out, or2_out, or3_out, or4_out, or5_out, or6_out, or7_out);\n  endmodule",
+      "rtl_raw_sha256": "427085f8afbd5039e4f22f3e8aad5fe686e126201e3563a96e6f709bd884d29e",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "111/114 mismatches",
+      "raw_completion": "The bug in the original module is that it performs a bit-wise AND between the\nselector signal (sel) and the two input vectors (a and b). This is not\ncorrect for a 2-to-1 multiplexer, which should select one of the two inputs\nbased on the selector signal.\n\nTo fix the bug, we need to change the multiplexing logic to perform a\n2-to-1 multiplexer on each individual bit of the 8-bit input vectors. The\nfixed module is shown below:\n\n```\nmodule TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] out\n);\n    assign out[0] = (~sel & a[0]) | (sel & b[0]);\n    assign out[1] = (~sel & a[1]) | (sel & b[1]);\n    assign out[2] = (~sel & a[2]) | (sel & b[2]);\n    assign out[3] = (~sel & a[3]) | (sel & b[3]);\n    assign out[4] = (~sel & a[4]) | (sel & b[4]);\n    assign out[5] = (~sel & a[5]) | (sel & b[5]);\n    assign out[6] = (~sel & a[6]) | (sel & b[6]);\n    assign out[7] = (~sel & a[7]) | (sel & b[7]);\nendmodule",
+      "raw_completion_raw_sha256": "134209cf1b17f4bb239f840e0367113b5b40f78af98128885ca516e501f648c8",
+      "rtl": "module TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output [7:0] out\n);\n    assign out[0] = (~sel & a[0]) | (sel & b[0]);\n    assign out[1] = (~sel & a[1]) | (sel & b[1]);\n    assign out[2] = (~sel & a[2]) | (sel & b[2]);\n    assign out[3] = (~sel & a[3]) | (sel & b[3]);\n    assign out[4] = (~sel & a[4]) | (sel & b[4]);\n    assign out[5] = (~sel & a[5]) | (sel & b[5]);\n    assign out[6] = (~sel & a[6]) | (sel & b[6]);\n    assign out[7] = (~sel & a[7]) | (sel & b[7]);\nendmodule",
+      "rtl_raw_sha256": "07b1afd2b2ee2348e5deaf312089a30df3c131494f63bce466072c08f1076412",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "114/114 mismatches",
+      "raw_completion": "The bug in the given module is that it uses a combinational always block, which\nimplicitly creates a clock-enable signal. The implicit clock-enable is often\nunintended and leads to glitches. The solution is to explicitly declare a clock\ninput and remove the clock-enable.\n\nThe fixed module is:\n\n  module TopModule (\n      input        clk,\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output reg   out\n  );\n\n      always @(posedge clk) begin\n          out <= (~sel & a) | (sel & b);\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "3f5001560cbb2517afe253b1ab3f6ad715cbea0cc567a257b6bd38b4eee65026",
+      "rtl": "module TopModule (\n      input        clk,\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output reg   out\n  );\n\n      always @(posedge clk) begin\n          out <= (~sel & a) | (sel & b);\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "4eab0492788003ec536f9e1b66800560d925117442458bf96e955da5f860c3a6",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "85/114 mismatches",
+      "raw_completion": "The bug is that the mux is actually an 8-bit 2-to-1 mux, not a 1-bit one. Therefore, the select input is a bitwise selector, not a boolean one (0 = select first input, 1 = select second input). This means that the out signal is an 8-bit value, not a single bit.\n\nTo fix this bug, we can directly use the select input to select the correct bit of the output. Here is the corrected module:\n\n  module TopModule (\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output [7:0] out\n  );\n\n      assign out = (~sel & a) | (sel & b);\n\n  endmodule",
+      "raw_completion_raw_sha256": "28d6ee24a0a59adb3c35a45d01c008c8219525b3b8b1391efc81e7bead93ab29",
+      "rtl": "module TopModule (\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output [7:0] out\n  );\n\n      assign out = (~sel & a) | (sel & b);\n\n  endmodule",
+      "rtl_raw_sha256": "8b2e18dcd2a67a52ab66eff5386ec3e1bd8a0347d96b362b4917a2337350987e",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "110/114 mismatches",
+      "raw_completion": "The original module has no bug. The 2-to-1 multiplexer works as expected: the output is the input `a` when `sel` is 0, and the input `b` when `sel` is 1. The `~sel & a` and `sel & b` terms are equivalent to `(~sel & a) | (sel & b)` in boolean algebra (the OR is the \"sum of the products\" form of the boolean function), and the full function is the same as the one in the original module.\n\nSo the module is correct as-is:\n\n  module TopModule (\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output       out\n  );\n      assign out = (~sel & a) | (sel & b);\n  endmodule",
+      "raw_completion_raw_sha256": "de3518e2d7ca20abffcc13382c5a9ee69dc2e38b5124d7705bd25e37e4bf4671",
+      "rtl": "module TopModule (\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output       out\n  );\n      assign out = (~sel & a) | (sel & b);\n  endmodule",
+      "rtl_raw_sha256": "46528145e5a199a2d1d8b104f670b9b0f3993abaa2dff90ca118c7ea9542fb17",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "110/114 mismatches",
+      "raw_completion": "// Corrected 8-bit 2-to-1 mux\nmodule TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output       out\n);\n    assign out = (~sel & a) | (sel & b);\nendmodule",
+      "raw_completion_raw_sha256": "5d2feb6fec41f36f47c6ad152864e2db6ee593a84dc7adaf5eb1a27153eb6b8c",
+      "rtl": "module TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output       out\n);\n    assign out = (~sel & a) | (sel & b);\nendmodule",
+      "rtl_raw_sha256": "e0032d6b69782b3a35bf56aff0da33d1b9aa00328c1f9dd205f17db3865eb6d2",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "110/114 mismatches",
+      "raw_completion": "The existing implementation is a direct translation of a 2-to-1 multiplexer\nlogic into an always-block, which is not necessary and can be replaced by the\none-line assign statement.\n\nHere is the corrected module:\n\n  module TopModule (\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output reg   out\n  );\n      always @(*) begin\n          out = (~sel & a) | (sel & b);\n      end\n  endmodule",
+      "raw_completion_raw_sha256": "eec2a2392a10ea118729accfabcd60cbd3992ffc84636d8b5de1ee8907ee3165",
+      "rtl": "module TopModule (\n      input        sel,\n      input  [7:0] a,\n      input  [7:0] b,\n      output reg   out\n  );\n      always @(*) begin\n          out = (~sel & a) | (sel & b);\n      end\n  endmodule",
+      "rtl_raw_sha256": "a888c326bff55b2d59ce289d336611fefe63e61274e116a3b1f9fbca66bd383d",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "110/114 mismatches",
+      "raw_completion": "// Fixed 8-bit 2-to-1 mux\nmodule TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output       out\n);\n    wire [7:0] mux_out;\n    assign mux_out = (~sel & a) | (sel & b);\n    assign out = mux_out[0];\nendmodule",
+      "raw_completion_raw_sha256": "7172e34b1060cba01140bd7a2d816b9c0b8a145aea5ec77577b5eed1cc07ebc7",
+      "rtl": "module TopModule (\n    input        sel,\n    input  [7:0] a,\n    input  [7:0] b,\n    output       out\n);\n    wire [7:0] mux_out;\n    assign mux_out = (~sel & a) | (sel & b);\n    assign out = mux_out[0];\nendmodule",
+      "rtl_raw_sha256": "4b1aeee0ea21f96160cd3b50ba080240d0d18ad3a952c7560f0e8eb33fe76ec6",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 2,
+    "fail": 18
+  },
+  "testbench_raw_sha256": "020ebc5c365a0c3c23ff64ab2506e84bd2ce9a5046f8090c310fd6c104a525d2",
+  "training_seed": 0
+}

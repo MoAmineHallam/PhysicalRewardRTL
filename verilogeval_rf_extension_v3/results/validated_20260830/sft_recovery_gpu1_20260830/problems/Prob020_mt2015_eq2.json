@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob020_mt2015_eq2",
+  "problem_seed": 8450674215197460050,
+  "prompt_raw_sha256": "07d916e51b5866b561cb5f9df738156e61eb5b517cd5b52cd3f92acfc4979113",
+  "reference_raw_sha256": "3a6624ece9483f19d94f1b361e7d648cb359cf1b17b91e4836e9a72c7b6144ae",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob020_mt2015_eq2_test.sv:71: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit 2-to-1 multiplexer. Selects between two inputs based on a\n// select bit.\nmodule Mux2to1_1bit (\n  input  [1:0] A,\n  input  [1:0] B,\n  input        S,\n  output reg   z\n);\n  always @(*) begin\n    case (S)\n      1'b0: z = A[0];\n      1'b1: z = B[0];\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "30eb5b6aa1783eb0828c6057154934f21e1b48338818367eedb492d22a771a48",
+      "rtl": "module Mux2to1_1bit (\n  input  [1:0] A,\n  input  [1:0] B,\n  input        S,\n  output reg   z\n);\n  always @(*) begin\n    case (S)\n      1'b0: z = A[0];\n      1'b1: z = B[0];\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "59ab041a23cb891d6cc730b3368c6519a8f1273b7d638960d18e369dc95af34f",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-bit exact match checker\nmodule TopModule (\n    input [1:0] A,\n    input [1:0] B,\n    output reg z\n);\n    always @(*) begin\n        if (A == B) z = 1;\n        else z = 0;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b4381354ff3d460b29bb1aef0877083df4f52e4d0ad2a092f5d30d110b6cef67",
+      "rtl": "module TopModule (\n    input [1:0] A,\n    input [1:0] B,\n    output reg z\n);\n    always @(*) begin\n        if (A == B) z = 1;\n        else z = 0;\n    end\nendmodule",
+      "rtl_raw_sha256": "0d99c893c31d7c3c3f903eb4370eaea8b192ed39b13ef3c1580c82607e4c85c7",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input [1:0] A,\n    input [1:0] B,\n    output reg z\n);\n    always @(*) begin\n        if (A == B) z = 1;\n        else z = 0;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "0d99c893c31d7c3c3f903eb4370eaea8b192ed39b13ef3c1580c82607e4c85c7",
+      "rtl": "module TopModule (\n    input [1:0] A,\n    input [1:0] B,\n    output reg z\n);\n    always @(*) begin\n        if (A == B) z = 1;\n        else z = 0;\n    end\nendmodule",
+      "rtl_raw_sha256": "0d99c893c31d7c3c3f903eb4370eaea8b192ed39b13ef3c1580c82607e4c85c7",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-bit exact match combinational circuit (no combinational loop)\nmodule TopModule(input [1:0] A, input [1:0] B, output reg z);\n    always @(*) z = (A == B);\nendmodule",
+      "raw_completion_raw_sha256": "e80bb052735e2620217b9b0fa738a74ca76f679280cadf8acca45d868fc356b5",
+      "rtl": "module TopModule(input [1:0] A, input [1:0] B, output reg z);\n    always @(*) z = (A == B);\nendmodule",
+      "rtl_raw_sha256": "da43f6d09dfcb3c395469be1c353440120fbb1cb5e358ddad4daaf295f4ffa25",
+      "sample_index": 3,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n  input [1:0] A,\n  input [1:0] B,\n  output z\n);\n  wire [1:0] _T_2;\n  assign _T_2 = A ^ B;\n  assign z = ~(_T_2[0] | _T_2[1]);\nendmodule",
+      "raw_completion_raw_sha256": "ca97f86d223724007d4f5adbd5c7bdc208689738947cfa0b4a086e02f44991c0",
+      "rtl": "module TopModule (\n  input [1:0] A,\n  input [1:0] B,\n  output z\n);\n  wire [1:0] _T_2;\n  assign _T_2 = A ^ B;\n  assign z = ~(_T_2[0] | _T_2[1]);\nendmodule",
+      "rtl_raw_sha256": "ca97f86d223724007d4f5adbd5c7bdc208689738947cfa0b4a086e02f44991c0",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "498/2000 mismatches",
+      "raw_completion": "module TopModule (\n    input  [1:0] A,\n    input  [1:0] B,\n    output        z\n);\n    wire        _T_0;\n    wire        _T_1;\n    assign _T_0 = (A == B);\n    assign _T_1 = ~_T_0;\n    assign z = _T_0 & _T_1;\nendmodule",
+      "raw_completion_raw_sha256": "13ee4e1b963213878e111b7b50a2872e5fd449a36a982c12a60015fac7e9610b",
+      "rtl": "module TopModule (\n    input  [1:0] A,\n    input  [1:0] B,\n    output        z\n);\n    wire        _T_0;\n    wire        _T_1;\n    assign _T_0 = (A == B);\n    assign _T_1 = ~_T_0;\n    assign z = _T_0 & _T_1;\nendmodule",
+      "rtl_raw_sha256": "13ee4e1b963213878e111b7b50a2872e5fd449a36a982c12a60015fac7e9610b",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [1:0] A,\n    input  [1:0] B,\n    output        z\n);\n    wire        equal = (A == B);\n    assign      z = ~(~equal);\nendmodule",
+      "raw_completion_raw_sha256": "4d83961e854aa35a0bdccacda638b22a8fb106851da76a7bacb86e21bb236680",
+      "rtl": "module TopModule (\n    input  [1:0] A,\n    input  [1:0] B,\n    output        z\n);\n    wire        equal = (A == B);\n    assign      z = ~(~equal);\nendmodule",
+      "rtl_raw_sha256": "4d83961e854aa35a0bdccacda638b22a8fb106851da76a7bacb86e21bb236680",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "506/2000 mismatches",
+      "raw_completion": "module TopModule(\n    input [1:0] A,\n    input [1:0] B,\n    output z\n);\n    wire [1:0] _T_3;\n    wire [1:0] _T_5;\n    assign _T_3 = A ^ B;\n    assign _T_5 = 2'h2 & _T_3;\n    assign z = ~|_T_5;\nendmodule",
+      "raw_completion_raw_sha256": "c24cacf818d37f1d0198f348dbda121a281b4d4da216b24e1b930951ced406bb",
+      "rtl": "module TopModule(\n    input [1:0] A,\n    input [1:0] B,\n    output z\n);\n    wire [1:0] _T_3;\n    wire [1:0] _T_5;\n    assign _T_3 = A ^ B;\n    assign _T_5 = 2'h2 & _T_3;\n    assign z = ~|_T_5;\nendmodule",
+      "rtl_raw_sha256": "c24cacf818d37f1d0198f348dbda121a281b4d4da216b24e1b930951ced406bb",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob020_mt2015_eq2_test.sv:71: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit 2-to-1 multiplexer (selects between two 1-bit inputs)\nmodule mux21 (input [1:0] in, input s, output reg out);\n    always @(*) begin\n        out = (s == 1'b0) ? in[0] : in[1];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "9f4b7e22448051141ba0be88b9aded632e27940599a946d81d62bdb90d2a0f27",
+      "rtl": "module mux21 (input [1:0] in, input s, output reg out);\n    always @(*) begin\n        out = (s == 1'b0) ? in[0] : in[1];\n    end\nendmodule",
+      "rtl_raw_sha256": "1559bf33e3d99c3392e7d670c5456122603f2eed7ec52facc61c4b235e943940",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [1:0] A,\n    input [1:0] B,\n    output z\n);\n    assign z = (A == B);\nendmodule",
+      "raw_completion_raw_sha256": "e6a9b08d416ae99bf3dfacd4620d52196a77928c480ee3dd1883896243cb8682",
+      "rtl": "module TopModule(\n    input [1:0] A,\n    input [1:0] B,\n    output z\n);\n    assign z = (A == B);\nendmodule",
+      "rtl_raw_sha256": "e6a9b08d416ae99bf3dfacd4620d52196a77928c480ee3dd1883896243cb8682",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input [1:0] A,\n    input [1:0] B,\n    output reg z\n);\n    always @(*) begin\n        if (A == B) z = 1;\n        else z = 0;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "0d99c893c31d7c3c3f903eb4370eaea8b192ed39b13ef3c1580c82607e4c85c7",
+      "rtl": "module TopModule (\n    input [1:0] A,\n    input [1:0] B,\n    output reg z\n);\n    always @(*) begin\n        if (A == B) z = 1;\n        else z = 0;\n    end\nendmodule",
+      "rtl_raw_sha256": "0d99c893c31d7c3c3f903eb4370eaea8b192ed39b13ef3c1580c82607e4c85c7",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [1:0] A,\n    input  [1:0] B,\n    output z\n);\n    assign z = (A == B);\nendmodule",
+      "raw_completion_raw_sha256": "dbef39a7ff61a3b0b0413ea4c4d3fffa7666c729e8d9fbf480811454a171a0da",
+      "rtl": "module TopModule (\n    input  [1:0] A,\n    input  [1:0] B,\n    output z\n);\n    assign z = (A == B);\nendmodule",
+      "rtl_raw_sha256": "dbef39a7ff61a3b0b0413ea4c4d3fffa7666c729e8d9fbf480811454a171a0da",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(input [1:0] A, input [1:0] B, output reg z);\n  always @(*) begin\n    if (A == B) z = 1;\n    else z = 0;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "d0c66e09aacb3fa4097061b12f552c47a51bbc1bbe487c14bd9ea544232a64fb",
+      "rtl": "module TopModule(input [1:0] A, input [1:0] B, output reg z);\n  always @(*) begin\n    if (A == B) z = 1;\n    else z = 0;\n  end\nendmodule",
+      "rtl_raw_sha256": "d0c66e09aacb3fa4097061b12f552c47a51bbc1bbe487c14bd9ea544232a64fb",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [1:0] A,\n    input  [1:0] B,\n    output z\n);\n    assign z = (A == B);\nendmodule",
+      "raw_completion_raw_sha256": "dbef39a7ff61a3b0b0413ea4c4d3fffa7666c729e8d9fbf480811454a171a0da",
+      "rtl": "module TopModule (\n    input  [1:0] A,\n    input  [1:0] B,\n    output z\n);\n    assign z = (A == B);\nendmodule",
+      "rtl_raw_sha256": "dbef39a7ff61a3b0b0413ea4c4d3fffa7666c729e8d9fbf480811454a171a0da",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [1:0] A,\n    input  [1:0] B,\n    output z\n);\n    assign z = (A == B) ? 1 : 0;\nendmodule",
+      "raw_completion_raw_sha256": "56195b5dbea32d28b7ae5fe183ec8f67bbce219610f5f2bcce54543c4f845ff7",
+      "rtl": "module TopModule(\n    input  [1:0] A,\n    input  [1:0] B,\n    output z\n);\n    assign z = (A == B) ? 1 : 0;\nendmodule",
+      "rtl_raw_sha256": "56195b5dbea32d28b7ae5fe183ec8f67bbce219610f5f2bcce54543c4f845ff7",
+      "sample_index": 14,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [1:0] A,\n    input [1:0] B,\n    output z\n);\n    wire [1:0] _T_2;\n    assign _T_2 = A ^ B;\n    assign z = ~(_T_2[0] | _T_2[1]);\nendmodule",
+      "raw_completion_raw_sha256": "73b4527ea54d83557ca517f6ea13df20905e8a10b38bf2ce0dbb539093735135",
+      "rtl": "module TopModule(\n    input [1:0] A,\n    input [1:0] B,\n    output z\n);\n    wire [1:0] _T_2;\n    assign _T_2 = A ^ B;\n    assign z = ~(_T_2[0] | _T_2[1]);\nendmodule",
+      "rtl_raw_sha256": "73b4527ea54d83557ca517f6ea13df20905e8a10b38bf2ce0dbb539093735135",
+      "sample_index": 15,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit exact function -> exact combinational equivalence\nmodule TopModule (\n    input [1:0] A,\n    input [1:0] B,\n    output z\n);\n    assign z = (A == B);\nendmodule",
+      "raw_completion_raw_sha256": "25c153cac616660f3a545cf8ef2785734b4d68d0145ad0b499cb451cfef92b81",
+      "rtl": "module TopModule (\n    input [1:0] A,\n    input [1:0] B,\n    output z\n);\n    assign z = (A == B);\nendmodule",
+      "rtl_raw_sha256": "0be946161b5c6023eeaacdfc22b121b0f509b1f5aefe461118580e0cccde7a89",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input [1:0] A,\n    input [1:0] B,\n    output reg z\n);\n    always @(*) begin\n        if (A == B) z = 1;\n        else z = 0;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "0d99c893c31d7c3c3f903eb4370eaea8b192ed39b13ef3c1580c82607e4c85c7",
+      "rtl": "module TopModule (\n    input [1:0] A,\n    input [1:0] B,\n    output reg z\n);\n    always @(*) begin\n        if (A == B) z = 1;\n        else z = 0;\n    end\nendmodule",
+      "rtl_raw_sha256": "0d99c893c31d7c3c3f903eb4370eaea8b192ed39b13ef3c1580c82607e4c85c7",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "1008/2000 mismatches",
+      "raw_completion": "module TopModule (\n    input [1:0] A,\n    input [1:0] B,\n    output z\n);\n    wire [1:0] _T_0;\n    wire [1:0] _T_2;\n    wire _T_4;\n    wire _T_6;\n    assign _T_0 = A ^ B;\n    assign _T_2 = 2'h0 ^ _T_0;\n    assign _T_4 = _T_2[0];\n    assign _T_6 = _T_2[1];\n    assign z = _T_4 & _T_6;\nendmodule",
+      "raw_completion_raw_sha256": "43734040f6618f64bb3f5d6af1109de75d24467d388564fcd58029bb79f2b93f",
+      "rtl": "module TopModule (\n    input [1:0] A,\n    input [1:0] B,\n    output z\n);\n    wire [1:0] _T_0;\n    wire [1:0] _T_2;\n    wire _T_4;\n    wire _T_6;\n    assign _T_0 = A ^ B;\n    assign _T_2 = 2'h0 ^ _T_0;\n    assign _T_4 = _T_2[0];\n    assign _T_6 = _T_2[1];\n    assign z = _T_4 & _T_6;\nendmodule",
+      "rtl_raw_sha256": "43734040f6618f64bb3f5d6af1109de75d24467d388564fcd58029bb79f2b93f",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "1999/2000 mismatches",
+      "raw_completion": "module TopModule (\n  input [1:0] A,\n  input [1:0] B,\n  output z\n);\n  wire [1:0] _T_0;\n  wire [1:0] _T_1;\n  assign _T_0 = A ^ B;\n  assign _T_1 = 2'h0 == _T_0;\n  assign z = ~_T_1;\nendmodule",
+      "raw_completion_raw_sha256": "8cfff3aadf7a55f1094e8ed9f28d82da304fe4cfde22a7739a6ee3a19181b4bf",
+      "rtl": "module TopModule (\n  input [1:0] A,\n  input [1:0] B,\n  output z\n);\n  wire [1:0] _T_0;\n  wire [1:0] _T_1;\n  assign _T_0 = A ^ B;\n  assign _T_1 = 2'h0 == _T_0;\n  assign z = ~_T_1;\nendmodule",
+      "rtl_raw_sha256": "8cfff3aadf7a55f1094e8ed9f28d82da304fe4cfde22a7739a6ee3a19181b4bf",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 14,
+    "compile_fail": 2,
+    "fail": 4
+  },
+  "testbench_raw_sha256": "b27e2225b77c163bec94e4bbf19c7fb5f110f8cb56bc7b7471720982ad3a2212",
+  "training_seed": 0
+}

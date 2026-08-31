@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob069_truthtable1",
+  "problem_seed": 7851727344917159870,
+  "prompt_raw_sha256": "2131087a44ad7f328bafcb1f1b0809c7ccaaaf6bdeca9b51398ef9203c705da2",
+  "reference_raw_sha256": "4eb73956209794bdbb8b183514aa9cbd47ea71c54261c4a60fcebe2f8491af8b",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "50/58 mismatches",
+      "raw_completion": "module TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output f\n);\n    assign f = ~(x3 & x2 & x1) & ~(x3 & x2 & ~x1) & ~(x3 & ~x2 & x1) & ~(x3 & ~x2 & ~x1) & ~(~x3 & x2 & x1) & ~(~x3 & x2 & ~x1) & ~(~x3 & ~x2 & x1) & ~(~x3 & ~x2 & ~x1);\nendmodule",
+      "raw_completion_raw_sha256": "a659130b21ec76c36a4c6c787e9673c08bd18288d17d248632072e1854484db6",
+      "rtl": "module TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output f\n);\n    assign f = ~(x3 & x2 & x1) & ~(x3 & x2 & ~x1) & ~(x3 & ~x2 & x1) & ~(x3 & ~x2 & ~x1) & ~(~x3 & x2 & x1) & ~(~x3 & x2 & ~x1) & ~(~x3 & ~x2 & x1) & ~(~x3 & ~x2 & ~x1);\nendmodule",
+      "rtl_raw_sha256": "a659130b21ec76c36a4c6c787e9673c08bd18288d17d248632072e1854484db6",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "8/58 mismatches",
+      "raw_completion": "module TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output f\n);\n    wire w1 = x1 ^ x2;\n    wire w2 = x3 ^ w1;\n    assign f = w2;\nendmodule",
+      "raw_completion_raw_sha256": "3f125a4b0729bff8e56088498d7681fd5b6e4e63e155cac1cadd8aadd94838fc",
+      "rtl": "module TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output f\n);\n    wire w1 = x1 ^ x2;\n    wire w2 = x3 ^ w1;\n    assign f = w2;\nendmodule",
+      "rtl_raw_sha256": "3f125a4b0729bff8e56088498d7681fd5b6e4e63e155cac1cadd8aadd94838fc",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "50/58 mismatches",
+      "raw_completion": "// One-bit combinational circuit as described in the problem description.\nmodule TopModule(input x3, input x2, input x1, output f);\n  wire w1 = x2 & x1;\n  wire w2 = x3 ^ w1;\n  assign f = w2;\nendmodule",
+      "raw_completion_raw_sha256": "959c26c9f618280e0cf85b042033254926aed4a8ffaa11da26a1483a7d342d84",
+      "rtl": "module TopModule(input x3, input x2, input x1, output f);\n  wire w1 = x2 & x1;\n  wire w2 = x3 ^ w1;\n  assign f = w2;\nendmodule",
+      "rtl_raw_sha256": "c71cd80fe64d467e756993560fdf07c31a69737c642be63aae2383ef61630cc4",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational truth table\nmodule TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output reg f\n);\n    always @(*) begin\n        case ({x3, x2, x1})\n            3'b000: f = 1'b0;\n            3'b001: f = 1'b0;\n            3'b010: f = 1'b1;\n            3'b011: f = 1'b1;\n            3'b100: f = 1'b0;\n            3'b101: f = 1'b1;\n            3'b110: f = 1'b0;\n            3'b111: f = 1'b1;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "dc1eb1dfd864ddd45a1d470c6fe9380e2ed4d9a110ff63f923365dc2309376ae",
+      "rtl": "module TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output reg f\n);\n    always @(*) begin\n        case ({x3, x2, x1})\n            3'b000: f = 1'b0;\n            3'b001: f = 1'b0;\n            3'b010: f = 1'b1;\n            3'b011: f = 1'b1;\n            3'b100: f = 1'b0;\n            3'b101: f = 1'b1;\n            3'b110: f = 1'b0;\n            3'b111: f = 1'b1;\n            default: f = 1'b0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "1b7093ce403bb875ed0373bb30175791f98a7ee32d81cee6886a08d8af5aa88f",
+      "sample_index": 3,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational circuit for the specified truth table\nmodule TopModule(\n  input  x3,\n  input  x2,\n  input  x1,\n  output reg f\n);\n  always @(*) begin\n    case ({x3, x2, x1})\n      3'b000: f = 1'b0;\n      3'b001: f = 1'b0;\n      3'b010: f = 1'b1;\n      3'b011: f = 1'b1;\n      3'b100: f = 1'b0;\n      3'b101: f = 1'b1;\n      3'b110: f = 1'b0;\n      3'b111: f = 1'b1;\n      default: f = 1'bx;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "c0cc327e2926050d86b4eb463e1d699f1238355d99738883e471f3f955ad0a95",
+      "rtl": "module TopModule(\n  input  x3,\n  input  x2,\n  input  x1,\n  output reg f\n);\n  always @(*) begin\n    case ({x3, x2, x1})\n      3'b000: f = 1'b0;\n      3'b001: f = 1'b0;\n      3'b010: f = 1'b1;\n      3'b011: f = 1'b1;\n      3'b100: f = 1'b0;\n      3'b101: f = 1'b1;\n      3'b110: f = 1'b0;\n      3'b111: f = 1'b1;\n      default: f = 1'bx;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "832088320b0efb896c5332756576877df22c5e61c25d00fba2e8a4a148700499",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational truth table as a SINGLE combinational chain (no nested\n// AND/OR/NOT gates -> lower area/lower delay).\nmodule TopModule(\n    input  x3,\n    input  x2,\n    input  x1,\n    output reg f\n);\n    always @(*) begin\n        case ({x3, x2, x1})\n            3'b000: f = 1'b0;\n            3'b001: f = 1'b0;\n            3'b010: f = 1'b1;\n            3'b011: f = 1'b1;\n            3'b100: f = 1'b0;\n            3'b101: f = 1'b1;\n            3'b110: f = 1'b0;\n            3'b111: f = 1'b1;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "31149508c9b7e6e58ce09329a4ac120405b5cbb0a775c831cd09c434e96a133d",
+      "rtl": "module TopModule(\n    input  x3,\n    input  x2,\n    input  x1,\n    output reg f\n);\n    always @(*) begin\n        case ({x3, x2, x1})\n            3'b000: f = 1'b0;\n            3'b001: f = 1'b0;\n            3'b010: f = 1'b1;\n            3'b011: f = 1'b1;\n            3'b100: f = 1'b0;\n            3'b101: f = 1'b1;\n            3'b110: f = 1'b0;\n            3'b111: f = 1'b1;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "12d49a21d058c14d2d11f1b62cd6e33d8d67976e732d920037fad03bac824190",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "50/58 mismatches",
+      "raw_completion": "module TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output f\n);\n    wire w1 = x2 & x1;\n    wire w2 = x3 ^ w1;\n    assign f = w2;\nendmodule",
+      "raw_completion_raw_sha256": "ddcf146160539d4553a4b6d13a12de434db98e267a7e5fac3beab0b856c99f87",
+      "rtl": "module TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output f\n);\n    wire w1 = x2 & x1;\n    wire w2 = x3 ^ w1;\n    assign f = w2;\nendmodule",
+      "rtl_raw_sha256": "ddcf146160539d4553a4b6d13a12de434db98e267a7e5fac3beab0b856c99f87",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational circuit for the given truth table\nmodule TopModule(input x3, input x2, input x1, output reg f);\n  always @(*) begin\n    case ({x3, x2, x1})\n      3'b000: f = 1'b0;\n      3'b001: f = 1'b0;\n      3'b010: f = 1'b1;\n      3'b011: f = 1'b1;\n      3'b100: f = 1'b0;\n      3'b101: f = 1'b1;\n      3'b110: f = 1'b0;\n      3'b111: f = 1'b1;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "ac8a63272590493dd1e46ca25f075b52db9af269fed32ac375b0626403c19ea9",
+      "rtl": "module TopModule(input x3, input x2, input x1, output reg f);\n  always @(*) begin\n    case ({x3, x2, x1})\n      3'b000: f = 1'b0;\n      3'b001: f = 1'b0;\n      3'b010: f = 1'b1;\n      3'b011: f = 1'b1;\n      3'b100: f = 1'b0;\n      3'b101: f = 1'b1;\n      3'b110: f = 1'b0;\n      3'b111: f = 1'b1;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "89d2a7836e3196aaab20d05d32ecf3a500f14f5cf1edad1870cbf881dc2862a1",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "52/58 mismatches",
+      "raw_completion": "// combinational truth table\nmodule TopModule (\n  input  x3,\n  input  x2,\n  input  x1,\n  output f\n);\n  wire w1 = x2 & x1;\n  wire w2 = x3 & w1;\n  assign f = x3 ^ w2;\nendmodule",
+      "raw_completion_raw_sha256": "97bf40cb51bc9cea6cc7316ca65732ce2d4b897022ee24b35467db6fb39fec7a",
+      "rtl": "module TopModule (\n  input  x3,\n  input  x2,\n  input  x1,\n  output f\n);\n  wire w1 = x2 & x1;\n  wire w2 = x3 & w1;\n  assign f = x3 ^ w2;\nendmodule",
+      "rtl_raw_sha256": "00a94966a31f44c58db4b91e70bf310002c27c6ab0c0ddde138d2f610d5133bc",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational circuit for the specified truth table.\nmodule TopModule(input x3, input x2, input x1, output reg f);\n  always @(*) begin\n    case ({x3, x2, x1})\n      3'b000: f = 1'b0;\n      3'b001: f = 1'b0;\n      3'b010: f = 1'b1;\n      3'b011: f = 1'b1;\n      3'b100: f = 1'b0;\n      3'b101: f = 1'b1;\n      3'b110: f = 1'b0;\n      3'b111: f = 1'b1;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "95fa7c35d948a486b2279ad397716f1b0bc09f53fa83301a5f41701331ab1515",
+      "rtl": "module TopModule(input x3, input x2, input x1, output reg f);\n  always @(*) begin\n    case ({x3, x2, x1})\n      3'b000: f = 1'b0;\n      3'b001: f = 1'b0;\n      3'b010: f = 1'b1;\n      3'b011: f = 1'b1;\n      3'b100: f = 1'b0;\n      3'b101: f = 1'b1;\n      3'b110: f = 1'b0;\n      3'b111: f = 1'b1;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "89d2a7836e3196aaab20d05d32ecf3a500f14f5cf1edad1870cbf881dc2862a1",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational truth table circuit\nmodule TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output reg f\n);\n    always @(*) begin\n        case ({x3, x2, x1})\n            3'b000: f = 1'b0;\n            3'b001: f = 1'b0;\n            3'b010: f = 1'b1;\n            3'b011: f = 1'b1;\n            3'b100: f = 1'b0;\n            3'b101: f = 1'b1;\n            3'b110: f = 1'b0;\n            3'b111: f = 1'b1;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "5b9363b40f47852b35035e12199bf840f76c080f01a79ea2549a0dc8752db268",
+      "rtl": "module TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output reg f\n);\n    always @(*) begin\n        case ({x3, x2, x1})\n            3'b000: f = 1'b0;\n            3'b001: f = 1'b0;\n            3'b010: f = 1'b1;\n            3'b011: f = 1'b1;\n            3'b100: f = 1'b0;\n            3'b101: f = 1'b1;\n            3'b110: f = 1'b0;\n            3'b111: f = 1'b1;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "ee0ad9fd2a8be5d6a5270d5ff471a2cb8293a67387e281ec7b41a47c09ab1aa7",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "8/58 mismatches",
+      "raw_completion": "module TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output f\n);\n    wire w1 = x1 ^ x2;\n    wire w2 = x3 ^ w1;\n    assign f = w2;\nendmodule",
+      "raw_completion_raw_sha256": "3f125a4b0729bff8e56088498d7681fd5b6e4e63e155cac1cadd8aadd94838fc",
+      "rtl": "module TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output f\n);\n    wire w1 = x1 ^ x2;\n    wire w2 = x3 ^ w1;\n    assign f = w2;\nendmodule",
+      "rtl_raw_sha256": "3f125a4b0729bff8e56088498d7681fd5b6e4e63e155cac1cadd8aadd94838fc",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "54/58 mismatches",
+      "raw_completion": "module TopModule(input x3, input x2, input x1, output f);\n    wire w1 = x1 ^ x2;\n    wire w2 = x3 ^ w1;\n    assign f = w2 ^ x2;\nendmodule",
+      "raw_completion_raw_sha256": "7eb57ad103511be9d11c2affb684c8a63424ce4e268c9f33381a8969f55efae1",
+      "rtl": "module TopModule(input x3, input x2, input x1, output f);\n    wire w1 = x1 ^ x2;\n    wire w2 = x3 ^ w1;\n    assign f = w2 ^ x2;\nendmodule",
+      "rtl_raw_sha256": "7eb57ad103511be9d11c2affb684c8a63424ce4e268c9f33381a8969f55efae1",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "52/58 mismatches",
+      "raw_completion": "// Combinational truth table as a single inline nested chain of AND-OR\n// gates. The intermediate wire names have been chosen for explicit\n// dependency on the individual terms of the truth table, in the order\n// of increasing combinational depth.\nmodule TopModule(input x3, input x2, input x1, output f);\n  wire a1 = x3 & x2 & x1;\n  wire a2 = x3 & x2 & ~x1;\n  wire a3 = x3 & ~x2 & x1;\n  wire a4 = x3 & ~x2 & ~x1;\n  wire a5 = ~x3 & x2 & x1;\n  wire a6 = ~x3 & x2 & ~x1;\n  wire a7 = ~x3 & ~x2 & x1;\n  wire a8 = ~x3 & ~x2 & ~x1;\n  wire f_ = a1 | a2 | a3 | a4 | a5 | a6 | a7;\n  assign f = ~f_;\nendmodule",
+      "raw_completion_raw_sha256": "85099e093b6fee7af75a2e635c3759d856299af6513918f95c79bc6f5037cfac",
+      "rtl": "module TopModule(input x3, input x2, input x1, output f);\n  wire a1 = x3 & x2 & x1;\n  wire a2 = x3 & x2 & ~x1;\n  wire a3 = x3 & ~x2 & x1;\n  wire a4 = x3 & ~x2 & ~x1;\n  wire a5 = ~x3 & x2 & x1;\n  wire a6 = ~x3 & x2 & ~x1;\n  wire a7 = ~x3 & ~x2 & x1;\n  wire a8 = ~x3 & ~x2 & ~x1;\n  wire f_ = a1 | a2 | a3 | a4 | a5 | a6 | a7;\n  assign f = ~f_;\nendmodule",
+      "rtl_raw_sha256": "920ee4cf31e6424d8ff408052e5bd4b3c38f43a0710d62a2b8971c6147e3bf74",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// combinational circuit for the given truth table\nmodule TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output reg f\n);\n    always @(*) begin\n        case ({x3, x2, x1})\n            3'b000: f = 1'b0;\n            3'b001: f = 1'b0;\n            3'b010: f = 1'b1;\n            3'b011: f = 1'b1;\n            3'b100: f = 1'b0;\n            3'b101: f = 1'b1;\n            3'b110: f = 1'b0;\n            3'b111: f = 1'b1;\n            default: f = 1'bx;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "9b5f856bb1cfe361b60aa6da1aca4e6229760611736f9a56fd4102faa3550c3f",
+      "rtl": "module TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output reg f\n);\n    always @(*) begin\n        case ({x3, x2, x1})\n            3'b000: f = 1'b0;\n            3'b001: f = 1'b0;\n            3'b010: f = 1'b1;\n            3'b011: f = 1'b1;\n            3'b100: f = 1'b0;\n            3'b101: f = 1'b1;\n            3'b110: f = 1'b0;\n            3'b111: f = 1'b1;\n            default: f = 1'bx;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "0a01e241dc93901ac0beb20568540ab31fc521ef33c5604f2b5589482018a9a8",
+      "sample_index": 14,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational circuit as described in the problem description.\nmodule TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output reg f\n);\n    always @(*) begin\n        case ({x3, x2, x1})\n            3'b000: f = 1'b0;\n            3'b001: f = 1'b0;\n            3'b010: f = 1'b1;\n            3'b011: f = 1'b1;\n            3'b100: f = 1'b0;\n            3'b101: f = 1'b1;\n            3'b110: f = 1'b0;\n            3'b111: f = 1'b1;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "9311c8f996b708d08e527e9c5d78cddb7d08909d74cad1f8e70128874fefe05d",
+      "rtl": "module TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output reg f\n);\n    always @(*) begin\n        case ({x3, x2, x1})\n            3'b000: f = 1'b0;\n            3'b001: f = 1'b0;\n            3'b010: f = 1'b1;\n            3'b011: f = 1'b1;\n            3'b100: f = 1'b0;\n            3'b101: f = 1'b1;\n            3'b110: f = 1'b0;\n            3'b111: f = 1'b1;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "ee0ad9fd2a8be5d6a5270d5ff471a2cb8293a67387e281ec7b41a47c09ab1aa7",
+      "sample_index": 15,
+      "status": "PASS"
+    },
+    {
+      "detail": "8/58 mismatches",
+      "raw_completion": "module TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output f\n);\n    wire w1 = x1 ^ x2;\n    wire w2 = x3 ^ w1;\n    assign f = w2;\nendmodule",
+      "raw_completion_raw_sha256": "3f125a4b0729bff8e56088498d7681fd5b6e4e63e155cac1cadd8aadd94838fc",
+      "rtl": "module TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output f\n);\n    wire w1 = x1 ^ x2;\n    wire w2 = x3 ^ w1;\n    assign f = w2;\nendmodule",
+      "rtl_raw_sha256": "3f125a4b0729bff8e56088498d7681fd5b6e4e63e155cac1cadd8aadd94838fc",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational circuit for the specified truth table\nmodule TopModule(input x3, input x2, input x1, output reg f);\n  always @(*) begin\n    case ({x3, x2, x1})\n      3'b000: f = 1'b0;\n      3'b001: f = 1'b0;\n      3'b010: f = 1'b1;\n      3'b011: f = 1'b1;\n      3'b100: f = 1'b0;\n      3'b101: f = 1'b1;\n      3'b110: f = 1'b0;\n      3'b111: f = 1'b1;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "35a317eaaeffd570cd604555672a406496b31396e85f57e79fb0b5fc9f553ba3",
+      "rtl": "module TopModule(input x3, input x2, input x1, output reg f);\n  always @(*) begin\n    case ({x3, x2, x1})\n      3'b000: f = 1'b0;\n      3'b001: f = 1'b0;\n      3'b010: f = 1'b1;\n      3'b011: f = 1'b1;\n      3'b100: f = 1'b0;\n      3'b101: f = 1'b1;\n      3'b110: f = 1'b0;\n      3'b111: f = 1'b1;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "89d2a7836e3196aaab20d05d32ecf3a500f14f5cf1edad1870cbf881dc2862a1",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational truth table\nmodule TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output reg f\n);\n    always @(*) begin\n        case ({x3, x2, x1})\n            3'b000: f = 1'b0;\n            3'b001: f = 1'b0;\n            3'b010: f = 1'b1;\n            3'b011: f = 1'b1;\n            3'b100: f = 1'b0;\n            3'b101: f = 1'b1;\n            3'b110: f = 1'b0;\n            3'b111: f = 1'b1;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "664eb22e85ea762960034c2fa73125672700876046d2d398f86957b6662f3dbd",
+      "rtl": "module TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output reg f\n);\n    always @(*) begin\n        case ({x3, x2, x1})\n            3'b000: f = 1'b0;\n            3'b001: f = 1'b0;\n            3'b010: f = 1'b1;\n            3'b011: f = 1'b1;\n            3'b100: f = 1'b0;\n            3'b101: f = 1'b1;\n            3'b110: f = 1'b0;\n            3'b111: f = 1'b1;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "ee0ad9fd2a8be5d6a5270d5ff471a2cb8293a67387e281ec7b41a47c09ab1aa7",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "8/58 mismatches",
+      "raw_completion": "module TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output f\n);\n    wire w1 = x3 ^ x2;\n    wire w2 = x1 ^ w1;\n    assign f = w2;\nendmodule",
+      "raw_completion_raw_sha256": "c76b8fdfeeb279a7124661e30dc51533f44f4f5da9ca0d8c3b915822bb5b5f8e",
+      "rtl": "module TopModule (\n    input  x3,\n    input  x2,\n    input  x1,\n    output f\n);\n    wire w1 = x3 ^ x2;\n    wire w2 = x1 ^ w1;\n    assign f = w2;\nendmodule",
+      "rtl_raw_sha256": "c76b8fdfeeb279a7124661e30dc51533f44f4f5da9ca0d8c3b915822bb5b5f8e",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 10,
+    "fail": 10
+  },
+  "testbench_raw_sha256": "ab6e1284d378b2b640d1bac4608c17aab0e156d89868c665f22db9eff5a15cc1",
+  "training_seed": 0
+}

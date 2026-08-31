@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob024_hadd",
+  "problem_seed": 7111352530618185289,
+  "prompt_raw_sha256": "2fccd64c0897f304215ac5195fd9e1f85c312da65c717fb24f7632dcb00250e8",
+  "reference_raw_sha256": "b0a112b4445b7e2b0fbcc6dbd5960bf026c62283b695b656bd61378377340c00",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "// Half adder\nmodule TopModule(input a, input b, output sum, output cout);\n    wire s, c;\n    assign s = a ^ b;\n    assign c = a & b;\n    assign sum = s;\n    assign cout = c;\nendmodule",
+      "raw_completion_raw_sha256": "67060e41e423e0202904c0f7e1cfcda64f763f7d664e7a94717e6564cdce9d74",
+      "rtl": "module TopModule(input a, input b, output sum, output cout);\n    wire s, c;\n    assign s = a ^ b;\n    assign c = a & b;\n    assign sum = s;\n    assign cout = c;\nendmodule",
+      "rtl_raw_sha256": "997cc17c7c6b29b114a34f333d7fbd513850f1bb8a0e958e96c1b2bbfc179eff",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: Unknown module type: XOR",
+      "raw_completion": "// Half adder: adds two bits together with no carry-in. Produces a sum and\n// carry-out.\nmodule TopModule(\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire w1, w2, w3;\n    XOR(w1, a, b);\n    AND(w2, a, b);\n    OR(w3, w1, w2);\n    assign sum = w1;\n    assign cout = w2;\nendmodule",
+      "raw_completion_raw_sha256": "c391e31f3aa7353af99308e298afd745708a806d820ea855d28998e139fcb9e0",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire w1, w2, w3;\n    XOR(w1, a, b);\n    AND(w2, a, b);\n    OR(w3, w1, w2);\n    assign sum = w1;\n    assign cout = w2;\nendmodule",
+      "rtl_raw_sha256": "65f521900423f1f01b3aba33138dd96cb8d03fa90dabc3debf02ad62dea95cf7",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Half adder\nmodule TopModule (\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire w1;\n    wire w2;\n    assign w1 = a ^ b;\n    assign w2 = a & b;\n    assign sum = w1;\n    assign cout = w2;\nendmodule",
+      "raw_completion_raw_sha256": "88e6c56ab883be5214afe6ae3931fe594221a3172765c917f2a30b5772468b6b",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire w1;\n    wire w2;\n    assign w1 = a ^ b;\n    assign w2 = a & b;\n    assign sum = w1;\n    assign cout = w2;\nendmodule",
+      "rtl_raw_sha256": "090c5becb53c06d1217375529d46aec711f58f45f8dae5f431d7159ad9c82891",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob024_hadd_test.sv:71: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit full adder (as a submodule)\nmodule FullAdder (\n    input  a,\n    input  b,\n    input  cin,\n    output reg sum,\n    output reg cout\n);\n    always @(*) begin\n        sum = a ^ b ^ cin;\n        cout = (a & b) | (a & cin) | (b & cin);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "67bced16202e4e95e2f2267f38dfcca45efe661e400d69e413ce4aa94dd4d669",
+      "rtl": "module FullAdder (\n    input  a,\n    input  b,\n    input  cin,\n    output reg sum,\n    output reg cout\n);\n    always @(*) begin\n        sum = a ^ b ^ cin;\n        cout = (a & b) | (a & cin) | (b & cin);\n    end\nendmodule",
+      "rtl_raw_sha256": "5b613179c3c31e3d2259110378123183ae3ffb5656a7769f70b92fa9128a6a53",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob024_hadd_test.sv:71: error: Unknown module type: TopModule",
+      "raw_completion": "// Half adder: performs a XOR and an AND in parallel, then combines the\n// results to produce both the sum and the carry-out.\nmodule HalfAdder(\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire w1, w2;\n    xor(sum, a, b);\n    and(w1, a, b);\n    assign cout = w1;\nendmodule",
+      "raw_completion_raw_sha256": "fe9870c6fc1f1b16bc6bff689eeac80f5413d569d258ab264515a87356571d59",
+      "rtl": "module HalfAdder(\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire w1, w2;\n    xor(sum, a, b);\n    and(w1, a, b);\n    assign cout = w1;\nendmodule",
+      "rtl_raw_sha256": "869bba2c86dc717e42296de695cc194188b33fe6c02ea6469c4b0a1783b5b0fc",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire w1;\n    assign w1 = a ^ b;\n    assign sum = a ^ b;\n    assign cout = a & b;\nendmodule",
+      "raw_completion_raw_sha256": "33ab3844a68978cb17f2bbb48093f08c0b2102fd5a5020bde8a5a2d9f3bda0b6",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire w1;\n    assign w1 = a ^ b;\n    assign sum = a ^ b;\n    assign cout = a & b;\nendmodule",
+      "rtl_raw_sha256": "33ab3844a68978cb17f2bbb48093f08c0b2102fd5a5020bde8a5a2d9f3bda0b6",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(a, b, sum, cout);\n    input a;\n    input b;\n    output sum;\n    output cout;\n    wire temp1, temp2;\n    xor(temp1, a, b);\n    and(temp2, a, b);\n    assign sum = temp1;\n    assign cout = temp2;\nendmodule",
+      "raw_completion_raw_sha256": "3e128523fa630b15a92a16480e10ea5d5315894ca5fae12f4c4b762a03fe600c",
+      "rtl": "module TopModule(a, b, sum, cout);\n    input a;\n    input b;\n    output sum;\n    output cout;\n    wire temp1, temp2;\n    xor(temp1, a, b);\n    and(temp2, a, b);\n    assign sum = temp1;\n    assign cout = temp2;\nendmodule",
+      "rtl_raw_sha256": "3e128523fa630b15a92a16480e10ea5d5315894ca5fae12f4c4b762a03fe600c",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire w1, w2;\n    assign w1 = a ^ b;\n    assign w2 = a & b;\n    assign sum = w1;\n    assign cout = w2;\nendmodule",
+      "raw_completion_raw_sha256": "209cff75917123f5d1083b1743b3c9e6cddf910262081de710c98899e5fb4100",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire w1, w2;\n    assign w1 = a ^ b;\n    assign w2 = a & b;\n    assign sum = w1;\n    assign cout = w2;\nendmodule",
+      "rtl_raw_sha256": "209cff75917123f5d1083b1743b3c9e6cddf910262081de710c98899e5fb4100",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob024_hadd_test.sv:71: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit half adder\nmodule HalfAdder(input a, input b, output sum, output cout);\n    wire w1, w2;\n    xor(sum, a, b, w1);\n    and(cout, a, b);\nendmodule",
+      "raw_completion_raw_sha256": "5e8849bdd4bf4051d168fba4e4658767fdf427d53a401f49cd328a9b92cb4fa0",
+      "rtl": "module HalfAdder(input a, input b, output sum, output cout);\n    wire w1, w2;\n    xor(sum, a, b, w1);\n    and(cout, a, b);\nendmodule",
+      "rtl_raw_sha256": "59eeed36ffd68b5e0c395b16f94d8f4536518ae7b5703caa23af498adc0ed50c",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire s, c1, c2;\n    assign s = a ^ b;\n    assign c1 = a & b;\n    assign cout = c1;\n    assign sum = s;\nendmodule",
+      "raw_completion_raw_sha256": "3e7c825386e5326a27fec400ef1ce14d88e2ca6b9e1da845782aba5e5bb06f8f",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire s, c1, c2;\n    assign s = a ^ b;\n    assign c1 = a & b;\n    assign cout = c1;\n    assign sum = s;\nendmodule",
+      "rtl_raw_sha256": "3e7c825386e5326a27fec400ef1ce14d88e2ca6b9e1da845782aba5e5bb06f8f",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Half adder: a + b -> sum, cout\nmodule TopModule(input a, input b, output sum, output cout);\n  wire w1, w2;\n  assign w1 = a ^ b;\n  assign w2 = a & b;\n  assign sum = w1;\n  assign cout = w2;\nendmodule",
+      "raw_completion_raw_sha256": "9978bfe7a8dcc81e37740bd839773a13ff4dea3a48c45527e93a006135907540",
+      "rtl": "module TopModule(input a, input b, output sum, output cout);\n  wire w1, w2;\n  assign w1 = a ^ b;\n  assign w2 = a & b;\n  assign sum = w1;\n  assign cout = w2;\nendmodule",
+      "rtl_raw_sha256": "c7e1c1b2cad9549f1b4712e9fad22b45b1b838ac12b4ac9577c8a14857195185",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Half adder: performs one full add, but with separate outputs for the sum and\n// carry-out, instead of a single combined sum+carry-out.\nmodule TopModule(\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire w1, w2, w3;\n    xor(w1, a, b);\n    and(w2, a, b);\n    or(w3, w1, w2);\n    assign sum = w1;\n    assign cout = w2;\nendmodule",
+      "raw_completion_raw_sha256": "331fe6bbc1f992142d5dc129f560f7678dd61a07507f1bf8d7dbce62f50ab9c4",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire w1, w2, w3;\n    xor(w1, a, b);\n    and(w2, a, b);\n    or(w3, w1, w2);\n    assign sum = w1;\n    assign cout = w2;\nendmodule",
+      "rtl_raw_sha256": "24bd48596a0704dbd88f7e3ad82f4760fdaae779d09a82122b281f39db716064",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "199/200 mismatches",
+      "raw_completion": "// Half adder: adds two bits together to produce a sum and carry-out.\nmodule TopModule(\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire w1, w2;\n    xor #1 g0 (w1, a, b);\n    and #1 g1 (w2, a, b);\n    assign sum = w1;\n    assign cout = w2;\nendmodule",
+      "raw_completion_raw_sha256": "1aafd9dde9af72c9472676d91d56001f2fceb1a47d480e450e0e4aa98975ebcb",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire w1, w2;\n    xor #1 g0 (w1, a, b);\n    and #1 g1 (w2, a, b);\n    assign sum = w1;\n    assign cout = w2;\nendmodule",
+      "rtl_raw_sha256": "abfa3cc99f82d4b9277cd0ed0c3240d97386ad6333a1c0433f7d046b85656934",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Half adder: performs one full add (sum + carry) in one cycle\nmodule TopModule(\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire w1, w2, w3;\n    assign w1 = a & b;\n    assign w2 = a ^ b;\n    assign sum = w2;\n    assign w3 = 1'b0;\n    assign cout = w1 | w3;\nendmodule",
+      "raw_completion_raw_sha256": "5eb4f6c7cede3812546a3be5714f1244f92d568caa779a696126f426f7b41ccf",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire w1, w2, w3;\n    assign w1 = a & b;\n    assign w2 = a ^ b;\n    assign sum = w2;\n    assign w3 = 1'b0;\n    assign cout = w1 | w3;\nendmodule",
+      "rtl_raw_sha256": "ce990044a0c5320f47a1a9df1b93583a60ed9113a52a70abf8085079940e0e31",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob024_hadd_test.sv:71: error: Unknown module type: TopModule",
+      "raw_completion": "// Half adder: adds two bits with no carry-in, produces a sum and\n// carry-out.\nmodule HalfAdder (\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire w1, w2;\n    assign w1 = a ^ b;\n    assign w2 = a & b;\n    assign sum = w1;\n    assign cout = w2;\nendmodule",
+      "raw_completion_raw_sha256": "e2e0637e9299672b75fd60b0327c00fb2b897d793788cbbb380d25a17dcb7362",
+      "rtl": "module HalfAdder (\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire w1, w2;\n    assign w1 = a ^ b;\n    assign w2 = a & b;\n    assign sum = w1;\n    assign cout = w2;\nendmodule",
+      "rtl_raw_sha256": "d70c9aba0b2704bbdf78eae34902e97cf0b7546742122f946ddf515448037068",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob024_hadd_test.sv:71: error: Unknown module type: TopModule",
+      "raw_completion": "// Half adder: adds two bits to produce a sum and a carry-out.\nmodule HalfAdder (\n    input a,\n    input b,\n    output sum,\n    output cout\n);\n    assign {cout, sum} = a + b;\nendmodule",
+      "raw_completion_raw_sha256": "17670b443755a8eafaf2b104c2f19a8b614f67b88a6b433ee5e37cd2239cb2a0",
+      "rtl": "module HalfAdder (\n    input a,\n    input b,\n    output sum,\n    output cout\n);\n    assign {cout, sum} = a + b;\nendmodule",
+      "rtl_raw_sha256": "877ed3ed89a973ac7a81a1fe9362a95afb0a9caf014eaed93d8cd687e2df7c1e",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob024_hadd_test.sv:71: error: Unknown module type: TopModule",
+      "raw_completion": "// Half adder: adds two bits (with no carry-in) and produces a sum and\n// carry-out.\nmodule HalfAdder(\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire s, c;\n    assign s = a ^ b;\n    assign c = a & b;\n    assign sum = s;\n    assign cout = c;\nendmodule",
+      "raw_completion_raw_sha256": "044cf70de0ca780a95e0664dba21ad7482ede1914711c803d632bb67491a65ab",
+      "rtl": "module HalfAdder(\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    wire s, c;\n    assign s = a ^ b;\n    assign c = a & b;\n    assign sum = s;\n    assign cout = c;\nendmodule",
+      "rtl_raw_sha256": "2439a605a13e68f0fd248ae70832f0242cebc4143dd012f60c9f35b27a98ff81",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob024_hadd_test.sv:71: error: Unknown module type: TopModule",
+      "raw_completion": "// Half Adder: adds two bits (with no carry-in) and produces a sum and\n// carry-out.\nmodule HalfAdder (\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    assign {cout, sum} = a + b;\nendmodule",
+      "raw_completion_raw_sha256": "3965764d7e844050ce0d64c7d2fab2b82f8724c86fc63a3ff9b6d8910cd668a3",
+      "rtl": "module HalfAdder (\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    assign {cout, sum} = a + b;\nendmodule",
+      "rtl_raw_sha256": "c5ca36655dce7aff50732d1c0e880104dca1212cdfae088df7e2016178ae1eed",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob024_hadd_test.sv:49: vvp.tgt error: uwire \"cout_dut\" must have a single driver, found (2).",
+      "raw_completion": "module TopModule(input a, input b, output sum, output cout);\n    wire w1, w2;\n    xor(sum, a, b);\n    and(w1, a, b);\n    assign cout = 1'b0;\n    assign cout = cout + w1;\nendmodule",
+      "raw_completion_raw_sha256": "f023505379373038131b9662cd4752e97f54f2f34b7796d63d7f2c434f493abb",
+      "rtl": "module TopModule(input a, input b, output sum, output cout);\n    wire w1, w2;\n    xor(sum, a, b);\n    and(w1, a, b);\n    assign cout = 1'b0;\n    assign cout = cout + w1;\nendmodule",
+      "rtl_raw_sha256": "f023505379373038131b9662cd4752e97f54f2f34b7796d63d7f2c434f493abb",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob024_hadd_test.sv:71: error: Unknown module type: TopModule",
+      "raw_completion": "// Half adder: adds two bits without a carry-in, produces sum and carry-out.\nmodule HalfAdder(\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    assign {cout, sum} = a + b;\nendmodule",
+      "raw_completion_raw_sha256": "077900c4062ab27fb8d22d68ab14c718cd724d659cbe7984d6f060ff09d82c75",
+      "rtl": "module HalfAdder(\n    input  a,\n    input  b,\n    output sum,\n    output cout\n);\n    assign {cout, sum} = a + b;\nendmodule",
+      "rtl_raw_sha256": "fd21e12771963410eb4991848fdfe3494b2e5df64b9dfe29c3caebc92b93e1f2",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 9,
+    "compile_fail": 10,
+    "fail": 1
+  },
+  "testbench_raw_sha256": "89517a3fe6368ea2e44c8dbc5f0f3c53c26a3affda68e8f6d54c87ad55b5316e",
+  "training_seed": 0
+}

@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob104_mt2015_muxdff",
+  "problem_seed": 2440689847483307255,
+  "prompt_raw_sha256": "1827a64a8a8125705bece7354b0b1d0c736a08d1e4459d85a84db47d8db91325",
+  "reference_raw_sha256": "257c3835380c39315cefe2325abc26ac916c4a47423ce2eacb32569add966f1c",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: port ``clk'' is not a port of top_module1.",
+      "raw_completion": "// 2:1 multiplexer, one per stage of the 3-stage chain, in a named reg-stage\n// submodule (the \"top-level\" function of the full_module).\nmodule TopModule (\n    input  sel,\n    input  [2:0] data0, data1,\n    output reg [2:0] q\n);\n    always @* q <= sel ? data1 : data0;\nendmodule",
+      "raw_completion_raw_sha256": "a9df64a2bd9a255986571f60c693243dd9559e874c7331796358d0a22a9b1842",
+      "rtl": "module TopModule (\n    input  sel,\n    input  [2:0] data0, data1,\n    output reg [2:0] q\n);\n    always @* q <= sel ? data1 : data0;\nendmodule",
+      "rtl_raw_sha256": "56dfb979facac05804d2c51f9c7ff3e3bd0203d1055cda1e93a86c37ea34ee9b",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit flip-flop\nmodule flipflop (\n    input clk,\n    input D,\n    output reg Q);\n    always @(posedge clk) Q <= D;\nendmodule",
+      "raw_completion_raw_sha256": "de0db8e6b089cad1e6f08e5cf8d9eed6f11443ff837005516578947f98021e90",
+      "rtl": "module flipflop (\n    input clk,\n    input D,\n    output reg Q);\n    always @(posedge clk) Q <= D;\nendmodule",
+      "rtl_raw_sha256": "18f9742866f63213e327b7e156cb70d37eb2b61e64c00a168a7e20e829fefcad",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: Unknown module type: TopModule",
+      "raw_completion": "// 2:1 multiplexer\nmodule mux21 (\n    input [2:0] a,\n    input [2:0] b,\n    input       s,\n    output reg [2:0] y);\n\n  always @* begin\n    if (s) y = b;\n    else  y = a;\n  end\n\nendmodule",
+      "raw_completion_raw_sha256": "84adf1dbbecc496f4ec6403495d308785085af8554b45f5362ae7928a4210dda",
+      "rtl": "module mux21 (\n    input [2:0] a,\n    input [2:0] b,\n    input       s,\n    output reg [2:0] y);\n\n  always @* begin\n    if (s) y = b;\n    else  y = a;\n  end\n\nendmodule",
+      "rtl_raw_sha256": "0242544e2a970f735a44f3804e65a59e7d30956ef8b68db2ef70e57e04c2aa87",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: port ``q_in'' is not a port of top_module1.",
+      "raw_completion": "// 2:1 multiplexer, directly in the full_module (no separate module)\nmodule TopModule (\n    input [2:0] r,\n    input L,\n    input clk,\n    output reg [2:0] q);\n\n  always @(posedge clk) begin\n    if (L) begin\n      q <= r;\n    end else begin\n      q <= {q[1] ^ q[2], q[0], q[2]};\n    end\n  end\n\nendmodule",
+      "raw_completion_raw_sha256": "b3329e23b49e641308475948632ef6e730b294df3c4904e8a14de66800f815b1",
+      "rtl": "module TopModule (\n    input [2:0] r,\n    input L,\n    input clk,\n    output reg [2:0] q);\n\n  always @(posedge clk) begin\n    if (L) begin\n      q <= r;\n    end else begin\n      q <= {q[1] ^ q[2], q[0], q[2]};\n    end\n  end\n\nendmodule",
+      "rtl_raw_sha256": "d1b3e3b24acc2d5076d46f7ea6b126143f5e5daac39d7446a36afa9492bcb840",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: Unknown module type: TopModule",
+      "raw_completion": "// 2:1 multiplexer with one bit inputs and outputs\nmodule mux21 (\n    input [1:0] s,\n    input a,\n    input b,\n    output reg y);\n    always @* begin\n        case (s)\n            2'b00: y <= a;\n            2'b01: y <= b;\n            default: y <= 1'bx;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b3ec479aef0e166f1341b68a481105774baa375754ab956ddce68b510d5489f2",
+      "rtl": "module mux21 (\n    input [1:0] s,\n    input a,\n    input b,\n    output reg y);\n    always @* begin\n        case (s)\n            2'b00: y <= a;\n            2'b01: y <= b;\n            default: y <= 1'bx;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "053d435445342e592b978d64d187658126bd054359292e7eb511d7b758cd49c8",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: Unknown module type: TopModule",
+      "raw_completion": "// 2:1 multiplexer\nmodule mux21 (\n    input [2:0] a,\n    input [2:0] b,\n    input s,\n    output reg [2:0] y);\n\n    always @* begin\n        if (s) y = b;\n        else y = a;\n    end\n\nendmodule",
+      "raw_completion_raw_sha256": "c3d4871cf089741dfb2157b75ebae9941ec5d03006e1635b497415722be046c1",
+      "rtl": "module mux21 (\n    input [2:0] a,\n    input [2:0] b,\n    input s,\n    output reg [2:0] y);\n\n    always @* begin\n        if (s) y = b;\n        else y = a;\n    end\n\nendmodule",
+      "rtl_raw_sha256": "6d9a9a8e92cceb894603b95360311fbdcbab6586eb1e8eb2f215cae5d209d723",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: Unknown module type: TopModule",
+      "raw_completion": "// 2:1 multiplexer, named to make it clear what it does\nmodule mux2to1 (\n    input [2:0] a,\n    input [2:0] b,\n    input s,\n    output reg [2:0] y\n);\n    always @* begin\n        y = s ? b : a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "bc751409ef60ef690d93d952102a46699f60d204404384d381f6256a7e364049",
+      "rtl": "module mux2to1 (\n    input [2:0] a,\n    input [2:0] b,\n    input s,\n    output reg [2:0] y\n);\n    always @* begin\n        y = s ? b : a;\n    end\nendmodule",
+      "rtl_raw_sha256": "10023f17066993bdf5a45e08d9a3b8ffd9e89f204c226b636a73a3c7e2f5c75a",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: Unknown module type: TopModule",
+      "raw_completion": "// 2-to-1 multiplexer, named for the function it performs\nmodule mux2to1 (\n    input  wire        s,\n    input  wire        a,\n    input  wire        b,\n    output reg         y\n);\n    always @(*) begin\n        y = s ? b : a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a12a8c5a0de541907ee09105656aacf83a052852431b2f14b47e6394ac679b30",
+      "rtl": "module mux2to1 (\n    input  wire        s,\n    input  wire        a,\n    input  wire        b,\n    output reg         y\n);\n    always @(*) begin\n        y = s ? b : a;\n    end\nendmodule",
+      "rtl_raw_sha256": "4cc8b9476a4da85e39656e7e79b1ffe06b657bfbc72111e934da82b64d285f85",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: Unknown module type: TopModule",
+      "raw_completion": "// 2-to-1 multiplexer, named for the function it performs.\nmodule mux2to1 (\n    input  a,\n    input  b,\n    input  s,\n    output reg y);\n    always @(*) begin\n        y = s ? b : a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "89694f1a01e678cc370a1eba4ad81bcc94e2317396b47c2d4667f1fba2a3afac",
+      "rtl": "module mux2to1 (\n    input  a,\n    input  b,\n    input  s,\n    output reg y);\n    always @(*) begin\n        y = s ? b : a;\n    end\nendmodule",
+      "rtl_raw_sha256": "4ac0e15dd7b3925c6119da9f867dd63e7733687f4ae0960aba67dcbbee8d3de9",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: port ``clk'' is not a port of top_module1.",
+      "raw_completion": "// 2-to-1 multiplexer, inline (no named reg)\nmodule TopModule (\n    input  sel,\n    input  [2:0] in0,\n    input  [2:0] in1,\n    output reg [2:0] out\n);\n    always @* out = sel ? in1 : in0;\nendmodule",
+      "raw_completion_raw_sha256": "d053951c0642df3d2d14bed99fa2ce4ddaa6e8bd1c52a543b540f519383be3dc",
+      "rtl": "module TopModule (\n    input  sel,\n    input  [2:0] in0,\n    input  [2:0] in1,\n    output reg [2:0] out\n);\n    always @* out = sel ? in1 : in0;\nendmodule",
+      "rtl_raw_sha256": "c66923ea6ff679e7efc186d0bd60e106aedba07bfb091902e16f4cb416f12568",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: Unknown module type: TopModule",
+      "raw_completion": "// 2-to-1 multiplexer\nmodule mux21 (\n    input [2:0] r,\n    input L,\n    output [2:0] q);\n    assign q = L ? r : {q[1] ^ q[2], q[0], q[2]};\nendmodule",
+      "raw_completion_raw_sha256": "80d240e0cec9f5bc15b04484cb5f0fb702019be4109e00a9bd5a45e56e189cf4",
+      "rtl": "module mux21 (\n    input [2:0] r,\n    input L,\n    output [2:0] q);\n    assign q = L ? r : {q[1] ^ q[2], q[0], q[2]};\nendmodule",
+      "rtl_raw_sha256": "66bc2ff3e19a1827b8089c65d6644a08b651322b7c89167e33caf4a7a96288d7",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: Unknown module type: TopModule",
+      "raw_completion": "// 2-to-1 multiplexer. Takes two 3-bit registers (q0 and q1) and a control\n// bit (sel) to choose between them.\nmodule mux2to1_3bit (\n    input [2:0] q0,\n    input [2:0] q1,\n    input sel,\n    output reg [2:0] q\n);\n    always @* begin\n        if (sel) q <= q1;\n        else q <= q0;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "48c69b820ff7cc5397ac02dd6f22a56f625ee0c33065308c928b1f9520d4c486",
+      "rtl": "module mux2to1_3bit (\n    input [2:0] q0,\n    input [2:0] q1,\n    input sel,\n    output reg [2:0] q\n);\n    always @* begin\n        if (sel) q <= q1;\n        else q <= q0;\n    end\nendmodule",
+      "rtl_raw_sha256": "a8f7cee9a5b8182d8aa5c6c307dd701767a0afe7570ecfc65bb2a60f23642909",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: Unknown module type: TopModule",
+      "raw_completion": "// One bit flip-flop, named for its function, not its gate-level equivalent.\nmodule FlipFlop (\n    input clk,\n    input D,\n    output reg Q);\n    always @(posedge clk) Q <= D;\nendmodule",
+      "raw_completion_raw_sha256": "67d9887e2620e5e7b832162bbcd67f382f2961749a59b11037164afd8c7f3c1c",
+      "rtl": "module FlipFlop (\n    input clk,\n    input D,\n    output reg Q);\n    always @(posedge clk) Q <= D;\nendmodule",
+      "rtl_raw_sha256": "ccb97435bd6b4c12d95dd53b87c1ac1bbf8f8c3c5534a7ccc37edd8ead2258ce",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: Unknown module type: TopModule",
+      "raw_completion": "// 2:1 multiplexer, same as the inline function in the full_module\nmodule mux21 (\n    input [2:0] a,\n    input [2:0] b,\n    input s,\n    output reg [2:0] y\n);\n    always @(*) begin\n        y = s ? b : a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "6dbe20fa788be2936b967f98054bab54ae56930980fa7688b58a75f55af8f6c7",
+      "rtl": "module mux21 (\n    input [2:0] a,\n    input [2:0] b,\n    input s,\n    output reg [2:0] y\n);\n    always @(*) begin\n        y = s ? b : a;\n    end\nendmodule",
+      "rtl_raw_sha256": "5d9e08c3572ef9940c02315714e221c39155ef91823f433ddfcac290943a4f63",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: Unknown module type: TopModule",
+      "raw_completion": "// 2:1 multiplexer\nmodule mux21 (\n    input [2:0] a,\n    input [2:0] b,\n    input sel,\n    output reg [2:0] out\n);\n    always @(*) begin\n        if (sel) out = b;\n        else out = a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "5adfdb2dabf7521249b40e2af5ead4efae48a13cbd6a194cdbe64756e3178d8a",
+      "rtl": "module mux21 (\n    input [2:0] a,\n    input [2:0] b,\n    input sel,\n    output reg [2:0] out\n);\n    always @(*) begin\n        if (sel) out = b;\n        else out = a;\n    end\nendmodule",
+      "rtl_raw_sha256": "2cdfd0e3b09e0466c650cc0a2f3402dacb3c581c78e1783fdce3cb7d0f5554ca",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: Unknown module type: TopModule",
+      "raw_completion": "// One bit flip-flop\nmodule flipflop (\n    input clk,\n    input D,\n    output reg Q);\n\n    always @(posedge clk) begin\n        Q <= D;\n    end\n\nendmodule",
+      "raw_completion_raw_sha256": "4edf0719ac50a349931d8687f08f136258c8d6b68a2cb847acd8ed8a0a849a78",
+      "rtl": "module flipflop (\n    input clk,\n    input D,\n    output reg Q);\n\n    always @(posedge clk) begin\n        Q <= D;\n    end\n\nendmodule",
+      "rtl_raw_sha256": "3832499565c77cfcaa0756a5d0b8c18c9dc7e6c37736905e8f31a1fd52d0d4dc",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: Unknown module type: TopModule",
+      "raw_completion": "// 2-to-1 multiplexer, named as a submodule of full_module\nmodule mux21 (\n    input [2:0] a,\n    input [2:0] b,\n    input sel,\n    output reg [2:0] y\n);\n    always @* begin\n        if (sel) y <= b;\n        else y <= a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "82e14bde60eba80669cb2eda3f2e92814ecd51ac20c2763c151838faa5a6a0e3",
+      "rtl": "module mux21 (\n    input [2:0] a,\n    input [2:0] b,\n    input sel,\n    output reg [2:0] y\n);\n    always @* begin\n        if (sel) y <= b;\n        else y <= a;\n    end\nendmodule",
+      "rtl_raw_sha256": "1018efddcb37c9edb3ddebdb0b32a8796c936cc44ac9c56f07458c3211e4091d",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "99/199 mismatches",
+      "raw_completion": "// Two-stage synchronous register, with one register per stage.\nmodule TopModule (\n    input clk,\n    input L,\n    input [2:0] q_in,\n    input [2:0] r_in,\n    output reg [2:0] Q);\n  reg [2:0] q1;\n  reg [2:0] q2;\n  always @(posedge clk) begin\n    if (L) begin\n      q1 <= r_in;\n      q2 <= q1;\n      Q <= q2;\n    end else begin\n      q1 <= {q1[1] ^ q1[2], q1[0], q1[2]};\n      q2 <= {q2[1] ^ q2[2], q2[0], q2[2]};\n      Q <= {Q[1] ^ Q[2], Q[0], Q[2]};\n    end\n  end\nendmodule",
+      "raw_completion_raw_sha256": "893c4646b903435d48858f5271ac46e7ed576dd544498b9f1db10f59a9dfcc77",
+      "rtl": "module TopModule (\n    input clk,\n    input L,\n    input [2:0] q_in,\n    input [2:0] r_in,\n    output reg [2:0] Q);\n  reg [2:0] q1;\n  reg [2:0] q2;\n  always @(posedge clk) begin\n    if (L) begin\n      q1 <= r_in;\n      q2 <= q1;\n      Q <= q2;\n    end else begin\n      q1 <= {q1[1] ^ q1[2], q1[0], q1[2]};\n      q2 <= {q2[1] ^ q2[2], q2[0], q2[2]};\n      Q <= {Q[1] ^ Q[2], Q[0], Q[2]};\n    end\n  end\nendmodule",
+      "rtl_raw_sha256": "6db8b615ee35ab3ecdcd71b287b0780ddd94dc5522ab97ed6cb8a4b3dcfd764a",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: Unknown module type: TopModule",
+      "raw_completion": "// 2-to-1 multiplexer, used as a stage in the register-to-register delay\n// chain, in the full_module.\nmodule mux2to1 (\n    input [2:0] r,\n    input [2:0] q,\n    input s,\n    output reg [2:0] y\n);\n    always @* begin\n        y = s ? r : q;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "0cadeaf6d21439334b1d2bf1c9cdd38a7010659860b724b2dca75ce8ae9c6855",
+      "rtl": "module mux2to1 (\n    input [2:0] r,\n    input [2:0] q,\n    input s,\n    output reg [2:0] y\n);\n    always @* begin\n        y = s ? r : q;\n    end\nendmodule",
+      "rtl_raw_sha256": "1055681df8680f8345c7a9a8c1049fe6bf96309c8929aad05dca2f9b50db5842",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob104_mt2015_muxdff_test.sv:76: error: port ``q_in'' is not a port of top_module1.",
+      "raw_completion": "// 2:1 multiplexer with one stage of register (registered output)\nmodule TopModule (\n    input [2:0] r,\n    input L,\n    input clk,\n    output reg Q\n);\n    wire [0:0] q;\n    always @(posedge clk) q <= (L ? r[0] : (q ^ r[0]));\n    assign Q = q;\nendmodule",
+      "raw_completion_raw_sha256": "725b0dcb58b4fc5abfafc919f2b5ee7c7406842f870760105e6a1553803072ad",
+      "rtl": "module TopModule (\n    input [2:0] r,\n    input L,\n    input clk,\n    output reg Q\n);\n    wire [0:0] q;\n    always @(posedge clk) q <= (L ? r[0] : (q ^ r[0]));\n    assign Q = q;\nendmodule",
+      "rtl_raw_sha256": "8b0e3e3b14fe0b9989b50957c9b10b6af5719fa420c0599e6e9a6ba131181e8d",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 19,
+    "fail": 1
+  },
+  "testbench_raw_sha256": "82f72a64b7516b4734b15e1679749cd6a1cdbd335b454d5990861157a75685ba",
+  "training_seed": 2
+}

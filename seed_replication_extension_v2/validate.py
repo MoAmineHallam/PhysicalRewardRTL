@@ -265,7 +265,7 @@ def environment_preflight(config: Dict[str, Any],
     remote = config["remote_execution"]
     require(REPO.resolve().as_posix() == remote["repo_root"],
             f"wrong repository path: {REPO}")
-    require(Path(sys.executable).resolve().as_posix() == remote["python"],
+    require(Path(sys.executable).resolve() == Path(remote["python"]).resolve(),
             f"wrong Python: {sys.executable}")
     require(os.environ.get("PYTHONNOUSERSITE") == "1",
             "PYTHONNOUSERSITE must equal 1")

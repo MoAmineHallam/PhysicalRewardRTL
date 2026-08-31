@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob105_rotate100",
+  "problem_seed": 2358518602942943402,
+  "prompt_raw_sha256": "6a46ea58b638c417f9271a8c0c369b08a0e3ffcb76c22953d15343f4815cbf77",
+  "reference_raw_sha256": "20e49d5acbe2ec4a90074e17e9aabd0305bd4e32922df8f712c898a3e842a1b8",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "<TMP>/candidate.sv:7: error: part select r[0:98] is out of order.",
+      "raw_completion": "module TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            2'b00: r <= r;\n            2'b11: r <= r;\n        endcase\n        q <= r;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "68bea8e3483bc0c311e46a01390c5324323bbaa382433fcf887beccae3d68787",
+      "rtl": "module TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            2'b00: r <= r;\n            2'b11: r <= r;\n        endcase\n        q <= r;\n    end\nendmodule",
+      "rtl_raw_sha256": "68bea8e3483bc0c311e46a01390c5324323bbaa382433fcf887beccae3d68787",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:11: error: part select r[0:98] is out of order.",
+      "raw_completion": "// 100-bit left/right rotator, with load and left/right enable.\nmodule TopModule(input  clk,\n                 input  load,\n                 input  [1:0] ena,\n                 input  [99:0] data,\n                 output reg [99:0] q);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            default: r <= r;\n        endcase\n        q <= r;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b54b32aaebde96a82665e15e995e2c9bcd88d5b8e1c7724056245028894a3149",
+      "rtl": "module TopModule(input  clk,\n                 input  load,\n                 input  [1:0] ena,\n                 input  [99:0] data,\n                 output reg [99:0] q);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            default: r <= r;\n        endcase\n        q <= r;\n    end\nendmodule",
+      "rtl_raw_sha256": "ddd461f201798760173ea27868d201ce07c4a0c13047597d71cd43d3a94c64a8",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:6: error: part select q[0:98] is out of order.",
+      "raw_completion": "module TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    always @(posedge clk) begin\n        if (load) q <= data;\n        else case (ena)\n            2'b01: q <= {q[0], q[99:1]};\n            2'b10: q <= {q[99], q[0:98]};\n            default: q <= q;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "e976b940b31df26660b58b3aed789c678f89e4b1d3296c4d1870e5b7caad3d7d",
+      "rtl": "module TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    always @(posedge clk) begin\n        if (load) q <= data;\n        else case (ena)\n            2'b01: q <= {q[0], q[99:1]};\n            2'b10: q <= {q[99], q[0:98]};\n            default: q <= q;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "e976b940b31df26660b58b3aed789c678f89e4b1d3296c4d1870e5b7caad3d7d",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "3746/4005 mismatches",
+      "raw_completion": "// 100-bit left/right rotator, with synchronous load and left/right\n// enable: one register (no register array, no explicit shift amounts).\nmodule TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[99:1]};\n            default: r <= r;\n        endcase\n        q <= r;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b17560836bf0dca8ac1d7ea5638f439b7015ae019c331c9969c5b764b3d5dac2",
+      "rtl": "module TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[99:1]};\n            default: r <= r;\n        endcase\n        q <= r;\n    end\nendmodule",
+      "rtl_raw_sha256": "0a2a2d59a7f68a746562b3c59a2b86b2067cd500e8c7c159449843d9ee267bdb",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: part select r[0:98] is out of order.",
+      "raw_completion": "// 100-bit left/right rotator, with synchronous load and left/right\n// enable: the register shifts-in the shifted-out bit from the other end\n// of the register, unlike a shifter that discards the shifted-out bit.\n// If enabled, the rotator rotates the bits around and does not modify/\n// discard them.\nmodule TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n  reg [99:0] r;\n  always @(posedge clk) begin\n    if (load) r <= data;\n    else begin\n      case (ena)\n        2'b01: r <= {r[0], r[99:1]};\n        2'b10: r <= {r[99], r[0:98]};\n        2'b00: r <= r;\n        2'b11: r <= r;\n      endcase\n    end\n    q <= r;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "4ed07a956e2404bd9fcfd332b196542d02ff79b6e156fb010c8722dc05f339d4",
+      "rtl": "module TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n  reg [99:0] r;\n  always @(posedge clk) begin\n    if (load) r <= data;\n    else begin\n      case (ena)\n        2'b01: r <= {r[0], r[99:1]};\n        2'b10: r <= {r[99], r[0:98]};\n        2'b00: r <= r;\n        2'b11: r <= r;\n      endcase\n    end\n    q <= r;\n  end\nendmodule",
+      "rtl_raw_sha256": "26a7895bd7623c3452205d74ac3c0643875c67c793f2914449732beeeaef09e7",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:15: error: part select r[0:98] is out of order.",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  load,\n    input  [1:0] ena,\n    input  [99:0] data,\n    output [99:0] q\n    );\n\n    reg [99:0] r;\n\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            default: r <= r;\n        endcase\n    end\n\n    assign q = r;\n\nendmodule",
+      "raw_completion_raw_sha256": "f93223bdf87f47e19cf297b26bf795495c7e9d58bb45e6f3f44e07a1751e305a",
+      "rtl": "module TopModule(\n    input  clk,\n    input  load,\n    input  [1:0] ena,\n    input  [99:0] data,\n    output [99:0] q\n    );\n\n    reg [99:0] r;\n\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            default: r <= r;\n        endcase\n    end\n\n    assign q = r;\n\nendmodule",
+      "rtl_raw_sha256": "f93223bdf87f47e19cf297b26bf795495c7e9d58bb45e6f3f44e07a1751e305a",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: error: part select r[0:98] is out of order.",
+      "raw_completion": "// 100-bit left/right rotator, with load and left/right enable.\nmodule TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            default: r <= r;\n        endcase\n        q <= r;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "54f9626bfc1aabfba83c72b9a19e7e33c5766990c2c05eb40d853f4d99ae4444",
+      "rtl": "module TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            default: r <= r;\n        endcase\n        q <= r;\n    end\nendmodule",
+      "rtl_raw_sha256": "a73a6b1d0d289e7b0e31c2d78f30f27321dfb13eab75d46fbf62440d752b29d8",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: error: part select r[0:98] is out of order.",
+      "raw_completion": "// 100-bit left/right rotator, with load and left/right enable.\nmodule TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            default: r <= r;\n        endcase\n        q <= r;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "54f9626bfc1aabfba83c72b9a19e7e33c5766990c2c05eb40d853f4d99ae4444",
+      "rtl": "module TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            default: r <= r;\n        endcase\n        q <= r;\n    end\nendmodule",
+      "rtl_raw_sha256": "a73a6b1d0d289e7b0e31c2d78f30f27321dfb13eab75d46fbf62440d752b29d8",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: error: part select r[0:98] is out of order.",
+      "raw_completion": "// 100-bit left/right rotator, with load and left/right enable.\nmodule TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            2'b00: r <= r;\n            2'b11: r <= r;\n        endcase\n        q <= r;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "694f10091f7cc58b227d406644300d609759ab386b58f475455cddc8ae962609",
+      "rtl": "module TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            2'b00: r <= r;\n            2'b11: r <= r;\n        endcase\n        q <= r;\n    end\nendmodule",
+      "rtl_raw_sha256": "68bea8e3483bc0c311e46a01390c5324323bbaa382433fcf887beccae3d68787",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:19: error: r2 is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 100-bit left/right rotator, with load and enable. Same function as the\n// shifter in stage 1, but shifted up one stage to go with the long path\n// (register-to-register path) in stage 2.\nmodule TopModule(\n    input  clk,\n    input  load,\n    input  [1:0] ena,\n    input  [99:0] data,\n    output [99:0] q\n    );\n    reg [99:0] r;\n    wire [99:0] r2;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[98:0]};\n            default: r <= r;\n        endcase\n    end\n    // Stage 2: register-to-register path -> short path\n    always @(posedge clk) r2 <= r;\n    assign q = r2;\nendmodule",
+      "raw_completion_raw_sha256": "a52ac47d5c654d3440274f1bd85c455781bb52c1ca084f95bacb62d83648116e",
+      "rtl": "module TopModule(\n    input  clk,\n    input  load,\n    input  [1:0] ena,\n    input  [99:0] data,\n    output [99:0] q\n    );\n    reg [99:0] r;\n    wire [99:0] r2;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[98:0]};\n            default: r <= r;\n        endcase\n    end\n    // Stage 2: register-to-register path -> short path\n    always @(posedge clk) r2 <= r;\n    assign q = r2;\nendmodule",
+      "rtl_raw_sha256": "3bc764643fbbce9c4a35973614d4a56449e91da2c9f1fe246d692a69b5131218",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:26: error: r2 is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  load,\n    input  [1:0] ena,\n    input  [99:0] data,\n    output [99:0] q\n);\n    reg [99:0] r;\n    wire [99:0] r2;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[98:0]};\n            default: r <= r;\n        endcase\n    end\n    // Pipeline the register to delay the feedback by one clock cycle.\n    // This increases the register's clock-to-out delay, making it\n    // slightly faster than the non-pipelined register without the\n    // rotation (about 1.1 ns per stage, on average, at 50 MHz).\n    // Trying to increase Fmax without a pipeline register is tricky,\n    // and often requires significant restructuring of the function.\n    // (The long path in the critical path delay graph is the pipeline\n    // register, so increasing Fmax by pipelining it increases Fmax.)\n    always @(posedge clk) r2 <= r;\n    assign q = r2;\nendmodule",
+      "raw_completion_raw_sha256": "7e46d6bccd8f068496a935333c6b67e0bae5126af3c302959457cda741626b7b",
+      "rtl": "module TopModule(\n    input  clk,\n    input  load,\n    input  [1:0] ena,\n    input  [99:0] data,\n    output [99:0] q\n);\n    reg [99:0] r;\n    wire [99:0] r2;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[98:0]};\n            default: r <= r;\n        endcase\n    end\n    // Pipeline the register to delay the feedback by one clock cycle.\n    // This increases the register's clock-to-out delay, making it\n    // slightly faster than the non-pipelined register without the\n    // rotation (about 1.1 ns per stage, on average, at 50 MHz).\n    // Trying to increase Fmax without a pipeline register is tricky,\n    // and often requires significant restructuring of the function.\n    // (The long path in the critical path delay graph is the pipeline\n    // register, so increasing Fmax by pipelining it increases Fmax.)\n    always @(posedge clk) r2 <= r;\n    assign q = r2;\nendmodule",
+      "rtl_raw_sha256": "7e46d6bccd8f068496a935333c6b67e0bae5126af3c302959457cda741626b7b",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "3746/4005 mismatches",
+      "raw_completion": "// 100-bit left/right rotator with synchronous load and left/right\n// enable. See the module description for details.\nmodule TopModule(\n    input  clk,\n    input  load,\n    input  [1:0] ena,\n    input  [99:0] data,\n    output reg [99:0] q\n);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[99:1]};\n        endcase\n        q <= r;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "f5abd98415e85206777b158089916bc36604bb9127126154bf0d7a0463ef95d7",
+      "rtl": "module TopModule(\n    input  clk,\n    input  load,\n    input  [1:0] ena,\n    input  [99:0] data,\n    output reg [99:0] q\n);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[99:1]};\n        endcase\n        q <= r;\n    end\nendmodule",
+      "rtl_raw_sha256": "37bf9c3df54febfb409ba7550fec5da98bfdc9a665e264ee664c83dc36be1be7",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:13: error: part select r[0:98] is out of order.",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  load,\n    input  [1:0] ena,\n    input  [99:0] data,\n    output reg [99:0] q\n);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            default: r <= r;\n        endcase\n        q <= r;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "443bb47dfb342bcfcefd3c6b1fc9ddfe8e06627e189b73436bfb50e339eea489",
+      "rtl": "module TopModule (\n    input  clk,\n    input  load,\n    input  [1:0] ena,\n    input  [99:0] data,\n    output reg [99:0] q\n);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            default: r <= r;\n        endcase\n        q <= r;\n    end\nendmodule",
+      "rtl_raw_sha256": "443bb47dfb342bcfcefd3c6b1fc9ddfe8e06627e189b73436bfb50e339eea489",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: error: part select r[0:98] is out of order.",
+      "raw_completion": "module TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output [99:0] q);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            default: r <= r;\n        endcase\n    end\n    assign q = r;\nendmodule",
+      "raw_completion_raw_sha256": "ba8bfa3f2cf2edfc72c8c8fc196a23551de083509540b806b1d8504ae6fdbc54",
+      "rtl": "module TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output [99:0] q);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            default: r <= r;\n        endcase\n    end\n    assign q = r;\nendmodule",
+      "rtl_raw_sha256": "ba8bfa3f2cf2edfc72c8c8fc196a23551de083509540b806b1d8504ae6fdbc54",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:6: error: part select q[0:98] is out of order.",
+      "raw_completion": "// 100-bit left/right rotator, with synchronous load and left/right\n// enable. A rotator shifts-in the shifted-out bit from the other end of\n// the register, unlike a shifter that discards the shifted-out bit and\n// shifts in a zero. If enabled, a rotator rotates the bits around and\n// does not modify/discard them.\nmodule TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    always @(posedge clk) begin\n        if (load) q <= data;\n        else case (ena)\n            2'b01: q <= {q[0], q[99:1]};\n            2'b10: q <= {q[99], q[0:98]};\n            default: q <= q;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "1fe5e60a7bd10566ed81136ddd0f3c6466421cf663e76ac37a4f0e990c93d69a",
+      "rtl": "module TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    always @(posedge clk) begin\n        if (load) q <= data;\n        else case (ena)\n            2'b01: q <= {q[0], q[99:1]};\n            2'b10: q <= {q[99], q[0:98]};\n            default: q <= q;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "e976b940b31df26660b58b3aed789c678f89e4b1d3296c4d1870e5b7caad3d7d",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:6: error: part select q[0:98] is out of order.",
+      "raw_completion": "module TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    always @(posedge clk) begin\n        if (load) q <= data;\n        else case (ena)\n            2'b01: q <= {q[0], q[99:1]};\n            2'b10: q <= {q[99], q[0:98]};\n            default: q <= q;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "e976b940b31df26660b58b3aed789c678f89e4b1d3296c4d1870e5b7caad3d7d",
+      "rtl": "module TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    always @(posedge clk) begin\n        if (load) q <= data;\n        else case (ena)\n            2'b01: q <= {q[0], q[99:1]};\n            2'b10: q <= {q[99], q[0:98]};\n            default: q <= q;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "e976b940b31df26660b58b3aed789c678f89e4b1d3296c4d1870e5b7caad3d7d",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob105_rotate100_ref.sv:2: syntax error",
+      "raw_completion": "// 100-bit left/right rotator, with synchronous load and left/right\n// enable. Same function as the shifter in the original registerless\n// description, but with an extra AND gate per stage to go alongside the\n// rotation function (the \"rotator\" stage in the registerless\n// description).\nmodule TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    reg [99:0] r0;\n    reg [99:0] r1;\n    reg [99:0] r2;\n    reg [99:0] r3;\n    reg [99:0] r4;\n    reg [99:0] r5;\n    reg [99:0] r6;\n    reg [99:0] r7;\n    reg [99:0] r8;\n    reg [99:0] r9;\n    reg [99:0] r10;\n    reg [99:0] r11;\n    reg [99:0] r12;\n    reg [99:0] r13;\n    reg [99:0] r14;\n    reg [99:0] r15;\n    reg [99:0] r16;\n    reg [99:0] r17;\n    reg [99:0] r18;\n    reg [99:0] r19;\n    reg [99:0] r20;\n    reg [99:0] r21;\n    reg [99:0] r22;\n    reg [99:0] r23;\n    reg [99:0] r24;\n    reg [99:0] r25;\n    reg [99:0] r26;\n    reg [99:0] r27;\n    reg [99:0] r28;\n    reg [99:0] r29;\n    reg [99:0] r30;\n    reg [99:0] r31;\n    reg [99:0] r32;\n    reg [99:0] r33;\n    reg [99:0] r34;\n    reg [99:0] r35;\n    reg [99:0] r36;\n    reg [99:0] r37;\n    reg [99:0] r38;\n    reg [99:0] r39;\n    reg [99:0] r40;\n    reg [99:0] r41;\n    reg [99:0] r42;\n    reg [99:0] r43;\n    reg [99:0] r44;\n    reg [99:0] r45;\n    reg [99:0] r46;\n    reg [99:0] r47;\n    reg [99:0] r48;\n    reg [99:0] r49;\n    reg [99:0] r50;\n    reg [99:0] r51;\n    reg [99:0] r52;\n    reg [99:0] r53;\n    reg [99:0] r54;\n    reg [99:0] r55;\n    reg [99:0] r56;\n    reg [99:0] r57;\n    reg [99:0] r58;\n    reg [99:0] r59;\n    reg [99:0] r60;\n    reg [99:0] r61;\n    reg [99:0] r62;\n    reg [99:0] r63;\n    reg [99:0] r64;\n    reg [99:0] r65;\n    reg [99:0] r66;\n    reg [99:0] r67;\n    reg [99:0] r68;\n    reg [99:0] r69;\n    reg [99:0] r70",
+      "raw_completion_raw_sha256": "c5d2dcd0c76a2e8a21633720196c97f8ea3fcb8ff0f9b6e4b0dfecefebfd4c1d",
+      "rtl": "module TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    reg [99:0] r0;\n    reg [99:0] r1;\n    reg [99:0] r2;\n    reg [99:0] r3;\n    reg [99:0] r4;\n    reg [99:0] r5;\n    reg [99:0] r6;\n    reg [99:0] r7;\n    reg [99:0] r8;\n    reg [99:0] r9;\n    reg [99:0] r10;\n    reg [99:0] r11;\n    reg [99:0] r12;\n    reg [99:0] r13;\n    reg [99:0] r14;\n    reg [99:0] r15;\n    reg [99:0] r16;\n    reg [99:0] r17;\n    reg [99:0] r18;\n    reg [99:0] r19;\n    reg [99:0] r20;\n    reg [99:0] r21;\n    reg [99:0] r22;\n    reg [99:0] r23;\n    reg [99:0] r24;\n    reg [99:0] r25;\n    reg [99:0] r26;\n    reg [99:0] r27;\n    reg [99:0] r28;\n    reg [99:0] r29;\n    reg [99:0] r30;\n    reg [99:0] r31;\n    reg [99:0] r32;\n    reg [99:0] r33;\n    reg [99:0] r34;\n    reg [99:0] r35;\n    reg [99:0] r36;\n    reg [99:0] r37;\n    reg [99:0] r38;\n    reg [99:0] r39;\n    reg [99:0] r40;\n    reg [99:0] r41;\n    reg [99:0] r42;\n    reg [99:0] r43;\n    reg [99:0] r44;\n    reg [99:0] r45;\n    reg [99:0] r46;\n    reg [99:0] r47;\n    reg [99:0] r48;\n    reg [99:0] r49;\n    reg [99:0] r50;\n    reg [99:0] r51;\n    reg [99:0] r52;\n    reg [99:0] r53;\n    reg [99:0] r54;\n    reg [99:0] r55;\n    reg [99:0] r56;\n    reg [99:0] r57;\n    reg [99:0] r58;\n    reg [99:0] r59;\n    reg [99:0] r60;\n    reg [99:0] r61;\n    reg [99:0] r62;\n    reg [99:0] r63;\n    reg [99:0] r64;\n    reg [99:0] r65;\n    reg [99:0] r66;\n    reg [99:0] r67;\n    reg [99:0] r68;\n    reg [99:0] r69;\n    reg [99:0] r70",
+      "rtl_raw_sha256": "a8c34b60b1cb71126a3ac4abbbde31bf4b4cb148e260506b099b4c998012dfbf",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:13: error: part select r[0:98] is out of order.",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  load,\n    input  [1:0] ena,\n    input  [99:0] data,\n    output reg [99:0] q\n);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            2'b00: r <= r;\n            2'b11: r <= r;\n        endcase\n        q <= r;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "182e8661c504302db6c2502d3d79ea0a696921205187942fa5d57e105988c11b",
+      "rtl": "module TopModule(\n    input  clk,\n    input  load,\n    input  [1:0] ena,\n    input  [99:0] data,\n    output reg [99:0] q\n);\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            2'b00: r <= r;\n            2'b11: r <= r;\n        endcase\n        q <= r;\n    end\nendmodule",
+      "rtl_raw_sha256": "182e8661c504302db6c2502d3d79ea0a696921205187942fa5d57e105988c11b",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:6: error: part select q[0:98] is out of order.",
+      "raw_completion": "// 100-bit left/right rotator, with load and left/right enable.\nmodule TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    always @(posedge clk) begin\n        if (load) q <= data;\n        else case (ena)\n            2'b01: q <= {q[0], q[99:1]};\n            2'b10: q <= {q[99], q[0:98]};\n            default: q <= q;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "52f3ce0b32cca8b47dfb5a76ca3763b682aca27d68caaec423e79c55d69b89d4",
+      "rtl": "module TopModule(input clk, input load, input [1:0] ena, input [99:0] data, output reg [99:0] q);\n    always @(posedge clk) begin\n        if (load) q <= data;\n        else case (ena)\n            2'b01: q <= {q[0], q[99:1]};\n            2'b10: q <= {q[99], q[0:98]};\n            default: q <= q;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "e976b940b31df26660b58b3aed789c678f89e4b1d3296c4d1870e5b7caad3d7d",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:13: error: part select r[0:98] is out of order.",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  load,\n    input  [1:0] ena,\n    input  [99:0] data,\n    output [99:0] q\n    );\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            default: r <= r;\n        endcase\n    end\n    assign q = r;\nendmodule",
+      "raw_completion_raw_sha256": "1c690b10b7150c1ebbc3fff14bbacaee5e1aec85d375a8b38babe258babe7efe",
+      "rtl": "module TopModule(\n    input  clk,\n    input  load,\n    input  [1:0] ena,\n    input  [99:0] data,\n    output [99:0] q\n    );\n    reg [99:0] r;\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else case (ena)\n            2'b01: r <= {r[0], r[99:1]};\n            2'b10: r <= {r[99], r[0:98]};\n            default: r <= r;\n        endcase\n    end\n    assign q = r;\nendmodule",
+      "rtl_raw_sha256": "1c690b10b7150c1ebbc3fff14bbacaee5e1aec85d375a8b38babe258babe7efe",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 18,
+    "fail": 2
+  },
+  "testbench_raw_sha256": "f2ed015d2b50e3b6161fa660758e2e32df2e31e49079c9feda4673c27dc6b0b0",
+  "training_seed": 2
+}

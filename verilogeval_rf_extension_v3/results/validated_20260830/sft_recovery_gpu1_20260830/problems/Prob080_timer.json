@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob080_timer",
+  "problem_seed": 5960193801711360588,
+  "prompt_raw_sha256": "068e154027474220087eb8481da9e01bc5b356106816b7676827e6b6a6f46907",
+  "reference_raw_sha256": "14b34884220ceb1058f834d04d86cdd7b2798163f8e816ad7ed3ea146cf05f41",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "1934/7127 mismatches",
+      "raw_completion": "// Timer: counts down for a fixed number of clock cycles, then goes high.\n// One-shot terminal count: goes high for one clock cycle when the count\n// reaches 0, then stays high until the count is reloaded.\nmodule TopModule(input clk, input load, input [9:0] data, output reg tc);\n  reg [9:0] count;\n  always @(posedge clk) begin\n    if (load) count <= data;\n    else count <= count - 1'b1;\n    tc <= (count == 10'd0);\n  end\nendmodule",
+      "raw_completion_raw_sha256": "17e8323e938b80c773d3bd5683732354a558d35030e34cd07903bc62d85d41d8",
+      "rtl": "module TopModule(input clk, input load, input [9:0] data, output reg tc);\n  reg [9:0] count;\n  always @(posedge clk) begin\n    if (load) count <= data;\n    else count <= count - 1'b1;\n    tc <= (count == 10'd0);\n  end\nendmodule",
+      "rtl_raw_sha256": "c4cf31fcd99769a8fe782d84ecef805522d90a4abb07320b25ea51046aaacf5f",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "1926/7127 mismatches",
+      "raw_completion": "module TopModule(input clk, input load, input [9:0] data, output tc);\n    reg [9:0] cnt;\n    reg tc1;\n    always @(posedge clk) begin\n        if (load) cnt <= data;\n        else cnt <= cnt - 1;\n        tc1 <= (cnt == 1);\n    end\n    assign tc = tc1;\nendmodule",
+      "raw_completion_raw_sha256": "371a6a9999908eddf5fc80ccd0b8688b831456594bc931c85bab18d5ab1d2d3f",
+      "rtl": "module TopModule(input clk, input load, input [9:0] data, output tc);\n    reg [9:0] cnt;\n    reg tc1;\n    always @(posedge clk) begin\n        if (load) cnt <= data;\n        else cnt <= cnt - 1;\n        tc1 <= (cnt == 1);\n    end\n    assign tc = tc1;\nendmodule",
+      "rtl_raw_sha256": "371a6a9999908eddf5fc80ccd0b8688b831456594bc931c85bab18d5ab1d2d3f",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:11: error: dec_cnt is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  load,\n    input  [9:0] data,\n    output tc\n);\n    reg [9:0] cnt;\n    wire dec_cnt;\n    reg tc_reg;\n    wire tc_next;\n    always @(*) dec_cnt = 1'b1;\n    always @(posedge clk) begin\n        if (load) cnt <= data;\n        else if (dec_cnt) cnt <= cnt - 1'b1;\n    end\n    always @(posedge clk) tc_reg <= tc_next;\n    assign tc_next = (cnt == 10'd0);\n    assign tc = tc_reg;\nendmodule",
+      "raw_completion_raw_sha256": "e2b09cec3e413048cf31d20c59e4c408968d9e3642b3913ad4eee7d9d675bc51",
+      "rtl": "module TopModule (\n    input  clk,\n    input  load,\n    input  [9:0] data,\n    output tc\n);\n    reg [9:0] cnt;\n    wire dec_cnt;\n    reg tc_reg;\n    wire tc_next;\n    always @(*) dec_cnt = 1'b1;\n    always @(posedge clk) begin\n        if (load) cnt <= data;\n        else if (dec_cnt) cnt <= cnt - 1'b1;\n    end\n    always @(posedge clk) tc_reg <= tc_next;\n    assign tc_next = (cnt == 10'd0);\n    assign tc = tc_reg;\nendmodule",
+      "rtl_raw_sha256": "e2b09cec3e413048cf31d20c59e4c408968d9e3642b3913ad4eee7d9d675bc51",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "1934/7127 mismatches",
+      "raw_completion": "// One-bit down-counter timer, with loadable count. The count is the number\n// of cycles the timer should wait before asserting tc. The actual countdown\n// takes one extra clock cycle.\nmodule TopModule(\n  input  clk,\n  input  load,\n  input  [9:0] data,\n  output reg tc\n);\n  reg [9:0] count;\n  always @(posedge clk) begin\n    if (load) count <= data;\n    else count <= count - 1'b1;\n    tc <= (count == 10'd0);\n  end\nendmodule",
+      "raw_completion_raw_sha256": "0c187276d59cb76383443edf487b4f4da3bea5b673be4cd97b385d8e6879fb96",
+      "rtl": "module TopModule(\n  input  clk,\n  input  load,\n  input  [9:0] data,\n  output reg tc\n);\n  reg [9:0] count;\n  always @(posedge clk) begin\n    if (load) count <= data;\n    else count <= count - 1'b1;\n    tc <= (count == 10'd0);\n  end\nendmodule",
+      "rtl_raw_sha256": "8ac7b18bcb48229f2ef02cc982f5731d83fd57fd7ec609e99062c9e7cb7a3313",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "1904/7127 mismatches",
+      "raw_completion": "// Down-counter timer with terminal count. Same function as the one in the\n// description, but implemented as a single D flip-flop: the counter value\n// is stored in the register, and a separate combinational signal tc\n// indicates whether the counter has reached 0.\nmodule TopModule(input clk, input load, input [9:0] data, output tc);\n    reg [9:0] count;\n    wire count_0 = (count == 10'd0);\n    always @(posedge clk) begin\n        if (load) count <= data;\n        else count <= count - 10'd1;\n    end\n    assign tc = count_0;\nendmodule",
+      "raw_completion_raw_sha256": "d631a6d24aa63f9d1611399a2a5a1304a2fee9a120e5bce212b819f0eb5b43c9",
+      "rtl": "module TopModule(input clk, input load, input [9:0] data, output tc);\n    reg [9:0] count;\n    wire count_0 = (count == 10'd0);\n    always @(posedge clk) begin\n        if (load) count <= data;\n        else count <= count - 10'd1;\n    end\n    assign tc = count_0;\nendmodule",
+      "rtl_raw_sha256": "1c1f3d779b2a4ebc5ecd03c81889de3c36fbe041a1905d503130ea26fc712be3",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:14: error: Unknown module type: TDFF_PSU",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  load,\n    input  [9:0] data,\n    output tc\n);\n    reg [9:0] count;\n    wire count_0;\n    always @(posedge clk) begin\n        if (load) count <= data;\n        else count <= count - 1;\n    end\n    assign count_0 = (count == 0);\n    TDFF_PSU net0 (\n        .T(1'b1),\n        .TCLK(clk),\n        .CLR(1'b0),\n        .PS(1'b1),\n        .GATE(1'b1),\n        .Q(tc),\n        .QN(tc_n)\n    );\n    always @(posedge clk) begin\n        if (load) tc <= 1'b0;\n        else tc <= count_0;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "da5e30d026370270897b81d2dcd49891736cc4a461a5ba963a4ad88dd8135009",
+      "rtl": "module TopModule (\n    input  clk,\n    input  load,\n    input  [9:0] data,\n    output tc\n);\n    reg [9:0] count;\n    wire count_0;\n    always @(posedge clk) begin\n        if (load) count <= data;\n        else count <= count - 1;\n    end\n    assign count_0 = (count == 0);\n    TDFF_PSU net0 (\n        .T(1'b1),\n        .TCLK(clk),\n        .CLR(1'b0),\n        .PS(1'b1),\n        .GATE(1'b1),\n        .Q(tc),\n        .QN(tc_n)\n    );\n    always @(posedge clk) begin\n        if (load) tc <= 1'b0;\n        else tc <= count_0;\n    end\nendmodule",
+      "rtl_raw_sha256": "da5e30d026370270897b81d2dcd49891736cc4a461a5ba963a4ad88dd8135009",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "2160/7127 mismatches",
+      "raw_completion": "// One-bit down-counter with load, triggered on the positive edge of the\n// clock -> roughly a timer that goes to 0 at the end of the count, with an\n// optional load-to-count shortcut (goes to the loaded value instantly).\nmodule TopModule(input clk, input load, input [9:0] data, output tc);\n  reg [9:0] count;\n  reg [9:0] next_count;\n  wire go;\n  reg tc2;\n  always @(*) begin\n    next_count = (go ? count - 1 : count);\n    tc2 = (count == 1);\n  end\n  always @(posedge clk) begin\n    count <= next_count;\n    if (load) count <= data;\n  end\n  assign go = (count != 0);\n  assign tc = tc2;\nendmodule",
+      "raw_completion_raw_sha256": "d1728743ee1e51b8a4bba9b727b3c1f107aa623573ae2906b142e4036cc3da88",
+      "rtl": "module TopModule(input clk, input load, input [9:0] data, output tc);\n  reg [9:0] count;\n  reg [9:0] next_count;\n  wire go;\n  reg tc2;\n  always @(*) begin\n    next_count = (go ? count - 1 : count);\n    tc2 = (count == 1);\n  end\n  always @(posedge clk) begin\n    count <= next_count;\n    if (load) count <= data;\n  end\n  assign go = (count != 0);\n  assign tc = tc2;\nendmodule",
+      "rtl_raw_sha256": "d42ae3d21dcc123d93818c1bae630a552844c17820c175adfd2dca9574151882",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "1934/7127 mismatches",
+      "raw_completion": "// One-bit timer with down-counter\nmodule TopModule (\n    input  clk,\n    input  load,\n    input  [9:0] data,\n    output reg tc\n);\n    reg [9:0] cnt;\n    always @(posedge clk) begin\n        if (load) cnt <= data;\n        else cnt <= cnt - 1'b1;\n        tc <= (cnt == 10'd0);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "2a310552f11bb19ae136cdb251cc32410cf25420b5e75adce283063bd5098821",
+      "rtl": "module TopModule (\n    input  clk,\n    input  load,\n    input  [9:0] data,\n    output reg tc\n);\n    reg [9:0] cnt;\n    always @(posedge clk) begin\n        if (load) cnt <= data;\n        else cnt <= cnt - 1'b1;\n        tc <= (cnt == 10'd0);\n    end\nendmodule",
+      "rtl_raw_sha256": "f8ddb886ad3dbc7973d7ab2ca3378d43b326cb9b14852178f1addb6fb218ee1f",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:14: error: tc is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit down-counter timer. Same functionality as the reference\n// specification, but with an inline nested always block (the ONE\n// long-hand inline nested always block -> the short form).\nmodule TopModule (\n    input  clk,\n    input  load,\n    input  [9:0] data,\n    output tc\n);\n    reg [9:0] cnt;\n    wire tc_i;\n    always @(posedge clk) begin\n        if (load) cnt <= data;\n        else cnt <= cnt - 1'b1;\n    end\n    assign tc_i = (cnt == 10'd0);\n    always @(posedge clk) tc <= tc_i;\nendmodule",
+      "raw_completion_raw_sha256": "1a61deda40c7e3efad99035f532b864d3083258e57cdfae3f9fccbf7a8fc21e2",
+      "rtl": "module TopModule (\n    input  clk,\n    input  load,\n    input  [9:0] data,\n    output tc\n);\n    reg [9:0] cnt;\n    wire tc_i;\n    always @(posedge clk) begin\n        if (load) cnt <= data;\n        else cnt <= cnt - 1'b1;\n    end\n    assign tc_i = (cnt == 10'd0);\n    always @(posedge clk) tc <= tc_i;\nendmodule",
+      "rtl_raw_sha256": "2d78f3529d4512ee3b502f90896076634ed263dea236cba8e29ac26239d5b7b9",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "3358/7127 mismatches",
+      "raw_completion": "// One-bit timer with down-counter. Same function as the reference\n// up-counter, but the register stage is removed and the combinational\n// count-down is directly on the output.\nmodule TopModule (\n  input  clk,\n  input  load,\n  input  [9:0] data,\n  output tc\n);\n  reg [9:0] count;\n  wire countdown = count - 1;\n  always @(posedge clk) begin\n    if (load) count <= data;\n    else count <= countdown;\n  end\n  assign tc = (count == 10'd0);\nendmodule",
+      "raw_completion_raw_sha256": "6e9809d3f6dd741d1f85fea79e442f5fa661bc5879dc72654b2a3c3ea532fee5",
+      "rtl": "module TopModule (\n  input  clk,\n  input  load,\n  input  [9:0] data,\n  output tc\n);\n  reg [9:0] count;\n  wire countdown = count - 1;\n  always @(posedge clk) begin\n    if (load) count <= data;\n    else count <= countdown;\n  end\n  assign tc = (count == 10'd0);\nendmodule",
+      "rtl_raw_sha256": "69f21596d6c6e0ef7f7955acb7d390df887bfb57d26095f599aeff0c8ffd07b7",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "1934/7127 mismatches",
+      "raw_completion": "module TopModule(input clk, input load, input [9:0] data, output reg tc);\n  reg [9:0] cnt;\n  always @(posedge clk) begin\n    if (load) cnt <= data;\n    else cnt <= cnt - 1'b1;\n    tc <= (cnt == 10'd0);\n  end\nendmodule",
+      "raw_completion_raw_sha256": "8ef11c2df0796be17623b8f49f4a6ba272468bb4f4b127b3df8c6852197f1685",
+      "rtl": "module TopModule(input clk, input load, input [9:0] data, output reg tc);\n  reg [9:0] cnt;\n  always @(posedge clk) begin\n    if (load) cnt <= data;\n    else cnt <= cnt - 1'b1;\n    tc <= (cnt == 10'd0);\n  end\nendmodule",
+      "rtl_raw_sha256": "8ef11c2df0796be17623b8f49f4a6ba272468bb4f4b127b3df8c6852197f1685",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "1934/7127 mismatches",
+      "raw_completion": "// Terminal count timer, counts down for a fixed number of clock cycles, then\n// triggers an output signal to indicate that the countdown has finished.\nmodule TopModule (\n    input  clk,\n    input  load,\n    input  [9:0] data,\n    output tc\n);\n    reg [9:0] count;\n    reg tc_reg;\n    always @(posedge clk) begin\n        if (load) count <= data;\n        else count <= count - 1'b1;\n        tc_reg <= (count == 10'd0);\n    end\n    assign tc = tc_reg;\nendmodule",
+      "raw_completion_raw_sha256": "d80d873a93e6226620f2c6e585fa65a54b99f0faae8fecbe223d67f03d490f34",
+      "rtl": "module TopModule (\n    input  clk,\n    input  load,\n    input  [9:0] data,\n    output tc\n);\n    reg [9:0] count;\n    reg tc_reg;\n    always @(posedge clk) begin\n        if (load) count <= data;\n        else count <= count - 1'b1;\n        tc_reg <= (count == 10'd0);\n    end\n    assign tc = tc_reg;\nendmodule",
+      "rtl_raw_sha256": "547b9b9e3c77616b7b71650ab41a505aae27c2b09b2d75e50fd934c08e104608",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "1934/7127 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  load,\n    input  [9:0] data,\n    output tc\n);\n    reg [9:0] count;\n    wire count_zero;\n    reg [9:0] next_count;\n    reg tc_next;\n    wire decrement_count;\n    assign count_zero = (count == 10'd0);\n    assign tc = tc_next;\n    assign decrement_count = ~load;\n    always @(*) begin\n        if (load) next_count = data;\n        else next_count = count - 10'd1;\n    end\n    always @(posedge clk) begin\n        count <= next_count;\n        tc_next <= count_zero;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "9e0f50fea84737b4529c830aad084b650c71c76ff76fffc2ba43e7db89e99e06",
+      "rtl": "module TopModule(\n    input  clk,\n    input  load,\n    input  [9:0] data,\n    output tc\n);\n    reg [9:0] count;\n    wire count_zero;\n    reg [9:0] next_count;\n    reg tc_next;\n    wire decrement_count;\n    assign count_zero = (count == 10'd0);\n    assign tc = tc_next;\n    assign decrement_count = ~load;\n    always @(*) begin\n        if (load) next_count = data;\n        else next_count = count - 10'd1;\n    end\n    always @(posedge clk) begin\n        count <= next_count;\n        tc_next <= count_zero;\n    end\nendmodule",
+      "rtl_raw_sha256": "9e0f50fea84737b4529c830aad084b650c71c76ff76fffc2ba43e7db89e99e06",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "1926/7127 mismatches",
+      "raw_completion": "// One-shot timer with terminal count\nmodule TopModule (\n  input  clk,\n  input  load,\n  input  [9:0] data,\n  output tc\n);\n  reg [9:0] count;\n  wire count_decr;\n  reg tc_reg;\n  always @(posedge clk) begin\n    if (load) count <= data;\n    else count <= count - 1'b1;\n    tc_reg <= count_decr;\n  end\n  assign count_decr = (count == 10'd1);\n  assign tc = tc_reg;\nendmodule",
+      "raw_completion_raw_sha256": "d34acd3f3dd760437edef1cc8b934b5fa41b5a4858cad4bd2de3df99a7f517ff",
+      "rtl": "module TopModule (\n  input  clk,\n  input  load,\n  input  [9:0] data,\n  output tc\n);\n  reg [9:0] count;\n  wire count_decr;\n  reg tc_reg;\n  always @(posedge clk) begin\n    if (load) count <= data;\n    else count <= count - 1'b1;\n    tc_reg <= count_decr;\n  end\n  assign count_decr = (count == 10'd1);\n  assign tc = tc_reg;\nendmodule",
+      "rtl_raw_sha256": "2c829ef58da8768b62d1e307c166b0cb835094dd495d86a30f3530b5642081c0",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "6876/7127 mismatches",
+      "raw_completion": "// One-bit down-counter timer\nmodule TopModule(input clk, input load, input [9:0] data, output tc);\n  reg [9:0] cnt;\n  wire countdown;\n  reg tc2;\n  assign countdown = cnt != 0;\n  always @(posedge clk) begin\n    if (load) cnt <= data;\n    else cnt <= countdown ? cnt - 1 : 0;\n    tc2 <= countdown;\n  end\n  assign tc = tc2;\nendmodule",
+      "raw_completion_raw_sha256": "1fbbce48bcfc6ce7a293fe75a532a043f83f9960a2a8809abffd44c931bccd29",
+      "rtl": "module TopModule(input clk, input load, input [9:0] data, output tc);\n  reg [9:0] cnt;\n  wire countdown;\n  reg tc2;\n  assign countdown = cnt != 0;\n  always @(posedge clk) begin\n    if (load) cnt <= data;\n    else cnt <= countdown ? cnt - 1 : 0;\n    tc2 <= countdown;\n  end\n  assign tc = tc2;\nendmodule",
+      "rtl_raw_sha256": "41e5d862ab6c06b465afc1d1fd120fd5c1bc7a075dcc2e108027c9e4824739be",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "1934/7127 mismatches",
+      "raw_completion": "// Timer down-counter. One clock cycle per stage, up to a maximum count\n// set by the 10-bit input data. The output tc goes high when the\n// counter reaches 0.\nmodule TopModule (\n    input  clk,\n    input  load,\n    input  [9:0] data,\n    output tc\n);\n    reg [9:0] count;\n    wire count_zero;\n    reg tc_reg;\n    always @(posedge clk) begin\n        if (load) count <= data;\n        else      count <= count - 1;\n        tc_reg <= count_zero;\n    end\n    assign count_zero = (count == 0);\n    assign tc = tc_reg;\nendmodule",
+      "raw_completion_raw_sha256": "08a29396243475d42944b4e81a8e15febceb2c6fadaa3f11a1979e182c7bcb04",
+      "rtl": "module TopModule (\n    input  clk,\n    input  load,\n    input  [9:0] data,\n    output tc\n);\n    reg [9:0] count;\n    wire count_zero;\n    reg tc_reg;\n    always @(posedge clk) begin\n        if (load) count <= data;\n        else      count <= count - 1;\n        tc_reg <= count_zero;\n    end\n    assign count_zero = (count == 0);\n    assign tc = tc_reg;\nendmodule",
+      "rtl_raw_sha256": "5ec8283aa4de9b235bcdfb1ecbcc0457b1b201bd78342a085c5d86c433448d17",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "1934/7127 mismatches",
+      "raw_completion": "module TopModule(input clk, input load, input [9:0] data, output reg tc);\n  reg [9:0] count;\n  always @(posedge clk) begin\n    if (load) count <= data;\n    else count <= count - 1'b1;\n    tc <= (count == 10'd0);\n  end\nendmodule",
+      "raw_completion_raw_sha256": "c4cf31fcd99769a8fe782d84ecef805522d90a4abb07320b25ea51046aaacf5f",
+      "rtl": "module TopModule(input clk, input load, input [9:0] data, output reg tc);\n  reg [9:0] count;\n  always @(posedge clk) begin\n    if (load) count <= data;\n    else count <= count - 1'b1;\n    tc <= (count == 10'd0);\n  end\nendmodule",
+      "rtl_raw_sha256": "c4cf31fcd99769a8fe782d84ecef805522d90a4abb07320b25ea51046aaacf5f",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "1904/7127 mismatches",
+      "raw_completion": "// A down-counter that asserts a signal when the count reaches 0. The count is\n// loaded on the positive edge of the clock when load=1, and decrements on the\n// next clock cycle (with load=0) until it hits 0, at which point it stays 0\n// and the tc signal is asserted.\nmodule TopModule(\n  input  clk,\n  input  load,\n  input  [9:0] data,\n  output tc\n);\n  reg [9:0] count;\n  wire count_0 = (count == 10'd0);\n  always @(posedge clk) begin\n    if (load) count <= data;\n    else count <= count - 10'd1;\n  end\n  assign tc = count_0;\nendmodule",
+      "raw_completion_raw_sha256": "71ef882e4162fbb7dd0bc532574b8ce7c667229f6f41403fb70886b09465d05f",
+      "rtl": "module TopModule(\n  input  clk,\n  input  load,\n  input  [9:0] data,\n  output tc\n);\n  reg [9:0] count;\n  wire count_0 = (count == 10'd0);\n  always @(posedge clk) begin\n    if (load) count <= data;\n    else count <= count - 10'd1;\n  end\n  assign tc = count_0;\nendmodule",
+      "rtl_raw_sha256": "abbbe71cf2e66ddd613adaed2d16994984b930d5cff178eb14b09117552abd88",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "1924/7127 mismatches",
+      "raw_completion": "// One-bit timer with down-counter, with load: counts down for a fixed\n// number of cycles, then asserts a terminal count signal.\nmodule TopModule (\n    input  clk,\n    input  load,\n    input  [9:0] data,\n    output reg tc\n);\n    reg [9:0] count;\n    always @(posedge clk) begin\n        if (load) count <= data;\n        else count <= count - 1;\n        if (count == 1) tc <= 1;\n        else tc <= 0;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "0b43d6f44aeacab014330fb0b4b6089549e819c94d7657478d9f4bbd395dd4ef",
+      "rtl": "module TopModule (\n    input  clk,\n    input  load,\n    input  [9:0] data,\n    output reg tc\n);\n    reg [9:0] count;\n    always @(posedge clk) begin\n        if (load) count <= data;\n        else count <= count - 1;\n        if (count == 1) tc <= 1;\n        else tc <= 0;\n    end\nendmodule",
+      "rtl_raw_sha256": "2e117da215dabc332e3e7e66231e5c8049ca35b99bbe2985664cadd067ffe644",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "1934/7127 mismatches",
+      "raw_completion": "// Terminal count timer. Counts down for a fixed number of clock cycles, then\n// asserts tc to go high. Same as a one-shot delayed by the fixed count.\nmodule TopModule(input clk, input load, input [9:0] data, output tc);\n  reg [9:0] count;\n  reg delayed_tc;\n  always @(posedge clk) begin\n    if (load) count <= data;\n    else count <= count - 1'b1;\n    delayed_tc <= (count == 10'd0);\n  end\n  assign tc = delayed_tc;\nendmodule",
+      "raw_completion_raw_sha256": "64d736f9485b5e6a5373d901c15078404fa463e5338fdee5a994dcb0c7cc01b0",
+      "rtl": "module TopModule(input clk, input load, input [9:0] data, output tc);\n  reg [9:0] count;\n  reg delayed_tc;\n  always @(posedge clk) begin\n    if (load) count <= data;\n    else count <= count - 1'b1;\n    delayed_tc <= (count == 10'd0);\n  end\n  assign tc = delayed_tc;\nendmodule",
+      "rtl_raw_sha256": "dc018f33c5e9ce5ecf9c8bfa891fcd43419dcc3af03350218f8afc20a74738e1",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 3,
+    "fail": 17
+  },
+  "testbench_raw_sha256": "86c79e899dcab371d0e244e8775b36c4f0f16259496911bfc41c4d20b8ae2e87",
+  "training_seed": 0
+}

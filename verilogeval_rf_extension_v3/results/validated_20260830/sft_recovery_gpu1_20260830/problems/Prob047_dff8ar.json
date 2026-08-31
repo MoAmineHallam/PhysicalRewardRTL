@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob047_dff8ar",
+  "problem_seed": 6609273817831848755,
+  "prompt_raw_sha256": "7d162953bb8474d167ce872c07ab0c09920590e1f3e44de47855bc43e4c74976",
+  "reference_raw_sha256": "f904723d115e2409c3918d8e6d61e5604103fbca231e56a2468e4e1019fb52ce",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "<TMP>/candidate.sv:21: error: stage0 is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 8-stage FF pipeline, with an active-high async reset (regardless of the\n// register stage, the reset is independent). The register stage is selected\n// by the 8-bit \"stage\" input.\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    wire [7:0] stage0, stage1, stage2, stage3, stage4, stage5, stage6, stage7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'd0;\n            r1 <= 8'd0;\n            r2 <= 8'd0;\n            r3 <= 8'd0;\n            r4 <= 8'd0;\n            r5 <= 8'd0;\n            r6 <= 8'd0;\n            r7 <= 8'd0;\n        end else begin\n            r0 <= d;\n            stage0 <= r0;\n            r1 <= stage0;\n            stage1 <= r1;\n            r2 <= stage1;\n            stage2 <= r2;\n            r3 <= stage2;\n            stage3 <= r3;\n            r4 <= stage3;\n            stage4 <= r4;\n            r5 <= stage4;\n            stage5 <= r5;\n            r6 <= stage5;\n            stage6 <= r6;\n            r7 <= stage6;\n            stage7 <= r7;\n        end\n    end\n    assign q = stage7;\nendmodule",
+      "raw_completion_raw_sha256": "3435c7c2c7f0c785a5849e2b7f6e928c3f4343bab63d49efad7472da9b670f5a",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    wire [7:0] stage0, stage1, stage2, stage3, stage4, stage5, stage6, stage7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'd0;\n            r1 <= 8'd0;\n            r2 <= 8'd0;\n            r3 <= 8'd0;\n            r4 <= 8'd0;\n            r5 <= 8'd0;\n            r6 <= 8'd0;\n            r7 <= 8'd0;\n        end else begin\n            r0 <= d;\n            stage0 <= r0;\n            r1 <= stage0;\n            stage1 <= r1;\n            r2 <= stage1;\n            stage2 <= r2;\n            r3 <= stage2;\n            stage3 <= r3;\n            r4 <= stage3;\n            stage4 <= r4;\n            r5 <= stage4;\n            stage5 <= r5;\n            r6 <= stage5;\n            stage6 <= r6;\n            r7 <= stage6;\n            stage7 <= r7;\n        end\n    end\n    assign q = stage7;\nendmodule",
+      "rtl_raw_sha256": "4880145182878c9dbd0a67a562604b2177d00f57cbaa2d8c668453d8c94ee619",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "391/436 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    wire [7:0] q_reg;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n    end\n    assign q_reg = (areset) ? 8'd0 : r7;\n    assign q = q_reg;\nendmodule",
+      "raw_completion_raw_sha256": "8ff11b5fa66b44495cbf688738fb437edfa6a2d745c4000ca6d1a7faedc47ea0",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    wire [7:0] q_reg;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n    end\n    assign q_reg = (areset) ? 8'd0 : r7;\n    assign q = q_reg;\nendmodule",
+      "rtl_raw_sha256": "8ff11b5fa66b44495cbf688738fb437edfa6a2d745c4000ca6d1a7faedc47ea0",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "361/436 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] q_next;\n    reg [7:0] r0;\n    reg [7:0] r1;\n    reg [7:0] r2;\n    reg [7:0] r3;\n    reg [7:0] r4;\n    reg [7:0] r5;\n    reg [7:0] r6;\n    reg [7:0] r7;\n    always @(*) begin\n        q_next[0] = d[0];\n        q_next[1] = d[1];\n        q_next[2] = d[2];\n        q_next[3] = d[3];\n        q_next[4] = d[4];\n        q_next[5] = d[5];\n        q_next[6] = d[6];\n        q_next[7] = d[7];\n    end\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 0;\n            r1 <= 0;\n            r2 <= 0;\n            r3 <= 0;\n            r4 <= 0;\n            r5 <= 0;\n            r6 <= 0;\n            r7 <= 0;\n        end else begin\n            r0 <= q_next[0];\n            r1 <= q_next[1];\n            r2 <= q_next[2];\n            r3 <= q_next[3];\n            r4 <= q_next[4];\n            r5 <= q_next[5];\n            r6 <= q_next[6];\n            r7 <= q_next[7];\n        end\n    end\n    assign q = {r7, r6, r5, r4, r3, r2, r1, r0};\nendmodule",
+      "raw_completion_raw_sha256": "a4867e670050d50bd102cd1b190ad59e7071fbcbe29037747ca2134976c44d38",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] q_next;\n    reg [7:0] r0;\n    reg [7:0] r1;\n    reg [7:0] r2;\n    reg [7:0] r3;\n    reg [7:0] r4;\n    reg [7:0] r5;\n    reg [7:0] r6;\n    reg [7:0] r7;\n    always @(*) begin\n        q_next[0] = d[0];\n        q_next[1] = d[1];\n        q_next[2] = d[2];\n        q_next[3] = d[3];\n        q_next[4] = d[4];\n        q_next[5] = d[5];\n        q_next[6] = d[6];\n        q_next[7] = d[7];\n    end\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 0;\n            r1 <= 0;\n            r2 <= 0;\n            r3 <= 0;\n            r4 <= 0;\n            r5 <= 0;\n            r6 <= 0;\n            r7 <= 0;\n        end else begin\n            r0 <= q_next[0];\n            r1 <= q_next[1];\n            r2 <= q_next[2];\n            r3 <= q_next[3];\n            r4 <= q_next[4];\n            r5 <= q_next[5];\n            r6 <= q_next[6];\n            r7 <= q_next[7];\n        end\n    end\n    assign q = {r7, r6, r5, r4, r3, r2, r1, r0};\nendmodule",
+      "rtl_raw_sha256": "a4867e670050d50bd102cd1b190ad59e7071fbcbe29037747ca2134976c44d38",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "346/436 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0;\n    reg [7:0] r1;\n    reg [7:0] r2;\n    reg [7:0] r3;\n    reg [7:0] r4;\n    reg [7:0] r5;\n    reg [7:0] r6;\n    reg [7:0] r7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'd0;\n            r1 <= 8'd0;\n            r2 <= 8'd0;\n            r3 <= 8'd0;\n            r4 <= 8'd0;\n            r5 <= 8'd0;\n            r6 <= 8'd0;\n            r7 <= 8'd0;\n        end else begin\n            r0 <= d;\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            r5 <= r4;\n            r6 <= r5;\n            r7 <= r6;\n        end\n    end\n    assign q = areset ? 8'd0 : r7;\nendmodule",
+      "raw_completion_raw_sha256": "d10997b761ad78456b2224c7d2b65774779115d508cb2649a4d4234520f2fffe",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0;\n    reg [7:0] r1;\n    reg [7:0] r2;\n    reg [7:0] r3;\n    reg [7:0] r4;\n    reg [7:0] r5;\n    reg [7:0] r6;\n    reg [7:0] r7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'd0;\n            r1 <= 8'd0;\n            r2 <= 8'd0;\n            r3 <= 8'd0;\n            r4 <= 8'd0;\n            r5 <= 8'd0;\n            r6 <= 8'd0;\n            r7 <= 8'd0;\n        end else begin\n            r0 <= d;\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            r5 <= r4;\n            r6 <= r5;\n            r7 <= r6;\n        end\n    end\n    assign q = areset ? 8'd0 : r7;\nendmodule",
+      "rtl_raw_sha256": "d10997b761ad78456b2224c7d2b65774779115d508cb2649a4d4234520f2fffe",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "359/436 mismatches",
+      "raw_completion": "// 8-stage pipeline, with register to register transition time of 1 ns\n// (one FF per stage, independent of the register to register transition\n// time). Same critical path as the reference up to a fixed extra latency.\nmodule TopModule(input clk, input areset, input [7:0] d, output reg [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    if (areset) begin\n      r0 <= 8'd0;\n      r1 <= 8'd0;\n      r2 <= 8'd0;\n      r3 <= 8'd0;\n      r4 <= 8'd0;\n      r5 <= 8'd0;\n      r6 <= 8'd0;\n      r7 <= 8'd0;\n      q <= 8'd0;\n    end else begin\n      r0 <= d;\n      r1 <= r0;\n      r2 <= r1;\n      r3 <= r2;\n      r4 <= r3;\n      r5 <= r4;\n      r6 <= r5;\n      r7 <= r6;\n      q <= r7;\n    end\n  end\nendmodule",
+      "raw_completion_raw_sha256": "165d4f5c924cc5d6be8b750ccd8523afefb038610e421c6ff35470fd99678d1d",
+      "rtl": "module TopModule(input clk, input areset, input [7:0] d, output reg [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    if (areset) begin\n      r0 <= 8'd0;\n      r1 <= 8'd0;\n      r2 <= 8'd0;\n      r3 <= 8'd0;\n      r4 <= 8'd0;\n      r5 <= 8'd0;\n      r6 <= 8'd0;\n      r7 <= 8'd0;\n      q <= 8'd0;\n    end else begin\n      r0 <= d;\n      r1 <= r0;\n      r2 <= r1;\n      r3 <= r2;\n      r4 <= r3;\n      r5 <= r4;\n      r6 <= r5;\n      r7 <= r6;\n      q <= r7;\n    end\n  end\nendmodule",
+      "rtl_raw_sha256": "c98f5f4d81cc48e81c1c2be083b63b62223abf0ec36b5eba27ded06084a7b2bf",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "361/436 mismatches",
+      "raw_completion": "// 8-stage pipeline, with active-high async reset, stage 0 a short\n// register stage (register to stage the register chain), and the\n// register stage explicitly set to 0 on reset.\nmodule TopModule (\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0;\n    reg [7:0] r1;\n    reg [7:0] r2;\n    reg [7:0] r3;\n    reg [7:0] r4;\n    reg [7:0] r5;\n    reg [7:0] r6;\n    reg [7:0] r7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'd0;\n            r1 <= 8'd0;\n            r2 <= 8'd0;\n            r3 <= 8'd0;\n            r4 <= 8'd0;\n            r5 <= 8'd0;\n            r6 <= 8'd0;\n            r7 <= 8'd0;\n        end else begin\n            r0 <= d;\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            r5 <= r4;\n            r6 <= r5;\n            r7 <= r6;\n        end\n    end\n    assign q = r7;\nendmodule",
+      "raw_completion_raw_sha256": "9ea218585af6020b275bdbc29b1cc1d4ca5072d2c3baa85d1b05170ea9780310",
+      "rtl": "module TopModule (\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0;\n    reg [7:0] r1;\n    reg [7:0] r2;\n    reg [7:0] r3;\n    reg [7:0] r4;\n    reg [7:0] r5;\n    reg [7:0] r6;\n    reg [7:0] r7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'd0;\n            r1 <= 8'd0;\n            r2 <= 8'd0;\n            r3 <= 8'd0;\n            r4 <= 8'd0;\n            r5 <= 8'd0;\n            r6 <= 8'd0;\n            r7 <= 8'd0;\n        end else begin\n            r0 <= d;\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            r5 <= r4;\n            r6 <= r5;\n            r7 <= r6;\n        end\n    end\n    assign q = r7;\nendmodule",
+      "rtl_raw_sha256": "2dff75c4b22d68ffd94ee57a26b84ec1e167621abbec179887064b10797d3340",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:16: error: qi is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 8-stage pipeline with active-high async reset, register the output\n// (the long path -> lower Fmax)\nmodule TopModule(input clk, input areset, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  wire [7:0] qi;\n  always @(posedge clk) begin\n    r0 <= 8'b1;\n    r1 <= d[0];\n    r2 <= d[1];\n    r3 <= d[2];\n    r4 <= d[3];\n    r5 <= d[4];\n    r6 <= d[5];\n    r7 <= d[6];\n  end\n  assign qi = r7;\n  always @(posedge clk) begin\n    if (areset) qi <= 8'b0;\n    else       qi <= r7;\n  end\n  assign q = qi;\nendmodule",
+      "raw_completion_raw_sha256": "6235ffb675c8615747a9cce8108c4805522b1e3acc61a211c45246ae64078039",
+      "rtl": "module TopModule(input clk, input areset, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  wire [7:0] qi;\n  always @(posedge clk) begin\n    r0 <= 8'b1;\n    r1 <= d[0];\n    r2 <= d[1];\n    r3 <= d[2];\n    r4 <= d[3];\n    r5 <= d[4];\n    r6 <= d[5];\n    r7 <= d[6];\n  end\n  assign qi = r7;\n  always @(posedge clk) begin\n    if (areset) qi <= 8'b0;\n    else       qi <= r7;\n  end\n  assign q = qi;\nendmodule",
+      "rtl_raw_sha256": "36ee6fd139d595a988fcbd3a36b9368e3e0f4b48c228dbf01cd95f6bad39dc8c",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "361/436 mismatches",
+      "raw_completion": "// 8-stage delay pipeline with one register stage at the end\nmodule TopModule (\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0;\n    reg [7:0] r1;\n    reg [7:0] r2;\n    reg [7:0] r3;\n    reg [7:0] r4;\n    reg [7:0] r5;\n    reg [7:0] r6;\n    reg [7:0] r7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'd0;\n            r1 <= 8'd0;\n            r2 <= 8'd0;\n            r3 <= 8'd0;\n            r4 <= 8'd0;\n            r5 <= 8'd0;\n            r6 <= 8'd0;\n            r7 <= 8'd0;\n        end else begin\n            r0 <= d;\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            r5 <= r4;\n            r6 <= r5;\n            r7 <= r6;\n        end\n    end\n    assign q = r7;\nendmodule",
+      "raw_completion_raw_sha256": "41bcdd3796985da3c69e4c5f75ecb27e18e18cce6e68180cb189157fd2d24416",
+      "rtl": "module TopModule (\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0;\n    reg [7:0] r1;\n    reg [7:0] r2;\n    reg [7:0] r3;\n    reg [7:0] r4;\n    reg [7:0] r5;\n    reg [7:0] r6;\n    reg [7:0] r7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'd0;\n            r1 <= 8'd0;\n            r2 <= 8'd0;\n            r3 <= 8'd0;\n            r4 <= 8'd0;\n            r5 <= 8'd0;\n            r6 <= 8'd0;\n            r7 <= 8'd0;\n        end else begin\n            r0 <= d;\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            r5 <= r4;\n            r6 <= r5;\n            r7 <= r6;\n        end\n    end\n    assign q = r7;\nendmodule",
+      "rtl_raw_sha256": "2dff75c4b22d68ffd94ee57a26b84ec1e167621abbec179887064b10797d3340",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: q0 is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 8-stage pipeline with active-high async reset, register to register\n// transparent long-path FF path -> lower Fmax. Register to register\n// path -> faster register stage. Same function as the reference.\nmodule TopModule(input  clk, input  areset, input  [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  wire [7:0] q0, q1, q2, q3, q4, q5, q6, q7;\n  always @(posedge clk) begin\n    if (areset) begin\n        r0 <= 8'b0; r1 <= 8'b0; r2 <= 8'b0; r3 <= 8'b0; r4 <= 8'b0; r5 <= 8'b0; r6 <= 8'b0; r7 <= 8'b0;\n    end else begin\n        r0 <= d; q0 <= r0;\n        r1 <= q0; q1 <= r1;\n        r2 <= q1; q2 <= r2;\n        r3 <= q2; q3 <= r3;\n        r4 <= q3; q4 <= r4;\n        r5 <= q4; q5 <= r5;\n        r6 <= q5; q6 <= r6;\n        r7 <= q6; q7 <= r7;\n    end\n  end\n  assign q = q7;\nendmodule",
+      "raw_completion_raw_sha256": "dca2af8c8cc9a10c7a2c1cc3fd2764ce5ef277029702d07ebefe8a8ee5a21698",
+      "rtl": "module TopModule(input  clk, input  areset, input  [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  wire [7:0] q0, q1, q2, q3, q4, q5, q6, q7;\n  always @(posedge clk) begin\n    if (areset) begin\n        r0 <= 8'b0; r1 <= 8'b0; r2 <= 8'b0; r3 <= 8'b0; r4 <= 8'b0; r5 <= 8'b0; r6 <= 8'b0; r7 <= 8'b0;\n    end else begin\n        r0 <= d; q0 <= r0;\n        r1 <= q0; q1 <= r1;\n        r2 <= q1; q2 <= r2;\n        r3 <= q2; q3 <= r3;\n        r4 <= q3; q4 <= r4;\n        r5 <= q4; q5 <= r5;\n        r6 <= q5; q6 <= r6;\n        r7 <= q6; q7 <= r7;\n    end\n  end\n  assign q = q7;\nendmodule",
+      "rtl_raw_sha256": "ab839b76d96b931038266cb7a76b1e74425c40c8132ac177c18e47f5dd258d33",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "361/436 mismatches",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] ff0;\n    reg [7:0] ff1;\n    reg [7:0] ff2;\n    reg [7:0] ff3;\n    reg [7:0] ff4;\n    reg [7:0] ff5;\n    reg [7:0] ff6;\n    reg [7:0] ff7;\n    always @(posedge clk) begin\n        if (areset) begin\n            ff0 <= 8'd0;\n            ff1 <= 8'd0;\n            ff2 <= 8'd0;\n            ff3 <= 8'd0;\n            ff4 <= 8'd0;\n            ff5 <= 8'd0;\n            ff6 <= 8'd0;\n            ff7 <= 8'd0;\n        end else begin\n            ff0 <= d;\n            ff1 <= ff0;\n            ff2 <= ff1;\n            ff3 <= ff2;\n            ff4 <= ff3;\n            ff5 <= ff4;\n            ff6 <= ff5;\n            ff7 <= ff6;\n        end\n    end\n    assign q = ff7;\nendmodule",
+      "raw_completion_raw_sha256": "3fe619c11c52a2be8f8c4ee4d49699307622488156cd52743601ee63caa3178f",
+      "rtl": "module TopModule (\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] ff0;\n    reg [7:0] ff1;\n    reg [7:0] ff2;\n    reg [7:0] ff3;\n    reg [7:0] ff4;\n    reg [7:0] ff5;\n    reg [7:0] ff6;\n    reg [7:0] ff7;\n    always @(posedge clk) begin\n        if (areset) begin\n            ff0 <= 8'd0;\n            ff1 <= 8'd0;\n            ff2 <= 8'd0;\n            ff3 <= 8'd0;\n            ff4 <= 8'd0;\n            ff5 <= 8'd0;\n            ff6 <= 8'd0;\n            ff7 <= 8'd0;\n        end else begin\n            ff0 <= d;\n            ff1 <= ff0;\n            ff2 <= ff1;\n            ff3 <= ff2;\n            ff4 <= ff3;\n            ff5 <= ff4;\n            ff6 <= ff5;\n            ff7 <= ff6;\n        end\n    end\n    assign q = ff7;\nendmodule",
+      "rtl_raw_sha256": "3fe619c11c52a2be8f8c4ee4d49699307622488156cd52743601ee63caa3178f",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "346/436 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0;\n    reg [7:0] r1;\n    reg [7:0] r2;\n    reg [7:0] r3;\n    reg [7:0] r4;\n    reg [7:0] r5;\n    reg [7:0] r6;\n    reg [7:0] r7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'b0;\n            r1 <= 8'b0;\n            r2 <= 8'b0;\n            r3 <= 8'b0;\n            r4 <= 8'b0;\n            r5 <= 8'b0;\n            r6 <= 8'b0;\n            r7 <= 8'b0;\n        end else begin\n            r0 <= d;\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            r5 <= r4;\n            r6 <= r5;\n            r7 <= r6;\n        end\n    end\n    assign q = areset ? 8'b0 : r7;\nendmodule",
+      "raw_completion_raw_sha256": "9db5f73d958cdda4ffbf54ce770a04a9936f6b2e1a7404936e54c32d96d049fb",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0;\n    reg [7:0] r1;\n    reg [7:0] r2;\n    reg [7:0] r3;\n    reg [7:0] r4;\n    reg [7:0] r5;\n    reg [7:0] r6;\n    reg [7:0] r7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'b0;\n            r1 <= 8'b0;\n            r2 <= 8'b0;\n            r3 <= 8'b0;\n            r4 <= 8'b0;\n            r5 <= 8'b0;\n            r6 <= 8'b0;\n            r7 <= 8'b0;\n        end else begin\n            r0 <= d;\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            r5 <= r4;\n            r6 <= r5;\n            r7 <= r6;\n        end\n    end\n    assign q = areset ? 8'b0 : r7;\nendmodule",
+      "rtl_raw_sha256": "9db5f73d958cdda4ffbf54ce770a04a9936f6b2e1a7404936e54c32d96d049fb",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "359/436 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output reg [7:0] q\n);\n    reg [7:0] r0;\n    reg [7:0] r1;\n    reg [7:0] r2;\n    reg [7:0] r3;\n    reg [7:0] r4;\n    reg [7:0] r5;\n    reg [7:0] r6;\n    reg [7:0] r7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'd0;\n            r1 <= 8'd0;\n            r2 <= 8'd0;\n            r3 <= 8'd0;\n            r4 <= 8'd0;\n            r5 <= 8'd0;\n            r6 <= 8'd0;\n            r7 <= 8'd0;\n            q <= 8'd0;\n        end else begin\n            r0 <= d;\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            r5 <= r4;\n            r6 <= r5;\n            r7 <= r6;\n            q <= r7;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "c16ae9c7ce20ab94ce476654ac2681c59672c22ce994e2763b20c9b664ebed68",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output reg [7:0] q\n);\n    reg [7:0] r0;\n    reg [7:0] r1;\n    reg [7:0] r2;\n    reg [7:0] r3;\n    reg [7:0] r4;\n    reg [7:0] r5;\n    reg [7:0] r6;\n    reg [7:0] r7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'd0;\n            r1 <= 8'd0;\n            r2 <= 8'd0;\n            r3 <= 8'd0;\n            r4 <= 8'd0;\n            r5 <= 8'd0;\n            r6 <= 8'd0;\n            r7 <= 8'd0;\n            q <= 8'd0;\n        end else begin\n            r0 <= d;\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            r5 <= r4;\n            r6 <= r5;\n            r7 <= r6;\n            q <= r7;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "c16ae9c7ce20ab94ce476654ac2681c59672c22ce994e2763b20c9b664ebed68",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "346/436 mismatches",
+      "raw_completion": "// 8-stage synchronous register chain, with the register outputs also\n// pipelined -> lower overall latency (same Fmax as the reference).\nmodule TopModule(input  clk, input  areset, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  wire [7:0] q0, q1, q2, q3, q4, q5, q6, q7;\n  always @(posedge clk) begin\n    if (areset) begin\n      r0 <= 8'd0; r1 <= 8'd0; r2 <= 8'd0; r3 <= 8'd0; r4 <= 8'd0; r5 <= 8'd0; r6 <= 8'd0; r7 <= 8'd0;\n    end else begin\n      r0 <= d;\n      r1 <= r0;\n      r2 <= r1;\n      r3 <= r2;\n      r4 <= r3;\n      r5 <= r4;\n      r6 <= r5;\n      r7 <= r6;\n    end\n  end\n  assign q0 = r0;\n  assign q1 = r1;\n  assign q2 = r2;\n  assign q3 = r3;\n  assign q4 = r4;\n  assign q5 = r5;\n  assign q6 = r6;\n  assign q7 = r7;\n  assign q = (areset) ? 8'd0 : q7;\nendmodule",
+      "raw_completion_raw_sha256": "3ee4b87b6f263e6bdfa7d56e74ae6f14b3ab9f088bd3f1841a0fa20eeef2f136",
+      "rtl": "module TopModule(input  clk, input  areset, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  wire [7:0] q0, q1, q2, q3, q4, q5, q6, q7;\n  always @(posedge clk) begin\n    if (areset) begin\n      r0 <= 8'd0; r1 <= 8'd0; r2 <= 8'd0; r3 <= 8'd0; r4 <= 8'd0; r5 <= 8'd0; r6 <= 8'd0; r7 <= 8'd0;\n    end else begin\n      r0 <= d;\n      r1 <= r0;\n      r2 <= r1;\n      r3 <= r2;\n      r4 <= r3;\n      r5 <= r4;\n      r6 <= r5;\n      r7 <= r6;\n    end\n  end\n  assign q0 = r0;\n  assign q1 = r1;\n  assign q2 = r2;\n  assign q3 = r3;\n  assign q4 = r4;\n  assign q5 = r5;\n  assign q6 = r6;\n  assign q7 = r7;\n  assign q = (areset) ? 8'd0 : q7;\nendmodule",
+      "rtl_raw_sha256": "21ce3e470b242bdad4347efb226d968bf53f2b0a5607ffc7fa8f06bb1e2e9567",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "361/436 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] q_reg [0:7];\n    integer i;\n    always @(posedge clk) begin\n        if (areset) begin\n            for (i = 0; i < 8; i = i + 1) q_reg[i] <= 8'd0;\n        end else begin\n            q_reg[0] <= d;\n            q_reg[1] <= q_reg[0];\n            q_reg[2] <= q_reg[1];\n            q_reg[3] <= q_reg[2];\n            q_reg[4] <= q_reg[3];\n            q_reg[5] <= q_reg[4];\n            q_reg[6] <= q_reg[5];\n            q_reg[7] <= q_reg[6];\n        end\n    end\n    assign q = q_reg[7];\nendmodule",
+      "raw_completion_raw_sha256": "97c69d20020a75a1a103106b2d4170eb479a86be37d85f2cca2d2bde27ca8923",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] q_reg [0:7];\n    integer i;\n    always @(posedge clk) begin\n        if (areset) begin\n            for (i = 0; i < 8; i = i + 1) q_reg[i] <= 8'd0;\n        end else begin\n            q_reg[0] <= d;\n            q_reg[1] <= q_reg[0];\n            q_reg[2] <= q_reg[1];\n            q_reg[3] <= q_reg[2];\n            q_reg[4] <= q_reg[3];\n            q_reg[5] <= q_reg[4];\n            q_reg[6] <= q_reg[5];\n            q_reg[7] <= q_reg[6];\n        end\n    end\n    assign q = q_reg[7];\nendmodule",
+      "rtl_raw_sha256": "97c69d20020a75a1a103106b2d4170eb479a86be37d85f2cca2d2bde27ca8923",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "359/436 mismatches",
+      "raw_completion": "// 8-stage delay chain, with registerless feedback (all DFFs are independent:\n// the delay chain is a perfect short-path -> low Fmax, high RMS delay)\nmodule TopModule(input clk, input areset, input [7:0] d, output reg [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'd0;\n            r1 <= 8'd0;\n            r2 <= 8'd0;\n            r3 <= 8'd0;\n            r4 <= 8'd0;\n            r5 <= 8'd0;\n            r6 <= 8'd0;\n            r7 <= 8'd0;\n            q <= 8'd0;\n        end else begin\n            r0 <= d;\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            r5 <= r4;\n            r6 <= r5;\n            r7 <= r6;\n            q <= r7;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "19a2aba39241088712e33c6b59309cf2871a74d27ce13cf4ccd40a4117c6448a",
+      "rtl": "module TopModule(input clk, input areset, input [7:0] d, output reg [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'd0;\n            r1 <= 8'd0;\n            r2 <= 8'd0;\n            r3 <= 8'd0;\n            r4 <= 8'd0;\n            r5 <= 8'd0;\n            r6 <= 8'd0;\n            r7 <= 8'd0;\n            q <= 8'd0;\n        end else begin\n            r0 <= d;\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            r5 <= r4;\n            r6 <= r5;\n            r7 <= r6;\n            q <= r7;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "a32506e319afcf7ef1a33369aec57d85df9e784770af9cac04fb9a7e96198919",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "361/436 mismatches",
+      "raw_completion": "// 8-stage pipeline with reset, active-high async. register-to-register\n// TRANSFORMED into a chain of D flip-flops: the register-to-register\n// stage is explicitly modeled, the rest is a simple chain.\nmodule TopModule(input  clk, input  areset, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    if (areset) begin\n      r0 <= 8'd0; r1 <= 8'd0; r2 <= 8'd0; r3 <= 8'd0; r4 <= 8'd0; r5 <= 8'd0; r6 <= 8'd0; r7 <= 8'd0;\n    end else begin\n      r0 <= d;\n      r1 <= r0;\n      r2 <= r1;\n      r3 <= r2;\n      r4 <= r3;\n      r5 <= r4;\n      r6 <= r5;\n      r7 <= r6;\n    end\n  end\n  assign q = r7;\nendmodule",
+      "raw_completion_raw_sha256": "3fdc3316be8b27e208573ad52f5b687e0de8187309e6d6c6aa62acdddbed8028",
+      "rtl": "module TopModule(input  clk, input  areset, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    if (areset) begin\n      r0 <= 8'd0; r1 <= 8'd0; r2 <= 8'd0; r3 <= 8'd0; r4 <= 8'd0; r5 <= 8'd0; r6 <= 8'd0; r7 <= 8'd0;\n    end else begin\n      r0 <= d;\n      r1 <= r0;\n      r2 <= r1;\n      r3 <= r2;\n      r4 <= r3;\n      r5 <= r4;\n      r6 <= r5;\n      r7 <= r6;\n    end\n  end\n  assign q = r7;\nendmodule",
+      "rtl_raw_sha256": "cd4b62cc73a0bfb59ac023a5065380c6e2bd5384240a86906476c69a4429d497",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "361/436 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] reg0;\n    reg [7:0] reg1;\n    reg [7:0] reg2;\n    reg [7:0] reg3;\n    reg [7:0] reg4;\n    reg [7:0] reg5;\n    reg [7:0] reg6;\n    reg [7:0] reg7;\n    always @(posedge clk) begin\n        if (areset) begin\n            reg0 <= 8'b0;\n            reg1 <= 8'b0;\n            reg2 <= 8'b0;\n            reg3 <= 8'b0;\n            reg4 <= 8'b0;\n            reg5 <= 8'b0;\n            reg6 <= 8'b0;\n            reg7 <= 8'b0;\n        end else begin\n            reg0 <= d;\n            reg1 <= reg0;\n            reg2 <= reg1;\n            reg3 <= reg2;\n            reg4 <= reg3;\n            reg5 <= reg4;\n            reg6 <= reg5;\n            reg7 <= reg6;\n        end\n    end\n    assign q = reg7;\nendmodule",
+      "raw_completion_raw_sha256": "22cffd1d8ab81c97c325146e85c0346e55d875854ab18c76e8eff328d8dcac4d",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] reg0;\n    reg [7:0] reg1;\n    reg [7:0] reg2;\n    reg [7:0] reg3;\n    reg [7:0] reg4;\n    reg [7:0] reg5;\n    reg [7:0] reg6;\n    reg [7:0] reg7;\n    always @(posedge clk) begin\n        if (areset) begin\n            reg0 <= 8'b0;\n            reg1 <= 8'b0;\n            reg2 <= 8'b0;\n            reg3 <= 8'b0;\n            reg4 <= 8'b0;\n            reg5 <= 8'b0;\n            reg6 <= 8'b0;\n            reg7 <= 8'b0;\n        end else begin\n            reg0 <= d;\n            reg1 <= reg0;\n            reg2 <= reg1;\n            reg3 <= reg2;\n            reg4 <= reg3;\n            reg5 <= reg4;\n            reg6 <= reg5;\n            reg7 <= reg6;\n        end\n    end\n    assign q = reg7;\nendmodule",
+      "rtl_raw_sha256": "22cffd1d8ab81c97c325146e85c0346e55d875854ab18c76e8eff328d8dcac4d",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "361/436 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'd0;\n            r1 <= 8'd0;\n            r2 <= 8'd0;\n            r3 <= 8'd0;\n            r4 <= 8'd0;\n            r5 <= 8'd0;\n            r6 <= 8'd0;\n            r7 <= 8'd0;\n        end else begin\n            r0 <= d;\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            r5 <= r4;\n            r6 <= r5;\n            r7 <= r6;\n        end\n    end\n    assign q = r7;\nendmodule",
+      "raw_completion_raw_sha256": "9d94d85966a491407075539962a4077eb47f222c50dffaa69b8393e0cc08b447",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'd0;\n            r1 <= 8'd0;\n            r2 <= 8'd0;\n            r3 <= 8'd0;\n            r4 <= 8'd0;\n            r5 <= 8'd0;\n            r6 <= 8'd0;\n            r7 <= 8'd0;\n        end else begin\n            r0 <= d;\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            r5 <= r4;\n            r6 <= r5;\n            r7 <= r6;\n        end\n    end\n    assign q = r7;\nendmodule",
+      "rtl_raw_sha256": "9d94d85966a491407075539962a4077eb47f222c50dffaa69b8393e0cc08b447",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "361/436 mismatches",
+      "raw_completion": "// 8-stage transparent pipeline, with register-to-register feedback: the\n// register at stage N gets the value of the register at stage N-1, so there\n// are no combinational cycles. The register at stage 0 is the input, d.\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'd0;\n            r1 <= 8'd0;\n            r2 <= 8'd0;\n            r3 <= 8'd0;\n            r4 <= 8'd0;\n            r5 <= 8'd0;\n            r6 <= 8'd0;\n            r7 <= 8'd0;\n        end else begin\n            r0 <= d;\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            r5 <= r4;\n            r6 <= r5;\n            r7 <= r6;\n        end\n    end\n    assign q = r7;\nendmodule",
+      "raw_completion_raw_sha256": "1fe4c1e401ebc04cc12291cde9950d9b411cea9f9d57afb0738e2a9cd2b35dd8",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'd0;\n            r1 <= 8'd0;\n            r2 <= 8'd0;\n            r3 <= 8'd0;\n            r4 <= 8'd0;\n            r5 <= 8'd0;\n            r6 <= 8'd0;\n            r7 <= 8'd0;\n        end else begin\n            r0 <= d;\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            r5 <= r4;\n            r6 <= r5;\n            r7 <= r6;\n        end\n    end\n    assign q = r7;\nendmodule",
+      "rtl_raw_sha256": "9d94d85966a491407075539962a4077eb47f222c50dffaa69b8393e0cc08b447",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "346/436 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    wire [7:0] q0, q1, q2, q3, q4, q5, q6, q7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'b0;\n            r1 <= 8'b0;\n            r2 <= 8'b0;\n            r3 <= 8'b0;\n            r4 <= 8'b0;\n            r5 <= 8'b0;\n            r6 <= 8'b0;\n            r7 <= 8'b0;\n        end else begin\n            r0 <= d;\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            r5 <= r4;\n            r6 <= r5;\n            r7 <= r6;\n        end\n    end\n    assign q0 = r0;\n    assign q1 = r1;\n    assign q2 = r2;\n    assign q3 = r3;\n    assign q4 = r4;\n    assign q5 = r5;\n    assign q6 = r6;\n    assign q7 = r7;\n    assign q = (areset) ? 8'b0 : q7;\nendmodule",
+      "raw_completion_raw_sha256": "b9baa6cd18f8a1c917e4f998400bece53824254f38ec280335a674ca13470dd2",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    wire [7:0] q0, q1, q2, q3, q4, q5, q6, q7;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 8'b0;\n            r1 <= 8'b0;\n            r2 <= 8'b0;\n            r3 <= 8'b0;\n            r4 <= 8'b0;\n            r5 <= 8'b0;\n            r6 <= 8'b0;\n            r7 <= 8'b0;\n        end else begin\n            r0 <= d;\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            r5 <= r4;\n            r6 <= r5;\n            r7 <= r6;\n        end\n    end\n    assign q0 = r0;\n    assign q1 = r1;\n    assign q2 = r2;\n    assign q3 = r3;\n    assign q4 = r4;\n    assign q5 = r5;\n    assign q6 = r6;\n    assign q7 = r7;\n    assign q = (areset) ? 8'b0 : q7;\nendmodule",
+      "rtl_raw_sha256": "b9baa6cd18f8a1c917e4f998400bece53824254f38ec280335a674ca13470dd2",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 3,
+    "fail": 17
+  },
+  "testbench_raw_sha256": "51fc075543af22be0e0af137388a31529158a33f0018c1b44156d6f8e4313cec",
+  "training_seed": 0
+}

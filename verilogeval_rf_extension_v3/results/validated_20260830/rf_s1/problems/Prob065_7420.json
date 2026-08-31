@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob065_7420",
+  "problem_seed": 4934785617568843400,
+  "prompt_raw_sha256": "79ffe176455537fa154d36c00c56f14821825c78254e750ea81273e12ec95775",
+  "reference_raw_sha256": "62ddb5fcc18bf18f0fc1f265d8de802f739f7217a96674b76b53139e0bc654fa",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "<TMP>/candidate.sv:5: error: Unknown module type: NAND2",
+      "raw_completion": "// 7420: 2-input NAND gate, 4-input NAND gate, AND + OR -> NAND\nmodule TopModule(input p1a, input p1b, input p1c, input p1d,\n                 input p2a, input p2b, input p2c, input p2d,\n                 output p1y, output p2y);\n  wire n1, n2, n3, n4, n5, n6, n7;\n  NAND2 I1 ( .A(p1b), .B(p1a), .Y(n1) );\n  NAND2 I2 ( .A(p1d), .B(p1c), .Y(n2) );\n  NAND2 I3 ( .A(n1), .B(n2), .Y(p1y) );\n  NAND2 I4 ( .A(p2b), .B(p2a), .Y(n3) );\n  NAND2 I5 ( .A(p2d), .B(p2c), .Y(n4) );\n  NAND2 I6 ( .A(n3), .B(n4), .Y(p2y) );\n  AND2 I7 ( .A(p1a), .B(p1b), .Y(n5) );\n  AND2 I8 ( .A(p1c), .B(p1d), .Y(n6) );\n  OR2 I9 ( .A(n5), .B(n6), .Y(n7) );\n  NAND2 I10 ( .A(n7), .B(p1y), .Y(p1y) );\n  AND2 I11 ( .A(p2a), .B(p2b), .Y(n5) );\n  AND2 I12 ( .A(p2c), .B(p2d), .Y(n6) );\n  OR2 I13 ( .A(n5), .B(n6), .Y(n7) );\n  NAND2 I14 ( .A(n7), .B(p2y), .Y(p2y) );\nendmodule",
+      "raw_completion_raw_sha256": "f095446ff618fcb59509c4eb37887af23b887ede15ce65024331be4573e7c4b1",
+      "rtl": "module TopModule(input p1a, input p1b, input p1c, input p1d,\n                 input p2a, input p2b, input p2c, input p2d,\n                 output p1y, output p2y);\n  wire n1, n2, n3, n4, n5, n6, n7;\n  NAND2 I1 ( .A(p1b), .B(p1a), .Y(n1) );\n  NAND2 I2 ( .A(p1d), .B(p1c), .Y(n2) );\n  NAND2 I3 ( .A(n1), .B(n2), .Y(p1y) );\n  NAND2 I4 ( .A(p2b), .B(p2a), .Y(n3) );\n  NAND2 I5 ( .A(p2d), .B(p2c), .Y(n4) );\n  NAND2 I6 ( .A(n3), .B(n4), .Y(p2y) );\n  AND2 I7 ( .A(p1a), .B(p1b), .Y(n5) );\n  AND2 I8 ( .A(p1c), .B(p1d), .Y(n6) );\n  OR2 I9 ( .A(n5), .B(n6), .Y(n7) );\n  NAND2 I10 ( .A(n7), .B(p1y), .Y(p1y) );\n  AND2 I11 ( .A(p2a), .B(p2b), .Y(n5) );\n  AND2 I12 ( .A(p2c), .B(p2d), .Y(n6) );\n  OR2 I13 ( .A(n5), .B(n6), .Y(n7) );\n  NAND2 I14 ( .A(n7), .B(p2y), .Y(p2y) );\nendmodule",
+      "rtl_raw_sha256": "8204edf644a4fb8c8e961adae68f0b3b4ce82de6c0048d42a46c3f8b68b16bc6",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "225/239 mismatches",
+      "raw_completion": "// 7420: 2-input NAND gate, 4-input NAND gate, 2-stage OR gate\nmodule TopModule(\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16;\n    assign n1 = ~(p1a & p1b);\n    assign n2 = ~(p1c & p1d);\n    assign n3 = ~(n1 & n2);\n    assign n4 = ~(p2a & p2b);\n    assign n5 = ~(p2c & p2d);\n    assign n6 = ~(n4 & n5);\n    assign n7 = ~(n3 | n6);\n    assign n8 = ~(n7 & n7);\n    assign n9 = ~(n8 & n8);\n    assign n10 = ~(n9 & n9);\n    assign n11 = ~(n10 & n10);\n    assign n12 = ~(n11 & n11);\n    assign n13 = ~(n12 & n12);\n    assign n14 = ~(n13 & n13);\n    assign n15 = ~(n14 & n14);\n    assign n16 = ~(n15 & n15);\n    assign p1y = ~(n16 & n16);\n    assign p2y = ~(n7 & n7);\nendmodule",
+      "raw_completion_raw_sha256": "95100bfba571cbbfd5aa323b987b15f156edee5616f47c12dc66f4b1c5756ba7",
+      "rtl": "module TopModule(\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16;\n    assign n1 = ~(p1a & p1b);\n    assign n2 = ~(p1c & p1d);\n    assign n3 = ~(n1 & n2);\n    assign n4 = ~(p2a & p2b);\n    assign n5 = ~(p2c & p2d);\n    assign n6 = ~(n4 & n5);\n    assign n7 = ~(n3 | n6);\n    assign n8 = ~(n7 & n7);\n    assign n9 = ~(n8 & n8);\n    assign n10 = ~(n9 & n9);\n    assign n11 = ~(n10 & n10);\n    assign n12 = ~(n11 & n11);\n    assign n13 = ~(n12 & n12);\n    assign n14 = ~(n13 & n13);\n    assign n15 = ~(n14 & n14);\n    assign n16 = ~(n15 & n15);\n    assign p1y = ~(n16 & n16);\n    assign p2y = ~(n7 & n7);\nendmodule",
+      "rtl_raw_sha256": "bf4c6ff3f8dc9ea7bed5466868ba55a9e44184e9ab5027d037dd134ce0d706b2",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob065_7420_test.sv:118: error: Unknown module type: TopModule",
+      "raw_completion": "// 7420: 2-input NAND gate, on a 7400-series chip (a single gate)\nmodule Nand2_7420 (input a, b, output y);\n    wire w1;\n    assign w1 = ~(a & b);\n    assign y = w1;\nendmodule",
+      "raw_completion_raw_sha256": "49f6664a32d6d055a32539b870aef045542708c560073328e87dcda5107fc000",
+      "rtl": "module Nand2_7420 (input a, b, output y);\n    wire w1;\n    assign w1 = ~(a & b);\n    assign y = w1;\nendmodule",
+      "rtl_raw_sha256": "977a89c6e2defafa43b0cc196a6efd2ee822f763225bc6ce306d4042350186e9",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob065_7420_ref.sv:2: syntax error",
+      "raw_completion": "module TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16;\n    NAND g1 (.a(p1a), .b(p1b), .c(n1));\n    NAND g2 (.a(p1c), .b(p1d), .c(n2));\n    NAND g3 (.a(n1), .b(n2), .c(p1y));\n    NAND g4 (.a(p2a), .b(p2b), .c(n3));\n    NAND g5 (.a(p2c), .b(p2d), .c(n4));\n    NAND g6 (.a(n3), .b(n4), .c(p2y));\n    NAND g7 (.a(n1), .b(n2), .c(n5));\n    NAND g8 (.a(n3), .b(n4), .c(n6));\n    NAND g9 (.a(n5), .b(n6), .c(n7));\n    NAND g10 (.a(n5), .b(n6), .c(n8));\n    NAND g11 (.a(n7), .b(n8), .c(n9));\n    NAND g12 (.a(n1), .b(n2), .c(n10));\n    NAND g13 (.a(n3), .b(n4), .c(n11));\n    NAND g14 (.a(n10), .b(n11), .c(n12));\n    NAND g15 (.a(n10), .b(n11), .c(n13));\n    NAND g16 (.a(n12), .b(n13), .c(n14));\n    NAND g17 (.a(n9), .b(n14), .c(n15));\n    NAND g18 (.a(n7), .b(n8), .c(n16));\n    NAND g19 (.a(n15), .b(n16), .c(p1y));\n    NAND g20 (.a(n7), .b(n8), .c(p2y));\n    NAND g21 (.a(n1), .b(n2), .c(n5));\n    NAND g22 (.a(n3), .b(n4), .c(n6));\n    NAND g23 (.a(n5), .b(n6), .c(n7));\n    NAND g24 (.a(n5), .b(n6), .c(n8));\n    NAND g25 (.a(n7), .b(n8), .c(n9));\n    NAND g26 (.a(n1), .b(n2), .c(n10));\n    NAND g27 (.a(n3), .b(n4), .c(n11));\n    NAND g28 (.a(n10), .b(n11), .c(n12));\n    NAND g29 (.a(n10), .b(n11), .c(n13));\n    NAND g30 (.a(n12), .b(n13), .c(n14));\n    NAND g31 (.a(n9), .b(n14), .c(n15));\n    NAND g32 (.a(n7), .b(n8), .c(n16));\n    NAND g33 (.a(n15), .b(n16), .c(p1y));\n    NAND g34 (.a(n7), .b(n8), .c(",
+      "raw_completion_raw_sha256": "7942763d64456f21dc3ad625de894cfd7b4e0c3d2b6206cbaed452795fb23b58",
+      "rtl": "module TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16;\n    NAND g1 (.a(p1a), .b(p1b), .c(n1));\n    NAND g2 (.a(p1c), .b(p1d), .c(n2));\n    NAND g3 (.a(n1), .b(n2), .c(p1y));\n    NAND g4 (.a(p2a), .b(p2b), .c(n3));\n    NAND g5 (.a(p2c), .b(p2d), .c(n4));\n    NAND g6 (.a(n3), .b(n4), .c(p2y));\n    NAND g7 (.a(n1), .b(n2), .c(n5));\n    NAND g8 (.a(n3), .b(n4), .c(n6));\n    NAND g9 (.a(n5), .b(n6), .c(n7));\n    NAND g10 (.a(n5), .b(n6), .c(n8));\n    NAND g11 (.a(n7), .b(n8), .c(n9));\n    NAND g12 (.a(n1), .b(n2), .c(n10));\n    NAND g13 (.a(n3), .b(n4), .c(n11));\n    NAND g14 (.a(n10), .b(n11), .c(n12));\n    NAND g15 (.a(n10), .b(n11), .c(n13));\n    NAND g16 (.a(n12), .b(n13), .c(n14));\n    NAND g17 (.a(n9), .b(n14), .c(n15));\n    NAND g18 (.a(n7), .b(n8), .c(n16));\n    NAND g19 (.a(n15), .b(n16), .c(p1y));\n    NAND g20 (.a(n7), .b(n8), .c(p2y));\n    NAND g21 (.a(n1), .b(n2), .c(n5));\n    NAND g22 (.a(n3), .b(n4), .c(n6));\n    NAND g23 (.a(n5), .b(n6), .c(n7));\n    NAND g24 (.a(n5), .b(n6), .c(n8));\n    NAND g25 (.a(n7), .b(n8), .c(n9));\n    NAND g26 (.a(n1), .b(n2), .c(n10));\n    NAND g27 (.a(n3), .b(n4), .c(n11));\n    NAND g28 (.a(n10), .b(n11), .c(n12));\n    NAND g29 (.a(n10), .b(n11), .c(n13));\n    NAND g30 (.a(n12), .b(n13), .c(n14));\n    NAND g31 (.a(n9), .b(n14), .c(n15));\n    NAND g32 (.a(n7), .b(n8), .c(n16));\n    NAND g33 (.a(n15), .b(n16), .c(p1y));\n    NAND g34 (.a(n7), .b(n8), .c(",
+      "rtl_raw_sha256": "7942763d64456f21dc3ad625de894cfd7b4e0c3d2b6206cbaed452795fb23b58",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:14: error: Unknown module type: NAND",
+      "raw_completion": "module TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14;\n    NAND g1 (.a(p1a), .b(p1b), .c(p1c), .d(p1d), .y(n1));\n    NAND g2 (.a(p2a), .b(p2b), .c(p2c), .d(p2d), .y(n2));\n    NAND g3 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n3));\n    NAND g4 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n4));\n    NAND g5 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n5));\n    NAND g6 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n6));\n    NAND g7 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n7));\n    NAND g8 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n8));\n    NAND g9 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n9));\n    NAND g10 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n10));\n    NAND g11 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n11));\n    NAND g12 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n12));\n    NAND g13 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n13));\n    NAND g14 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n14));\n    assign p1y = n3;\n    assign p2y = n4;\nendmodule",
+      "raw_completion_raw_sha256": "c1054361051253acc3d7a3a6c75dd9f875ca90c2c08ee75d5aefd2f8b9c8b632",
+      "rtl": "module TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14;\n    NAND g1 (.a(p1a), .b(p1b), .c(p1c), .d(p1d), .y(n1));\n    NAND g2 (.a(p2a), .b(p2b), .c(p2c), .d(p2d), .y(n2));\n    NAND g3 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n3));\n    NAND g4 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n4));\n    NAND g5 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n5));\n    NAND g6 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n6));\n    NAND g7 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n7));\n    NAND g8 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n8));\n    NAND g9 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n9));\n    NAND g10 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n10));\n    NAND g11 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n11));\n    NAND g12 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n12));\n    NAND g13 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n13));\n    NAND g14 (.a(n1), .b(n2), .c(1'b1), .d(1'b1), .y(n14));\n    assign p1y = n3;\n    assign p2y = n4;\nendmodule",
+      "rtl_raw_sha256": "c1054361051253acc3d7a3a6c75dd9f875ca90c2c08ee75d5aefd2f8b9c8b632",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "202/239 mismatches",
+      "raw_completion": "// 7420: 4-input NAND, with inverted outputs (same as 7400 NAND).\nmodule TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15;\n    nand g1  (n1, p1a, p1b);\n    nand g2  (n2, p1c, p1d);\n    nand g3  (n3, n1, n2);\n    nand g4  (n4, p2a, p2b);\n    nand g5  (n5, p2c, p2d);\n    nand g6  (n6, n4, n5);\n    nand g7  (n7, n3, n6);\n    nand g8  (p1y, n7, 1'b1);\n    nand g9  (n8, p1a, p1b);\n    nand g10 (n9, p1c, p1d);\n    nand g11 (n10, n8, n9);\n    nand g12 (n11, p2a, p2b);\n    nand g13 (n12, p2c, p2d);\n    nand g14 (n13, n11, n12);\n    nand g15 (n14, n10, n13);\n    nand g16 (p2y, n14, 1'b1);\nendmodule",
+      "raw_completion_raw_sha256": "e3f01468b569ad82ae9084ef6c6ea53cac022d84f3be995009740836a88e89ab",
+      "rtl": "module TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15;\n    nand g1  (n1, p1a, p1b);\n    nand g2  (n2, p1c, p1d);\n    nand g3  (n3, n1, n2);\n    nand g4  (n4, p2a, p2b);\n    nand g5  (n5, p2c, p2d);\n    nand g6  (n6, n4, n5);\n    nand g7  (n7, n3, n6);\n    nand g8  (p1y, n7, 1'b1);\n    nand g9  (n8, p1a, p1b);\n    nand g10 (n9, p1c, p1d);\n    nand g11 (n10, n8, n9);\n    nand g12 (n11, p2a, p2b);\n    nand g13 (n12, p2c, p2d);\n    nand g14 (n13, n11, n12);\n    nand g15 (n14, n10, n13);\n    nand g16 (p2y, n14, 1'b1);\nendmodule",
+      "rtl_raw_sha256": "2abde15f56e09420f2b35d5747861475319134845e38bef8044a866563488a18",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 7420: 2-input NAND gate, integrated into a higher-level chip\nmodule TopModule (\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2;\n    assign n1 = ~(p1a & p1b & p1c & p1d);\n    assign n2 = ~(p2a & p2b & p2c & p2d);\n    assign p1y = n1;\n    assign p2y = n2;\nendmodule",
+      "raw_completion_raw_sha256": "e546ee27cd2d58a8a5cdcf31c0fca9a6d66f1eb8af7bb47de2c5b95d4b5f4542",
+      "rtl": "module TopModule (\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2;\n    assign n1 = ~(p1a & p1b & p1c & p1d);\n    assign n2 = ~(p2a & p2b & p2c & p2d);\n    assign p1y = n1;\n    assign p2y = n2;\nendmodule",
+      "rtl_raw_sha256": "073ce2e761fadb11d33e70de3a0ef69a9505e25834bf2ab0c573284a308d8cd6",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:3: error: Unknown module type: NAND2",
+      "raw_completion": "// 7420: 4-input NAND gate, one 4-input AND gate, and two 2-input OR\n// gates, in a register-less chain. Same function as the 7420.\nmodule TopModule(input p1a, input p1b, input p1c, input p1d, input p2a, input p2b, input p2c, input p2d, output p1y, output p2y);\n    wire n1, n2, n3, n4, n5, n6;\n    NAND2 x1(n1, p1a, p1b);\n    NAND2 x2(n2, p1c, p1d);\n    NAND2 x3(n3, p2a, p2b);\n    NAND2 x4(n4, p2c, p2d);\n    AND2 x5(n5, n1, n2);\n    OR2 x6(n6, n3, n4);\n    NAND2 x7(p1y, n5, 1'b1);\n    NAND2 x8(p2y, n6, 1'b1);\nendmodule",
+      "raw_completion_raw_sha256": "59c56b6efbc942389e1410fa8b46657eb0160bb76535347b509be82cb77a6c9d",
+      "rtl": "module TopModule(input p1a, input p1b, input p1c, input p1d, input p2a, input p2b, input p2c, input p2d, output p1y, output p2y);\n    wire n1, n2, n3, n4, n5, n6;\n    NAND2 x1(n1, p1a, p1b);\n    NAND2 x2(n2, p1c, p1d);\n    NAND2 x3(n3, p2a, p2b);\n    NAND2 x4(n4, p2c, p2d);\n    AND2 x5(n5, n1, n2);\n    OR2 x6(n6, n3, n4);\n    NAND2 x7(p1y, n5, 1'b1);\n    NAND2 x8(p2y, n6, 1'b1);\nendmodule",
+      "rtl_raw_sha256": "03e15aab856bc7d7df4a92e9cd4dd23183343a103e85e190e6df47c81677e432",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob065_7420_ref.sv:2: syntax error",
+      "raw_completion": "module TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20, n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32, n33, n34, n35, n36, n37, n38, n39, n40, n41, n42, n43, n44, n45, n46, n47, n48, n49, n50, n51, n52, n53, n54, n55, n56, n57, n58, n59, n60, n61, n62, n63, n64, n65, n66, n67, n68, n69, n70, n71, n72, n73, n74, n75, n76, n77, n78, n79, n80, n81, n82, n83, n84, n85, n86, n87, n88, n89, n90, n91, n92, n93, n94, n95, n96, n97, n98, n99, n100, n101, n102, n103, n104, n105, n106, n107, n108, n109, n110, n111, n112, n113, n114, n115, n116, n117, n118, n119, n120, n121, n122, n123, n124, n125, n126, n127, n128, n129, n130, n131, n132, n133, n134, n135, n136, n137, n138, n139, n140, n141, n142, n143, n144, n145, n146, n147, n148, n149, n150, n151, n152, n153, n154, n155, n156, n157, n158, n159, n160, n161, n162, n163, n164, n165, n166, n167, n168, n169, n170, n171, n172, n173, n174, n175, n176, n177, n178, n179, n180, n181, n182, n183, n184, n185, n186, n187, n188, n189, n190, n191, n192, n193, n194, n195, n196, n197, n198, n199, n200, n201, n202, n203, n204, n205, n206, n207, n208, n209, n",
+      "raw_completion_raw_sha256": "653100f62600c231c296e70a7753e131e19bf89fd019d3644c2a460894f93adb",
+      "rtl": "module TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20, n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32, n33, n34, n35, n36, n37, n38, n39, n40, n41, n42, n43, n44, n45, n46, n47, n48, n49, n50, n51, n52, n53, n54, n55, n56, n57, n58, n59, n60, n61, n62, n63, n64, n65, n66, n67, n68, n69, n70, n71, n72, n73, n74, n75, n76, n77, n78, n79, n80, n81, n82, n83, n84, n85, n86, n87, n88, n89, n90, n91, n92, n93, n94, n95, n96, n97, n98, n99, n100, n101, n102, n103, n104, n105, n106, n107, n108, n109, n110, n111, n112, n113, n114, n115, n116, n117, n118, n119, n120, n121, n122, n123, n124, n125, n126, n127, n128, n129, n130, n131, n132, n133, n134, n135, n136, n137, n138, n139, n140, n141, n142, n143, n144, n145, n146, n147, n148, n149, n150, n151, n152, n153, n154, n155, n156, n157, n158, n159, n160, n161, n162, n163, n164, n165, n166, n167, n168, n169, n170, n171, n172, n173, n174, n175, n176, n177, n178, n179, n180, n181, n182, n183, n184, n185, n186, n187, n188, n189, n190, n191, n192, n193, n194, n195, n196, n197, n198, n199, n200, n201, n202, n203, n204, n205, n206, n207, n208, n209, n",
+      "rtl_raw_sha256": "653100f62600c231c296e70a7753e131e19bf89fd019d3644c2a460894f93adb",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:27: syntax error",
+      "raw_completion": "// 7420: 2-input NAND gate, explicitly named gates\nmodule TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14;\n    NAND2X1 U1 (.A(p1b), .B(p1a), .Y(n1));\n    NAND2X1 U2 (.A(p1d), .B(p1c), .Y(n2));\n    NAND2X1 U3 (.A(n1), .B(n2), .Y(p1y));\n    NAND2X1 U4 (.A(p2b), .B(p2a), .Y(n3));\n    NAND2X1 U5 (.A(p2d), .B(p2c), .Y(n4));\n    NAND2X1 U6 (.A(n3), .B(n4), .Y(p2y));\n    NAND2X1 U7 (.A(p1a), .B(p1b), .Y(n5));\n    NAND2X1 U8 (.A(p1c), .B(p1d), .Y(n6));\n    NAND2X1 U9 (.A(n5), .B(n6), .Y(n7));\n    NAND2X1 U10 (.A(p2a), .B(p2b), .Y(n8));\n    NAND2X1 U11 (.A(p2c), .B(p2d), .Y(n9));\n    NAND2X1 U12 (.A(n8), .B(n9), .Y(n10));\n    NAND2X1 U13 (.A(n7), .B(n10), .Y(n11));\n    NAND2X1 U14 (.A(n11), .B(\\reg[0]), .Y(n12));\n    NAND2X1 U15 (.A(n11), .B(\\reg[1]), .Y(n13));\n    NAND2X1 U16 (.A(n11), .B(\\reg[2]), .Y(n14));\n    assign \\reg[0] = n12;\n    assign \\reg[1] = n13;\n    assign \\reg[2] = n14;\nendmodule",
+      "raw_completion_raw_sha256": "030953c6957e478d2a3a6fd95e68611c91f7e3a62455ad2b4b71ff11d1e1ef49",
+      "rtl": "module TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14;\n    NAND2X1 U1 (.A(p1b), .B(p1a), .Y(n1));\n    NAND2X1 U2 (.A(p1d), .B(p1c), .Y(n2));\n    NAND2X1 U3 (.A(n1), .B(n2), .Y(p1y));\n    NAND2X1 U4 (.A(p2b), .B(p2a), .Y(n3));\n    NAND2X1 U5 (.A(p2d), .B(p2c), .Y(n4));\n    NAND2X1 U6 (.A(n3), .B(n4), .Y(p2y));\n    NAND2X1 U7 (.A(p1a), .B(p1b), .Y(n5));\n    NAND2X1 U8 (.A(p1c), .B(p1d), .Y(n6));\n    NAND2X1 U9 (.A(n5), .B(n6), .Y(n7));\n    NAND2X1 U10 (.A(p2a), .B(p2b), .Y(n8));\n    NAND2X1 U11 (.A(p2c), .B(p2d), .Y(n9));\n    NAND2X1 U12 (.A(n8), .B(n9), .Y(n10));\n    NAND2X1 U13 (.A(n7), .B(n10), .Y(n11));\n    NAND2X1 U14 (.A(n11), .B(\\reg[0]), .Y(n12));\n    NAND2X1 U15 (.A(n11), .B(\\reg[1]), .Y(n13));\n    NAND2X1 U16 (.A(n11), .B(\\reg[2]), .Y(n14));\n    assign \\reg[0] = n12;\n    assign \\reg[1] = n13;\n    assign \\reg[2] = n14;\nendmodule",
+      "rtl_raw_sha256": "d63562480ddbb4ca69db3f95b1e9885ae568e19e4b7551a76b312a6a04bf2331",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "202/239 mismatches",
+      "raw_completion": "// 7420: 2-input NAND, 2-input NAND, 2-input NAND, 2-input NAND, 2-input NAND, 2-input NAND, 2-input NAND -> NAND chain -> AND -> NOT\nmodule TopModule(\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2, n3, n4, n5, n6, n7;\n    nand g1 (n1, p1a, p1b);\n    nand g2 (n2, p1c, p1d);\n    nand g3 (n3, n1, n2);\n    nand g4 (n4, p2a, p2b);\n    nand g5 (n5, p2c, p2d);\n    nand g6 (n6, n4, n5);\n    nand g7 (n7, n3, n6);\n    not o1 (p1y, n7);\n    not o2 (p2y, n7);\nendmodule",
+      "raw_completion_raw_sha256": "1faa5933e1f54d083cb037ff49b4c89d881d5c98fb8582ad436f9ddd82235a76",
+      "rtl": "module TopModule(\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2, n3, n4, n5, n6, n7;\n    nand g1 (n1, p1a, p1b);\n    nand g2 (n2, p1c, p1d);\n    nand g3 (n3, n1, n2);\n    nand g4 (n4, p2a, p2b);\n    nand g5 (n5, p2c, p2d);\n    nand g6 (n6, n4, n5);\n    nand g7 (n7, n3, n6);\n    not o1 (p1y, n7);\n    not o2 (p2y, n7);\nendmodule",
+      "rtl_raw_sha256": "cfcbcddde8d668e6c99e8ade3930a4ef7be0b2e240291876c679e19ad679fb41",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "28/239 mismatches",
+      "raw_completion": "// 7420: 4-input NAND gate, one register per gate\n// (the register stage increases the critical path from 2 FF to ~2 FF,\n// the register stage also increases the area)\nmodule TopModule(input p1a, input p1b, input p1c, input p1d, input p2a, input p2b, input p2c, input p2d, output p1y, output p2y);\n    reg r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16;\n    wire w1, w2, w3, w4, w5, w6, w7, w8;\n    assign w1 = ~(p1a & p1b & p1c & p1d);\n    assign w2 = ~(p2a & p2b & p2c & p2d);\n    always @(posedge w1) r1 <= 1;\n    always @(posedge w1) r2 <= 1;\n    always @(posedge w1) r3 <= 1;\n    always @(posedge w1) r4 <= 1;\n    always @(posedge w1) r5 <= 1;\n    always @(posedge w1) r6 <= 1;\n    always @(posedge w1) r7 <= 1;\n    always @(posedge w1) r8 <= 1;\n    always @(posedge w2) r9 <= 1;\n    always @(posedge w2) r10 <= 1;\n    always @(posedge w2) r11 <= 1;\n    always @(posedge w2) r12 <= 1;\n    always @(posedge w2) r13 <= 1;\n    always @(posedge w2) r14 <= 1;\n    always @(posedge w2) r15 <= 1;\n    always @(posedge w2) r16 <= 1;\n    assign p1y = r1 & r2 & r3 & r4 & r5 & r6 & r7 & r8;\n    assign p2y = r9 & r10 & r11 & r12 & r13 & r14 & r15 & r16;\n    initial begin\n        r1 = 0; r2 = 0; r3 = 0; r4 = 0; r5 = 0; r6 = 0; r7 = 0; r8 = 0;\n        r9 = 0; r10 = 0; r11 = 0; r12 = 0; r13 = 0; r14 = 0; r15 = 0; r16 = 0;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "4d143ff04f9a9a6153030e7140ff0a740d3386b23fa49a8aa66a5641e59d473d",
+      "rtl": "module TopModule(input p1a, input p1b, input p1c, input p1d, input p2a, input p2b, input p2c, input p2d, output p1y, output p2y);\n    reg r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16;\n    wire w1, w2, w3, w4, w5, w6, w7, w8;\n    assign w1 = ~(p1a & p1b & p1c & p1d);\n    assign w2 = ~(p2a & p2b & p2c & p2d);\n    always @(posedge w1) r1 <= 1;\n    always @(posedge w1) r2 <= 1;\n    always @(posedge w1) r3 <= 1;\n    always @(posedge w1) r4 <= 1;\n    always @(posedge w1) r5 <= 1;\n    always @(posedge w1) r6 <= 1;\n    always @(posedge w1) r7 <= 1;\n    always @(posedge w1) r8 <= 1;\n    always @(posedge w2) r9 <= 1;\n    always @(posedge w2) r10 <= 1;\n    always @(posedge w2) r11 <= 1;\n    always @(posedge w2) r12 <= 1;\n    always @(posedge w2) r13 <= 1;\n    always @(posedge w2) r14 <= 1;\n    always @(posedge w2) r15 <= 1;\n    always @(posedge w2) r16 <= 1;\n    assign p1y = r1 & r2 & r3 & r4 & r5 & r6 & r7 & r8;\n    assign p2y = r9 & r10 & r11 & r12 & r13 & r14 & r15 & r16;\n    initial begin\n        r1 = 0; r2 = 0; r3 = 0; r4 = 0; r5 = 0; r6 = 0; r7 = 0; r8 = 0;\n        r9 = 0; r10 = 0; r11 = 0; r12 = 0; r13 = 0; r14 = 0; r15 = 0; r16 = 0;\n    end\nendmodule",
+      "rtl_raw_sha256": "7e5435791da1703fb60e251bbc4de79b1072f9186c3ad3922787a2190937cbdc",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob065_7420_test.sv:118: error: Unknown module type: TopModule",
+      "raw_completion": "// 7420: 2-input NAND gate (deduced from the truth table)\nmodule NAND2 (input a, b, output y);\n    wire n;\n    assign n = ~(a & b);\n    assign y = n;\nendmodule",
+      "raw_completion_raw_sha256": "15fda0b75d2dfe7c584aef4d7bac30fcdd6ff3177956087b3aa71ea5702c1989",
+      "rtl": "module NAND2 (input a, b, output y);\n    wire n;\n    assign n = ~(a & b);\n    assign y = n;\nendmodule",
+      "rtl_raw_sha256": "a646ede26879ea94969905e120b1292a332f58a69cf2fc27a581f5f919e6f193",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob065_7420_test.sv:118: error: Unknown module type: TopModule",
+      "raw_completion": "// 7420: 2-input NAND gate (deduced from the function table)\nmodule nand4 (input [3:0] x, output y);\n    wire w1, w2;\n    assign w1 = ~(x[0] & x[1]);\n    assign w2 = ~(x[2] & x[3]);\n    assign y = ~(w1 & w2);\nendmodule",
+      "raw_completion_raw_sha256": "63a5229a5cf11d189617f9d3e144405faba74d304c73164940096a2b582a3f89",
+      "rtl": "module nand4 (input [3:0] x, output y);\n    wire w1, w2;\n    assign w1 = ~(x[0] & x[1]);\n    assign w2 = ~(x[2] & x[3]);\n    assign y = ~(w1 & w2);\nendmodule",
+      "rtl_raw_sha256": "db448506bda195c5ff1e7b0d2d0a9d7b4a3060e9355221ac16d1d4f7a3accdfc",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:3: error: Unknown module type: INV",
+      "raw_completion": "// 7420: 2-input NAND gate, one 4-input NAND gate per stage, level-chain\n// (register-less)\nmodule TopModule(input p1a, input p1b, input p1c, input p1d, input p2a, input p2b, input p2c, input p2d, output p1y, output p2y);\n    wire n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20, n21, n22, n23, n24;\n    INV I1(.A(p1a), .Z(n1));\n    INV I2(.A(p1b), .Z(n2));\n    INV I3(.A(p1c), .Z(n3));\n    INV I4(.A(p1d), .Z(n4));\n    NAND2 I5(.A(n1), .B(n2), .Z(n5));\n    NAND2 I6(.A(n3), .B(n4), .Z(n6));\n    NAND2 I7(.A(n5), .B(n6), .Z(n7));\n    INV I8(.A(p2a), .Z(n8));\n    INV I9(.A(p2b), .Z(n9));\n    INV I10(.A(p2c), .Z(n10));\n    INV I11(.A(p2d), .Z(n11));\n    NAND2 I12(.A(n8), .B(n9), .Z(n12));\n    NAND2 I13(.A(n10), .B(n11), .Z(n13));\n    NAND2 I14(.A(n12), .B(n13), .Z(n14));\n    NAND2 I15(.A(n7), .B(n14), .Z(n15));\n    INV I16(.A(n15), .Z(p1y));\n    NAND2 I17(.A(n7), .B(n12), .Z(n16));\n    NAND2 I18(.A(n10), .B(n13), .Z(n17));\n    NAND2 I19(.A(n16), .B(n17), .Z(n18));\n    NAND2 I20(.A(n15), .B(n18), .Z(n19));\n    NAND2 I21(.A(n7), .B(n12), .Z(n20));\n    NAND2 I22(.A(n10), .B(n13), .Z(n21));\n    NAND2 I23(.A(n20), .B(n21), .Z(n22));\n    NAND2 I24(.A(n19), .B(n22), .Z(n23));\n    NAND2 I25(.A(n16), .B(n17), .Z(n24));\n    NAND2 I26(.A(n23), .B(n24), .Z(p2y));\nendmodule",
+      "raw_completion_raw_sha256": "dddd5fcf0a63b1f9aded5d9652de910ca0e8e3373648e48aa67c33987c80b104",
+      "rtl": "module TopModule(input p1a, input p1b, input p1c, input p1d, input p2a, input p2b, input p2c, input p2d, output p1y, output p2y);\n    wire n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20, n21, n22, n23, n24;\n    INV I1(.A(p1a), .Z(n1));\n    INV I2(.A(p1b), .Z(n2));\n    INV I3(.A(p1c), .Z(n3));\n    INV I4(.A(p1d), .Z(n4));\n    NAND2 I5(.A(n1), .B(n2), .Z(n5));\n    NAND2 I6(.A(n3), .B(n4), .Z(n6));\n    NAND2 I7(.A(n5), .B(n6), .Z(n7));\n    INV I8(.A(p2a), .Z(n8));\n    INV I9(.A(p2b), .Z(n9));\n    INV I10(.A(p2c), .Z(n10));\n    INV I11(.A(p2d), .Z(n11));\n    NAND2 I12(.A(n8), .B(n9), .Z(n12));\n    NAND2 I13(.A(n10), .B(n11), .Z(n13));\n    NAND2 I14(.A(n12), .B(n13), .Z(n14));\n    NAND2 I15(.A(n7), .B(n14), .Z(n15));\n    INV I16(.A(n15), .Z(p1y));\n    NAND2 I17(.A(n7), .B(n12), .Z(n16));\n    NAND2 I18(.A(n10), .B(n13), .Z(n17));\n    NAND2 I19(.A(n16), .B(n17), .Z(n18));\n    NAND2 I20(.A(n15), .B(n18), .Z(n19));\n    NAND2 I21(.A(n7), .B(n12), .Z(n20));\n    NAND2 I22(.A(n10), .B(n13), .Z(n21));\n    NAND2 I23(.A(n20), .B(n21), .Z(n22));\n    NAND2 I24(.A(n19), .B(n22), .Z(n23));\n    NAND2 I25(.A(n16), .B(n17), .Z(n24));\n    NAND2 I26(.A(n23), .B(n24), .Z(p2y));\nendmodule",
+      "rtl_raw_sha256": "fb04ee1ca436ec6929fc57cf1581a1f7017a61bd60fe2c8d25c444e429c304ae",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:3: error: Unknown module type: NOT",
+      "raw_completion": "// 7420: 2-input NAND gate, as a SINGLE gate (the full gate schematic is\n// identical to the one-gate schematic, so we can inline it).\nmodule NAND2 (input a, b, output y);\n    wire n1, n2;\n    NOT gate1 (.a(a), .y(n1));\n    NOT gate2 (.a(b), .y(n2));\n    AND gate3 (.a(n1), .b(n2), .y(y));\nendmodule",
+      "raw_completion_raw_sha256": "24ea906bad3ee9fa66d3121b91fbad95604f824b22e581c2cd680ee8cdda34cd",
+      "rtl": "module NAND2 (input a, b, output y);\n    wire n1, n2;\n    NOT gate1 (.a(a), .y(n1));\n    NOT gate2 (.a(b), .y(n2));\n    AND gate3 (.a(n1), .b(n2), .y(y));\nendmodule",
+      "rtl_raw_sha256": "bb8cef108be17501aea4db9f0e3cb6de1d617a37b01226e2296f0098a3fb8f0a",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:16: error: Unknown module type: inv",
+      "raw_completion": "// 7420: 4-input NAND, level-triggered (LATCHING, NOT clocked)\n// Same as 7400 NAND, but the output goes through an inverter\n// (thus the same function, but the propagation delay is shorter).\nmodule TopModule(\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2;\n    nand n3 (n1, p1a, p1b, p1c, p1d);\n    nand n4 (n2, p2a, p2b, p2c, p2d);\n    inv i1 (p1y, n1);\n    inv i2 (p2y, n2);\nendmodule",
+      "raw_completion_raw_sha256": "c349066ce298aaccdb2e5284e2a1a50c08f05109be00f0fd43185a0b91d1bdf3",
+      "rtl": "module TopModule(\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2;\n    nand n3 (n1, p1a, p1b, p1c, p1d);\n    nand n4 (n2, p2a, p2b, p2c, p2d);\n    inv i1 (p1y, n1);\n    inv i2 (p2y, n2);\nendmodule",
+      "rtl_raw_sha256": "a8f407b1866ff6d1bfe8395d41cacfc42fcfb27987f2e1eef422ed0f531e3c91",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "239/239 mismatches",
+      "raw_completion": "module TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2, n3, n4, n5, n6, n7, n8;\n    nand g1 (n1, p1a, p1b, p1c, p1d);\n    nand g2 (n2, p2a, p2b, p2c, p2d);\n    nand g3 (p1y, n1, n2);\n    nand g4 (n3, p1a, p1b, p1c);\n    nand g5 (n4, p1a, p1b, p1d);\n    nand g6 (n5, p1a, p1c, p1d);\n    nand g7 (n6, p1b, p1c, p1d);\n    nand g8 (p2y, n3, n4, n5, n6, n7, n8);\n    nand g9 (n7, p2a, p2b, p2c);\n    nand g10 (n8, p2a, p2b, p2d);\nendmodule",
+      "raw_completion_raw_sha256": "2fa53c4a0425b375979ec64e77fb0056cc37f5d85658c808a8dd030ad86febd1",
+      "rtl": "module TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire n1, n2, n3, n4, n5, n6, n7, n8;\n    nand g1 (n1, p1a, p1b, p1c, p1d);\n    nand g2 (n2, p2a, p2b, p2c, p2d);\n    nand g3 (p1y, n1, n2);\n    nand g4 (n3, p1a, p1b, p1c);\n    nand g5 (n4, p1a, p1b, p1d);\n    nand g6 (n5, p1a, p1c, p1d);\n    nand g7 (n6, p1b, p1c, p1d);\n    nand g8 (p2y, n3, n4, n5, n6, n7, n8);\n    nand g9 (n7, p2a, p2b, p2c);\n    nand g10 (n8, p2a, p2b, p2d);\nendmodule",
+      "rtl_raw_sha256": "2fa53c4a0425b375979ec64e77fb0056cc37f5d85658c808a8dd030ad86febd1",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 7420: 4-input NAND gate, level-triggered (register feedback)\nmodule TopModule(input p1a, input p1b, input p1c, input p1d, input p2a, input p2b, input p2c, input p2d, output p1y, output p2y);\n\treg r1, r2, r3, r4;\n\twire w1, w2, w3, w4;\n\tnand g1 (w1, p1a, p1b, p1c, p1d);\n\tnand g2 (w2, p2a, p2b, p2c, p2d);\n\tnand g3 (w3, r1, r2, r3, r4);\n\tnand g4 (w4, r1, r2, r3, r4);\n\talways @(posedge w1) r1 <= ~(p1a & p1b & p1c & p1d);\n\talways @(posedge w2) r2 <= ~(p2a & p2b & p2c & p2d);\n\talways @(posedge w3) r3 <= ~(r1 & r2 & r3 & r4);\n\talways @(posedge w4) r4 <= ~(r1 & r2 & r3 & r4);\n\tassign p1y = ~(p1a & p1b & p1c & p1d);\n\tassign p2y = ~(p2a & p2b & p2c & p2d);\nendmodule",
+      "raw_completion_raw_sha256": "9b84457772c7ec9828b3e5bc30d0659845af373142f18f66a504016c2dd24e25",
+      "rtl": "module TopModule(input p1a, input p1b, input p1c, input p1d, input p2a, input p2b, input p2c, input p2d, output p1y, output p2y);\n\treg r1, r2, r3, r4;\n\twire w1, w2, w3, w4;\n\tnand g1 (w1, p1a, p1b, p1c, p1d);\n\tnand g2 (w2, p2a, p2b, p2c, p2d);\n\tnand g3 (w3, r1, r2, r3, r4);\n\tnand g4 (w4, r1, r2, r3, r4);\n\talways @(posedge w1) r1 <= ~(p1a & p1b & p1c & p1d);\n\talways @(posedge w2) r2 <= ~(p2a & p2b & p2c & p2d);\n\talways @(posedge w3) r3 <= ~(r1 & r2 & r3 & r4);\n\talways @(posedge w4) r4 <= ~(r1 & r2 & r3 & r4);\n\tassign p1y = ~(p1a & p1b & p1c & p1d);\n\tassign p2y = ~(p2a & p2b & p2c & p2d);\nendmodule",
+      "rtl_raw_sha256": "3f08f48738ff79364ea690bbb9e695838b294ca58c3ffbe0efa33923dfb0d9ff",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:4: error: 'gate' has already been declared in this scope.",
+      "raw_completion": "// 7420: 2-input NAND gate (deduplicated)\nmodule NAND2 (input a, b, output y);\n    wire n1, n2;\n    not gate (n1, a);\n    not gate (n2, b);\n    and gate (y, n1, n2);\nendmodule",
+      "raw_completion_raw_sha256": "1edeab22a1db63e0438b33cfe219405311dce6bef90ff8f6cb9fdc767293a5e5",
+      "rtl": "module NAND2 (input a, b, output y);\n    wire n1, n2;\n    not gate (n1, a);\n    not gate (n2, b);\n    and gate (y, n1, n2);\nendmodule",
+      "rtl_raw_sha256": "9ba8eed63d18e4ed601e9fba1d30f30a0f329f81d89ce35d5443c418955e4b69",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 2,
+    "compile_fail": 13,
+    "fail": 5
+  },
+  "testbench_raw_sha256": "128757a15762b2b9872db61d42d5e8c80db96ded86994f975220117c44efd853",
+  "training_seed": 1
+}

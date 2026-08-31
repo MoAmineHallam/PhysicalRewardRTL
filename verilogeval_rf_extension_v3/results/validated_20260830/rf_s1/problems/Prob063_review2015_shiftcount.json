@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob063_review2015_shiftcount",
+  "problem_seed": 6212737735441620979,
+  "prompt_raw_sha256": "82e49e33fed2d0b401b0bc8e963c3808d5a79bf999a9c50ee08a61a6bdb6075b",
+  "reference_raw_sha256": "745be14ac6cf96b9dfb2df944ecd6d1f9edadbcd3c740610711ad8ce1f562376",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "2070/2071 mismatches",
+      "raw_completion": "// Four-bit shift register with down counter, most-significant-bit first\nmodule TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n  reg [3:0] reg0;\n  reg [3:0] reg1;\n  reg [3:0] reg2;\n  reg [3:0] reg3;\n  always @(posedge clk) begin\n    if (shift_ena) begin\n      reg3 <= data;\n      reg2 <= reg3;\n      reg1 <= reg2;\n      reg0 <= reg1;\n    end\n    if (count_ena) q <= q - 1;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "69f16ec097ef84e81723e389e1ce3913d5e2c0bb2e1918bc60ac4301b86806b5",
+      "rtl": "module TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n  reg [3:0] reg0;\n  reg [3:0] reg1;\n  reg [3:0] reg2;\n  reg [3:0] reg3;\n  always @(posedge clk) begin\n    if (shift_ena) begin\n      reg3 <= data;\n      reg2 <= reg3;\n      reg1 <= reg2;\n      reg0 <= reg1;\n    end\n    if (count_ena) q <= q - 1;\n  end\nendmodule",
+      "rtl_raw_sha256": "a57187b974593f361f50a1c12d9ccfac78e7bf18aed069338a0fdf87f680a486",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:16: error: q_next is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Four-bit shift register with down counter\nmodule TopModule(\n    input  clk,\n    input  shift_ena,\n    input  count_ena,\n    input  data,\n    output [3:0] q\n);\n    reg [3:0] regs [0:3];\n    reg [1:0] count;\n    wire [3:0] q_next;\n    wire count_ena_d;\n    reg [1:0] count_next;\n    wire [3:0] q_reg;\n    reg [3:0] q_reg_next;\n    always @(*) begin\n        q_next = {regs[3], regs[2], regs[1], regs[0]};\n    end\n    always @(*) begin\n        count_next = count - 1;\n    end\n    always @(*) begin\n        if (shift_ena) count_ena_d = 1;\n        else           count_ena_d = count_ena;\n    end\n    always @(*) begin\n        q_reg_next = q_next;\n        if (count_ena_d) q_reg_next = count_next;\n    end\n    always @(posedge clk) begin\n        regs[0] <= data;\n        regs[1] <= regs[0];\n        regs[2] <= regs[1];\n        regs[3] <= regs[2];\n        count <= count_next;\n        q_reg <= q_reg_next;\n    end\n    assign q = q_reg;\nendmodule",
+      "raw_completion_raw_sha256": "0d8483fc3472351747f3c1f555a503a6a13e42719196d0cb7f0fef2913828eb0",
+      "rtl": "module TopModule(\n    input  clk,\n    input  shift_ena,\n    input  count_ena,\n    input  data,\n    output [3:0] q\n);\n    reg [3:0] regs [0:3];\n    reg [1:0] count;\n    wire [3:0] q_next;\n    wire count_ena_d;\n    reg [1:0] count_next;\n    wire [3:0] q_reg;\n    reg [3:0] q_reg_next;\n    always @(*) begin\n        q_next = {regs[3], regs[2], regs[1], regs[0]};\n    end\n    always @(*) begin\n        count_next = count - 1;\n    end\n    always @(*) begin\n        if (shift_ena) count_ena_d = 1;\n        else           count_ena_d = count_ena;\n    end\n    always @(*) begin\n        q_reg_next = q_next;\n        if (count_ena_d) q_reg_next = count_next;\n    end\n    always @(posedge clk) begin\n        regs[0] <= data;\n        regs[1] <= regs[0];\n        regs[2] <= regs[1];\n        regs[3] <= regs[2];\n        count <= count_next;\n        q_reg <= q_reg_next;\n    end\n    assign q = q_reg;\nendmodule",
+      "rtl_raw_sha256": "3fa984b14619e368a89ad3d8172b9bce608eeb2ba1d3c9ca232e9b98fceac050",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "2070/2071 mismatches",
+      "raw_completion": "// Four-bit shift register with down counter.\nmodule TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] reg0;\n    always @(posedge clk) begin\n        if (shift_ena) reg0 <= {data, reg0[3:1]};\n        if (count_ena) q <= q - 1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "6ba9d1f0f8ef8af02db9c49efc4e8aabe16410fc69dcd87183944e377f8a7d4e",
+      "rtl": "module TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] reg0;\n    always @(posedge clk) begin\n        if (shift_ena) reg0 <= {data, reg0[3:1]};\n        if (count_ena) q <= q - 1;\n    end\nendmodule",
+      "rtl_raw_sha256": "a4334a68a8ce991103db16f59c0c7e7da9009c6c48d6377aa75258672cacc58d",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "2070/2071 mismatches",
+      "raw_completion": "// Four-bit shift register with down counter.\nmodule TopModule(\n    input  clk,\n    input  shift_ena,\n    input  count_ena,\n    input  data,\n    output reg [3:0] q\n);\n    reg [3:0] reg0;\n    reg [3:0] reg1;\n    reg [3:0] reg2;\n    reg [3:0] reg3;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            reg0 <= data;\n            reg1 <= reg0;\n            reg2 <= reg1;\n            reg3 <= reg2;\n        end\n        if (count_ena) q <= q - 1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a16cd6c0da560ce0e36f752ecdd96014b9a2b1e9ecdbac816c96435e746d5f54",
+      "rtl": "module TopModule(\n    input  clk,\n    input  shift_ena,\n    input  count_ena,\n    input  data,\n    output reg [3:0] q\n);\n    reg [3:0] reg0;\n    reg [3:0] reg1;\n    reg [3:0] reg2;\n    reg [3:0] reg3;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            reg0 <= data;\n            reg1 <= reg0;\n            reg2 <= reg1;\n            reg3 <= reg2;\n        end\n        if (count_ena) q <= q - 1;\n    end\nendmodule",
+      "rtl_raw_sha256": "38bac38ed5b640cec07e5e6282eaf8fd6bc1c16e9c73c7cf8e204e2deabd5f49",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:13: error: q Unable to assign to unresolved wires.",
+      "raw_completion": "// Four-bit shift register + down counter\nmodule TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] reg0;\n    reg [3:0] reg1;\n    reg [3:0] reg2;\n    reg [3:0] reg3;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            reg0 <= data;\n            reg1 <= reg0;\n            reg2 <= reg1;\n            reg3 <= reg2;\n        end\n        if (count_ena) q <= q - 1;\n    end\n    assign q = {reg3, reg2, reg1, reg0};\nendmodule",
+      "raw_completion_raw_sha256": "4e64fe4d2c2a3499ec44f87d5c619b480ed4212ff37bc62b1a9ae38942f4779d",
+      "rtl": "module TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] reg0;\n    reg [3:0] reg1;\n    reg [3:0] reg2;\n    reg [3:0] reg3;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            reg0 <= data;\n            reg1 <= reg0;\n            reg2 <= reg1;\n            reg3 <= reg2;\n        end\n        if (count_ena) q <= q - 1;\n    end\n    assign q = {reg3, reg2, reg1, reg0};\nendmodule",
+      "rtl_raw_sha256": "6508164f16b3327c8bbee636e422ba00193970c535b54265eba62de7a9452a44",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "2070/2071 mismatches",
+      "raw_completion": "module TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] reg0;\n    reg [3:0] reg1;\n    reg [3:0] reg2;\n    reg [3:0] reg3;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            reg0 <= data;\n            reg1 <= reg0;\n            reg2 <= reg1;\n            reg3 <= reg2;\n        end\n        if (count_ena) q <= q - 1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "292851f81dc218d35bdff6f80795b9e4a5134ba83560690b26d022c670e7d7a6",
+      "rtl": "module TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] reg0;\n    reg [3:0] reg1;\n    reg [3:0] reg2;\n    reg [3:0] reg3;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            reg0 <= data;\n            reg1 <= reg0;\n            reg2 <= reg1;\n            reg3 <= reg2;\n        end\n        if (count_ena) q <= q - 1;\n    end\nendmodule",
+      "rtl_raw_sha256": "292851f81dc218d35bdff6f80795b9e4a5134ba83560690b26d022c670e7d7a6",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "2070/2071 mismatches",
+      "raw_completion": "// Four-bit shift register with down counter. Same function as the reference.\nmodule TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] reg0, reg1, reg2, reg3;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            reg0 <= data;\n            reg1 <= reg0;\n            reg2 <= reg1;\n            reg3 <= reg2;\n        end\n        if (count_ena) q <= q - 1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "f58c051572a8c4682b9ce32a1151cea702fad54ae29ec2892a71bc05985b22b5",
+      "rtl": "module TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] reg0, reg1, reg2, reg3;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            reg0 <= data;\n            reg1 <= reg0;\n            reg2 <= reg1;\n            reg3 <= reg2;\n        end\n        if (count_ena) q <= q - 1;\n    end\nendmodule",
+      "rtl_raw_sha256": "8783232c73ba01e2475f8378b8fe914a5ab0f2f44930c1f8dbb7ed3f8e0fe2f0",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "1920/2071 mismatches",
+      "raw_completion": "// Four-bit shift register with down counter. Same function as the reference.\nmodule TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] reg0;\n    always @(posedge clk) begin\n        if (shift_ena) reg0 <= {data, reg0[3:1]};\n        if (count_ena) reg0 <= reg0 - 1;\n        q <= reg0;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "91caeccd9bb6af2193cfdc310d613e55305a81a82708bb6a4a0aa78622683eb5",
+      "rtl": "module TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] reg0;\n    always @(posedge clk) begin\n        if (shift_ena) reg0 <= {data, reg0[3:1]};\n        if (count_ena) reg0 <= reg0 - 1;\n        q <= reg0;\n    end\nendmodule",
+      "rtl_raw_sha256": "538687b918755821218c72c87f0beccf76101a2e4ceeebf6825ddb3d3230f367",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "1890/2071 mismatches",
+      "raw_completion": "// Four-bit shift register with down counter, with shift_ena ANDed with\n// count_ena -> the register is updated exactly once per clock cycle.\nmodule TopModule(\n    input  clk,\n    input  shift_ena,\n    input  count_ena,\n    input  data,\n    output reg [3:0] q\n);\n    reg [3:0] reg_next;\n    wire count_dec = count_ena & (q != 4'd0);\n    always @(*) begin\n        reg_next = {data, q[3:1]};\n        if (shift_ena) q <= reg_next;\n        if (count_dec) q <= q - 4'd1;\n    end\n    always @(posedge clk) begin\n        q <= reg_next;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "584df514ea449b8b50f4bdb198d568dd8dfcb9111dfd32d4fc2f3bad989b2770",
+      "rtl": "module TopModule(\n    input  clk,\n    input  shift_ena,\n    input  count_ena,\n    input  data,\n    output reg [3:0] q\n);\n    reg [3:0] reg_next;\n    wire count_dec = count_ena & (q != 4'd0);\n    always @(*) begin\n        reg_next = {data, q[3:1]};\n        if (shift_ena) q <= reg_next;\n        if (count_dec) q <= q - 4'd1;\n    end\n    always @(posedge clk) begin\n        q <= reg_next;\n    end\nendmodule",
+      "rtl_raw_sha256": "63d9629e617958b5ffd747f87306fb3aba23eff75d4509d2cb9c441b7bc0367a",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "2070/2071 mismatches",
+      "raw_completion": "// Four-bit shift register with down counter\nmodule TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] reg0;\n    always @(posedge clk) begin\n        if (shift_ena) reg0 <= {data, reg0[3:1]};\n        if (count_ena) q <= q - 1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "969009ce08e69c9a851b651233ab0f517269a8f797d51abe8157480ba9506eec",
+      "rtl": "module TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] reg0;\n    always @(posedge clk) begin\n        if (shift_ena) reg0 <= {data, reg0[3:1]};\n        if (count_ena) q <= q - 1;\n    end\nendmodule",
+      "rtl_raw_sha256": "a4334a68a8ce991103db16f59c0c7e7da9009c6c48d6377aa75258672cacc58d",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: q Unable to assign to unresolved wires.",
+      "raw_completion": "// Four-bit shift register with down counter.\nmodule TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] regs [0:3];\n    integer i;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            for (i = 3; i > 0; i = i - 1) regs[i] <= regs[i - 1];\n            regs[0] <= data;\n        end\n        if (count_ena) q <= q - 1;\n    end\n    assign q = regs[3];\nendmodule",
+      "raw_completion_raw_sha256": "7e39c3858656dd0ea0295207e3b38613cd0e6e40e827b74d4cc9f1dd2329ea9f",
+      "rtl": "module TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] regs [0:3];\n    integer i;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            for (i = 3; i > 0; i = i - 1) regs[i] <= regs[i - 1];\n            regs[0] <= data;\n        end\n        if (count_ena) q <= q - 1;\n    end\n    assign q = regs[3];\nendmodule",
+      "rtl_raw_sha256": "4b91bde23d55d525cd762f86137787d2957c88690ecd9bb9619079f969534eb7",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "2070/2071 mismatches",
+      "raw_completion": "// Four-bit shift register + down counter, as described in the prompt.\nmodule TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] reg0;\n    always @(posedge clk) begin\n        if (shift_ena) reg0 <= {data, reg0[3:1]};\n        if (count_ena) q <= q - 1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "8dec491a0cf5db3a053de56e8cc9981211ba1ff312283903177ba3362fb78f92",
+      "rtl": "module TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] reg0;\n    always @(posedge clk) begin\n        if (shift_ena) reg0 <= {data, reg0[3:1]};\n        if (count_ena) q <= q - 1;\n    end\nendmodule",
+      "rtl_raw_sha256": "a4334a68a8ce991103db16f59c0c7e7da9009c6c48d6377aa75258672cacc58d",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "1886/2071 mismatches",
+      "raw_completion": "// Four-bit shift register with down counter. Same function as the reference\n// circuit, but implemented in a single nested always block.\nmodule TopModule(input  clk,\n                 input  shift_ena,\n                 input  count_ena,\n                 input  data,\n                 output [3:0] q);\n  reg [3:0] r;\n  always @(posedge clk) begin\n    if (shift_ena) r <= {data, r[3:1]};\n    if (count_ena) r <= r - 1;\n  end\n  assign q = r;\nendmodule",
+      "raw_completion_raw_sha256": "0f32e370ab4fc11dce97688292738dd2a46da1172a4e8c6eec96c24119c952ad",
+      "rtl": "module TopModule(input  clk,\n                 input  shift_ena,\n                 input  count_ena,\n                 input  data,\n                 output [3:0] q);\n  reg [3:0] r;\n  always @(posedge clk) begin\n    if (shift_ena) r <= {data, r[3:1]};\n    if (count_ena) r <= r - 1;\n  end\n  assign q = r;\nendmodule",
+      "rtl_raw_sha256": "1808785c5c11a09176fab8ddbdd489779aee521870c421a49586939c35a56a94",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "2070/2071 mismatches",
+      "raw_completion": "// Four-bit shift register with down counter. Same function as the reference\n// circuit, but implemented in a more straightforward way.\nmodule TopModule(\n    input  clk,\n    input  shift_ena,\n    input  count_ena,\n    input  data,\n    output reg [3:0] q\n);\n    reg [3:0] reg0, reg1, reg2, reg3;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            reg0 <= data;\n            reg1 <= reg0;\n            reg2 <= reg1;\n            reg3 <= reg2;\n        end\n        if (count_ena) q <= q - 1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "90f9f7e04934194c947dcdcb9449e71a82c1426e290d5606a64f0794dacd21d5",
+      "rtl": "module TopModule(\n    input  clk,\n    input  shift_ena,\n    input  count_ena,\n    input  data,\n    output reg [3:0] q\n);\n    reg [3:0] reg0, reg1, reg2, reg3;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            reg0 <= data;\n            reg1 <= reg0;\n            reg2 <= reg1;\n            reg3 <= reg2;\n        end\n        if (count_ena) q <= q - 1;\n    end\nendmodule",
+      "rtl_raw_sha256": "1e7fcbeab4bbfbd158824841f5fef168b37907a70166967fa32ac61ca3cf2bd7",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:13: error: q Unable to assign to unresolved wires.",
+      "raw_completion": "// Four-bit shift register with down counter\nmodule TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] reg0;\n    reg [3:0] reg1;\n    reg [3:0] reg2;\n    reg [3:0] reg3;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            reg3 <= data;\n            reg2 <= reg3;\n            reg1 <= reg2;\n            reg0 <= reg1;\n        end\n        if (count_ena) q <= q - 1;\n    end\n    assign q = {reg3, reg2, reg1, reg0};\nendmodule",
+      "raw_completion_raw_sha256": "1d4f32338730675163a4e6bcc4b770d253f0ba107270d0aab79a32fc30af3616",
+      "rtl": "module TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] reg0;\n    reg [3:0] reg1;\n    reg [3:0] reg2;\n    reg [3:0] reg3;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            reg3 <= data;\n            reg2 <= reg3;\n            reg1 <= reg2;\n            reg0 <= reg1;\n        end\n        if (count_ena) q <= q - 1;\n    end\n    assign q = {reg3, reg2, reg1, reg0};\nendmodule",
+      "rtl_raw_sha256": "692cf824da959237af1f6ffbd192bb11d00dc24015c087b2629b68a478eed144",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "2070/2071 mismatches",
+      "raw_completion": "// Four-bit shift register with down counter\nmodule TopModule(\n    input  clk,\n    input  shift_ena,\n    input  count_ena,\n    input  data,\n    output reg [3:0] q\n);\n    reg [3:0] reg0;\n    reg [3:0] reg1;\n    reg [3:0] reg2;\n    reg [3:0] reg3;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            reg3 <= data;\n            reg2 <= reg3;\n            reg1 <= reg2;\n            reg0 <= reg1;\n        end\n        if (count_ena) q <= q - 1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "e41706efd451eb5eb175234c5aaa966748c34533f5c5ad43c2c0622c15c6638c",
+      "rtl": "module TopModule(\n    input  clk,\n    input  shift_ena,\n    input  count_ena,\n    input  data,\n    output reg [3:0] q\n);\n    reg [3:0] reg0;\n    reg [3:0] reg1;\n    reg [3:0] reg2;\n    reg [3:0] reg3;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            reg3 <= data;\n            reg2 <= reg3;\n            reg1 <= reg2;\n            reg0 <= reg1;\n        end\n        if (count_ena) q <= q - 1;\n    end\nendmodule",
+      "rtl_raw_sha256": "0946448da0603a6eda8a6a6bce6018c535511163bccce72916a4b442b2f34803",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: q Unable to assign to unresolved wires.",
+      "raw_completion": "// Four-bit shift register with down counter\nmodule TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] regs [0:3];\n    integer i;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            for (i = 3; i > 0; i = i - 1) regs[i] <= regs[i-1];\n            regs[0] <= data;\n        end\n        if (count_ena) q <= q - 1;\n    end\n    assign q = regs[3];\nendmodule",
+      "raw_completion_raw_sha256": "5eeb4daf05d7e0f23cb044360a3a6cf7a2852b138f090da98f2fd7154b78e401",
+      "rtl": "module TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] regs [0:3];\n    integer i;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            for (i = 3; i > 0; i = i - 1) regs[i] <= regs[i-1];\n            regs[0] <= data;\n        end\n        if (count_ena) q <= q - 1;\n    end\n    assign q = regs[3];\nendmodule",
+      "rtl_raw_sha256": "3b3c5b1f1d49ed2f269a648b2cd2f20a582b93314afa41fcdce4870671d51037",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: q Unable to assign to unresolved wires.",
+      "raw_completion": "// Four-bit shift register with down counter\nmodule TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] regs [0:3];\n    integer i;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            for (i = 3; i > 0; i = i - 1) regs[i] <= regs[i-1];\n            regs[0] <= data;\n        end\n        if (count_ena) q <= q - 1;\n    end\n    assign q = regs[3];\nendmodule",
+      "raw_completion_raw_sha256": "5eeb4daf05d7e0f23cb044360a3a6cf7a2852b138f090da98f2fd7154b78e401",
+      "rtl": "module TopModule(input clk, input shift_ena, input count_ena, input data, output reg [3:0] q);\n    reg [3:0] regs [0:3];\n    integer i;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            for (i = 3; i > 0; i = i - 1) regs[i] <= regs[i-1];\n            regs[0] <= data;\n        end\n        if (count_ena) q <= q - 1;\n    end\n    assign q = regs[3];\nendmodule",
+      "rtl_raw_sha256": "3b3c5b1f1d49ed2f269a648b2cd2f20a582b93314afa41fcdce4870671d51037",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:21: error: q is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Four-bit shift register with down counter.\nmodule TopModule(\n    input  clk,\n    input  shift_ena,\n    input  count_ena,\n    input  data,\n    output [3:0] q\n);\n    reg [3:0] reg0;\n    reg [3:0] reg1;\n    reg [3:0] reg2;\n    reg [3:0] reg3;\n    wire [3:0] q_next;\n    wire [3:0] count_next;\n    assign q_next = {reg0, reg1, reg2, reg3} >> 1;\n    assign count_next = shift_ena ? q_next - 1 : q_next;\n    always @(posedge clk) begin\n        reg0 <= shift_ena ? data : q_next[0];\n        reg1 <= reg0;\n        reg2 <= reg1;\n        reg3 <= reg2;\n        if (count_ena) q <= count_next;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "ba6b0e574839444126e24839484a107d74155963844426856600cf800587c4ed",
+      "rtl": "module TopModule(\n    input  clk,\n    input  shift_ena,\n    input  count_ena,\n    input  data,\n    output [3:0] q\n);\n    reg [3:0] reg0;\n    reg [3:0] reg1;\n    reg [3:0] reg2;\n    reg [3:0] reg3;\n    wire [3:0] q_next;\n    wire [3:0] count_next;\n    assign q_next = {reg0, reg1, reg2, reg3} >> 1;\n    assign count_next = shift_ena ? q_next - 1 : q_next;\n    always @(posedge clk) begin\n        reg0 <= shift_ena ? data : q_next[0];\n        reg1 <= reg0;\n        reg2 <= reg1;\n        reg3 <= reg2;\n        if (count_ena) q <= count_next;\n    end\nendmodule",
+      "rtl_raw_sha256": "416f8d4c8ae2561ef8a1c6c62211cdbc8e54cb4c438415b618f33bc093a38251",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "2070/2071 mismatches",
+      "raw_completion": "// Four-bit shift register with down counter\nmodule TopModule(\n    input  clk,\n    input  shift_ena,\n    input  count_ena,\n    input  data,\n    output reg [3:0] q\n);\n    reg [3:0] reg0;\n    reg [3:0] reg1;\n    reg [3:0] reg2;\n    reg [3:0] reg3;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            reg0 <= data;\n            reg1 <= reg0;\n            reg2 <= reg1;\n            reg3 <= reg2;\n        end\n        if (count_ena) q <= q - 1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "7db746b755b0764cef30951565c469542dd348f1ef94664bb6737e52cce8b760",
+      "rtl": "module TopModule(\n    input  clk,\n    input  shift_ena,\n    input  count_ena,\n    input  data,\n    output reg [3:0] q\n);\n    reg [3:0] reg0;\n    reg [3:0] reg1;\n    reg [3:0] reg2;\n    reg [3:0] reg3;\n    always @(posedge clk) begin\n        if (shift_ena) begin\n            reg0 <= data;\n            reg1 <= reg0;\n            reg2 <= reg1;\n            reg3 <= reg2;\n        end\n        if (count_ena) q <= q - 1;\n    end\nendmodule",
+      "rtl_raw_sha256": "38bac38ed5b640cec07e5e6282eaf8fd6bc1c16e9c73c7cf8e204e2deabd5f49",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 7,
+    "fail": 13
+  },
+  "testbench_raw_sha256": "9d8cd202ecabc17b8e9f9702c973c3cf4eb546ea8048281f2af613b81cf443b5",
+  "training_seed": 1
+}

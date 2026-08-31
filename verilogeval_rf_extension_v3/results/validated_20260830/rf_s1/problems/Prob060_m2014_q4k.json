@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob060_m2014_q4k",
+  "problem_seed": 3019981733011450837,
+  "prompt_raw_sha256": "f602ab79b1422f26c05da1c05bc6a1f9f643622dcc9779d883443d77b3339ac7",
+  "reference_raw_sha256": "483aa7cd86a26bfcc85ba4771341653cd341815820b7a23105e2579143c0c1ac",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "102/299 mismatches",
+      "raw_completion": "// One-bit shift register with four DFFs, async reset.\nmodule TopModule(input clk, input resetn, input in, output reg out);\n  reg [3:0] sr;\n  always @(posedge clk) begin\n    if (!resetn) sr <= 4'b0000;\n    else sr <= {sr[2:0], in};\n    out <= sr[3];\n  end\nendmodule",
+      "raw_completion_raw_sha256": "8f0397625d9cbb9f454defca83fdaf63c748641fd8a7e0e14d51844f9bea684a",
+      "rtl": "module TopModule(input clk, input resetn, input in, output reg out);\n  reg [3:0] sr;\n  always @(posedge clk) begin\n    if (!resetn) sr <= 4'b0000;\n    else sr <= {sr[2:0], in};\n    out <= sr[3];\n  end\nendmodule",
+      "rtl_raw_sha256": "4685a88ed4536d1640621880f472db87c026feca967477b105bf3e3e398801f5",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob060_m2014_q4k_test.sv:73: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit DFF, named explicitly so it's easy to see the register\n// chain, independent of the rest of the design.\nmodule DFF (input  wire  D,\n             input  wire  CLK,\n             output reg   Q);\n    always @(posedge CLK) Q <= D;\nendmodule",
+      "raw_completion_raw_sha256": "5712e00dd47a9494ef873aad9a92bad6bb0fb0ea96f045c7d5fd6e1e4f15a944",
+      "rtl": "module DFF (input  wire  D,\n             input  wire  CLK,\n             output reg   Q);\n    always @(posedge CLK) Q <= D;\nendmodule",
+      "rtl_raw_sha256": "3f03e595a4552378d094d3650b731e990beda57787b7948cc7c42e6b3d69a761",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// A single-clock domain register, named register_0, has been added in\n// order to transform the pipeline into a register-less one.\nmodule TopModule(input clk, input resetn, input in, output out);\n  reg [3:0] register_0;\n  always @(posedge clk) begin\n    if (!resetn) register_0 <= 4'b0;\n    else register_0 <= {register_0[2:0], in};\n  end\n  assign out = register_0[3];\nendmodule",
+      "raw_completion_raw_sha256": "48fd2e890ff50557a16954f2410df40dcd08312461cf98af18d4e62bf3989067",
+      "rtl": "module TopModule(input clk, input resetn, input in, output out);\n  reg [3:0] register_0;\n  always @(posedge clk) begin\n    if (!resetn) register_0 <= 4'b0;\n    else register_0 <= {register_0[2:0], in};\n  end\n  assign out = register_0[3];\nendmodule",
+      "rtl_raw_sha256": "066430064962cdaa6f7e3b2e46233dd70e3fc5dca3aa2d62080d3d147ed0405c",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob060_m2014_q4k_test.sv:73: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit D flip-flop.\nmodule DFF (input clk, input resetn, input d, output reg q);\n    always @(posedge clk) begin\n        if (!resetn) q <= 1'b0;\n        else q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a3980f631443fb87001f2012b4a649b1bff76c401b9934944446bf27cf98c31c",
+      "rtl": "module DFF (input clk, input resetn, input d, output reg q);\n    always @(posedge clk) begin\n        if (!resetn) q <= 1'b0;\n        else q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "70da45603d9f9e2c68e2fb5a63792a94d76b23ea334543f2bb3d751a744ee1e1",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob060_m2014_q4k_test.sv:73: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit DFF\nmodule DFF (input wire D, input wire clk, output reg Q);\n    always @(posedge clk) Q <= D;\nendmodule",
+      "raw_completion_raw_sha256": "8a31691333853e9e1d8aa6ed1b7c0e39418d9f58a80557118de09be2cbe2eb99",
+      "rtl": "module DFF (input wire D, input wire clk, output reg Q);\n    always @(posedge clk) Q <= D;\nendmodule",
+      "rtl_raw_sha256": "b14753a0468a4508c6242118220fbb4cfa2fb2492efc1e6c4224b360040b2334",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob060_m2014_q4k_test.sv:73: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit D flip-flop\nmodule DFF (input clk, input resetn, input d, output reg q);\n    always @(posedge clk) begin\n        if (~resetn) q <= 1'b0;\n        else         q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "1ec82adbe2aa3aafce408861b7c83a25e0d91fdce2d7abb34de302ae2e871574",
+      "rtl": "module DFF (input clk, input resetn, input d, output reg q);\n    always @(posedge clk) begin\n        if (~resetn) q <= 1'b0;\n        else         q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "1ec6fa8bcb6413e8387f532b344cd7eb4e532aa390261799d260abe8a8d3d21f",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob060_m2014_q4k_test.sv:73: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit DFF, inline. Same function as the built-in $dff$ combinational\n// register, but named explicitly.\nmodule DFF (input clk, input reg d, output reg q);\n    always @(posedge clk) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "4ea9c1782fb8ec8773c91c512b3b72d65b4d297fcd848129b82e734b932a497d",
+      "rtl": "module DFF (input clk, input reg d, output reg q);\n    always @(posedge clk) q <= d;\nendmodule",
+      "rtl_raw_sha256": "75b3e497d997044f39e00c41479ec1481554eee2aadcbb621627caf7bfa02366",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  resetn,\n    input  in,\n    output out\n);\n    reg [3:0] sr;\n    always @(posedge clk) begin\n        if (!resetn) sr <= 4'b0;\n        else         sr <= {sr[2:0], in};\n    end\n    assign out = sr[3];\nendmodule",
+      "raw_completion_raw_sha256": "543046d9d863aead1568c3cde34458932561b00cf206990dfe866fc3d20088bb",
+      "rtl": "module TopModule (\n    input  clk,\n    input  resetn,\n    input  in,\n    output out\n);\n    reg [3:0] sr;\n    always @(posedge clk) begin\n        if (!resetn) sr <= 4'b0;\n        else         sr <= {sr[2:0], in};\n    end\n    assign out = sr[3];\nendmodule",
+      "rtl_raw_sha256": "543046d9d863aead1568c3cde34458932561b00cf206990dfe866fc3d20088bb",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob060_m2014_q4k_test.sv:73: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit D flip-flop\nmodule DFF (input clk, input resetn, input d, output reg q);\n    always @(posedge clk) begin\n        if (!resetn) q <= 1'b0;\n        else         q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "40da01cc0ece2738549f0557c532897da325646f8798bc078a64bf72f3b59af0",
+      "rtl": "module DFF (input clk, input resetn, input d, output reg q);\n    always @(posedge clk) begin\n        if (!resetn) q <= 1'b0;\n        else         q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "ffa474c5384942ae7a8187105cc253c705c4697e99d8ae9bcede9c12cbf9ffe8",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob060_m2014_q4k_test.sv:73: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit DFF, named to make it explicit what is going on.\nmodule DFF (input  wire  D,\n             input  wire  clk,\n             output reg   Q);\n    always @(posedge clk) Q <= D;\nendmodule",
+      "raw_completion_raw_sha256": "970933552cdf5e24af62f8ea607004a7a591a131ff3e41c64da408fd2a2fb7c0",
+      "rtl": "module DFF (input  wire  D,\n             input  wire  clk,\n             output reg   Q);\n    always @(posedge clk) Q <= D;\nendmodule",
+      "rtl_raw_sha256": "262ab24abf227f9cbbb5e0dd199d1306c79f922585ee229842485181ceb5288c",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob060_m2014_q4k_test.sv:73: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit DFF, named as a separate module to inline it.\nmodule DFF (input clk, input resetn, input d, output reg q);\n    always @(posedge clk) begin\n        if (!resetn) q <= 1'b0;\n        else q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "896fad6fcccdbb57f594c8c26580dd3ba5ccc387fdc5460c106f3bb1b5b564da",
+      "rtl": "module DFF (input clk, input resetn, input d, output reg q);\n    always @(posedge clk) begin\n        if (!resetn) q <= 1'b0;\n        else q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "70da45603d9f9e2c68e2fb5a63792a94d76b23ea334543f2bb3d751a744ee1e1",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit shift register with four DFFs, synchronous reset.\nmodule TopModule(\n    input  clk,\n    input  resetn,\n    input  in,\n    output out\n);\n    reg [3:0] shift;\n    always @(posedge clk) begin\n        if (!resetn) shift <= 4'b0000;\n        else         shift <= {in, shift[3:1]};\n    end\n    assign out = shift[0];\nendmodule",
+      "raw_completion_raw_sha256": "d752c44c9a3e73de5432b1e1bec4bb73032efee06c5888431e5d8dfc8356f46a",
+      "rtl": "module TopModule(\n    input  clk,\n    input  resetn,\n    input  in,\n    output out\n);\n    reg [3:0] shift;\n    always @(posedge clk) begin\n        if (!resetn) shift <= 4'b0000;\n        else         shift <= {in, shift[3:1]};\n    end\n    assign out = shift[0];\nendmodule",
+      "rtl_raw_sha256": "d6cb018725ee64ecdc12a68176fde3c5bccafeb1a900d509d4b9c813536d7d6d",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  resetn,\n    input  in,\n    output out\n);\n    reg [3:0] sr;\n    always @(posedge clk) begin\n        if (!resetn) sr <= 4'b0;\n        else         sr <= {sr[2:0], in};\n    end\n    assign out = sr[3];\nendmodule",
+      "raw_completion_raw_sha256": "543046d9d863aead1568c3cde34458932561b00cf206990dfe866fc3d20088bb",
+      "rtl": "module TopModule (\n    input  clk,\n    input  resetn,\n    input  in,\n    output out\n);\n    reg [3:0] sr;\n    always @(posedge clk) begin\n        if (!resetn) sr <= 4'b0;\n        else         sr <= {sr[2:0], in};\n    end\n    assign out = sr[3];\nendmodule",
+      "rtl_raw_sha256": "543046d9d863aead1568c3cde34458932561b00cf206990dfe866fc3d20088bb",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Shift register with four D FFs, reset, and posedge clock.\nmodule TopModule(\n    input  clk,\n    input  resetn,\n    input  in,\n    output out\n);\n    reg [3:0] sr;\n    always @(posedge clk) begin\n        if (!resetn) sr <= 4'b0000;\n        else         sr <= {sr[2:0], in};\n    end\n    assign out = sr[3];\nendmodule",
+      "raw_completion_raw_sha256": "da2dd47e234ba08544b5e757bf0b2466e6863d8ebe3abdaf39a00a4a43346790",
+      "rtl": "module TopModule(\n    input  clk,\n    input  resetn,\n    input  in,\n    output out\n);\n    reg [3:0] sr;\n    always @(posedge clk) begin\n        if (!resetn) sr <= 4'b0000;\n        else         sr <= {sr[2:0], in};\n    end\n    assign out = sr[3];\nendmodule",
+      "rtl_raw_sha256": "49d50f30383cb1150eb4e0d9de923f4573772437fb1e1da4e614757dd2e4eed0",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob060_m2014_q4k_test.sv:73: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit DFF, named as a separate module to save Verilog HDL time.\nmodule DFF (input clk, input D, output reg Q);\n    always @(posedge clk) Q <= D;\nendmodule",
+      "raw_completion_raw_sha256": "bfd19ede20453696d2d82ea5daff5b81c9d9a1dd090faf6a7caf94ae30403477",
+      "rtl": "module DFF (input clk, input D, output reg Q);\n    always @(posedge clk) Q <= D;\nendmodule",
+      "rtl_raw_sha256": "4303ea5e132b319c3f487a0ffb9456e70ca08e5733197bc2a9f75d6d5e131987",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob060_m2014_q4k_test.sv:73: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit D flip-flop\nmodule DFF (\n    input  clk,\n    input  resetn,\n    input  d,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (~resetn) q <= 1'b0;\n        else         q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "c6d170a3d553fd6b5814350a3c44f15243b018271804355bfd0320eecb30b453",
+      "rtl": "module DFF (\n    input  clk,\n    input  resetn,\n    input  d,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (~resetn) q <= 1'b0;\n        else         q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "30bab74129581d291bbdb1d0b4afc35ecc6cc845f624ffb869837a5be7f19e20",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob060_m2014_q4k_test.sv:73: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit D flip-flop\nmodule dff (input clk, input d, output reg q);\n    always @(posedge clk) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "c3e46f51d5aa02901700002efdb6f8231458e92dde2c27488327bc4023b33bf2",
+      "rtl": "module dff (input clk, input d, output reg q);\n    always @(posedge clk) q <= d;\nendmodule",
+      "rtl_raw_sha256": "c27ac05c1c433aecd326e2acae69466d6f78e71b744f4b4b3177c1613a3e4f52",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob060_m2014_q4k_test.sv:73: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit DFF, named inline to save Verilog text\nmodule DFF (input wire D, input wire clk, output reg Q);\n    always @(posedge clk) Q <= D;\nendmodule",
+      "raw_completion_raw_sha256": "f8d291fad15faa80fee39548d13bddcf87bb17779dde1d6dbd67f4da9954512b",
+      "rtl": "module DFF (input wire D, input wire clk, output reg Q);\n    always @(posedge clk) Q <= D;\nendmodule",
+      "rtl_raw_sha256": "b14753a0468a4508c6242118220fbb4cfa2fb2492efc1e6c4224b360040b2334",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  resetn,\n    input  in,\n    output out\n);\n    reg [3:0] regs;\n    always @(posedge clk) begin\n        if (!resetn) regs <= 4'b0;\n        else regs <= {in, regs[3:1]};\n    end\n    assign out = regs[0];\nendmodule",
+      "raw_completion_raw_sha256": "42cd1e164ceddf2e51347962bd4da5c57b37224198f0f0ddecdd4113d0055e19",
+      "rtl": "module TopModule (\n    input  clk,\n    input  resetn,\n    input  in,\n    output out\n);\n    reg [3:0] regs;\n    always @(posedge clk) begin\n        if (!resetn) regs <= 4'b0;\n        else regs <= {in, regs[3:1]};\n    end\n    assign out = regs[0];\nendmodule",
+      "rtl_raw_sha256": "42cd1e164ceddf2e51347962bd4da5c57b37224198f0f0ddecdd4113d0055e19",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "102/299 mismatches",
+      "raw_completion": "// One-bit shift register with four D flops, resettable by the active-low\n// reset (resetn) and synchronous to the clock.\nmodule TopModule(input clk, input resetn, input in, output reg out);\n    reg [3:0] sr;\n    always @(posedge clk) begin\n        if (!resetn) sr <= 4'b0000;\n        else sr <= {sr[2:0], in};\n        out <= sr[3];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "f7a51fd2b7dc50d27cdc7baeb16d006f5798045f9f7940be2b8f4ffb62c21115",
+      "rtl": "module TopModule(input clk, input resetn, input in, output reg out);\n    reg [3:0] sr;\n    always @(posedge clk) begin\n        if (!resetn) sr <= 4'b0000;\n        else sr <= {sr[2:0], in};\n        out <= sr[3];\n    end\nendmodule",
+      "rtl_raw_sha256": "b52a44b7df732fc5f8bcaebd60deb1deb9a2f8b0ab69f7d4423f60b3092a9c1e",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 6,
+    "compile_fail": 12,
+    "fail": 2
+  },
+  "testbench_raw_sha256": "fc598eeb0ec22dc7d6a8691fd684ef49e01a74d5cc43b1a85aa7304e1d595cb7",
+  "training_seed": 1
+}

@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob108_rule90",
+  "problem_seed": 6351609948369213654,
+  "prompt_raw_sha256": "4630998fdc4009e15dcac0712ac56392621eb01a24ef5de09417f99fcf9b1508",
+  "reference_raw_sha256": "65419cbb139b74225b3d35c2c5c054034d082de3f5f9c00b7bb79d0b48d845db",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "7058/7121 mismatches",
+      "raw_completion": "module TopModule(\n  input  clk,\n  input  load,\n  input  [511:0] data,\n  output [511:0] q\n);\n  reg [511:0] cells;\n  integer i;\n  always @(posedge clk) begin\n    if (load) cells <= data;\n    else for (i = 0; i < 512; i = i + 1) cells[i] <= ~(cells[i-1] ^ cells[i+1]) ^ cells[i];\n  end\n  assign q = cells;\nendmodule",
+      "raw_completion_raw_sha256": "640f7b5b4910dd6a8c70e0029faf6f70b16683e78b393e9f90d3266dca9cb183",
+      "rtl": "module TopModule(\n  input  clk,\n  input  load,\n  input  [511:0] data,\n  output [511:0] q\n);\n  reg [511:0] cells;\n  integer i;\n  always @(posedge clk) begin\n    if (load) cells <= data;\n    else for (i = 0; i < 512; i = i + 1) cells[i] <= ~(cells[i-1] ^ cells[i+1]) ^ cells[i];\n  end\n  assign q = cells;\nendmodule",
+      "rtl_raw_sha256": "640f7b5b4910dd6a8c70e0029faf6f70b16683e78b393e9f90d3266dca9cb183",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob108_rule90_ref.sv:2: syntax error",
+      "raw_completion": "// Rule 90, one-dimensional cellular automaton, one-bit cells. Implemented as\n// a 512-stage pipeline, with the next state of each stage implicitly\n// connected to the input of the next stage (no separate register-stage\n// FULLY parallel combinational chain). Same as the reference TRANSLATED to\n// Verilog -> one register per stage -> flattened register-to-register\n// path (register-to-register FULLY parallel combinational chain) -> the\n// reference.\nmodule TopModule(input clk, input load, input [511:0] data, output [511:0] q);\n    reg [511:0] r0;\n    reg [511:0] r1;\n    reg [511:0] r2;\n    reg [511:0] r3;\n    reg [511:0] r4;\n    reg [511:0] r5;\n    reg [511:0] r6;\n    reg [511:0] r7;\n    reg [511:0] r8;\n    reg [511:0] r9;\n    reg [511:0] r10;\n    reg [511:0] r11;\n    reg [511:0] r12;\n    reg [511:0] r13;\n    reg [511:0] r14;\n    reg [511:0] r15;\n    reg [511:0] r16;\n    reg [511:0] r17;\n    reg [511:0] r18;\n    reg [511:0] r19;\n    reg [511:0] r20;\n    reg [511:0] r21;\n    reg [511:0] r22;\n    reg [511:0] r23;\n    reg [511:0] r24;\n    reg [511:0] r25;\n    reg [511:0] r26;\n    reg [511:0] r27;\n    reg [511:0] r28;\n    reg [511:0] r29;\n    reg [511:0] r30;\n    reg [511:0] r31;\n    reg [511:0] r32;\n    reg [511:0] r33;\n    reg [511:0] r34;\n    reg [511:0] r35;\n    reg [511:0] r36;\n    reg [511:0] r37;\n    reg [511:0] r38;\n    reg [511:0] r39;\n    reg [511:0] r40;\n    reg [511:0] r41;\n    reg [511:0] r42;\n    reg [511:0] r43;\n    reg [511:0] r44;\n    reg [511:0] r45;\n    reg [511:0] r46;\n    reg [511:0] r47;\n    reg [511:0] r48;\n    reg [511:0] r49;\n    reg [511:0] r50;\n    reg [511:0] r51;\n    reg [511:0] r52;\n    reg [511:0] r53;\n    reg [511:0] r54;\n    reg [511:0] r55;\n    reg [511:0] r56;\n    reg [511:0] r57;\n    reg [511:0] r58;\n    reg [511:0] r59;\n    reg [511:0] r60;\n    reg [511:0] r61;\n    reg [511:0] r6",
+      "raw_completion_raw_sha256": "6ca1917ab0a8e199c291d63186f5a84ee53460ba98e2f9ad9048a2e81225022d",
+      "rtl": "module TopModule(input clk, input load, input [511:0] data, output [511:0] q);\n    reg [511:0] r0;\n    reg [511:0] r1;\n    reg [511:0] r2;\n    reg [511:0] r3;\n    reg [511:0] r4;\n    reg [511:0] r5;\n    reg [511:0] r6;\n    reg [511:0] r7;\n    reg [511:0] r8;\n    reg [511:0] r9;\n    reg [511:0] r10;\n    reg [511:0] r11;\n    reg [511:0] r12;\n    reg [511:0] r13;\n    reg [511:0] r14;\n    reg [511:0] r15;\n    reg [511:0] r16;\n    reg [511:0] r17;\n    reg [511:0] r18;\n    reg [511:0] r19;\n    reg [511:0] r20;\n    reg [511:0] r21;\n    reg [511:0] r22;\n    reg [511:0] r23;\n    reg [511:0] r24;\n    reg [511:0] r25;\n    reg [511:0] r26;\n    reg [511:0] r27;\n    reg [511:0] r28;\n    reg [511:0] r29;\n    reg [511:0] r30;\n    reg [511:0] r31;\n    reg [511:0] r32;\n    reg [511:0] r33;\n    reg [511:0] r34;\n    reg [511:0] r35;\n    reg [511:0] r36;\n    reg [511:0] r37;\n    reg [511:0] r38;\n    reg [511:0] r39;\n    reg [511:0] r40;\n    reg [511:0] r41;\n    reg [511:0] r42;\n    reg [511:0] r43;\n    reg [511:0] r44;\n    reg [511:0] r45;\n    reg [511:0] r46;\n    reg [511:0] r47;\n    reg [511:0] r48;\n    reg [511:0] r49;\n    reg [511:0] r50;\n    reg [511:0] r51;\n    reg [511:0] r52;\n    reg [511:0] r53;\n    reg [511:0] r54;\n    reg [511:0] r55;\n    reg [511:0] r56;\n    reg [511:0] r57;\n    reg [511:0] r58;\n    reg [511:0] r59;\n    reg [511:0] r60;\n    reg [511:0] r61;\n    reg [511:0] r6",
+      "rtl_raw_sha256": "80dcf51d59f380830d5cb40b43e87e4bf12617143d8734387ac24186e30b01ce",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:14: error: nextregs[i] is not a valid l-value in tb.top_module1.regs_gen[1].",
+      "raw_completion": "// Rule 90, one-dimensional cellular automaton, one register per cell. The\n// combinational logic for advancing the time step is nested in a generate\n// block, so it only runs once per clock.\nmodule TopModule(\n  input  clk,\n  input  load,\n  input  [511:0] data,\n  output [511:0] q\n);\n  reg [511:0] regs;\n  wire [511:0] nextregs;\n  genvar i;\n  generate\n    for (i = 1; i < 511; i = i + 1) begin : regs_gen\n      always @(*) begin\n        case ({regs[i-1], regs[i], regs[i+1]})\n          3'b001: nextregs[i] = 1'b1;\n          3'b010: nextregs[i] = 1'b1;\n          3'b011: nextregs[i] = 1'b0;\n          3'b100: nextregs[i] = 1'b0;\n          3'b101: nextregs[i] = 1'b1;\n          3'b110: nextregs[i] = 1'b0;\n          3'b111: nextregs[i] = 1'b0;\n        endcase\n      end\n    end\n  endgenerate\n  always @(posedge clk) begin\n    if (load) regs <= data;\n    else regs <= nextregs;\n  end\n  assign q = regs;\nendmodule",
+      "raw_completion_raw_sha256": "e941cfda27a0688e8ade534435ba2a2052305f173785f4105139f3fdf53b3092",
+      "rtl": "module TopModule(\n  input  clk,\n  input  load,\n  input  [511:0] data,\n  output [511:0] q\n);\n  reg [511:0] regs;\n  wire [511:0] nextregs;\n  genvar i;\n  generate\n    for (i = 1; i < 511; i = i + 1) begin : regs_gen\n      always @(*) begin\n        case ({regs[i-1], regs[i], regs[i+1]})\n          3'b001: nextregs[i] = 1'b1;\n          3'b010: nextregs[i] = 1'b1;\n          3'b011: nextregs[i] = 1'b0;\n          3'b100: nextregs[i] = 1'b0;\n          3'b101: nextregs[i] = 1'b1;\n          3'b110: nextregs[i] = 1'b0;\n          3'b111: nextregs[i] = 1'b0;\n        endcase\n      end\n    end\n  endgenerate\n  always @(posedge clk) begin\n    if (load) regs <= data;\n    else regs <= nextregs;\n  end\n  assign q = regs;\nendmodule",
+      "rtl_raw_sha256": "aa26144432a914891f1cea41a89df7ea5ca799eb6dd74cc8a9deca20930d89bb",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "7058/7121 mismatches",
+      "raw_completion": "// One-dimensional cellular automaton, Rule 90.\nmodule TopModule(\n    input  clk,\n    input  load,\n    input  [511:0] data,\n    output [511:0] q\n);\n    reg [511:0] cells;\n    integer i;\n    always @(posedge clk) begin\n        if (load) begin\n            cells <= data;\n        end else begin\n            for (i = 1; i < 511; i = i + 1) begin\n                cells[i] <= ~(cells[i-1] ^ cells[i+1] ^ cells[i]);\n            end\n        end\n    end\n    assign q = cells;\nendmodule",
+      "raw_completion_raw_sha256": "8e191d747b0fbff3984f14bce85fe1a8b3dd83657689b46f93e085f87de6193c",
+      "rtl": "module TopModule(\n    input  clk,\n    input  load,\n    input  [511:0] data,\n    output [511:0] q\n);\n    reg [511:0] cells;\n    integer i;\n    always @(posedge clk) begin\n        if (load) begin\n            cells <= data;\n        end else begin\n            for (i = 1; i < 511; i = i + 1) begin\n                cells[i] <= ~(cells[i-1] ^ cells[i+1] ^ cells[i]);\n            end\n        end\n    end\n    assign q = cells;\nendmodule",
+      "rtl_raw_sha256": "a9b653a8c71719689ed235a3ac91e10a6f9e34e8357abc78379a0c6a3f4453bc",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "7058/7121 mismatches",
+      "raw_completion": "// Rule 90, one-dimensional cellular automaton\nmodule TopModule(\n    input  clk,\n    input  load,\n    input  [511:0] data,\n    output [511:0] q\n);\n    reg [511:0] cells;\n    integer i;\n    always @(posedge clk) begin\n        if (load) cells <= data;\n        else begin\n            for (i = 1; i < 511; i = i + 1) begin\n                cells[i] <= ~(cells[i-1] ^ cells[i+1]) ^ cells[i];\n            end\n        end\n    end\n    assign q = cells;\nendmodule",
+      "raw_completion_raw_sha256": "ceea35fa3d497da0a99c4f855f0cf758173566adde79f64e443d42b27c76e5f1",
+      "rtl": "module TopModule(\n    input  clk,\n    input  load,\n    input  [511:0] data,\n    output [511:0] q\n);\n    reg [511:0] cells;\n    integer i;\n    always @(posedge clk) begin\n        if (load) cells <= data;\n        else begin\n            for (i = 1; i < 511; i = i + 1) begin\n                cells[i] <= ~(cells[i-1] ^ cells[i+1]) ^ cells[i];\n            end\n        end\n    end\n    assign q = cells;\nendmodule",
+      "rtl_raw_sha256": "53d51f6d30751ca41139ed78421aa3316d5b6d531e1cdab9c0e0fcaa9a875b51",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "7058/7121 mismatches",
+      "raw_completion": "module TopModule (\n  input  clk,\n  input  load,\n  input  [511:0] data,\n  output [511:0] q\n);\n  reg [511:0] cells;\n  integer i;\n  always @(posedge clk) begin\n    if (load) cells <= data;\n    else for (i = 0; i < 512; i = i + 1) cells[i] <= ~(cells[i-1] ^ cells[i+1] ^ cells[i]);\n  end\n  assign q = cells;\nendmodule",
+      "raw_completion_raw_sha256": "a161ef8d94af5d184fd2bd306e1382a24443396382730c4e22fa3eadd04c2ab1",
+      "rtl": "module TopModule (\n  input  clk,\n  input  load,\n  input  [511:0] data,\n  output [511:0] q\n);\n  reg [511:0] cells;\n  integer i;\n  always @(posedge clk) begin\n    if (load) cells <= data;\n    else for (i = 0; i < 512; i = i + 1) cells[i] <= ~(cells[i-1] ^ cells[i+1] ^ cells[i]);\n  end\n  assign q = cells;\nendmodule",
+      "rtl_raw_sha256": "a161ef8d94af5d184fd2bd306e1382a24443396382730c4e22fa3eadd04c2ab1",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "7058/7121 mismatches",
+      "raw_completion": "module TopModule (\n  input  clk,\n  input  load,\n  input  [511:0] data,\n  output [511:0] q\n);\n  reg [511:0] cells;\n  integer i;\n  always @(posedge clk) begin\n    if (load) cells <= data;\n    else begin\n      reg [511:0] next;\n      for (i = 0; i < 512; i = i + 1)\n        next[i] = ~(cells[i-1] ^ cells[i+1]) ^ cells[i];\n      cells <= next;\n    end\n  end\n  assign q = cells;\nendmodule",
+      "raw_completion_raw_sha256": "f467a296c74aaf83917829873bb9534b9cacc35b663fc6b168fe12e0f9200266",
+      "rtl": "module TopModule (\n  input  clk,\n  input  load,\n  input  [511:0] data,\n  output [511:0] q\n);\n  reg [511:0] cells;\n  integer i;\n  always @(posedge clk) begin\n    if (load) cells <= data;\n    else begin\n      reg [511:0] next;\n      for (i = 0; i < 512; i = i + 1)\n        next[i] = ~(cells[i-1] ^ cells[i+1]) ^ cells[i];\n      cells <= next;\n    end\n  end\n  assign q = cells;\nendmodule",
+      "rtl_raw_sha256": "f467a296c74aaf83917829873bb9534b9cacc35b663fc6b168fe12e0f9200266",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob108_rule90_ref.sv:2: syntax error",
+      "raw_completion": "// Rule 90, one-dimensional cellular automaton, 512-cell system, inline\n// combinational array + register-to-register stage (the critical path is\n// roughly independent of the size of the system -> high Fmax).\nmodule TopModule(input clk, input load, input [511:0] data, output [511:0] q);\n    reg [511:0] r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20, r21, r22, r23, r24, r25, r26, r27, r28, r29, r30, r31, r32, r33, r34, r35, r36, r37, r38, r39, r40, r41, r42, r43, r44, r45, r46, r47, r48, r49, r50, r51, r52, r53, r54, r55, r56, r57, r58, r59, r60, r61, r62, r63, r64, r65, r66, r67, r68, r69, r70, r71, r72, r73, r74, r75, r76, r77, r78, r79, r80, r81, r82, r83, r84, r85, r86, r87, r88, r89, r90, r91, r92, r93, r94, r95, r96, r97, r98, r99, r100, r101, r102, r103, r104, r105, r106, r107, r108, r109, r110, r111, r112, r113, r114, r115, r116, r117, r118, r119, r120, r121, r122, r123, r124, r125, r126, r127, r128, r129, r130, r131, r132, r133, r134, r135, r136, r137, r138, r139, r140, r141, r142, r143, r144, r145, r146, r147, r148, r149, r150, r151, r152, r153, r154, r155, r156, r157, r158, r159, r160, r161, r162, r163, r164, r165, r166, r167, r168, r169, r170, r171, r172, r173, r174, r175, r176, r177, r178, r179, r180, r181, r182, r183, r184, r185, r186, r187, r188, r189, r190, r191, r192, r193, r194, r195, r196, r197, r198, r199, r200, r201, r202, r203, r204, r205, r206, r2",
+      "raw_completion_raw_sha256": "02da3e5af9cfe3734c43f0eb947d07bffcc5768cd1582299c42c25bc7dcf8f2a",
+      "rtl": "module TopModule(input clk, input load, input [511:0] data, output [511:0] q);\n    reg [511:0] r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20, r21, r22, r23, r24, r25, r26, r27, r28, r29, r30, r31, r32, r33, r34, r35, r36, r37, r38, r39, r40, r41, r42, r43, r44, r45, r46, r47, r48, r49, r50, r51, r52, r53, r54, r55, r56, r57, r58, r59, r60, r61, r62, r63, r64, r65, r66, r67, r68, r69, r70, r71, r72, r73, r74, r75, r76, r77, r78, r79, r80, r81, r82, r83, r84, r85, r86, r87, r88, r89, r90, r91, r92, r93, r94, r95, r96, r97, r98, r99, r100, r101, r102, r103, r104, r105, r106, r107, r108, r109, r110, r111, r112, r113, r114, r115, r116, r117, r118, r119, r120, r121, r122, r123, r124, r125, r126, r127, r128, r129, r130, r131, r132, r133, r134, r135, r136, r137, r138, r139, r140, r141, r142, r143, r144, r145, r146, r147, r148, r149, r150, r151, r152, r153, r154, r155, r156, r157, r158, r159, r160, r161, r162, r163, r164, r165, r166, r167, r168, r169, r170, r171, r172, r173, r174, r175, r176, r177, r178, r179, r180, r181, r182, r183, r184, r185, r186, r187, r188, r189, r190, r191, r192, r193, r194, r195, r196, r197, r198, r199, r200, r201, r202, r203, r204, r205, r206, r2",
+      "rtl_raw_sha256": "063c6aa7c8bd6ab7f9b580a1c86636f067d1b5597ef8dff83294b36cec9ad498",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "7058/7121 mismatches",
+      "raw_completion": "module TopModule(input clk, input load, input [511:0] data, output [511:0] q);\n  reg [511:0] r;\n  integer i;\n  always @(posedge clk) begin\n    if (load) r <= data;\n    else for (i = 0; i < 512; i = i + 1) r[i] <= r[i-1] ^ r[i+1] ^ r[i];\n  end\n  assign q = r;\nendmodule",
+      "raw_completion_raw_sha256": "af276d9015651486addb87fc8f282310fdd9975b791ac95c3b3fa6a8e63b0b65",
+      "rtl": "module TopModule(input clk, input load, input [511:0] data, output [511:0] q);\n  reg [511:0] r;\n  integer i;\n  always @(posedge clk) begin\n    if (load) r <= data;\n    else for (i = 0; i < 512; i = i + 1) r[i] <= r[i-1] ^ r[i+1] ^ r[i];\n  end\n  assign q = r;\nendmodule",
+      "rtl_raw_sha256": "af276d9015651486addb87fc8f282310fdd9975b791ac95c3b3fa6a8e63b0b65",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob108_rule90_ref.sv:2: syntax error",
+      "raw_completion": "// Rule 90, a one-dimensional cellular automaton. Translated to a SINGLE\n// combinational register chain (no time-stepping inside the register, so\n// the same exact function as the original rule, for any clock period).\nmodule TopModule(input clk, input load, input [511:0] data, output [511:0] q);\n    reg [511:0] r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20, r21, r22, r23, r24, r25, r26, r27, r28, r29, r30, r31, r32, r33, r34, r35, r36, r37, r38, r39, r40, r41, r42, r43, r44, r45, r46, r47, r48, r49, r50, r51, r52, r53, r54, r55, r56, r57, r58, r59, r60, r61, r62, r63, r64, r65, r66, r67, r68, r69, r70, r71, r72, r73, r74, r75, r76, r77, r78, r79, r80, r81, r82, r83, r84, r85, r86, r87, r88, r89, r90, r91, r92, r93, r94, r95, r96, r97, r98, r99, r100, r101, r102, r103, r104, r105, r106, r107, r108, r109, r110, r111, r112, r113, r114, r115, r116, r117, r118, r119, r120, r121, r122, r123, r124, r125, r126, r127, r128, r129, r130, r131, r132, r133, r134, r135, r136, r137, r138, r139, r140, r141, r142, r143, r144, r145, r146, r147, r148, r149, r150, r151, r152, r153, r154, r155, r156, r157, r158, r159, r160, r161, r162, r163, r164, r165, r166, r167, r168, r169, r170, r171, r172, r173, r174, r175, r176, r177, r178, r179, r180, r181, r182, r183, r184, r185, r186, r187, r188, r189, r190, r191, r192, r193, r194, r195, r196, r197, r198, r199, r200, r201, r202, r203, r204, r205, r206, r20",
+      "raw_completion_raw_sha256": "10ae77d996b103e668ae178b6d0390c74d1bb6876acabc2ee0cfe5bccb6974ff",
+      "rtl": "module TopModule(input clk, input load, input [511:0] data, output [511:0] q);\n    reg [511:0] r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20, r21, r22, r23, r24, r25, r26, r27, r28, r29, r30, r31, r32, r33, r34, r35, r36, r37, r38, r39, r40, r41, r42, r43, r44, r45, r46, r47, r48, r49, r50, r51, r52, r53, r54, r55, r56, r57, r58, r59, r60, r61, r62, r63, r64, r65, r66, r67, r68, r69, r70, r71, r72, r73, r74, r75, r76, r77, r78, r79, r80, r81, r82, r83, r84, r85, r86, r87, r88, r89, r90, r91, r92, r93, r94, r95, r96, r97, r98, r99, r100, r101, r102, r103, r104, r105, r106, r107, r108, r109, r110, r111, r112, r113, r114, r115, r116, r117, r118, r119, r120, r121, r122, r123, r124, r125, r126, r127, r128, r129, r130, r131, r132, r133, r134, r135, r136, r137, r138, r139, r140, r141, r142, r143, r144, r145, r146, r147, r148, r149, r150, r151, r152, r153, r154, r155, r156, r157, r158, r159, r160, r161, r162, r163, r164, r165, r166, r167, r168, r169, r170, r171, r172, r173, r174, r175, r176, r177, r178, r179, r180, r181, r182, r183, r184, r185, r186, r187, r188, r189, r190, r191, r192, r193, r194, r195, r196, r197, r198, r199, r200, r201, r202, r203, r204, r205, r206, r20",
+      "rtl_raw_sha256": "65c4f2a2143f56a177ab728e79e9ee933e282978ddc1bdc1e820c59aedc84328",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/simulation.out: Program not runnable, 1 errors.",
+      "raw_completion": "// One-dimensional cellular automaton: Rule 90.\nmodule TopModule(clk, load, data, q);\n  parameter WIDTH = 512;\n  parameter [511:0] INITIAL_DATA = 512'h4080000000000000800000000000000000000000000000000000000000000000;\n  input clk, load;\n  input [511:0] data;\n  output [511:0] q;\n  reg [511:0] q;\n  reg [511:0] next_q;\n  integer i;\n  always @(posedge clk) begin\n    if (load) q <= data;\n    else begin\n      for (i = 0; i < WIDTH; i = i + 1) begin\n        next_q[i] = $xor({q[i-1], q[i], q[i+1]});\n      end\n      q <= next_q;\n    end\n  end\nendmodule",
+      "raw_completion_raw_sha256": "ab6f6a4a1765b5e13558e8f2e669fad5a4a61a2818c6328eae35176de0ce44d8",
+      "rtl": "module TopModule(clk, load, data, q);\n  parameter WIDTH = 512;\n  parameter [511:0] INITIAL_DATA = 512'h4080000000000000800000000000000000000000000000000000000000000000;\n  input clk, load;\n  input [511:0] data;\n  output [511:0] q;\n  reg [511:0] q;\n  reg [511:0] next_q;\n  integer i;\n  always @(posedge clk) begin\n    if (load) q <= data;\n    else begin\n      for (i = 0; i < WIDTH; i = i + 1) begin\n        next_q[i] = $xor({q[i-1], q[i], q[i+1]});\n      end\n      q <= next_q;\n    end\n  end\nendmodule",
+      "rtl_raw_sha256": "a442e35c207d0b7d57d27fce4fbdcb753eeba5c798d1779936cad27636c08f6d",
+      "sample_index": 10,
+      "status": "simulator_error"
+    },
+    {
+      "detail": "7058/7121 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  load,\n    input  [511:0] data,\n    output [511:0] q\n);\n    reg [511:0] cells;\n    integer i;\n    always @(posedge clk) begin\n        if (load) cells <= data;\n        else for (i = 0; i < 512; i = i + 1) cells[i] <= ~(cells[i-1] ^ cells[i+1] ^ cells[i]);\n    end\n    assign q = cells;\nendmodule",
+      "raw_completion_raw_sha256": "c088466d61d41d3c696ead45bc89171ddf6c3c4adafba70b85c2e6b33a0144c5",
+      "rtl": "module TopModule(\n    input  clk,\n    input  load,\n    input  [511:0] data,\n    output [511:0] q\n);\n    reg [511:0] cells;\n    integer i;\n    always @(posedge clk) begin\n        if (load) cells <= data;\n        else for (i = 0; i < 512; i = i + 1) cells[i] <= ~(cells[i-1] ^ cells[i+1] ^ cells[i]);\n    end\n    assign q = cells;\nendmodule",
+      "rtl_raw_sha256": "c088466d61d41d3c696ead45bc89171ddf6c3c4adafba70b85c2e6b33a0144c5",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: syntax error",
+      "raw_completion": "// Rule 90, one-dimensional cellular automaton: the XOR-based next-state\n// function. All combinational (no registers) -> fast FPGA-friendly design.\nmodule TopModule(\n    input  clk,\n    input  load,\n    input  [511:0] data,\n    output [511:0] q\n);\n    reg [511:0] r;\n    integer i;\n    wire [1:0] left_right [0:511];\n    generate\n        for (i = 0; i < 512; i = i + 1) begin\n            left_right[i] = {r[i-1], r[i+1]};\n        end\n    endgenerate\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else r <= {r[510:0], ~(left_right[0] ^ left_right[1] ^ left_right[2])};\n    end\n    assign q = r;\nendmodule",
+      "raw_completion_raw_sha256": "66f37ea5fc1aad42d571398cf25e3942a964bc1727a9e52031020fe12dbec18d",
+      "rtl": "module TopModule(\n    input  clk,\n    input  load,\n    input  [511:0] data,\n    output [511:0] q\n);\n    reg [511:0] r;\n    integer i;\n    wire [1:0] left_right [0:511];\n    generate\n        for (i = 0; i < 512; i = i + 1) begin\n            left_right[i] = {r[i-1], r[i+1]};\n        end\n    endgenerate\n    always @(posedge clk) begin\n        if (load) r <= data;\n        else r <= {r[510:0], ~(left_right[0] ^ left_right[1] ^ left_right[2])};\n    end\n    assign q = r;\nendmodule",
+      "rtl_raw_sha256": "1d7dfa97a5893bc50ed24952734c0827c509097f5ec0260e9192be88f5bb0f4d",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "7056/7121 mismatches",
+      "raw_completion": "// Rule 90, one-dimensional cellular automaton\nmodule TopModule (\n    input  clk,\n    input  load,\n    input  [511:0] data,\n    output [511:0] q\n);\n    reg [511:0] cells;\n    integer i;\n    always @(posedge clk) begin\n        if (load) cells <= data;\n        else for (i = 1; i < 511; i = i + 1) cells[i] <= cells[i-1] ^ cells[i+1] ^ cells[i];\n    end\n    assign q = cells;\nendmodule",
+      "raw_completion_raw_sha256": "06b30c33b61e97eb83e1ba78fbf77208c93d120fdf41bed4498a06d7f907a14f",
+      "rtl": "module TopModule (\n    input  clk,\n    input  load,\n    input  [511:0] data,\n    output [511:0] q\n);\n    reg [511:0] cells;\n    integer i;\n    always @(posedge clk) begin\n        if (load) cells <= data;\n        else for (i = 1; i < 511; i = i + 1) cells[i] <= cells[i-1] ^ cells[i+1] ^ cells[i];\n    end\n    assign q = cells;\nendmodule",
+      "rtl_raw_sha256": "b4156745a0f490673d3656b6ed5ac2961fdbc2cdfa89d867f980354da12043ca",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: next_cells[i] is not a valid l-value in tb.top_module1.each_cell[1].",
+      "raw_completion": "// One-dimensional cellular automaton Rule 90: the 512-cell system from the\n// problem description, with one combinational lookup (the next state of each\n// cell, depending on the two neighbours) and register-to-register Fmax\n// feedback (the register feeding the register immediately to its right).\nmodule TopModule(input clk, input load, input [511:0] data, output [511:0] q);\n    reg [511:0] cells;\n    wire [511:0] next_cells;\n    genvar i;\n    generate for (i = 1; i < 511; i = i + 1) begin : each_cell\n        always @(*) begin\n            case ({cells[i-1], cells[i], cells[i+1]})\n                3'b001: next_cells[i] = 1;\n                3'b010: next_cells[i] = 1;\n                3'b011: next_cells[i] = 0;\n                3'b100: next_cells[i] = 0;\n                3'b101: next_cells[i] = 1;\n                3'b110: next_cells[i] = 0;\n                3'b111: next_cells[i] = 0;\n                default: next_cells[i] = 0;\n            endcase\n        end\n    end endgenerate\n    always @(posedge clk) begin\n        if (load) cells <= data;\n        else cells <= next_cells;\n    end\n    assign q = cells;\nendmodule",
+      "raw_completion_raw_sha256": "8f86005cb3797e5b519fc18612facd82311c730fa00c853ebd9f42a86d16e863",
+      "rtl": "module TopModule(input clk, input load, input [511:0] data, output [511:0] q);\n    reg [511:0] cells;\n    wire [511:0] next_cells;\n    genvar i;\n    generate for (i = 1; i < 511; i = i + 1) begin : each_cell\n        always @(*) begin\n            case ({cells[i-1], cells[i], cells[i+1]})\n                3'b001: next_cells[i] = 1;\n                3'b010: next_cells[i] = 1;\n                3'b011: next_cells[i] = 0;\n                3'b100: next_cells[i] = 0;\n                3'b101: next_cells[i] = 1;\n                3'b110: next_cells[i] = 0;\n                3'b111: next_cells[i] = 0;\n                default: next_cells[i] = 0;\n            endcase\n        end\n    end endgenerate\n    always @(posedge clk) begin\n        if (load) cells <= data;\n        else cells <= next_cells;\n    end\n    assign q = cells;\nendmodule",
+      "rtl_raw_sha256": "330bf3eb0b2a4f17a489533261bcad911bf2966d09eb6cb477dfd8e109fe2424",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "7058/7121 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  load,\n    input  [511:0] data,\n    output [511:0] q\n);\n    reg [511:0] regs;\n    wire [511:0] nextregs;\n    genvar i;\n    generate\n        for (i = 0; i < 512; i = i + 1) begin : eachreg\n            always @(posedge clk) begin\n                if (load) regs[i] <= data[i];\n                else regs[i] <= nextregs[i];\n            end\n            assign nextregs[i] = ~(regs[i-1] & regs[i+1]) ^ regs[i];\n        end\n    endgenerate\n    assign q = regs;\nendmodule",
+      "raw_completion_raw_sha256": "08ef7d47af52b1fa0b8c23aea20480704df85a02c177f52ade5d3405e0f3c053",
+      "rtl": "module TopModule(\n    input  clk,\n    input  load,\n    input  [511:0] data,\n    output [511:0] q\n);\n    reg [511:0] regs;\n    wire [511:0] nextregs;\n    genvar i;\n    generate\n        for (i = 0; i < 512; i = i + 1) begin : eachreg\n            always @(posedge clk) begin\n                if (load) regs[i] <= data[i];\n                else regs[i] <= nextregs[i];\n            end\n            assign nextregs[i] = ~(regs[i-1] & regs[i+1]) ^ regs[i];\n        end\n    endgenerate\n    assign q = regs;\nendmodule",
+      "rtl_raw_sha256": "08ef7d47af52b1fa0b8c23aea20480704df85a02c177f52ade5d3405e0f3c053",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "7058/7121 mismatches",
+      "raw_completion": "// Rule 90, one-dimensional cellular automaton, with long-term periodicity\n// (repeated patterns after a long time). Implemented as a 512-cell system\n// and advanced by one time step per clock cycle.\nmodule TopModule(input clk, input load, input [511:0] data, output [511:0] q);\n  reg [511:0] r;\n  integer i;\n  always @(posedge clk) begin\n    if (load) r <= data;\n    else for (i = 0; i < 512; i = i + 1) r[i] <= ~(r[i-1] ^ r[i+1]) ^ r[i];\n  end\n  assign q = r;\nendmodule",
+      "raw_completion_raw_sha256": "b2d7645195f2d8da8c1b52e89b80b6344eac4b978cc4b79acf0f502e9e7b3dff",
+      "rtl": "module TopModule(input clk, input load, input [511:0] data, output [511:0] q);\n  reg [511:0] r;\n  integer i;\n  always @(posedge clk) begin\n    if (load) r <= data;\n    else for (i = 0; i < 512; i = i + 1) r[i] <= ~(r[i-1] ^ r[i+1]) ^ r[i];\n  end\n  assign q = r;\nendmodule",
+      "rtl_raw_sha256": "9f4102e1e357751c2592a82738020f242e7dc63218db1c1c5e0a1b5a11ef67da",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "7058/7121 mismatches",
+      "raw_completion": "// Rule 90, one-dimensional cellular automaton. One-line sequential chain\n// (the array) with a combinational logic (the XOR) inside the chain.\nmodule TopModule(input clk, input load, input [511:0] data, output [511:0] q);\n  reg [511:0] r;\n  integer i;\n  always @(posedge clk) begin\n    if (load) r <= data;\n    else for (i = 0; i < 512; i = i + 1) r[i] <= ~(r[i-1] ^ r[i+1]) ;\n  end\n  assign q = r;\nendmodule",
+      "raw_completion_raw_sha256": "6d55218e12770103c6c8ba619753351a8ca70918e74841b6bdb19b8d279dde85",
+      "rtl": "module TopModule(input clk, input load, input [511:0] data, output [511:0] q);\n  reg [511:0] r;\n  integer i;\n  always @(posedge clk) begin\n    if (load) r <= data;\n    else for (i = 0; i < 512; i = i + 1) r[i] <= ~(r[i-1] ^ r[i+1]) ;\n  end\n  assign q = r;\nendmodule",
+      "rtl_raw_sha256": "f5b913e2a9f86a6ecf4218a84fdac36a267f03a3fb31fdea4127c27247ff6230",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "7058/7121 mismatches",
+      "raw_completion": "module TopModule (\n    input clk,\n    input load,\n    input [511:0] data,\n    output [511:0] q\n);\n    reg [511:0] cells;\n    integer i;\n    always @(posedge clk) begin\n        if (load) begin\n            cells <= data;\n        end else begin\n            reg [511:0] next_cells;\n            for (i = 1; i < 511; i = i + 1) begin\n                next_cells[i] = ~(cells[i-1] ^ cells[i+1]) ^ cells[i];\n            end\n            cells <= next_cells;\n        end\n    end\n    assign q = cells;\nendmodule",
+      "raw_completion_raw_sha256": "95ff12d6c76e40033986df21efa8f5f5690f25aba1296a382cfe55376f9da114",
+      "rtl": "module TopModule (\n    input clk,\n    input load,\n    input [511:0] data,\n    output [511:0] q\n);\n    reg [511:0] cells;\n    integer i;\n    always @(posedge clk) begin\n        if (load) begin\n            cells <= data;\n        end else begin\n            reg [511:0] next_cells;\n            for (i = 1; i < 511; i = i + 1) begin\n                next_cells[i] = ~(cells[i-1] ^ cells[i+1]) ^ cells[i];\n            end\n            cells <= next_cells;\n        end\n    end\n    assign q = cells;\nendmodule",
+      "rtl_raw_sha256": "95ff12d6c76e40033986df21efa8f5f5690f25aba1296a382cfe55376f9da114",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "7058/7121 mismatches",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  load,\n    input  [511:0] data,\n    output [511:0] q\n);\n    reg [511:0] cells;\n    integer i;\n    always @(posedge clk) begin\n        if (load) begin\n            cells <= data;\n        end else begin\n            for (i = 1; i < 511; i = i + 1) begin\n                cells[i] <= ~(cells[i-1] ^ cells[i+1] ^ cells[i]);\n            end\n        end\n    end\n    assign q = cells;\nendmodule",
+      "raw_completion_raw_sha256": "d13a5cbc62dacecdcc46b7fe8bca7ceeee63b3cb15b69d6438ac8dfc4adaacb9",
+      "rtl": "module TopModule (\n    input  clk,\n    input  load,\n    input  [511:0] data,\n    output [511:0] q\n);\n    reg [511:0] cells;\n    integer i;\n    always @(posedge clk) begin\n        if (load) begin\n            cells <= data;\n        end else begin\n            for (i = 1; i < 511; i = i + 1) begin\n                cells[i] <= ~(cells[i-1] ^ cells[i+1] ^ cells[i]);\n            end\n        end\n    end\n    assign q = cells;\nendmodule",
+      "rtl_raw_sha256": "d13a5cbc62dacecdcc46b7fe8bca7ceeee63b3cb15b69d6438ac8dfc4adaacb9",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 6,
+    "fail": 13,
+    "simulator_error": 1
+  },
+  "testbench_raw_sha256": "298ebda07623c87b6ac77ab7d971e3670ab30e3e221ffc9b5029d4d31f13aa37",
+  "training_seed": 0
+}

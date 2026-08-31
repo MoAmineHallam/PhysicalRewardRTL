@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob018_mux256to1",
+  "problem_seed": 1874071383644870511,
+  "prompt_raw_sha256": "60e907332df45bd577d462dc0f8043139dbd5484af7e6bd36d4e8ec621a851b2",
+  "reference_raw_sha256": "0b292d75ef9e56274a3143e5d99bfb3ccfa0f592831487036060568640d56713",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "996/2000 mismatches",
+      "raw_completion": "module TopModule(\n    input [255:0] in,\n    input [7:0] sel,\n    output out\n);\n    wire [0:255] wide_in;\n    assign wide_in = in;\n    assign out = wide_in[sel];\nendmodule",
+      "raw_completion_raw_sha256": "e6cc3dccd5bf588027016b547cfd0664432f0bdaa2698f1d71780d7da7e9b0ba",
+      "rtl": "module TopModule(\n    input [255:0] in,\n    input [7:0] sel,\n    output out\n);\n    wire [0:255] wide_in;\n    assign wide_in = in;\n    assign out = wide_in[sel];\nendmodule",
+      "rtl_raw_sha256": "e6cc3dccd5bf588027016b547cfd0664432f0bdaa2698f1d71780d7da7e9b0ba",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input [255:0] in,\n    input [7:0] sel,\n    output reg out\n);\n    always @(*) begin\n        out = in[sel];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "94600804ec9c50b49fab1a7ab5b17f258fbeeadabe2c20ad898270edf42141d5",
+      "rtl": "module TopModule (\n    input [255:0] in,\n    input [7:0] sel,\n    output reg out\n);\n    always @(*) begin\n        out = in[sel];\n    end\nendmodule",
+      "rtl_raw_sha256": "94600804ec9c50b49fab1a7ab5b17f258fbeeadabe2c20ad898270edf42141d5",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n  input [255:0] in,\n  input [7:0] sel,\n  output out\n);\n  wire [0:255] arr [0:255];\n  genvar i;\n  generate\n    for (i = 0; i < 256; i = i + 1) begin\n      assign arr[i] = in[i];\n    end\n  endgenerate\n  assign out = arr[sel];\nendmodule",
+      "raw_completion_raw_sha256": "6f9cc1e0d914727d765038496b4b21d1ccc77d5d0f068c69a10290d26460bd6e",
+      "rtl": "module TopModule(\n  input [255:0] in,\n  input [7:0] sel,\n  output out\n);\n  wire [0:255] arr [0:255];\n  genvar i;\n  generate\n    for (i = 0; i < 256; i = i + 1) begin\n      assign arr[i] = in[i];\n    end\n  endgenerate\n  assign out = arr[sel];\nendmodule",
+      "rtl_raw_sha256": "6f9cc1e0d914727d765038496b4b21d1ccc77d5d0f068c69a10290d26460bd6e",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 1-bit wide, 256-to-1 multiplexer\nmodule TopModule(\n    input [255:0] in,\n    input [7:0] sel,\n    output reg out\n);\n    always @(*) begin\n        out = in[sel];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "136b6371bf8520c67fee2d127c121b0da36cda4b91417546e6ea1a7d576e6270",
+      "rtl": "module TopModule(\n    input [255:0] in,\n    input [7:0] sel,\n    output reg out\n);\n    always @(*) begin\n        out = in[sel];\n    end\nendmodule",
+      "rtl_raw_sha256": "f07107688ce0823130764b18f1f2ce8aa5ae6edc5b0dc1623a4dbc6635830328",
+      "sample_index": 3,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [255:0] in,\n    input [7:0] sel,\n    output out\n);\n    wire [0:255] wire_array [0:255];\n    genvar i;\n    generate\n        for (i = 0; i < 256; i = i + 1) begin : wire_gen\n            assign wire_array[i] = in[i];\n        end\n    endgenerate\n    assign out = wire_array[sel];\nendmodule",
+      "raw_completion_raw_sha256": "281c1f6243d7c708ee8d483ba6ba9bdc257e3bca7f70318a4f4b9dc244751dfb",
+      "rtl": "module TopModule(\n    input [255:0] in,\n    input [7:0] sel,\n    output out\n);\n    wire [0:255] wire_array [0:255];\n    genvar i;\n    generate\n        for (i = 0; i < 256; i = i + 1) begin : wire_gen\n            assign wire_array[i] = in[i];\n        end\n    endgenerate\n    assign out = wire_array[sel];\nendmodule",
+      "rtl_raw_sha256": "281c1f6243d7c708ee8d483ba6ba9bdc257e3bca7f70318a4f4b9dc244751dfb",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(input [255:0] in, input [7:0] sel, output reg out);\n  always @(*) out = in[sel];\nendmodule",
+      "raw_completion_raw_sha256": "f6b0d2bac6f34fae6dcc328d176d0f9274d2bd3e6a6699f65cd1464e6b637735",
+      "rtl": "module TopModule(input [255:0] in, input [7:0] sel, output reg out);\n  always @(*) out = in[sel];\nendmodule",
+      "rtl_raw_sha256": "f6b0d2bac6f34fae6dcc328d176d0f9274d2bd3e6a6699f65cd1464e6b637735",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [255:0] in,\n    input [7:0] sel,\n    output reg out\n);\n    always @(*) out = in[sel];\nendmodule",
+      "raw_completion_raw_sha256": "45601c988df7108a8be52bff348c7db0b45cf33ad4a0a106c107e409e738d886",
+      "rtl": "module TopModule(\n    input [255:0] in,\n    input [7:0] sel,\n    output reg out\n);\n    always @(*) out = in[sel];\nendmodule",
+      "rtl_raw_sha256": "45601c988df7108a8be52bff348c7db0b45cf33ad4a0a106c107e409e738d886",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [255:0] in,\n    input [7:0] sel,\n    output out\n);\n    wire [0:255] wires;\n    assign wires[0] = in[0];\n    genvar i;\n    for (i = 1; i < 256; i = i + 1) begin\n        assign wires[i] = in[i];\n    end\n    assign out = wires[sel];\nendmodule",
+      "raw_completion_raw_sha256": "8e81e2431c8c9edae13a951cfa75e7b8acfc378962c54eb82445774650b4a771",
+      "rtl": "module TopModule(\n    input [255:0] in,\n    input [7:0] sel,\n    output out\n);\n    wire [0:255] wires;\n    assign wires[0] = in[0];\n    genvar i;\n    for (i = 1; i < 256; i = i + 1) begin\n        assign wires[i] = in[i];\n    end\n    assign out = wires[sel];\nendmodule",
+      "rtl_raw_sha256": "8e81e2431c8c9edae13a951cfa75e7b8acfc378962c54eb82445774650b4a771",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "996/2000 mismatches",
+      "raw_completion": "module TopModule(\n    input  [255:0] in,\n    input  [ 7:0] sel,\n    output        out\n);\n    wire [0:255] w;\n    assign w = in;\n    assign out = w[sel];\nendmodule",
+      "raw_completion_raw_sha256": "504897a163552d287667d2ae146226c718b436f395c9c28a5fcc6c24f353c53b",
+      "rtl": "module TopModule(\n    input  [255:0] in,\n    input  [ 7:0] sel,\n    output        out\n);\n    wire [0:255] w;\n    assign w = in;\n    assign out = w[sel];\nendmodule",
+      "rtl_raw_sha256": "504897a163552d287667d2ae146226c718b436f395c9c28a5fcc6c24f353c53b",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [255:0] in,\n    input [7:0] sel,\n    output out\n);\n    wire [255:0] bits;\n    genvar i;\n    generate\n        for (i = 0; i < 256; i = i + 1) begin\n            assign bits[i] = in[i];\n        end\n    endgenerate\n    assign out = bits[sel];\nendmodule",
+      "raw_completion_raw_sha256": "7888a29ad4847e240a52a41b6fb8d2ee094987920ec9fe818d8d533f7ae96357",
+      "rtl": "module TopModule(\n    input [255:0] in,\n    input [7:0] sel,\n    output out\n);\n    wire [255:0] bits;\n    genvar i;\n    generate\n        for (i = 0; i < 256; i = i + 1) begin\n            assign bits[i] = in[i];\n        end\n    endgenerate\n    assign out = bits[sel];\nendmodule",
+      "rtl_raw_sha256": "7888a29ad4847e240a52a41b6fb8d2ee094987920ec9fe818d8d533f7ae96357",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob018_mux256to1_ref.sv:2: syntax error",
+      "raw_completion": "module TopModule(\n    input  [255:0] in,\n    input  [7:0] sel,\n    output out\n);\n    wire [255:0] t;\n    assign t = {256'h000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F,\n                256'h202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F,\n                256'h404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F,\n                256'h606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F,\n                256'h808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9F,\n                256'hA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBF,\n                256'hC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDF,\n                256'hF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF000102030405060708090A0B0C0D0E0F,\n                256'h101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F,\n                256'h303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F,\n                256'h505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F,\n                256'h707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F,\n                256'h909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAF,\n                256'hB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBF000102030405060708090A0B0C0D0E0F,\n",
+      "raw_completion_raw_sha256": "343fe8562c70ce76d8a4b7d5515584f4f05af71d17b057cb60562b22a59fd26d",
+      "rtl": "module TopModule(\n    input  [255:0] in,\n    input  [7:0] sel,\n    output out\n);\n    wire [255:0] t;\n    assign t = {256'h000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F,\n                256'h202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F,\n                256'h404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F,\n                256'h606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F,\n                256'h808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9F,\n                256'hA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBF,\n                256'hC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDF,\n                256'hF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF000102030405060708090A0B0C0D0E0F,\n                256'h101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F,\n                256'h303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F,\n                256'h505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F,\n                256'h707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F,\n                256'h909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAF,\n                256'hB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBF000102030405060708090A0B0C0D0E0F,",
+      "rtl_raw_sha256": "6dbfc2d6c5619cb1ddb74afbb08f4e93ebd64293da6e7478f7a8531d1f02f363",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [255:0] in,\n    input  [7:0] sel,\n    output reg out\n);\n    always @(*) out = in[sel];\nendmodule",
+      "raw_completion_raw_sha256": "f6fa0071ca3583cbafb0cc5b48bd31ab6a9ee8f17c8a2de93464d8b015b77295",
+      "rtl": "module TopModule (\n    input  [255:0] in,\n    input  [7:0] sel,\n    output reg out\n);\n    always @(*) out = in[sel];\nendmodule",
+      "rtl_raw_sha256": "f6fa0071ca3583cbafb0cc5b48bd31ab6a9ee8f17c8a2de93464d8b015b77295",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:6: error: 'out' has already been declared in this scope.",
+      "raw_completion": "module TopModule(\n    input  [255:0] in,\n    input  [ 7:0]  sel,\n    output        out\n);\n    reg             out;\n    always @(*)     out = in[sel];\nendmodule",
+      "raw_completion_raw_sha256": "0b80b38249a41089428fd32c381f6fb072217c76d756ded118b5f7477ca95992",
+      "rtl": "module TopModule(\n    input  [255:0] in,\n    input  [ 7:0]  sel,\n    output        out\n);\n    reg             out;\n    always @(*)     out = in[sel];\nendmodule",
+      "rtl_raw_sha256": "0b80b38249a41089428fd32c381f6fb072217c76d756ded118b5f7477ca95992",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [255:0] in,\n    input [7:0] sel,\n    output out\n);\n    wire [0:255] array [0:255];\n    genvar i;\n    generate\n        for (i = 0; i < 256; i = i+1) begin : g\n            assign array[i] = in[i];\n        end\n    endgenerate\n    assign out = array[sel];\nendmodule",
+      "raw_completion_raw_sha256": "7bf6e333b6321647792b81739fda5334c013f597b6203fa827510b3de4568fb0",
+      "rtl": "module TopModule(\n    input [255:0] in,\n    input [7:0] sel,\n    output out\n);\n    wire [0:255] array [0:255];\n    genvar i;\n    generate\n        for (i = 0; i < 256; i = i+1) begin : g\n            assign array[i] = in[i];\n        end\n    endgenerate\n    assign out = array[sel];\nendmodule",
+      "rtl_raw_sha256": "7bf6e333b6321647792b81739fda5334c013f597b6203fa827510b3de4568fb0",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "996/2000 mismatches",
+      "raw_completion": "module TopModule (\n    input  [255:0] in,\n    input  [7:0] sel,\n    output out\n);\n    wire [0:255] w;\n    assign w = in;\n    assign out = w[sel];\nendmodule",
+      "raw_completion_raw_sha256": "03e78fa257052be0ada56d1c0a4a9d87de5b3f4a0981943d7359ed00e4bee437",
+      "rtl": "module TopModule (\n    input  [255:0] in,\n    input  [7:0] sel,\n    output out\n);\n    wire [0:255] w;\n    assign w = in;\n    assign out = w[sel];\nendmodule",
+      "rtl_raw_sha256": "03e78fa257052be0ada56d1c0a4a9d87de5b3f4a0981943d7359ed00e4bee437",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob018_mux256to1_ref.sv:2: syntax error",
+      "raw_completion": "module TopModule(\n  input  [255:0] in,\n  input  [ 7:0] sel,\n  output        out\n);\n  wire [255:0] w;\n  assign w = {256'd1, 256'd2, 256'd3, 256'd4, 256'd5, 256'd6, 256'd7, 256'd8, 256'd9, 256'd10, 256'd11, 256'd12, 256'd13, 256'd14, 256'd15, 256'd16, 256'd17, 256'd18, 256'd19, 256'd20, 256'd21, 256'd22, 256'd23, 256'd24, 256'd25, 256'd26, 256'd27, 256'd28, 256'd29, 256'd30, 256'd31, 256'd32, 256'd33, 256'd34, 256'd35, 256'd36, 256'd37, 256'd38, 256'd39, 256'd40, 256'd41, 256'd42, 256'd43, 256'd44, 256'd45, 256'd46, 256'd47, 256'd48, 256'd49, 256'd50, 256'd51, 256'd52, 256'd53, 256'd54, 256'd55, 256'd56, 256'd57, 256'd58, 256'd59, 256'd60, 256'd61, 256'd62, 256'd63, 256'd64, 256'd65, 256'd66, 256'd67, 256'd68, 256'd69, 256'd70, 256'd71, 256'd72, 256'd73, 256'd74, 256'd75, 256'd76, 256'd77, 256'd78, 256'd79, 256'd80, 256'd81, 256'd82, 256'd83, 256'd84, 256'd85, 256'd86, 256'd87, 256'd88, 256'd89, 256'd90, 256'd91, 256'd92, 256'd93, 256'd94, 256'd95, 256'd96, 256'd97, 256'd98, 256'd99, 256'd100, 256'd101, 256'd102, 256'd103, 256'd104, 256'd105, 256'd106, 256'd107, 256'd108",
+      "raw_completion_raw_sha256": "841d0cc71d01938405e064123b6c307f541b87e5e8ec9a4be3a17d2ff4dad0bc",
+      "rtl": "module TopModule(\n  input  [255:0] in,\n  input  [ 7:0] sel,\n  output        out\n);\n  wire [255:0] w;\n  assign w = {256'd1, 256'd2, 256'd3, 256'd4, 256'd5, 256'd6, 256'd7, 256'd8, 256'd9, 256'd10, 256'd11, 256'd12, 256'd13, 256'd14, 256'd15, 256'd16, 256'd17, 256'd18, 256'd19, 256'd20, 256'd21, 256'd22, 256'd23, 256'd24, 256'd25, 256'd26, 256'd27, 256'd28, 256'd29, 256'd30, 256'd31, 256'd32, 256'd33, 256'd34, 256'd35, 256'd36, 256'd37, 256'd38, 256'd39, 256'd40, 256'd41, 256'd42, 256'd43, 256'd44, 256'd45, 256'd46, 256'd47, 256'd48, 256'd49, 256'd50, 256'd51, 256'd52, 256'd53, 256'd54, 256'd55, 256'd56, 256'd57, 256'd58, 256'd59, 256'd60, 256'd61, 256'd62, 256'd63, 256'd64, 256'd65, 256'd66, 256'd67, 256'd68, 256'd69, 256'd70, 256'd71, 256'd72, 256'd73, 256'd74, 256'd75, 256'd76, 256'd77, 256'd78, 256'd79, 256'd80, 256'd81, 256'd82, 256'd83, 256'd84, 256'd85, 256'd86, 256'd87, 256'd88, 256'd89, 256'd90, 256'd91, 256'd92, 256'd93, 256'd94, 256'd95, 256'd96, 256'd97, 256'd98, 256'd99, 256'd100, 256'd101, 256'd102, 256'd103, 256'd104, 256'd105, 256'd106, 256'd107, 256'd108",
+      "rtl_raw_sha256": "841d0cc71d01938405e064123b6c307f541b87e5e8ec9a4be3a17d2ff4dad0bc",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [255:0] in,\n    input  [7:0]   sel,\n    output         out\n);\n    wire [255:0] w;\n    assign w = in;\n    assign out = w[sel];\nendmodule",
+      "raw_completion_raw_sha256": "09095230aa6951f4dac1055ebfa7de66b5a04093bdafe2b9f92164075942b95f",
+      "rtl": "module TopModule(\n    input  [255:0] in,\n    input  [7:0]   sel,\n    output         out\n);\n    wire [255:0] w;\n    assign w = in;\n    assign out = w[sel];\nendmodule",
+      "rtl_raw_sha256": "09095230aa6951f4dac1055ebfa7de66b5a04093bdafe2b9f92164075942b95f",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(input [255:0] in, input [7:0] sel, output reg out);\n    always @(*) out = in[sel];\nendmodule",
+      "raw_completion_raw_sha256": "de735b5b19910ec2c2b4577ac8d5caff35c7322d4ec0450b052ec2012e0ec93c",
+      "rtl": "module TopModule(input [255:0] in, input [7:0] sel, output reg out);\n    always @(*) out = in[sel];\nendmodule",
+      "rtl_raw_sha256": "de735b5b19910ec2c2b4577ac8d5caff35c7322d4ec0450b052ec2012e0ec93c",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [255:0] in,\n    input  [ 7:0] sel,\n    output out\n);\n    wire [0:255] wires;\n    assign wires[0] = in[0];\n    genvar i;\n    for (i = 1; i < 256; i = i + 1) begin\n        assign wires[i] = in[i];\n    end\n    assign out = wires[sel];\nendmodule",
+      "raw_completion_raw_sha256": "5cabce133899ed227d4747a5f5a8e03720216d53a9234add7e10d6f518f276f9",
+      "rtl": "module TopModule (\n    input  [255:0] in,\n    input  [ 7:0] sel,\n    output out\n);\n    wire [0:255] wires;\n    assign wires[0] = in[0];\n    genvar i;\n    for (i = 1; i < 256; i = i + 1) begin\n        assign wires[i] = in[i];\n    end\n    assign out = wires[sel];\nendmodule",
+      "rtl_raw_sha256": "5cabce133899ed227d4747a5f5a8e03720216d53a9234add7e10d6f518f276f9",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "996/2000 mismatches",
+      "raw_completion": "module TopModule(\n  input [255:0] in,\n  input [7:0] sel,\n  output out\n);\n  wire [0:255] w;\n  assign w = in;\n  assign out = w[sel];\nendmodule",
+      "raw_completion_raw_sha256": "b6db5b8ca8be13cbc88efe77bc1a7f6d3b609c31684b9a0023091b89c44fb1ec",
+      "rtl": "module TopModule(\n  input [255:0] in,\n  input [7:0] sel,\n  output out\n);\n  wire [0:255] w;\n  assign w = in;\n  assign out = w[sel];\nendmodule",
+      "rtl_raw_sha256": "b6db5b8ca8be13cbc88efe77bc1a7f6d3b609c31684b9a0023091b89c44fb1ec",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 13,
+    "compile_fail": 3,
+    "fail": 4
+  },
+  "testbench_raw_sha256": "11f3a87789b5ccef3d6982a5fe672f45e0d82194ff11f8aa5bd6378cd3ebffa0",
+  "training_seed": 0
+}

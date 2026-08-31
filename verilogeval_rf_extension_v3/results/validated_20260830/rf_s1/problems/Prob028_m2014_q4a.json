@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob028_m2014_q4a",
+  "problem_seed": 3173155451297921273,
+  "prompt_raw_sha256": "b8a6b85ab89ac361e4dd0f762e0aebf5792ddf2f62194e1755e16b8aa48648ae",
+  "reference_raw_sha256": "fbf798876b0646c79e038691f58cec42fa536a59fc616b462b7115aa7fc2f8b8",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "// D latch, inline always (same function as the registered one, shorter\n// equivalent HDL)\nmodule TopModule (\n    input  d,\n    input  ena,\n    output reg q\n);\n    always @(*) begin\n        if (ena) q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "253739790fe81016b8821053eb6fe6c8318245034526164951f78473c0d3343d",
+      "rtl": "module TopModule (\n    input  d,\n    input  ena,\n    output reg q\n);\n    always @(*) begin\n        if (ena) q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "aae806034473196effcc1ea4da5b5a1a33264b0c5e5c637fa40b1dc929b2c56f",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "40/100 mismatches",
+      "raw_completion": "// D latch, triggered by ena (enable)\nmodule TopModule(input d, input ena, output reg q);\n    always @(posedge ena) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "d56d4d073e40b9e87a851054f57cf7624b3ebd679e536484ae74b505a1196164",
+      "rtl": "module TopModule(input d, input ena, output reg q);\n    always @(posedge ena) q <= d;\nendmodule",
+      "rtl_raw_sha256": "c21c8037449de27cda69fbf5f81e490a119cfcfbf87ca23fc7f469f8080cba18",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "40/100 mismatches",
+      "raw_completion": "// D latch implemented using an always block\nmodule TopModule(input d, input ena, output reg q);\n    always @(posedge ena) begin\n        q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "52399b8a48866db1010eb030b1c27270ff15986ac717f0e305093f845fd22fd9",
+      "rtl": "module TopModule(input d, input ena, output reg q);\n    always @(posedge ena) begin\n        q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "b7c3d3fa18488cb64da259d0b4c1e46b4bbbbfc750885fdbfc02be6c885204f6",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "40/100 mismatches",
+      "raw_completion": "// D latch, implemented as an always block\nmodule TopModule(input d, input ena, output reg q);\n  always @(posedge ena) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "c5d685896f59153a22f894765f3eeb85e12f11f03e4881d9be4e58087c9ea5bf",
+      "rtl": "module TopModule(input d, input ena, output reg q);\n  always @(posedge ena) q <= d;\nendmodule",
+      "rtl_raw_sha256": "240dbd4ba948d915bf91b5c9ed7aec9705ad46858ed6093a81a7939b71a37e17",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "40/100 mismatches",
+      "raw_completion": "// D latch, implemented with an always block\nmodule TopModule(input d, input ena, output reg q);\n    always @(posedge ena) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "788b4ff1c1888c349df9c7526d2715a3d336b2d73596328b4de681a03f0f37f5",
+      "rtl": "module TopModule(input d, input ena, output reg q);\n    always @(posedge ena) q <= d;\nendmodule",
+      "rtl_raw_sha256": "c21c8037449de27cda69fbf5f81e490a119cfcfbf87ca23fc7f469f8080cba18",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "40/100 mismatches",
+      "raw_completion": "// D latch, implemented as an always block.\nmodule TopModule (\n    input  d,\n    input  ena,\n    output q\n);\n    reg q_reg;\n    always @(posedge ena) q_reg <= d;\n    assign q = q_reg;\nendmodule",
+      "raw_completion_raw_sha256": "9da345d7e1ca95c20c830c60b70af5d2da09460e949dfba5e936cffa165ee5c2",
+      "rtl": "module TopModule (\n    input  d,\n    input  ena,\n    output q\n);\n    reg q_reg;\n    always @(posedge ena) q_reg <= d;\n    assign q = q_reg;\nendmodule",
+      "rtl_raw_sha256": "7731213a9028edaedc200c9d9797b1db53c21e96fb1380ad4b3ee76a77ba02ee",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// D latch, implemented as an always block (equivalent to a traditional\n// register, but with the register set on the transition to the\n// combinational next state).\nmodule TopModule(input d, input ena, output reg q);\n    always @(*) begin\n        if (ena) q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "057faf28d0a3996eb61b9cff834de394a7ec984bda45dc9359face34ce1cca3e",
+      "rtl": "module TopModule(input d, input ena, output reg q);\n    always @(*) begin\n        if (ena) q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "2ead86745ed9ceebc9c9469eafdff2e09789d15c50e810a5a4bee85e10bc932a",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "40/100 mismatches",
+      "raw_completion": "// D latch, functionally identical to a SR latch with S and R connected to\n// the same signal.\nmodule TopModule (\n    input  d,\n    input  ena,\n    output q\n);\n    reg q_reg;\n    always @(posedge ena) q_reg <= d;\n    assign q = q_reg;\nendmodule",
+      "raw_completion_raw_sha256": "fc8f95dfd60ad22553de168a12512a7bd6b02abc28386c61806d5103c408712c",
+      "rtl": "module TopModule (\n    input  d,\n    input  ena,\n    output q\n);\n    reg q_reg;\n    always @(posedge ena) q_reg <= d;\n    assign q = q_reg;\nendmodule",
+      "rtl_raw_sha256": "7731213a9028edaedc200c9d9797b1db53c21e96fb1380ad4b3ee76a77ba02ee",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "40/100 mismatches",
+      "raw_completion": "// D latch, same as SR latch with S=R (the equivalent form of the delay-2\n// equivalent form of the TTL circuit).\nmodule TopModule (\n    input  d,\n    input  ena,\n    output reg q\n);\n    always @(posedge ena) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "93f1ec455110ab33798db7089461b699d25a7b33fa3a14681691dc804ba18a2a",
+      "rtl": "module TopModule (\n    input  d,\n    input  ena,\n    output reg q\n);\n    always @(posedge ena) q <= d;\nendmodule",
+      "rtl_raw_sha256": "be9ac9cc0558062f28620e8e28a5ec53ff5b32e80c6f04a97e562fdd50dd5173",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "40/100 mismatches",
+      "raw_completion": "// D latch implemented with an always block\nmodule TopModule (\n    input d,\n    input ena,\n    output reg q\n);\n    always @(posedge ena) begin\n        q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "27ac51fe108f9407153fe47cb5f88910c19250b6aea3c72d3da172e01d0e3640",
+      "rtl": "module TopModule (\n    input d,\n    input ena,\n    output reg q\n);\n    always @(posedge ena) begin\n        q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "15d727b27f0be50f98db2fd4092bfbdd04d608d99b00eca5eda578138a135db5",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:6: error: 'q' has already been declared in this scope.",
+      "raw_completion": "// One-bit D latch, implemented as an always block\nmodule TopModule (\n    input  d,\n    input  ena,\n    output q\n);\n    reg q;\n    always @(posedge ena) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "9925bb7be478b8de3553a9468a2f6dbbea448f9d7dd2f5bec66fad8f53e53b49",
+      "rtl": "module TopModule (\n    input  d,\n    input  ena,\n    output q\n);\n    reg q;\n    always @(posedge ena) q <= d;\nendmodule",
+      "rtl_raw_sha256": "6d0db9128ce4805d580677866e3459c9a474d435fba3cab593d3a80e9f637d61",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "40/100 mismatches",
+      "raw_completion": "// One-bit D latch, implemented as an always block (synthesizable,\n// functional-level register).\nmodule TopModule(input d, input ena, output reg q);\n  always @(posedge ena) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "ea5fb118ccfdd50c82cced084c42a9e1601b2c25e909497f9f0f039b2e65e4a0",
+      "rtl": "module TopModule(input d, input ena, output reg q);\n  always @(posedge ena) q <= d;\nendmodule",
+      "rtl_raw_sha256": "240dbd4ba948d915bf91b5c9ed7aec9705ad46858ed6093a81a7939b71a37e17",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// D latch, as a combinational circuit (no register).\nmodule TopModule(input d, input ena, output reg q);\n    always @(*) q = ena ? d : q;\nendmodule",
+      "raw_completion_raw_sha256": "600783750a5f0e0359f8fd2998a9b2ab6d9d1cebd5664cfc385c45191068e87a",
+      "rtl": "module TopModule(input d, input ena, output reg q);\n    always @(*) q = ena ? d : q;\nendmodule",
+      "rtl_raw_sha256": "7b6bd2d0d72adef9f4b07c56584d4a2b5f8de57aa0acda7e513f652859353c90",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "40/100 mismatches",
+      "raw_completion": "// D latch, implemented as an always block\nmodule TopModule(input d, input ena, output reg q);\n    always @(posedge ena) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "999a6b7d684ba38908f21f4f353db41e8e66f8e818370870e0d4fc7348d9e436",
+      "rtl": "module TopModule(input d, input ena, output reg q);\n    always @(posedge ena) q <= d;\nendmodule",
+      "rtl_raw_sha256": "c21c8037449de27cda69fbf5f81e490a119cfcfbf87ca23fc7f469f8080cba18",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "40/100 mismatches",
+      "raw_completion": "// D latch (register with async reset, TRANSPORTed -> fast, independent\n// register per bit, independent control).\nmodule TopModule (\n    input  d,\n    input  ena,\n    output reg [0:0] q\n);\n    always @(posedge ena) begin\n        q[0] <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "0f99ac2a3616e872a9b566185f2317a42f2ec672ae9e2ddd8a324680de0c9756",
+      "rtl": "module TopModule (\n    input  d,\n    input  ena,\n    output reg [0:0] q\n);\n    always @(posedge ena) begin\n        q[0] <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "4290d1a8c3e57b1bac83ad1cac21586a44092e82118f6b4d329b92d3bfc3386c",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "40/100 mismatches",
+      "raw_completion": "// D latch implemented as an always block\nmodule TopModule(\n    input  d,\n    input  ena,\n    output reg q\n);\n    always @(posedge ena) begin\n        q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "57483ef89d022ce4a83e9eee477a65b7716801fa5e8b125b58a3c550b0caba49",
+      "rtl": "module TopModule(\n    input  d,\n    input  ena,\n    output reg q\n);\n    always @(posedge ena) begin\n        q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "8ee173d016daccdc415820cd409119fed6d032ccfa29363be1c813d7a0a61f3e",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "40/100 mismatches",
+      "raw_completion": "// D latch, implemented as an always block\nmodule TopModule(input d, input ena, output reg q);\n    always @(posedge ena) begin\n        q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "92f88026034c92cc4ce373e6c28c2e5f39d905e277240a1368ea2b866128b301",
+      "rtl": "module TopModule(input d, input ena, output reg q);\n    always @(posedge ena) begin\n        q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "b7c3d3fa18488cb64da259d0b4c1e46b4bbbbfc750885fdbfc02be6c885204f6",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "40/100 mismatches",
+      "raw_completion": "// D latch, same as SR latch with s=r=1\nmodule TopModule(input d, input ena, output reg q);\n    always @(posedge ena) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "070e2ecb184b7a1a7d72d50540e8e58e2314b1d2a36dfd75c3558ad438eec7b8",
+      "rtl": "module TopModule(input d, input ena, output reg q);\n    always @(posedge ena) q <= d;\nendmodule",
+      "rtl_raw_sha256": "c21c8037449de27cda69fbf5f81e490a119cfcfbf87ca23fc7f469f8080cba18",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "40/100 mismatches",
+      "raw_completion": "// D latch, implemented as an always block\nmodule TopModule(input d, input ena, output reg q);\n    always @(posedge ena) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "999a6b7d684ba38908f21f4f353db41e8e66f8e818370870e0d4fc7348d9e436",
+      "rtl": "module TopModule(input d, input ena, output reg q);\n    always @(posedge ena) q <= d;\nendmodule",
+      "rtl_raw_sha256": "c21c8037449de27cda69fbf5f81e490a119cfcfbf87ca23fc7f469f8080cba18",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// D latch, one-bit register, inferred from an always-comb block\n// (the register is physically the same as the latch, so the same\n// delay and TRANSITIVE setup and hold).\nmodule TopModule (\n    input  d,\n    input  ena,\n    output reg q\n);\n    always @(*) begin\n        if (ena) q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "71ad69966721bb1ec36542010a402638632cae3f06a81c129c23c2a0f6874f29",
+      "rtl": "module TopModule (\n    input  d,\n    input  ena,\n    output reg q\n);\n    always @(*) begin\n        if (ena) q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "aae806034473196effcc1ea4da5b5a1a33264b0c5e5c637fa40b1dc929b2c56f",
+      "sample_index": 19,
+      "status": "PASS"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 4,
+    "compile_fail": 1,
+    "fail": 15
+  },
+  "testbench_raw_sha256": "fa0ec157ff1e18c0abe691a2c98a8a5bd0b3ca56d98ae2cbd60d43b7eeb21a75",
+  "training_seed": 1
+}

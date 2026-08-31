@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob036_ringer",
+  "problem_seed": 1694761652250759064,
+  "prompt_raw_sha256": "5530a2b20042d8534324f221eab85bde4eb19264cdafeb21b76afe8289b8ff81",
+  "reference_raw_sha256": "8bd1d42c007b2b463cf8888fd8109197ab8ce53059206ce6cf1589dfc4ad0cc5",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "8/19 mismatches",
+      "raw_completion": "// One-bit combinational circuit to control a cellphone's ringer and vibration\n// motor.\nmodule TopModule(\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    assign ringer = ring & ~vibrate_mode;\n    assign motor = vibrate_mode | (ring & ~vibrate_mode);\nendmodule",
+      "raw_completion_raw_sha256": "edf83b55089b951f26ac21e7e450ea6ab42c56eab4f93f6bdd3948ae9cd97571",
+      "rtl": "module TopModule(\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    assign ringer = ring & ~vibrate_mode;\n    assign motor = vibrate_mode | (ring & ~vibrate_mode);\nendmodule",
+      "rtl_raw_sha256": "a3e9a57b44637fe3b90718683a1eceff4fd5ce13cfb50f47c62f803454d56b7d",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "11/19 mismatches",
+      "raw_completion": "// Cellphone ringer and vibration motor controller\nmodule TopModule(\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ringer_or_motor = ring ^ vibrate_mode;\n    assign ringer = ringer_or_motor;\n    assign motor = ~ringer_or_motor;\nendmodule",
+      "raw_completion_raw_sha256": "8348be791770b6ec3587ea3550ab0fa5fcd3be2f8723992f428377aeb7fba5aa",
+      "rtl": "module TopModule(\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ringer_or_motor = ring ^ vibrate_mode;\n    assign ringer = ringer_or_motor;\n    assign motor = ~ringer_or_motor;\nendmodule",
+      "rtl_raw_sha256": "a74a780fdd47a81e6722b66ac71ad28d60f338b0fec5ce85d4a113a173137005",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "11/19 mismatches",
+      "raw_completion": "// Cellphone ringer and vibration motor controller\nmodule TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    assign ringer = vibrate_mode ? 1'b0 : ring;\n    assign motor = vibrate_mode ? 1'b1 : (ring ? 1'b0 : 1'b1);\nendmodule",
+      "raw_completion_raw_sha256": "aecc544742e33a02ff3b03ecaff8598547208c64c57ede419f89b0490beb1010",
+      "rtl": "module TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    assign ringer = vibrate_mode ? 1'b0 : ring;\n    assign motor = vibrate_mode ? 1'b1 : (ring ? 1'b0 : 1'b1);\nendmodule",
+      "rtl_raw_sha256": "be43096448c29245cb9708d3239f124777c088395401cc31c2463a9acff8dd6d",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "15/19 mismatches",
+      "raw_completion": "// This is a one-bit combinational circuit to control a cellphone's ringer\n// and vibration motor, as described in the problem description.\nmodule TopModule(\n    input  ring,\n    input  vibrate_mode,\n    output reg ringer,\n    output reg motor\n);\n    always @(*) begin\n        if (ring) begin\n            ringer = 1;\n            motor = 0;\n        end else if (vibrate_mode) begin\n            ringer = 0;\n            motor = 1;\n        end else begin\n            ringer = 1;\n            motor = 0;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a4d2bb75a83fc8eae1ffe59c0585a1e86be2ef9ace70cafcd242562713987555",
+      "rtl": "module TopModule(\n    input  ring,\n    input  vibrate_mode,\n    output reg ringer,\n    output reg motor\n);\n    always @(*) begin\n        if (ring) begin\n            ringer = 1;\n            motor = 0;\n        end else if (vibrate_mode) begin\n            ringer = 0;\n            motor = 1;\n        end else begin\n            ringer = 1;\n            motor = 0;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "0f3ae1af4a224d7d75effb0d11c5a70a30a7e35aadca04e10fb255322fcff46c",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit ringer and vibration motor controller.\nmodule TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire not_ring = !ring;\n    wire not_vibrate_mode = !vibrate_mode;\n    wire ringer_or_motor = not_ring & not_vibrate_mode | ring & vibrate_mode;\n    assign ringer = ring & not_vibrate_mode;\n    assign motor = ringer_or_motor & vibrate_mode;\nendmodule",
+      "raw_completion_raw_sha256": "78920aec3ce393d0034ad56f3f249ec1c3153a4af42b9ff065aec1c901ad6b0c",
+      "rtl": "module TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire not_ring = !ring;\n    wire not_vibrate_mode = !vibrate_mode;\n    wire ringer_or_motor = not_ring & not_vibrate_mode | ring & vibrate_mode;\n    assign ringer = ring & not_vibrate_mode;\n    assign motor = ringer_or_motor & vibrate_mode;\nendmodule",
+      "rtl_raw_sha256": "18a8511a8ef5d765af10a93f9757b417638fcc1c20e02983e11a622dd49275de",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "15/19 mismatches",
+      "raw_completion": "// Single-bit synchronous circuit to control a cellphone's ringer and\n// vibration motor. See the module's docstring for a description of its\n// operation.\nmodule TopModule(\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    reg ringer_reg;\n    reg motor_reg;\n    always @(*) begin\n        if (ring) begin\n            ringer_reg = ~motor_reg;\n            motor_reg = 0;\n        end else if (vibrate_mode) begin\n            ringer_reg = 0;\n            motor_reg = 1;\n        end else begin\n            ringer_reg = 1;\n            motor_reg = 0;\n        end\n    end\n    assign ringer = ringer_reg;\n    assign motor = motor_reg;\nendmodule",
+      "raw_completion_raw_sha256": "62c50997e6921f76a570bdcf41ddab82ca0d2c1af6dcaa11f3d3849895c8d521",
+      "rtl": "module TopModule(\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    reg ringer_reg;\n    reg motor_reg;\n    always @(*) begin\n        if (ring) begin\n            ringer_reg = ~motor_reg;\n            motor_reg = 0;\n        end else if (vibrate_mode) begin\n            ringer_reg = 0;\n            motor_reg = 1;\n        end else begin\n            ringer_reg = 1;\n            motor_reg = 0;\n        end\n    end\n    assign ringer = ringer_reg;\n    assign motor = motor_reg;\nendmodule",
+      "rtl_raw_sha256": "cb48b26923deb8c7ab25f47f1e61d5968a9581b64324883bf54281304ab6cbc0",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "8/19 mismatches",
+      "raw_completion": "module TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ring_or_vibrate = ring | vibrate_mode;\n    assign ringer = ring & ~motor;\n    assign motor = ring_or_vibrate;\nendmodule",
+      "raw_completion_raw_sha256": "2c7e82720c8c49da5a283a45d2788d6e5a1506c61afb4b5e8a49dbffa13c8a71",
+      "rtl": "module TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ring_or_vibrate = ring | vibrate_mode;\n    assign ringer = ring & ~motor;\n    assign motor = ring_or_vibrate;\nendmodule",
+      "rtl_raw_sha256": "2c7e82720c8c49da5a283a45d2788d6e5a1506c61afb4b5e8a49dbffa13c8a71",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "15/19 mismatches",
+      "raw_completion": "module TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    assign ringer = vibrate_mode ? 1'b0 : (ring ? 1'b0 : 1'b1);\n    assign motor = vibrate_mode ? 1'b1 : (ring ? 1'b1 : 1'b0);\nendmodule",
+      "raw_completion_raw_sha256": "227dcc566b63e3ede2b018abb42875c9fbbdb1f9d464dfe6e46044173ed745d9",
+      "rtl": "module TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    assign ringer = vibrate_mode ? 1'b0 : (ring ? 1'b0 : 1'b1);\n    assign motor = vibrate_mode ? 1'b1 : (ring ? 1'b1 : 1'b0);\nendmodule",
+      "rtl_raw_sha256": "227dcc566b63e3ede2b018abb42875c9fbbdb1f9d464dfe6e46044173ed745d9",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "8/19 mismatches",
+      "raw_completion": "// One-bit control circuit for a cellphone's ringer and vibration motor.\nmodule TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ringer_inv;\n    assign ringer_inv = ~ring;\n    wire motor_inv;\n    assign motor_inv = ~vibrate_mode;\n    assign ringer = ringer_inv & ring;\n    assign motor = motor_inv & vibrate_mode;\nendmodule",
+      "raw_completion_raw_sha256": "a51a022954fd4b82fd8041486d154c316d1b6ddb2e748cee6f5cb78a969ad34d",
+      "rtl": "module TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ringer_inv;\n    assign ringer_inv = ~ring;\n    wire motor_inv;\n    assign motor_inv = ~vibrate_mode;\n    assign ringer = ringer_inv & ring;\n    assign motor = motor_inv & vibrate_mode;\nendmodule",
+      "rtl_raw_sha256": "ba8248b3a7229900907371dded1d7cc32ff73ab6ca8d054ad75045a19548ceaa",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "11/19 mismatches",
+      "raw_completion": "// One-bit combinational circuit to control a cellphone's ringer and vibration motor\nmodule TopModule(\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ring_or_motor = ring | ~vibrate_mode;\n    assign ringer = ~vibrate_mode & ring;\n    assign motor = ring_or_motor & ~ring;\nendmodule",
+      "raw_completion_raw_sha256": "050d2a94db5f9360b2c6a9beaa9a87ae1b54f7bf36a37ec2bf08d1b1e1e72b90",
+      "rtl": "module TopModule(\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ring_or_motor = ring | ~vibrate_mode;\n    assign ringer = ~vibrate_mode & ring;\n    assign motor = ring_or_motor & ~ring;\nendmodule",
+      "rtl_raw_sha256": "255ffa74328846549419dbb6587219470220d9cb94293997e08ad28a5ae66b7a",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Implement a simple priority-based circuit to control a cellphone's ringer\n// and vibration motor, as described in the problem description.\nmodule TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ringer_on = ring & ~vibrate_mode;\n    wire motor_on  = ring & vibrate_mode;\n    assign ringer = ringer_on;\n    assign motor  = motor_on;\nendmodule",
+      "raw_completion_raw_sha256": "af94c7542a599569fb631d490eed2077b40a79355a0dbbbafd853264211746e5",
+      "rtl": "module TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ringer_on = ring & ~vibrate_mode;\n    wire motor_on  = ring & vibrate_mode;\n    assign ringer = ringer_on;\n    assign motor  = motor_on;\nendmodule",
+      "rtl_raw_sha256": "993400decbfa1e31d235f429f4adf53275d729e46ac5aa8784ad8cfe36858828",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "15/19 mismatches",
+      "raw_completion": "// Cellphone ringer/vibration motor controller\nmodule TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ring_or_motor = ring | vibrate_mode;\n    assign ringer = ~ring_or_motor;\n    assign motor = ring_or_motor;\nendmodule",
+      "raw_completion_raw_sha256": "65bac82ee37bac55586596bf1de94f3a7107d0f25f8fe0d76aa089e06a0948d6",
+      "rtl": "module TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ring_or_motor = ring | vibrate_mode;\n    assign ringer = ~ring_or_motor;\n    assign motor = ring_or_motor;\nendmodule",
+      "rtl_raw_sha256": "7884bdf94bcac7f770842f8c7de044a77196dfe778a9214a9e8ebe5c4ad25eca",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "11/19 mismatches",
+      "raw_completion": "module TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ringer_or_motor = ring | ~vibrate_mode;\n    assign ringer = ~vibrate_mode & ring;\n    assign motor = ringer_or_motor & ~ring;\nendmodule",
+      "raw_completion_raw_sha256": "30faad2fcbe68646df7e1a30efb5b11d4ad5a02c5aa6ff2e02f0a9550e6b7d4a",
+      "rtl": "module TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ringer_or_motor = ring | ~vibrate_mode;\n    assign ringer = ~vibrate_mode & ring;\n    assign motor = ringer_or_motor & ~ring;\nendmodule",
+      "rtl_raw_sha256": "30faad2fcbe68646df7e1a30efb5b11d4ad5a02c5aa6ff2e02f0a9550e6b7d4a",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "11/19 mismatches",
+      "raw_completion": "// Cellphone ringer and vibration motor controller\nmodule TopModule(\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ringer_not_motor = ring & ~vibrate_mode;\n    wire motor_not_ringer = vibrate_mode | ~ring;\n    assign ringer = ringer_not_motor;\n    assign motor = motor_not_ringer;\nendmodule",
+      "raw_completion_raw_sha256": "d4e0c7f3569ba9181aacd49b7316c51d7e69cd19b77a93248502be15dad5cc15",
+      "rtl": "module TopModule(\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ringer_not_motor = ring & ~vibrate_mode;\n    wire motor_not_ringer = vibrate_mode | ~ring;\n    assign ringer = ringer_not_motor;\n    assign motor = motor_not_ringer;\nendmodule",
+      "rtl_raw_sha256": "74d87a2955817ae724ba959ebc1fce5668755e86232aa1d0b8b43d7dca03be7b",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "15/19 mismatches",
+      "raw_completion": "module TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    reg ringer_reg;\n    reg motor_reg;\n    always @(*) begin\n        if (ring) begin\n            ringer_reg = 1;\n            motor_reg = 0;\n        end else if (vibrate_mode) begin\n            ringer_reg = 0;\n            motor_reg = 1;\n        end else begin\n            ringer_reg = 1;\n            motor_reg = 0;\n        end\n    end\n    assign ringer = ringer_reg;\n    assign motor = motor_reg;\nendmodule",
+      "raw_completion_raw_sha256": "2b4cd98d3abfbb267cdff9a2b0c138cac201d483c2f89a40deb80f5f93559676",
+      "rtl": "module TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    reg ringer_reg;\n    reg motor_reg;\n    always @(*) begin\n        if (ring) begin\n            ringer_reg = 1;\n            motor_reg = 0;\n        end else if (vibrate_mode) begin\n            ringer_reg = 0;\n            motor_reg = 1;\n        end else begin\n            ringer_reg = 1;\n            motor_reg = 0;\n        end\n    end\n    assign ringer = ringer_reg;\n    assign motor = motor_reg;\nendmodule",
+      "rtl_raw_sha256": "2b4cd98d3abfbb267cdff9a2b0c138cac201d483c2f89a40deb80f5f93559676",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "13/19 mismatches",
+      "raw_completion": "// Single-cycle FSM to control the ringer and motor.\nmodule TopModule(\n  input  ring,\n  input  vibrate_mode,\n  output reg ringer,\n  output reg motor\n);\n  reg [1:0] state;\n  always @(*) begin\n    case (state)\n      2'b00: begin // Ringer off, motor off.\n        ringer = 1'b0;\n        motor = 1'b0;\n        if (ring) state = 2'b01;\n      end\n      2'b01: begin // Ringer on, motor off.\n        ringer = 1'b1;\n        motor = 1'b0;\n        if (vibrate_mode) state = 2'b11;\n        else if (!ring) state = 2'b00;\n      end\n      2'b11: begin // Ringer off, motor on.\n        ringer = 1'b0;\n        motor = 1'b1;\n        if (!vibrate_mode) state = 2'b01;\n      end\n      default: state = 2'b00;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "2a30bf8524411202c87578ea54aba6fab3a7c77ecfc7a1a317c731b129c7c1ae",
+      "rtl": "module TopModule(\n  input  ring,\n  input  vibrate_mode,\n  output reg ringer,\n  output reg motor\n);\n  reg [1:0] state;\n  always @(*) begin\n    case (state)\n      2'b00: begin // Ringer off, motor off.\n        ringer = 1'b0;\n        motor = 1'b0;\n        if (ring) state = 2'b01;\n      end\n      2'b01: begin // Ringer on, motor off.\n        ringer = 1'b1;\n        motor = 1'b0;\n        if (vibrate_mode) state = 2'b11;\n        else if (!ring) state = 2'b00;\n      end\n      2'b11: begin // Ringer off, motor on.\n        ringer = 1'b0;\n        motor = 1'b1;\n        if (!vibrate_mode) state = 2'b01;\n      end\n      default: state = 2'b00;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "2c4f3e5525769ca96efba709923183983d218405942a3685bdb5f6aebd76a149",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "8/19 mismatches",
+      "raw_completion": "// One-bit control circuit for a cellphone ringer and vibration motor.\n// Turns on the ringer if the phone needs to ring, and the motor if in\n// vibrate mode. Otherwise, turns on the ringer if the phone doesn't need\n// to ring.\nmodule TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ringer_or_motor = ring | vibrate_mode;\n    assign ringer = ~vibrate_mode & ring;\n    assign motor = ringer_or_motor & ~ring;\nendmodule",
+      "raw_completion_raw_sha256": "079a124a617773d48a7daf2fba640740e0f782b778bacc6997889e52d49527b4",
+      "rtl": "module TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ringer_or_motor = ring | vibrate_mode;\n    assign ringer = ~vibrate_mode & ring;\n    assign motor = ringer_or_motor & ~ring;\nendmodule",
+      "rtl_raw_sha256": "6372857d9d02ceeb0e6b7588ed25e9e40f53bef37de9b921613e5fa44fdd7fcb",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "15/19 mismatches",
+      "raw_completion": "// One-bit control circuit for a cellphone's ringer and vibration motor.\nmodule TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ring_or_motor = ring | vibrate_mode;\n    assign ringer = ~ring_or_motor;\n    assign motor = ring_or_motor;\nendmodule",
+      "raw_completion_raw_sha256": "1979a4e2e1e45374278348d6e6e1856d36454f7231b32c25152bdc8e4e5235a2",
+      "rtl": "module TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ring_or_motor = ring | vibrate_mode;\n    assign ringer = ~ring_or_motor;\n    assign motor = ring_or_motor;\nendmodule",
+      "rtl_raw_sha256": "7884bdf94bcac7f770842f8c7de044a77196dfe778a9214a9e8ebe5c4ad25eca",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "7/19 mismatches",
+      "raw_completion": "module TopModule(\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ringer_or_motor = ring | ~vibrate_mode;\n    assign ringer = ringer_or_motor & ~motor;\n    assign motor = ringer_or_motor & vibrate_mode;\nendmodule",
+      "raw_completion_raw_sha256": "0190ff11e4470b3f059d851b881adbc10dff93a08562bafa4cc1b47a307fbad0",
+      "rtl": "module TopModule(\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    wire ringer_or_motor = ring | ~vibrate_mode;\n    assign ringer = ringer_or_motor & ~motor;\n    assign motor = ringer_or_motor & vibrate_mode;\nendmodule",
+      "rtl_raw_sha256": "0190ff11e4470b3f059d851b881adbc10dff93a08562bafa4cc1b47a307fbad0",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "15/19 mismatches",
+      "raw_completion": "// Cellphone ringer and vibration motor control.\nmodule TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    reg ringer_reg;\n    reg motor_reg;\n    always @(*) begin\n        if (ring) begin\n            ringer_reg = 1;\n            motor_reg = 0;\n        end else if (vibrate_mode) begin\n            ringer_reg = 0;\n            motor_reg = 1;\n        end else begin\n            ringer_reg = 1;\n            motor_reg = 0;\n        end\n    end\n    assign ringer = ringer_reg;\n    assign motor = motor_reg;\nendmodule",
+      "raw_completion_raw_sha256": "b4419b8d484211436f1c96a6f1d6a21a0f22241b03c72dfd06c94fdbc7b2a402",
+      "rtl": "module TopModule (\n    input  ring,\n    input  vibrate_mode,\n    output ringer,\n    output motor\n);\n    reg ringer_reg;\n    reg motor_reg;\n    always @(*) begin\n        if (ring) begin\n            ringer_reg = 1;\n            motor_reg = 0;\n        end else if (vibrate_mode) begin\n            ringer_reg = 0;\n            motor_reg = 1;\n        end else begin\n            ringer_reg = 1;\n            motor_reg = 0;\n        end\n    end\n    assign ringer = ringer_reg;\n    assign motor = motor_reg;\nendmodule",
+      "rtl_raw_sha256": "2b4cd98d3abfbb267cdff9a2b0c138cac201d483c2f89a40deb80f5f93559676",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 2,
+    "fail": 18
+  },
+  "testbench_raw_sha256": "ca5bd969f5028c2ab049e8ae324ca11835703244817c17af011a3e18318fb7e1",
+  "training_seed": 0
+}

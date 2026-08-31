@@ -1,0 +1,197 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob076_always_case",
+  "problem_seed": 2817446122830424772,
+  "prompt_raw_sha256": "0ae5de2e81d7e0c7682c78b6a37043a0e3cd7b1e03896390094d8447c2259519",
+  "reference_raw_sha256": "bc2d160effd6fbaf591d8adaab32f897fcc0479ea8ddb8d1eb92fb3b59cf3d23",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] chosen_data;\n    always @(*) begin\n        case (sel)\n            0: chosen_data = data0;\n            1: chosen_data = data1;\n            2: chosen_data = data2;\n            3: chosen_data = data3;\n            4: chosen_data = data4;\n            5: chosen_data = data5;\n            default: chosen_data = 4'b0;\n        endcase\n    end\n    assign out = chosen_data;\nendmodule",
+      "raw_completion_raw_sha256": "57fce23421960a5c533e96f54af097496e0881d43a4feb46bcfb4c7666132403",
+      "rtl": "module TopModule (\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] chosen_data;\n    always @(*) begin\n        case (sel)\n            0: chosen_data = data0;\n            1: chosen_data = data1;\n            2: chosen_data = data2;\n            3: chosen_data = data3;\n            4: chosen_data = data4;\n            5: chosen_data = data5;\n            default: chosen_data = 4'b0;\n        endcase\n    end\n    assign out = chosen_data;\nendmodule",
+      "rtl_raw_sha256": "57fce23421960a5c533e96f54af097496e0881d43a4feb46bcfb4c7666132403",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 6-to-1 multiplexer (with one select wire per input, so the total number\n// of gates is independent of the number of inputs; this is the optimal\n// structure for this kind of mux)\nmodule TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    wire [3:0] mux [0:5];\n    assign mux[0] = data0;\n    assign mux[1] = data1;\n    assign mux[2] = data2;\n    assign mux[3] = data3;\n    assign mux[4] = data4;\n    assign mux[5] = data5;\n    assign out = (0 <= sel && sel <= 5) ? mux[sel] : 4'd0;\nendmodule",
+      "raw_completion_raw_sha256": "49ce667d3084bc8973c14311bde64d61166fb476760340305962cbf2bf50ba76",
+      "rtl": "module TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    wire [3:0] mux [0:5];\n    assign mux[0] = data0;\n    assign mux[1] = data1;\n    assign mux[2] = data2;\n    assign mux[3] = data3;\n    assign mux[4] = data4;\n    assign mux[5] = data5;\n    assign out = (0 <= sel && sel <= 5) ? mux[sel] : 4'd0;\nendmodule",
+      "rtl_raw_sha256": "4b0a4e94d489c3de2b20acc973dfa5ea2b227e71b7c397be6ab0dba899aec691",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0]  sel,\n    input  [3:0]  data0,\n    input  [3:0]  data1,\n    input  [3:0]  data2,\n    input  [3:0]  data3,\n    input  [3:0]  data4,\n    input  [3:0]  data5,\n    output [3:0]  out\n);\n    reg [3:0] out_reg;\n    always @(*) begin\n        case (sel)\n            3'd0: out_reg = data0;\n            3'd1: out_reg = data1;\n            3'd2: out_reg = data2;\n            3'd3: out_reg = data3;\n            3'd4: out_reg = data4;\n            3'd5: out_reg = data5;\n            default: out_reg = 4'd0;\n        endcase\n    end\n    assign out = out_reg;\nendmodule",
+      "raw_completion_raw_sha256": "f8d00d608a7aa3484de93e34503dd844af21fb856d34df31411138da5a1b6c76",
+      "rtl": "module TopModule(\n    input  [2:0]  sel,\n    input  [3:0]  data0,\n    input  [3:0]  data1,\n    input  [3:0]  data2,\n    input  [3:0]  data3,\n    input  [3:0]  data4,\n    input  [3:0]  data5,\n    output [3:0]  out\n);\n    reg [3:0] out_reg;\n    always @(*) begin\n        case (sel)\n            3'd0: out_reg = data0;\n            3'd1: out_reg = data1;\n            3'd2: out_reg = data2;\n            3'd3: out_reg = data3;\n            3'd4: out_reg = data4;\n            3'd5: out_reg = data5;\n            default: out_reg = 4'd0;\n        endcase\n    end\n    assign out = out_reg;\nendmodule",
+      "rtl_raw_sha256": "f8d00d608a7aa3484de93e34503dd844af21fb856d34df31411138da5a1b6c76",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [2:0] sel,\n    input [3:0] data0,\n    input [3:0] data1,\n    input [3:0] data2,\n    input [3:0] data3,\n    input [3:0] data4,\n    input [3:0] data5,\n    output reg [3:0] out\n);\n    always @(*) begin\n        case (sel)\n            0: out = data0;\n            1: out = data1;\n            2: out = data2;\n            3: out = data3;\n            4: out = data4;\n            5: out = data5;\n            default: out = 4'b0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "34e264967b897372b40748f91ae78ea89461c3fdd144a89ac3c91f2c165e55ce",
+      "rtl": "module TopModule(\n    input [2:0] sel,\n    input [3:0] data0,\n    input [3:0] data1,\n    input [3:0] data2,\n    input [3:0] data3,\n    input [3:0] data4,\n    input [3:0] data5,\n    output reg [3:0] out\n);\n    always @(*) begin\n        case (sel)\n            0: out = data0;\n            1: out = data1;\n            2: out = data2;\n            3: out = data3;\n            4: out = data4;\n            5: out = data5;\n            default: out = 4'b0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "34e264967b897372b40748f91ae78ea89461c3fdd144a89ac3c91f2c165e55ce",
+      "sample_index": 3,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] out_reg;\n    always @(*) begin\n        case (sel)\n            3'b000: out_reg = data0;\n            3'b001: out_reg = data1;\n            3'b010: out_reg = data2;\n            3'b011: out_reg = data3;\n            3'b100: out_reg = data4;\n            3'b101: out_reg = data5;\n            default: out_reg = 4'b0000;\n        endcase\n    end\n    assign out = out_reg;\nendmodule",
+      "raw_completion_raw_sha256": "7b733b6daafb40057749d6712a52e96debd90b188d8b15fdd4465022de38c6f9",
+      "rtl": "module TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] out_reg;\n    always @(*) begin\n        case (sel)\n            3'b000: out_reg = data0;\n            3'b001: out_reg = data1;\n            3'b010: out_reg = data2;\n            3'b011: out_reg = data3;\n            3'b100: out_reg = data4;\n            3'b101: out_reg = data5;\n            default: out_reg = 4'b0000;\n        endcase\n    end\n    assign out = out_reg;\nendmodule",
+      "rtl_raw_sha256": "7b733b6daafb40057749d6712a52e96debd90b188d8b15fdd4465022de38c6f9",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] data;\n    always @(*) begin\n        case (sel)\n            0: data = data0;\n            1: data = data1;\n            2: data = data2;\n            3: data = data3;\n            4: data = data4;\n            5: data = data5;\n            default: data = 4'd0;\n        endcase\n    end\n    assign out = data;\nendmodule",
+      "raw_completion_raw_sha256": "f53f11ad1907c72d50598d7c5133a415cec6b5a820357c34375fd1051f6ed894",
+      "rtl": "module TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] data;\n    always @(*) begin\n        case (sel)\n            0: data = data0;\n            1: data = data1;\n            2: data = data2;\n            3: data = data3;\n            4: data = data4;\n            5: data = data5;\n            default: data = 4'd0;\n        endcase\n    end\n    assign out = data;\nendmodule",
+      "rtl_raw_sha256": "f53f11ad1907c72d50598d7c5133a415cec6b5a820357c34375fd1051f6ed894",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] out_reg;\n    always @(*) begin\n        case (sel)\n            0: out_reg = data0;\n            1: out_reg = data1;\n            2: out_reg = data2;\n            3: out_reg = data3;\n            4: out_reg = data4;\n            5: out_reg = data5;\n            default: out_reg = 4'd0;\n        endcase\n    end\n    assign out = out_reg;\nendmodule",
+      "raw_completion_raw_sha256": "8657e446da7250a7abebe6b5875f1ef4a0ab70737243be688245b69c17ac456e",
+      "rtl": "module TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] out_reg;\n    always @(*) begin\n        case (sel)\n            0: out_reg = data0;\n            1: out_reg = data1;\n            2: out_reg = data2;\n            3: out_reg = data3;\n            4: out_reg = data4;\n            5: out_reg = data5;\n            default: out_reg = 4'd0;\n        endcase\n    end\n    assign out = out_reg;\nendmodule",
+      "rtl_raw_sha256": "8657e446da7250a7abebe6b5875f1ef4a0ab70737243be688245b69c17ac456e",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] out_reg;\n    always @(*) begin\n        case (sel)\n            3'b000: out_reg = data0;\n            3'b001: out_reg = data1;\n            3'b010: out_reg = data2;\n            3'b011: out_reg = data3;\n            3'b100: out_reg = data4;\n            3'b101: out_reg = data5;\n            default: out_reg = 4'b0000;\n        endcase\n    end\n    assign out = out_reg;\nendmodule",
+      "raw_completion_raw_sha256": "a69d42f8b4523c5e9829c24f4d9d5a6d22ffb91dd7ba9ae7a156b97580d61429",
+      "rtl": "module TopModule (\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] out_reg;\n    always @(*) begin\n        case (sel)\n            3'b000: out_reg = data0;\n            3'b001: out_reg = data1;\n            3'b010: out_reg = data2;\n            3'b011: out_reg = data3;\n            3'b100: out_reg = data4;\n            3'b101: out_reg = data5;\n            default: out_reg = 4'b0000;\n        endcase\n    end\n    assign out = out_reg;\nendmodule",
+      "rtl_raw_sha256": "a69d42f8b4523c5e9829c24f4d9d5a6d22ffb91dd7ba9ae7a156b97580d61429",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] inter;\n    always @(*) begin\n        case (sel)\n            0: inter = data0;\n            1: inter = data1;\n            2: inter = data2;\n            3: inter = data3;\n            4: inter = data4;\n            5: inter = data5;\n            default: inter = 4'd0;\n        endcase\n    end\n    assign out = inter;\nendmodule",
+      "raw_completion_raw_sha256": "696a6d396acfe145d0d4bd8044c56d7752d61a6abb7aaf745af00944c604bfc4",
+      "rtl": "module TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] inter;\n    always @(*) begin\n        case (sel)\n            0: inter = data0;\n            1: inter = data1;\n            2: inter = data2;\n            3: inter = data3;\n            4: inter = data4;\n            5: inter = data5;\n            default: inter = 4'd0;\n        endcase\n    end\n    assign out = inter;\nendmodule",
+      "rtl_raw_sha256": "696a6d396acfe145d0d4bd8044c56d7752d61a6abb7aaf745af00944c604bfc4",
+      "sample_index": 8,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] out_reg;\n    always @(*) begin\n        case (sel)\n            3'b000: out_reg = data0;\n            3'b001: out_reg = data1;\n            3'b010: out_reg = data2;\n            3'b011: out_reg = data3;\n            3'b100: out_reg = data4;\n            3'b101: out_reg = data5;\n            default: out_reg = 4'b0000;\n        endcase\n    end\n    assign out = out_reg;\nendmodule",
+      "raw_completion_raw_sha256": "7b733b6daafb40057749d6712a52e96debd90b188d8b15fdd4465022de38c6f9",
+      "rtl": "module TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] out_reg;\n    always @(*) begin\n        case (sel)\n            3'b000: out_reg = data0;\n            3'b001: out_reg = data1;\n            3'b010: out_reg = data2;\n            3'b011: out_reg = data3;\n            3'b100: out_reg = data4;\n            3'b101: out_reg = data5;\n            default: out_reg = 4'b0000;\n        endcase\n    end\n    assign out = out_reg;\nendmodule",
+      "rtl_raw_sha256": "7b733b6daafb40057749d6712a52e96debd90b188d8b15fdd4465022de38c6f9",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n input  [2:0] sel,\n input  [3:0] data0,\n input  [3:0] data1,\n input  [3:0] data2,\n input  [3:0] data3,\n input  [3:0] data4,\n input  [3:0] data5,\n output [3:0] out\n);\n reg [3:0] mux_out;\n always @(*) begin\n  case (sel)\n   0: mux_out = data0;\n   1: mux_out = data1;\n   2: mux_out = data2;\n   3: mux_out = data3;\n   4: mux_out = data4;\n   5: mux_out = data5;\n   default: mux_out = 4'd0;\n  endcase\n end\n assign out = mux_out;\nendmodule",
+      "raw_completion_raw_sha256": "6c90e849d9cc79ffeee3e07f16d6515f79ccf7b31e53efc19b4008ce88762cc0",
+      "rtl": "module TopModule(\n input  [2:0] sel,\n input  [3:0] data0,\n input  [3:0] data1,\n input  [3:0] data2,\n input  [3:0] data3,\n input  [3:0] data4,\n input  [3:0] data5,\n output [3:0] out\n);\n reg [3:0] mux_out;\n always @(*) begin\n  case (sel)\n   0: mux_out = data0;\n   1: mux_out = data1;\n   2: mux_out = data2;\n   3: mux_out = data3;\n   4: mux_out = data4;\n   5: mux_out = data5;\n   default: mux_out = 4'd0;\n  endcase\n end\n assign out = mux_out;\nendmodule",
+      "rtl_raw_sha256": "6c90e849d9cc79ffeee3e07f16d6515f79ccf7b31e53efc19b4008ce88762cc0",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] out_reg;\n    always @(*) begin\n        case (sel)\n            3'd0: out_reg = data0;\n            3'd1: out_reg = data1;\n            3'd2: out_reg = data2;\n            3'd3: out_reg = data3;\n            3'd4: out_reg = data4;\n            3'd5: out_reg = data5;\n            default: out_reg = 4'd0;\n        endcase\n    end\n    assign out = out_reg;\nendmodule",
+      "raw_completion_raw_sha256": "3681f71353efe7842589ec6ec3dd4f5d386affe00b4015c8bb6d42380972f0ab",
+      "rtl": "module TopModule (\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] out_reg;\n    always @(*) begin\n        case (sel)\n            3'd0: out_reg = data0;\n            3'd1: out_reg = data1;\n            3'd2: out_reg = data2;\n            3'd3: out_reg = data3;\n            3'd4: out_reg = data4;\n            3'd5: out_reg = data5;\n            default: out_reg = 4'd0;\n        endcase\n    end\n    assign out = out_reg;\nendmodule",
+      "rtl_raw_sha256": "3681f71353efe7842589ec6ec3dd4f5d386affe00b4015c8bb6d42380972f0ab",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n  input  [2:0]  sel,\n  input  [3:0]  data0,\n  input  [3:0]  data1,\n  input  [3:0]  data2,\n  input  [3:0]  data3,\n  input  [3:0]  data4,\n  input  [3:0]  data5,\n  output [3:0]  out\n);\n  reg [3:0] data;\n  always @(*) begin\n    case (sel)\n      0: data = data0;\n      1: data = data1;\n      2: data = data2;\n      3: data = data3;\n      4: data = data4;\n      5: data = data5;\n      default: data = 4'b0000;\n    endcase\n  end\n  assign out = data;\nendmodule",
+      "raw_completion_raw_sha256": "073c26dd42e3f22094ff8936fbc634d710a053b64995ba93fa997515301138e9",
+      "rtl": "module TopModule(\n  input  [2:0]  sel,\n  input  [3:0]  data0,\n  input  [3:0]  data1,\n  input  [3:0]  data2,\n  input  [3:0]  data3,\n  input  [3:0]  data4,\n  input  [3:0]  data5,\n  output [3:0]  out\n);\n  reg [3:0] data;\n  always @(*) begin\n    case (sel)\n      0: data = data0;\n      1: data = data1;\n      2: data = data2;\n      3: data = data3;\n      4: data = data4;\n      5: data = data5;\n      default: data = 4'b0000;\n    endcase\n  end\n  assign out = data;\nendmodule",
+      "rtl_raw_sha256": "073c26dd42e3f22094ff8936fbc634d710a053b64995ba93fa997515301138e9",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n  input  [2:0] sel,\n  input  [3:0] data0,\n  input  [3:0] data1,\n  input  [3:0] data2,\n  input  [3:0] data3,\n  input  [3:0] data4,\n  input  [3:0] data5,\n  output [3:0] out\n);\n  reg [3:0] data;\n  always @(*) begin\n    case (sel)\n      3'b000: data = data0;\n      3'b001: data = data1;\n      3'b010: data = data2;\n      3'b011: data = data3;\n      3'b100: data = data4;\n      3'b101: data = data5;\n      default: data = 4'b0000;\n    endcase\n  end\n  assign out = data;\nendmodule",
+      "raw_completion_raw_sha256": "1201adfb8c8003b6e560e4d40be0ed2b5a40bf2a74a3f791549bf41e81c2935b",
+      "rtl": "module TopModule(\n  input  [2:0] sel,\n  input  [3:0] data0,\n  input  [3:0] data1,\n  input  [3:0] data2,\n  input  [3:0] data3,\n  input  [3:0] data4,\n  input  [3:0] data5,\n  output [3:0] out\n);\n  reg [3:0] data;\n  always @(*) begin\n    case (sel)\n      3'b000: data = data0;\n      3'b001: data = data1;\n      3'b010: data = data2;\n      3'b011: data = data3;\n      3'b100: data = data4;\n      3'b101: data = data5;\n      default: data = 4'b0000;\n    endcase\n  end\n  assign out = data;\nendmodule",
+      "rtl_raw_sha256": "1201adfb8c8003b6e560e4d40be0ed2b5a40bf2a74a3f791549bf41e81c2935b",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] out_reg;\n    always @(*) begin\n        case (sel)\n            3'b000: out_reg = data0;\n            3'b001: out_reg = data1;\n            3'b010: out_reg = data2;\n            3'b011: out_reg = data3;\n            3'b100: out_reg = data4;\n            3'b101: out_reg = data5;\n            default: out_reg = 4'b0000;\n        endcase\n    end\n    assign out = out_reg;\nendmodule",
+      "raw_completion_raw_sha256": "7b733b6daafb40057749d6712a52e96debd90b188d8b15fdd4465022de38c6f9",
+      "rtl": "module TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] out_reg;\n    always @(*) begin\n        case (sel)\n            3'b000: out_reg = data0;\n            3'b001: out_reg = data1;\n            3'b010: out_reg = data2;\n            3'b011: out_reg = data3;\n            3'b100: out_reg = data4;\n            3'b101: out_reg = data5;\n            default: out_reg = 4'b0000;\n        endcase\n    end\n    assign out = out_reg;\nendmodule",
+      "rtl_raw_sha256": "7b733b6daafb40057749d6712a52e96debd90b188d8b15fdd4465022de38c6f9",
+      "sample_index": 14,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 6-to-1 multiplexer, one-hot select (no \"magic\" wire vector).\nmodule TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    wire [3:0] s0, s1, s2, s3, s4, s5;\n    assign s0 = (sel == 3'd0) ? data0 : 4'd0;\n    assign s1 = (sel == 3'd1) ? data1 : 4'd0;\n    assign s2 = (sel == 3'd2) ? data2 : 4'd0;\n    assign s3 = (sel == 3'd3) ? data3 : 4'd0;\n    assign s4 = (sel == 3'd4) ? data4 : 4'd0;\n    assign s5 = (sel == 3'd5) ? data5 : 4'd0;\n    assign out = s0 | s1 | s2 | s3 | s4 | s5;\nendmodule",
+      "raw_completion_raw_sha256": "cadd8b7495974569ba2abd592a02b7936b3f89ca823023ace4e27768dde1a4a1",
+      "rtl": "module TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    wire [3:0] s0, s1, s2, s3, s4, s5;\n    assign s0 = (sel == 3'd0) ? data0 : 4'd0;\n    assign s1 = (sel == 3'd1) ? data1 : 4'd0;\n    assign s2 = (sel == 3'd2) ? data2 : 4'd0;\n    assign s3 = (sel == 3'd3) ? data3 : 4'd0;\n    assign s4 = (sel == 3'd4) ? data4 : 4'd0;\n    assign s5 = (sel == 3'd5) ? data5 : 4'd0;\n    assign out = s0 | s1 | s2 | s3 | s4 | s5;\nendmodule",
+      "rtl_raw_sha256": "db71fc167c8d37253345618eb1b93a9eed32deec85e824d7e9f5aafccce6ad89",
+      "sample_index": 15,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] mux_out;\n    always @(*) begin\n        case (sel)\n            3'b000: mux_out = data0;\n            3'b001: mux_out = data1;\n            3'b010: mux_out = data2;\n            3'b011: mux_out = data3;\n            3'b100: mux_out = data4;\n            3'b101: mux_out = data5;\n            default: mux_out = 4'b0000;\n        endcase\n    end\n    assign out = mux_out;\nendmodule",
+      "raw_completion_raw_sha256": "1cfa1e885b217e5d6fea6990f8a55876cc62b3c30c926538c35d68a9f1998539",
+      "rtl": "module TopModule (\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] mux_out;\n    always @(*) begin\n        case (sel)\n            3'b000: mux_out = data0;\n            3'b001: mux_out = data1;\n            3'b010: mux_out = data2;\n            3'b011: mux_out = data3;\n            3'b100: mux_out = data4;\n            3'b101: mux_out = data5;\n            default: mux_out = 4'b0000;\n        endcase\n    end\n    assign out = mux_out;\nendmodule",
+      "rtl_raw_sha256": "1cfa1e885b217e5d6fea6990f8a55876cc62b3c30c926538c35d68a9f1998539",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0]  sel,\n    input  [3:0]  data0,\n    input  [3:0]  data1,\n    input  [3:0]  data2,\n    input  [3:0]  data3,\n    input  [3:0]  data4,\n    input  [3:0]  data5,\n    output [3:0]  out\n);\n    reg [3:0] mux [0:5];\n    always @(*) begin\n        mux[0] = data0;\n        mux[1] = data1;\n        mux[2] = data2;\n        mux[3] = data3;\n        mux[4] = data4;\n        mux[5] = data5;\n    end\n    assign out = (sel < 6) ? mux[sel] : 4'b0;\nendmodule",
+      "raw_completion_raw_sha256": "1d6182c4af42b809fe8bbaf5932cd7db8e612bd3c7e5b0a049a10667b0dc86f7",
+      "rtl": "module TopModule(\n    input  [2:0]  sel,\n    input  [3:0]  data0,\n    input  [3:0]  data1,\n    input  [3:0]  data2,\n    input  [3:0]  data3,\n    input  [3:0]  data4,\n    input  [3:0]  data5,\n    output [3:0]  out\n);\n    reg [3:0] mux [0:5];\n    always @(*) begin\n        mux[0] = data0;\n        mux[1] = data1;\n        mux[2] = data2;\n        mux[3] = data3;\n        mux[4] = data4;\n        mux[5] = data5;\n    end\n    assign out = (sel < 6) ? mux[sel] : 4'b0;\nendmodule",
+      "rtl_raw_sha256": "1d6182c4af42b809fe8bbaf5932cd7db8e612bd3c7e5b0a049a10667b0dc86f7",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 6-to-1 multiplexer, with one extra combinational path to increase the\n// fanout and reduce critical path.\nmodule TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    wire [3:0] intermed0;\n    wire [3:0] intermed1;\n    wire [3:0] intermed2;\n    wire [3:0] intermed3;\n    wire [3:0] intermed4;\n    wire [3:0] intermed5;\n    assign intermed0 = (sel == 0) ? data0 : 4'd0;\n    assign intermed1 = (sel == 1) ? data1 : 4'd0;\n    assign intermed2 = (sel == 2) ? data2 : 4'd0;\n    assign intermed3 = (sel == 3) ? data3 : 4'd0;\n    assign intermed4 = (sel == 4) ? data4 : 4'd0;\n    assign intermed5 = (sel == 5) ? data5 : 4'd0;\n    assign out = intermed0 | intermed1 | intermed2 | intermed3 | intermed4 | intermed5;\nendmodule",
+      "raw_completion_raw_sha256": "37bfeaa1af84f2a7dd8ea1a0a2ddaf31088c9cac6570471a769c9deed779bf38",
+      "rtl": "module TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    wire [3:0] intermed0;\n    wire [3:0] intermed1;\n    wire [3:0] intermed2;\n    wire [3:0] intermed3;\n    wire [3:0] intermed4;\n    wire [3:0] intermed5;\n    assign intermed0 = (sel == 0) ? data0 : 4'd0;\n    assign intermed1 = (sel == 1) ? data1 : 4'd0;\n    assign intermed2 = (sel == 2) ? data2 : 4'd0;\n    assign intermed3 = (sel == 3) ? data3 : 4'd0;\n    assign intermed4 = (sel == 4) ? data4 : 4'd0;\n    assign intermed5 = (sel == 5) ? data5 : 4'd0;\n    assign out = intermed0 | intermed1 | intermed2 | intermed3 | intermed4 | intermed5;\nendmodule",
+      "rtl_raw_sha256": "5ce732ff7ef22e8e80800f857556c27d5ab959d36f2b630e0b5ca4959f25c7f1",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] sel_encoded;\n    always @(*) begin\n        case (sel)\n            3'd0: sel_encoded = data0;\n            3'd1: sel_encoded = data1;\n            3'd2: sel_encoded = data2;\n            3'd3: sel_encoded = data3;\n            3'd4: sel_encoded = data4;\n            3'd5: sel_encoded = data5;\n            default: sel_encoded = 4'd0;\n        endcase\n    end\n    assign out = sel_encoded;\nendmodule",
+      "raw_completion_raw_sha256": "fd09ea1ce3571af0842cbf5e2d5483c4f5d7604469f731ef32057e4e6da2fe2a",
+      "rtl": "module TopModule(\n    input  [2:0] sel,\n    input  [3:0] data0,\n    input  [3:0] data1,\n    input  [3:0] data2,\n    input  [3:0] data3,\n    input  [3:0] data4,\n    input  [3:0] data5,\n    output [3:0] out\n);\n    reg [3:0] sel_encoded;\n    always @(*) begin\n        case (sel)\n            3'd0: sel_encoded = data0;\n            3'd1: sel_encoded = data1;\n            3'd2: sel_encoded = data2;\n            3'd3: sel_encoded = data3;\n            3'd4: sel_encoded = data4;\n            3'd5: sel_encoded = data5;\n            default: sel_encoded = 4'd0;\n        endcase\n    end\n    assign out = sel_encoded;\nendmodule",
+      "rtl_raw_sha256": "fd09ea1ce3571af0842cbf5e2d5483c4f5d7604469f731ef32057e4e6da2fe2a",
+      "sample_index": 19,
+      "status": "PASS"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 20
+  },
+  "testbench_raw_sha256": "db5a64eb9e0fa149faf500a1a40c1a8a15e281325d585de51f26bd401f1d55fe",
+  "training_seed": 0
+}

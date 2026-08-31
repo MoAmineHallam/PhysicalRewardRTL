@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob100_fsm3comb",
+  "problem_seed": 6207231719998820813,
+  "prompt_raw_sha256": "147b4dd29a0d6326c686d30943e9a099fb5c63696007e0713e5b2823cde6f2d6",
+  "reference_raw_sha256": "d4a2719711748110fc288874c24d0c73a42a3edbc687e0a8aae8c6b7e1665c1e",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "22/100 mismatches",
+      "raw_completion": "// Moore state machine: transition + output logic\nmodule TopModule(input in, input [1:0] state, output [1:0] next_state, output reg out);\n    reg [1:0] next_state_reg;\n    always @* begin\n        case (state)\n            2'b00: begin next_state_reg = 2'b00; out = 1'b0; end\n            2'b01: begin next_state_reg = in ? 2'b01 : 2'b00; out = 1'b0; end\n            2'b10: begin next_state_reg = in ? 2'b11 : 2'b00; out = 1'b0; end\n            2'b11: begin next_state_reg = in ? 2'b01 : 2'b10; out = 1'b1; end\n        endcase\n    end\n    assign next_state = next_state_reg;\nendmodule",
+      "raw_completion_raw_sha256": "e91ea771e1e7f5b826be542b2d849902b5e429bfbac4379ee2e54f5370957308",
+      "rtl": "module TopModule(input in, input [1:0] state, output [1:0] next_state, output reg out);\n    reg [1:0] next_state_reg;\n    always @* begin\n        case (state)\n            2'b00: begin next_state_reg = 2'b00; out = 1'b0; end\n            2'b01: begin next_state_reg = in ? 2'b01 : 2'b00; out = 1'b0; end\n            2'b10: begin next_state_reg = in ? 2'b11 : 2'b00; out = 1'b0; end\n            2'b11: begin next_state_reg = in ? 2'b01 : 2'b10; out = 1'b1; end\n        endcase\n    end\n    assign next_state = next_state_reg;\nendmodule",
+      "rtl_raw_sha256": "880fa0cbfd4ed298c5c1816c4a9f80f9d43c783992bbab03469da30d84919856",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:4: error: next_state is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit Moore state machine with one input, one output, and four states.\nmodule TopModule(input in, input [1:0] state, output [1:0] next_state, output reg out);\n  always @(*) begin\n    case(state)\n      2'b00: begin next_state = 2'b00; out = 1'b0; end\n      2'b01: begin next_state = in ? 2'b01 : 2'b00; out = 1'b0; end\n      2'b10: begin next_state = in ? 2'b11 : 2'b00; out = 1'b0; end\n      2'b11: begin next_state = in ? 2'b00 : 2'b01; out = 1'b1; end\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "d290826b9a22bfe305601fe0eca0dfd728913df8c9718e0beacb7021fd3cce61",
+      "rtl": "module TopModule(input in, input [1:0] state, output [1:0] next_state, output reg out);\n  always @(*) begin\n    case(state)\n      2'b00: begin next_state = 2'b00; out = 1'b0; end\n      2'b01: begin next_state = in ? 2'b01 : 2'b00; out = 1'b0; end\n      2'b10: begin next_state = in ? 2'b11 : 2'b00; out = 1'b0; end\n      2'b11: begin next_state = in ? 2'b00 : 2'b01; out = 1'b1; end\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "f2f0122adf2e8a1c8a1475c1321602dba5a061c48c1b5124fffd5dbc86353817",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "27/100 mismatches",
+      "raw_completion": "module TopModule(\n    input  in,\n    input  [1:0] state,\n    output [1:0] next_state,\n    output out\n);\n    reg [1:0] ns;\n    reg o;\n    always @(*) begin\n        case (state)\n            2'b00: begin ns = 2'b00; o = 1'b0; end\n            2'b01: begin ns = in ? 2'b01 : 2'b00; o = 1'b0; end\n            2'b10: begin ns = in ? 2'b11 : 2'b00; o = 1'b0; end\n            2'b11: begin ns = in ? 2'b01 : 2'b01; o = 1'b1; end\n        endcase\n    end\n    assign next_state = ns;\n    assign out = o;\nendmodule",
+      "raw_completion_raw_sha256": "e3ead1ba8359eac4f5ec3dbd6632456741b8d53c1dc3a0f6da00fd6780352037",
+      "rtl": "module TopModule(\n    input  in,\n    input  [1:0] state,\n    output [1:0] next_state,\n    output out\n);\n    reg [1:0] ns;\n    reg o;\n    always @(*) begin\n        case (state)\n            2'b00: begin ns = 2'b00; o = 1'b0; end\n            2'b01: begin ns = in ? 2'b01 : 2'b00; o = 1'b0; end\n            2'b10: begin ns = in ? 2'b11 : 2'b00; o = 1'b0; end\n            2'b11: begin ns = in ? 2'b01 : 2'b01; o = 1'b1; end\n        endcase\n    end\n    assign next_state = ns;\n    assign out = o;\nendmodule",
+      "rtl_raw_sha256": "e3ead1ba8359eac4f5ec3dbd6632456741b8d53c1dc3a0f6da00fd6780352037",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: next_state is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit Moore state machine, transitioned on the input directly (no\n// register). Same as the reference, but with a named block of the\n// transition logic extracted.\nmodule TopModule(input in, input [1:0] state, output [1:0] next_state,\n                 output reg out);\n    wire [1:0] ns1;\n    wire [1:0] ns2;\n    assign ns1 = (in == 0) ? 2'b00 : 2'b01;\n    assign ns2 = (in == 0) ? 2'b10 : 2'b01;\n    always @(*) begin\n        case (state)\n            2'b00: begin next_state = ns1; out = 1'b0; end\n            2'b01: begin next_state = ns2; out = 1'b0; end\n            2'b10: begin next_state = ns1; out = 1'b0; end\n            2'b11: begin next_state = ns2; out = 1'b1; end\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "918d7317c089988be89dd059650d0942a529b1751299c2be719924c39a1c6de9",
+      "rtl": "module TopModule(input in, input [1:0] state, output [1:0] next_state,\n                 output reg out);\n    wire [1:0] ns1;\n    wire [1:0] ns2;\n    assign ns1 = (in == 0) ? 2'b00 : 2'b01;\n    assign ns2 = (in == 0) ? 2'b10 : 2'b01;\n    always @(*) begin\n        case (state)\n            2'b00: begin next_state = ns1; out = 1'b0; end\n            2'b01: begin next_state = ns2; out = 1'b0; end\n            2'b10: begin next_state = ns1; out = 1'b0; end\n            2'b11: begin next_state = ns2; out = 1'b1; end\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "ba90dcd90ea2de22dea350d10aabd5c8a98e2a4dcb84cf83ba191ccbd63f07ad",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob100_fsm3comb_test.sv:74: error: Unknown module type: TopModule",
+      "raw_completion": "// Moore state machine, one input, one output, and four states. Same\n// transition table as in the prompt, just the state transition logic\n// (the combinational next_state and output (out) functions) isolated\n// into its own module.\nmodule StateTransitionLogic(\n    input in,\n    input [1:0] state,\n    output [1:0] next_state,\n    output out\n);\n    reg [1:0] ns;\n    reg o;\n    always @(*) begin\n        case (state)\n            2'b00: begin ns = 2'b00; o = 1'b0; end\n            2'b01: begin ns = in ? 2'b01 : 2'b00; o = 1'b0; end\n            2'b10: begin ns = in ? 2'b11 : 2'b00; o = 1'b0; end\n            2'b11: begin ns = in ? 2'b00 : 2'b01; o = 1'b1; end\n        endcase\n    end\n    assign next_state = ns;\n    assign out = o;\nendmodule",
+      "raw_completion_raw_sha256": "53b8df651515f582dfb9fe0699c73c1847f6f5a0f45c830408430060d7b3ede6",
+      "rtl": "module StateTransitionLogic(\n    input in,\n    input [1:0] state,\n    output [1:0] next_state,\n    output out\n);\n    reg [1:0] ns;\n    reg o;\n    always @(*) begin\n        case (state)\n            2'b00: begin ns = 2'b00; o = 1'b0; end\n            2'b01: begin ns = in ? 2'b01 : 2'b00; o = 1'b0; end\n            2'b10: begin ns = in ? 2'b11 : 2'b00; o = 1'b0; end\n            2'b11: begin ns = in ? 2'b00 : 2'b01; o = 1'b1; end\n        endcase\n    end\n    assign next_state = ns;\n    assign out = o;\nendmodule",
+      "rtl_raw_sha256": "7720e0c6789f6ff1aa59ebc159f9eeeeac1fb343ac9f1a219c76bfa1cb04e006",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "51/100 mismatches",
+      "raw_completion": "// One-bit Moore state machine, transitioned on the input in only, and the\n// output is independent of the input.\nmodule TopModule(input in, input [1:0] state, output [1:0] next_state, output reg out);\n    reg [1:0] next_state_reg;\n    always @(*) begin\n        case (state)\n            2'b00: begin next_state_reg = 2'b00; out = 1'b0; end\n            2'b01: begin next_state_reg = in ? 2'b01 : 2'b00; out = 1'b0; end\n            2'b10: begin next_state_reg = in ? 2'b11 : 2'b01; out = 1'b0; end\n            2'b11: begin next_state_reg = in ? 2'b00 : 2'b10; out = 1'b1; end\n        endcase\n    end\n    assign next_state = next_state_reg;\nendmodule",
+      "raw_completion_raw_sha256": "e4569f8221a540656492c7358d9028a087e8821414b92f858138021ae748652d",
+      "rtl": "module TopModule(input in, input [1:0] state, output [1:0] next_state, output reg out);\n    reg [1:0] next_state_reg;\n    always @(*) begin\n        case (state)\n            2'b00: begin next_state_reg = 2'b00; out = 1'b0; end\n            2'b01: begin next_state_reg = in ? 2'b01 : 2'b00; out = 1'b0; end\n            2'b10: begin next_state_reg = in ? 2'b11 : 2'b01; out = 1'b0; end\n            2'b11: begin next_state_reg = in ? 2'b00 : 2'b10; out = 1'b1; end\n        endcase\n    end\n    assign next_state = next_state_reg;\nendmodule",
+      "rtl_raw_sha256": "02cd08a1838f2943bc5795caa2a3e8e492b80eb990beb78532fcb2dd92ab632d",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:4: error: next_state is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Moore state machine, one input, one output, four states. Same functionality\n// as the state transition table in the problem description.\nmodule TopModule(input in, input [1:0] state, output [1:0] next_state, output reg out);\n    always @(*) begin\n        case (state)\n            2'b00: begin next_state = 2'b00; out = 1'b0; end\n            2'b01: begin next_state = in ? 2'b01 : 2'b00; out = 1'b0; end\n            2'b10: begin next_state = in ? 2'b11 : 2'b00; out = 1'b0; end\n            2'b11: begin next_state = in ? 2'b00 : 2'b01; out = 1'b1; end\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "246424c66f18ec900b53f66903be29522ccf81657213c0f649b6850b7104d270",
+      "rtl": "module TopModule(input in, input [1:0] state, output [1:0] next_state, output reg out);\n    always @(*) begin\n        case (state)\n            2'b00: begin next_state = 2'b00; out = 1'b0; end\n            2'b01: begin next_state = in ? 2'b01 : 2'b00; out = 1'b0; end\n            2'b10: begin next_state = in ? 2'b11 : 2'b00; out = 1'b0; end\n            2'b11: begin next_state = in ? 2'b00 : 2'b01; out = 1'b1; end\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "97096e1eebfb3402559fd1368cdd1ff564657366019fdb2489d56d5ac6a5e0f6",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:2: error: 'next_state' has already been declared in this scope.",
+      "raw_completion": "// Moore state machine with one input, one output, and four states.\nmodule TopModule(input in, input [1:0] state, output [1:0] next_state, output out);\n  reg [1:0] next_state;\n  reg out;\n  always @(*) begin\n    case (state)\n      2'b00: begin next_state = 2'b00; out = 1'b0; end\n      2'b01: begin next_state = in ? 2'b01 : 2'b00; out = 1'b0; end\n      2'b10: begin next_state = in ? 2'b11 : 2'b00; out = 1'b0; end\n      2'b11: begin next_state = in ? 2'b00 : 2'b01; out = 1'b1; end\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "1116b851bbadf26064ebfc4fa547621e0ffff7e00d0c9b07d4358f50dc0749e2",
+      "rtl": "module TopModule(input in, input [1:0] state, output [1:0] next_state, output out);\n  reg [1:0] next_state;\n  reg out;\n  always @(*) begin\n    case (state)\n      2'b00: begin next_state = 2'b00; out = 1'b0; end\n      2'b01: begin next_state = in ? 2'b01 : 2'b00; out = 1'b0; end\n      2'b10: begin next_state = in ? 2'b11 : 2'b00; out = 1'b0; end\n      2'b11: begin next_state = in ? 2'b00 : 2'b01; out = 1'b1; end\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "d155431607324a6ae8aa4028c9d44ad422bcb3bafcf79225a0198b1b895e4547",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:16: error: next_state is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input  in,\n    input  [1:0] state,\n    output [1:0] next_state,\n    output reg out\n);\n    reg [1:0] ns;\n    always @(*) begin\n        case (state)\n            2'b00: begin ns = 2'b00; out = 1'b0; end\n            2'b01: begin ns = 2'b01; out = 1'b0; end\n            2'b10: begin ns = 2'b10; out = 1'b0; end\n            2'b11: begin ns = 2'b01; out = 1'b1; end\n        endcase\n    end\n    always @(posedge clk) next_state <= ns;\nendmodule",
+      "raw_completion_raw_sha256": "79573c64790d8f4eb816f9d45b8b207ca766b4bb3c19e68f2b902c5dea8d4ba1",
+      "rtl": "module TopModule (\n    input  in,\n    input  [1:0] state,\n    output [1:0] next_state,\n    output reg out\n);\n    reg [1:0] ns;\n    always @(*) begin\n        case (state)\n            2'b00: begin ns = 2'b00; out = 1'b0; end\n            2'b01: begin ns = 2'b01; out = 1'b0; end\n            2'b10: begin ns = 2'b10; out = 1'b0; end\n            2'b11: begin ns = 2'b01; out = 1'b1; end\n        endcase\n    end\n    always @(posedge clk) next_state <= ns;\nendmodule",
+      "rtl_raw_sha256": "79573c64790d8f4eb816f9d45b8b207ca766b4bb3c19e68f2b902c5dea8d4ba1",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "22/100 mismatches",
+      "raw_completion": "// One-bit Moore state machine, one input, one output, four states.\nmodule TopModule(\n    input  in,\n    input  [1:0] state,\n    output [1:0] next_state,\n    output reg out\n);\n    reg [1:0] ns;\n    always @* begin\n        case (state)\n            2'b00: begin ns = 2'b00; out = 1'b0; end\n            2'b01: begin ns = in ? 2'b01 : 2'b00; out = 1'b0; end\n            2'b10: begin ns = in ? 2'b11 : 2'b00; out = 1'b0; end\n            2'b11: begin ns = in ? 2'b01 : 2'b10; out = 1'b1; end\n        endcase\n    end\n    assign next_state = ns;\nendmodule",
+      "raw_completion_raw_sha256": "fcd28c422e487c444ab7a2ad8e2c7e91f1dbd7837086f4dfde40fc9715844bc6",
+      "rtl": "module TopModule(\n    input  in,\n    input  [1:0] state,\n    output [1:0] next_state,\n    output reg out\n);\n    reg [1:0] ns;\n    always @* begin\n        case (state)\n            2'b00: begin ns = 2'b00; out = 1'b0; end\n            2'b01: begin ns = in ? 2'b01 : 2'b00; out = 1'b0; end\n            2'b10: begin ns = in ? 2'b11 : 2'b00; out = 1'b0; end\n            2'b11: begin ns = in ? 2'b01 : 2'b10; out = 1'b1; end\n        endcase\n    end\n    assign next_state = ns;\nendmodule",
+      "rtl_raw_sha256": "4379116311cf98b09f1674e825fd1ecbf19d1460f5d2b8864386a34d31bf2ce0",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "40/100 mismatches",
+      "raw_completion": "// Moore state machine with one input, one output, and four states.\nmodule TopModule(\n    input  in,\n    input  [1:0] state,\n    output [1:0] next_state,\n    output out\n);\n    reg [1:0] ns;\n    reg o;\n    always @(*) begin\n        case (state)\n            2'b00: begin ns = 2'b00; o = 1'b0; end\n            2'b01: begin ns = in ? 2'b01 : 2'b00; o = 1'b0; end\n            2'b10: begin ns = in ? 2'b11 : 2'b00; o = 1'b0; end\n            2'b11: begin ns = in ? 2'b00 : 2'b01; o = 1'b1; end\n        endcase\n    end\n    assign next_state = ns;\n    assign out = o;\nendmodule",
+      "raw_completion_raw_sha256": "36985d42e04f5219284589123a4ca3a871b9fae3fa891d6615f0b2c398dfecb6",
+      "rtl": "module TopModule(\n    input  in,\n    input  [1:0] state,\n    output [1:0] next_state,\n    output out\n);\n    reg [1:0] ns;\n    reg o;\n    always @(*) begin\n        case (state)\n            2'b00: begin ns = 2'b00; o = 1'b0; end\n            2'b01: begin ns = in ? 2'b01 : 2'b00; o = 1'b0; end\n            2'b10: begin ns = in ? 2'b11 : 2'b00; o = 1'b0; end\n            2'b11: begin ns = in ? 2'b00 : 2'b01; o = 1'b1; end\n        endcase\n    end\n    assign next_state = ns;\n    assign out = o;\nendmodule",
+      "rtl_raw_sha256": "c8cab89ff16ecb5f015fe9e810c0e481940c1ebea18dcc888c5133a2cce6e33a",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:4: error: next_state is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Moore state machine with one input, one output, and four states.\n// State transition logic (the combinational logic portion) only.\n// Compute the next_state and output (out) based on the state\n// transition table.\nmodule TopModule(input in, input [1:0] state, output [1:0] next_state, output reg out);\n    always @(*) begin\n        case (state)\n            2'b00: begin next_state = 2'b00; out = 1'b0; end\n            2'b01: begin next_state = in ? 2'b01 : 2'b01; out = 1'b0; end\n            2'b10: begin next_state = in ? 2'b11 : 2'b00; out = 1'b0; end\n            2'b11: begin next_state = in ? 2'b01 : 2'b10; out = 1'b1; end\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "6156de17160b8c8a71307e394057467229d38d42980cafbcabf4fe54cebbbc3b",
+      "rtl": "module TopModule(input in, input [1:0] state, output [1:0] next_state, output reg out);\n    always @(*) begin\n        case (state)\n            2'b00: begin next_state = 2'b00; out = 1'b0; end\n            2'b01: begin next_state = in ? 2'b01 : 2'b01; out = 1'b0; end\n            2'b10: begin next_state = in ? 2'b11 : 2'b00; out = 1'b0; end\n            2'b11: begin next_state = in ? 2'b01 : 2'b10; out = 1'b1; end\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "6f724daa4958e370b5f965244bda1dbeb85300802351fd5d3d78d494d3e9a38d",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:11: error: next_state is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Moore state machine: one input, one output, explicit next state\n// (state register plus combinational next state function).\nmodule TopModule(input in, input [1:0] state, output [1:0] next_state, output reg out);\n  reg [1:0] ns;\n  always @(*) begin\n    case (state)\n      2'b00: begin out = 1'b0; ns = in ? 2'b01 : 2'b00; end\n      2'b01: begin out = 1'b0; ns = in ? 2'b10 : 2'b01; end\n      2'b10: begin out = 1'b0; ns = in ? 2'b00 : 2'b10; end\n      2'b11: begin out = 1'b1; ns = in ? 2'b10 : 2'b01; end\n    endcase\n  end\n  always @(posedge clk) next_state <= ns;\nendmodule",
+      "raw_completion_raw_sha256": "25132a88249704a643e166a581d2baa6b3787600d7e1eb24f8dd7ac86fd08e30",
+      "rtl": "module TopModule(input in, input [1:0] state, output [1:0] next_state, output reg out);\n  reg [1:0] ns;\n  always @(*) begin\n    case (state)\n      2'b00: begin out = 1'b0; ns = in ? 2'b01 : 2'b00; end\n      2'b01: begin out = 1'b0; ns = in ? 2'b10 : 2'b01; end\n      2'b10: begin out = 1'b0; ns = in ? 2'b00 : 2'b10; end\n      2'b11: begin out = 1'b1; ns = in ? 2'b10 : 2'b01; end\n    endcase\n  end\n  always @(posedge clk) next_state <= ns;\nendmodule",
+      "rtl_raw_sha256": "a3ab4553ed282e941cd8562ce1b0d7788b523162945704157f680c4795fd7a91",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:4: error: next_state is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit Moore state machine, 4 states, one input.\nmodule TopModule(input in, input [1:0] state, output [1:0] next_state, output reg out);\n    always @(*) begin\n        case (state)\n            2'b00: begin next_state = 2'b00; out = 1'b0; end\n            2'b01: begin next_state = in ? 2'b01 : 2'b00; out = 1'b0; end\n            2'b10: begin next_state = in ? 2'b11 : 2'b01; out = 1'b0; end\n            2'b11: begin next_state = in ? 2'b00 : 2'b10; out = 1'b1; end\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "0b8a21110dfd90c4a3548adbd429850e88833be6948cc2918687bfb5db1272de",
+      "rtl": "module TopModule(input in, input [1:0] state, output [1:0] next_state, output reg out);\n    always @(*) begin\n        case (state)\n            2'b00: begin next_state = 2'b00; out = 1'b0; end\n            2'b01: begin next_state = in ? 2'b01 : 2'b00; out = 1'b0; end\n            2'b10: begin next_state = in ? 2'b11 : 2'b01; out = 1'b0; end\n            2'b11: begin next_state = in ? 2'b00 : 2'b10; out = 1'b1; end\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "fd4301ac5553f906b025dbf2918a692e04a385ef0acda113197d0f792fe1d848",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:4: error: next_state is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Moore state machine, one input, one output, four states. Same function as\n// the state transition table in the problem description.\nmodule TopModule(input  in, input [1:0] state, output [1:0] next_state, output reg out);\n  always @(*) begin\n    case (state)\n      2'b00: begin next_state = 2'b00; out = 1'b0; end\n      2'b01: begin next_state = in ? 2'b01 : 2'b00; out = 1'b0; end\n      2'b10: begin next_state = in ? 2'b11 : 2'b00; out = 1'b0; end\n      2'b11: begin next_state = in ? 2'b00 : 2'b01; out = 1'b1; end\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "820f401fa5f0833c583d13d241191d02945be0fb138504801e07fe8531031ad6",
+      "rtl": "module TopModule(input  in, input [1:0] state, output [1:0] next_state, output reg out);\n  always @(*) begin\n    case (state)\n      2'b00: begin next_state = 2'b00; out = 1'b0; end\n      2'b01: begin next_state = in ? 2'b01 : 2'b00; out = 1'b0; end\n      2'b10: begin next_state = in ? 2'b11 : 2'b00; out = 1'b0; end\n      2'b11: begin next_state = in ? 2'b00 : 2'b01; out = 1'b1; end\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "b44e2a08ed00800376287b36ac6370a28d8cea3a50fb90ce6d34caf08184dce9",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "27/100 mismatches",
+      "raw_completion": "// Moore state machine, one input, one output, and four states. Transition\n// logic only (no registers, no register-to-register delay).\nmodule TopModule(\n    input  in,\n    input  [1:0] state,\n    output reg [1:0] next_state,\n    output reg out\n);\n    always @(*) begin\n        case (state)\n            2'b00: begin next_state = 2'b00; out = 1'b0; end\n            2'b01: begin next_state = in ? 2'b01 : 2'b01; out = 1'b0; end\n            2'b10: begin next_state = in ? 2'b11 : 2'b00; out = 1'b0; end\n            2'b11: begin next_state = in ? 2'b01 : 2'b00; out = 1'b1; end\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "e865275e367a845a37244baef4dc1d0398b6e0d59d2636f2a50a0daa68efaf4a",
+      "rtl": "module TopModule(\n    input  in,\n    input  [1:0] state,\n    output reg [1:0] next_state,\n    output reg out\n);\n    always @(*) begin\n        case (state)\n            2'b00: begin next_state = 2'b00; out = 1'b0; end\n            2'b01: begin next_state = in ? 2'b01 : 2'b01; out = 1'b0; end\n            2'b10: begin next_state = in ? 2'b11 : 2'b00; out = 1'b0; end\n            2'b11: begin next_state = in ? 2'b01 : 2'b00; out = 1'b1; end\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "d5d4b665cb83e7bc19f286a6fc73c5cab0b09ea88d4311df696c0e783394c5d7",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "56/100 mismatches",
+      "raw_completion": "// Moore state machine with one input, one output, and four states.\n// State encoding: A=2'b00, B=2'b01, C=2'b10, D=2'b11.\nmodule TopModule(\n    input  in,\n    input  [1:0] state,\n    output [1:0] next_state,\n    output out\n);\n    reg [1:0] ns;\n    reg o;\n    always @(*) begin\n        case (state)\n            2'b00: begin ns = 2'b00; o = 1'b0; end\n            2'b01: begin ns = 2'b01; o = 1'b0; end\n            2'b10: begin ns = 2'b10; o = 1'b0; end\n            2'b11: begin ns = 2'b01; o = 1'b1; end\n        endcase\n    end\n    assign next_state = ns;\n    assign out = o;\nendmodule",
+      "raw_completion_raw_sha256": "a63612215f557b924eb27a609ca838c367ff3b1e662b7523401800d791b23097",
+      "rtl": "module TopModule(\n    input  in,\n    input  [1:0] state,\n    output [1:0] next_state,\n    output out\n);\n    reg [1:0] ns;\n    reg o;\n    always @(*) begin\n        case (state)\n            2'b00: begin ns = 2'b00; o = 1'b0; end\n            2'b01: begin ns = 2'b01; o = 1'b0; end\n            2'b10: begin ns = 2'b10; o = 1'b0; end\n            2'b11: begin ns = 2'b01; o = 1'b1; end\n        endcase\n    end\n    assign next_state = ns;\n    assign out = o;\nendmodule",
+      "rtl_raw_sha256": "6b0d773b923f902a820b5a5feb74e3a8571334dac6975b0d7b9fe96d2f041c42",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: next_state is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit Moore state machine with one input, one output, and four states.\nmodule TopModule(\n    input  in,\n    input  [1:0] state,\n    output [1:0] next_state,\n    output reg out\n);\n    always @(*) begin\n        case (state)\n            2'b00: begin next_state = 2'b00; out = 1'b0; end\n            2'b01: begin next_state = in ? 2'b01 : 2'b00; out = 1'b0; end\n            2'b10: begin next_state = in ? 2'b11 : 2'b00; out = 1'b0; end\n            2'b11: begin next_state = in ? 2'b00 : 2'b01; out = 1'b1; end\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "f5840bfc1799d865b71f320656519fe1b3fff542ade5eee5633c5c6e446be3b5",
+      "rtl": "module TopModule(\n    input  in,\n    input  [1:0] state,\n    output [1:0] next_state,\n    output reg out\n);\n    always @(*) begin\n        case (state)\n            2'b00: begin next_state = 2'b00; out = 1'b0; end\n            2'b01: begin next_state = in ? 2'b01 : 2'b00; out = 1'b0; end\n            2'b10: begin next_state = in ? 2'b11 : 2'b00; out = 1'b0; end\n            2'b11: begin next_state = in ? 2'b00 : 2'b01; out = 1'b1; end\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "88248b340c5b2fd3bc8956d311486309e0e747b165adb5cc422026d19a495ad3",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "44/100 mismatches",
+      "raw_completion": "// Moore state machine with one input, one output, and four states\nmodule TopModule(input in, input [1:0] state, output [1:0] next_state, output reg out);\n  reg [1:0] next_state_reg;\n  always @(*) begin\n    case(state)\n      2'b00: begin next_state_reg = 2'b00; out = 1'b0; end\n      2'b01: begin next_state_reg = in ? 2'b00 : 2'b01; out = 1'b0; end\n      2'b10: begin next_state_reg = in ? 2'b11 : 2'b00; out = 1'b0; end\n      2'b11: begin next_state_reg = in ? 2'b01 : 2'b00; out = 1'b1; end\n    endcase\n  end\n  assign next_state = next_state_reg;\nendmodule",
+      "raw_completion_raw_sha256": "f1122f89aab0af78a7a4eaa6936929d92a2a36ebad994fd6af262bc3177eb038",
+      "rtl": "module TopModule(input in, input [1:0] state, output [1:0] next_state, output reg out);\n  reg [1:0] next_state_reg;\n  always @(*) begin\n    case(state)\n      2'b00: begin next_state_reg = 2'b00; out = 1'b0; end\n      2'b01: begin next_state_reg = in ? 2'b00 : 2'b01; out = 1'b0; end\n      2'b10: begin next_state_reg = in ? 2'b11 : 2'b00; out = 1'b0; end\n      2'b11: begin next_state_reg = in ? 2'b01 : 2'b00; out = 1'b1; end\n    endcase\n  end\n  assign next_state = next_state_reg;\nendmodule",
+      "rtl_raw_sha256": "a987074cd008ec78a42c1391428a0490ac60730f4f2337f1216eb5a93582b66d",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "44/100 mismatches",
+      "raw_completion": "// Moore state machine, one input, one output, four states.\nmodule TopModule(input in, input [1:0] state, output reg [1:0] next_state, output reg out);\n  always @(*) begin\n    case (state)\n      2'b00: begin next_state = 2'b00; out = 1'b0; end\n      2'b01: begin next_state = in ? 2'b00 : 2'b01; out = 1'b0; end\n      2'b10: begin next_state = in ? 2'b11 : 2'b00; out = 1'b0; end\n      2'b11: begin next_state = in ? 2'b01 : 2'b00; out = 1'b1; end\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "6cc98af8ac6ea6ce11978d741b39e021c9f758f657b2b2b490a1e738e1b3066e",
+      "rtl": "module TopModule(input in, input [1:0] state, output reg [1:0] next_state, output reg out);\n  always @(*) begin\n    case (state)\n      2'b00: begin next_state = 2'b00; out = 1'b0; end\n      2'b01: begin next_state = in ? 2'b00 : 2'b01; out = 1'b0; end\n      2'b10: begin next_state = in ? 2'b11 : 2'b00; out = 1'b0; end\n      2'b11: begin next_state = in ? 2'b01 : 2'b00; out = 1'b1; end\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "c927f95db1625ead95f6341805e26f8bfabe922af50c2fdb003740e47d20b320",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 11,
+    "fail": 9
+  },
+  "testbench_raw_sha256": "2bc594d2dffaf74377c4941d07c6c4698949cf3ef1cb2e18fea6a0f2f875187c",
+  "training_seed": 1
+}

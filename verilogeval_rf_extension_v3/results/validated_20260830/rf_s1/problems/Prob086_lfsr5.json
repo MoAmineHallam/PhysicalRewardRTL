@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob086_lfsr5",
+  "problem_seed": 4120955195979104482,
+  "prompt_raw_sha256": "161662a2c4c0b507de98adbbf7d186a5f6239342610cc024b4f1cb8c80904860",
+  "reference_raw_sha256": "f2e92f3eb73c77bfdcf81b00cbc032cea78d888428e11235c4eae04897d8ac6f",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "4280/4443 mismatches",
+      "raw_completion": "// 5-bit maximal-length Galois LFSR, shift register with tap positions\n// 5 and 3. Synchronous active-high reset to 1.\nmodule TopModule(input  clk, input  reset, output [4:0] q);\n    reg [4:0] r;\n    always @(posedge clk) begin\n        if (reset) r <= 5'b00001;\n        else       r <= {r[3], r[4] ^ r[0], r[2], r[1], r[0]};\n    end\n    assign q = r;\nendmodule",
+      "raw_completion_raw_sha256": "2a894b6ff8775e1212be5dc45e03760fda81943e21782d1817f2d26ac3167ee4",
+      "rtl": "module TopModule(input  clk, input  reset, output [4:0] q);\n    reg [4:0] r;\n    always @(posedge clk) begin\n        if (reset) r <= 5'b00001;\n        else       r <= {r[3], r[4] ^ r[0], r[2], r[1], r[0]};\n    end\n    assign q = r;\nendmodule",
+      "rtl_raw_sha256": "c2daa44b4c966c30af411fe8538fb71ffd521d33a0890e2efd9ad8791853c960",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "4292/4443 mismatches",
+      "raw_completion": "// Maximal-length Galois LFSR, TRANSPOSED: the register is a 5-bit\n// array, one register per stage, with the feedback to the next stage\n// explicitly. Same function as the direct form (the register is a\n// register, independent of the stage number).\nmodule TopModule(input clk, input reset, output reg [4:0] q);\n    reg [4:0] r0, r1, r2, r3, r4;\n    always @(posedge clk) begin\n        if (reset) begin\n            r0 <= 5'b00001;\n            r1 <= 5'b00010;\n            r2 <= 5'b00101;\n            r3 <= 5'b01010;\n            r4 <= 5'b10101;\n        end else begin\n            r0 <= ~(r0 ^ r2 ^ r4);\n            r1 <= r1;\n            r2 <= ~(r2 ^ r4);\n            r3 <= r3;\n            r4 <= ~r4;\n        end\n        q <= r0;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "6c791e83bd6cf59016cab843413be9357d58b95e9f3f6898da1faaa81990d160",
+      "rtl": "module TopModule(input clk, input reset, output reg [4:0] q);\n    reg [4:0] r0, r1, r2, r3, r4;\n    always @(posedge clk) begin\n        if (reset) begin\n            r0 <= 5'b00001;\n            r1 <= 5'b00010;\n            r2 <= 5'b00101;\n            r3 <= 5'b01010;\n            r4 <= 5'b10101;\n        end else begin\n            r0 <= ~(r0 ^ r2 ^ r4);\n            r1 <= r1;\n            r2 <= ~(r2 ^ r4);\n            r3 <= r3;\n            r4 <= ~r4;\n        end\n        q <= r0;\n    end\nendmodule",
+      "rtl_raw_sha256": "c358b465169eff822ee402541edb09807104a45d08c33327e5908e52dca8ce9b",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "4296/4443 mismatches",
+      "raw_completion": "// Maximum-length Galois LFSR, TRANSPOSED: a register shifts its input\n// right along with a chain of XORed gates, only one multiplexer\n// per stage. Same register-to-register delay as the direct\n// form (independent of the tap positions).\nmodule TopModule(input clk, input reset, output reg [4:0] q);\n    reg [4:0] q2;\n    reg [4:0] q3;\n    always @(posedge clk) begin\n        if (reset) q <= 1;\n        else       q <= {q[0] ^ q[2], q[1], q[2], q[3], q[4]};\n    end\n    always @(posedge clk) q2 <= {q[0] ^ q[4], q[1], q[2], q[3], q[4]};\n    always @(posedge clk) q3 <= {q2[0] ^ q2[1], q2[1], q2[2], q2[3], q2[4]};\n    always @(posedge clk) q <= {q3[0] ^ q3[2], q3[1], q3[2], q3[3], q3[4]};\nendmodule",
+      "raw_completion_raw_sha256": "87690433ce4764d590d319e477de79dec29775730fc035666d22ea3bd38382fe",
+      "rtl": "module TopModule(input clk, input reset, output reg [4:0] q);\n    reg [4:0] q2;\n    reg [4:0] q3;\n    always @(posedge clk) begin\n        if (reset) q <= 1;\n        else       q <= {q[0] ^ q[2], q[1], q[2], q[3], q[4]};\n    end\n    always @(posedge clk) q2 <= {q[0] ^ q[4], q[1], q[2], q[3], q[4]};\n    always @(posedge clk) q3 <= {q2[0] ^ q2[1], q2[1], q2[2], q2[3], q2[4]};\n    always @(posedge clk) q <= {q3[0] ^ q3[2], q3[1], q3[2], q3[3], q3[4]};\nendmodule",
+      "rtl_raw_sha256": "7e21a135bc5ff0a55e4377c3e99828db72df100442e043079c21f5857cbb92b1",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "4286/4443 mismatches",
+      "raw_completion": "// Maximum-length Galois LFSR, shift register with independent tap\n// functions (one multiplexed per bit, independent of adjacent bits) ->\n// short PIPE path -> short register to register delay -> maximum Fmax.\nmodule TopModule(input  clk, input  reset, output reg [4:0] q);\n    reg [4:0] lfsr;\n    always @(posedge clk) begin\n        if (reset) lfsr <= 5'b00001;\n        else       lfsr <= {lfsr[3], lfsr[4] ^ lfsr[0], lfsr[2], lfsr[1]};\n    end\n    assign q = lfsr;\nendmodule",
+      "raw_completion_raw_sha256": "ecc3f31461223c93ea846406fee39b63d8ceeadb40fe09a2161733442e9c881f",
+      "rtl": "module TopModule(input  clk, input  reset, output reg [4:0] q);\n    reg [4:0] lfsr;\n    always @(posedge clk) begin\n        if (reset) lfsr <= 5'b00001;\n        else       lfsr <= {lfsr[3], lfsr[4] ^ lfsr[0], lfsr[2], lfsr[1]};\n    end\n    assign q = lfsr;\nendmodule",
+      "rtl_raw_sha256": "1350eeab14dbcb97a0ea473bc72c82813baca1ba6f8f42315486bd1432658751",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "4276/4443 mismatches",
+      "raw_completion": "// 5-bit maximal-length Galois LFSR, TRANSPOSED: registers hold the\n// \"next state\" (the input for the next stage) as a function of the\n// current state and feedback, in order to reduce the path length.\n// The register stage is explicitly named, and the feedback is inline\n// (no extra wires). Same register-to-register path length as the\n// direct up-one-stage-at-a-time register-chain.\nmodule TopModule(input clk, input reset, output reg [4:0] q);\n    reg [4:0] q2;\n    reg [4:0] q3;\n    reg [4:0] q4;\n    reg [4:0] q5;\n    always @(posedge clk) begin\n        if (reset) begin\n            q <= 5'b00001;\n            q2 <= 5'b00010;\n            q3 <= 5'b00100;\n            q4 <= 5'b01000;\n            q5 <= 5'b10000;\n        end else begin\n            q <= q2;\n            q2 <= q3;\n            q3 <= q4;\n            q4 <= q5;\n            q5 <= (q ^ q3);\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a234457c5931b50f4c40509c919581668292a0e43db1a01dd3677d8bbf2f780f",
+      "rtl": "module TopModule(input clk, input reset, output reg [4:0] q);\n    reg [4:0] q2;\n    reg [4:0] q3;\n    reg [4:0] q4;\n    reg [4:0] q5;\n    always @(posedge clk) begin\n        if (reset) begin\n            q <= 5'b00001;\n            q2 <= 5'b00010;\n            q3 <= 5'b00100;\n            q4 <= 5'b01000;\n            q5 <= 5'b10000;\n        end else begin\n            q <= q2;\n            q2 <= q3;\n            q3 <= q4;\n            q4 <= q5;\n            q5 <= (q ^ q3);\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "598c8c02a5e025d71eb208142177823f33565a5351b47cb5e128f6dd539ab7f5",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "4442/4443 mismatches",
+      "raw_completion": "// 5-bit maximal-length Galois LFSR, TRANSPOSED: register writes directly\n// (active-high reset to 1) -> same period as the direct form, higher Fmax.\nmodule TopModule(input clk, input reset, output reg [4:0] q);\n    reg [4:0] r;\n    always @(posedge clk) begin\n        if (reset) r <= 5'b10000;\n        else begin\n            r[0] <= ~(r[0] ^ r[5]);\n            r[1] <= r[0];\n            r[2] <= r[1];\n            r[3] <= r[2];\n            r[4] <= r[3];\n        end\n    end\n    assign q = r;\nendmodule",
+      "raw_completion_raw_sha256": "2c1775f332c2a2b0a9f95902993100298e468f74ca5fb82b3fbef427ebd0df5e",
+      "rtl": "module TopModule(input clk, input reset, output reg [4:0] q);\n    reg [4:0] r;\n    always @(posedge clk) begin\n        if (reset) r <= 5'b10000;\n        else begin\n            r[0] <= ~(r[0] ^ r[5]);\n            r[1] <= r[0];\n            r[2] <= r[1];\n            r[3] <= r[2];\n            r[4] <= r[3];\n        end\n    end\n    assign q = r;\nendmodule",
+      "rtl_raw_sha256": "4246993069b1eea3e0cdf513142a6cf3d1f8233a566a53d35fa6c339f487c61f",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "4342/4443 mismatches",
+      "raw_completion": "// 5-bit maximal-length Galois LFSR, TRANSPOSED: register writes its\n// output, independent of the input, ANDed with the appropriate bit-\n// positioned tap. Therefor, the function is entirely combinational:\n// the register output is a function of the input, and the input is\n// independent of the register output.\nmodule TopModule(input clk, input reset, output reg [4:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 5'b10000;\n        else       q <= {q[3], q[4] ^ q[0], q[2], q[1], q[0]} ^ 5'b10000;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "452bb0e9463cd0d12262a08e5a989e9f30476190d39b1a125f02f1aef83e34af",
+      "rtl": "module TopModule(input clk, input reset, output reg [4:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 5'b10000;\n        else       q <= {q[3], q[4] ^ q[0], q[2], q[1], q[0]} ^ 5'b10000;\n    end\nendmodule",
+      "rtl_raw_sha256": "7853edefe80503e378d155e06c2743cd26d217eff8dffaf12c1889b4ac087fd0",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "4272/4443 mismatches",
+      "raw_completion": "// 5-bit maximal-length Galois LFSR, with active-high synchronous reset\nmodule TopModule (\n    input  clk,\n    input  reset,\n    output reg [4:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 5'b00001;\n        else       q <= {q[3], q[4] ^ q[0], q[2], q[1] ^ q[0], q[0]};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "1c2079a3c2101ecc32eb32868f7161cd55836478c7cd97679d8448b3424b0f3c",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    output reg [4:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 5'b00001;\n        else       q <= {q[3], q[4] ^ q[0], q[2], q[1] ^ q[0], q[0]};\n    end\nendmodule",
+      "rtl_raw_sha256": "5f83ec7c19c92ac9859743c4e23d5f9f102fa019c50874e085889a199032401f",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "4412/4443 mismatches",
+      "raw_completion": "// 5-bit maximal-length Galois LFSR, shift right, TRANSPOSED: the register\n// chain is a single long chain of independent registers, each contributing\n// to the next (the long path -> short time pipeline).\nmodule TopModule(input clk, input reset, output reg [4:0] q);\n    reg [4:0] r0, r1, r2, r3, r4;\n    always @(posedge clk) begin\n        if (reset) begin\n            r0 <= 1; r1 <= 1; r2 <= 1; r3 <= 1; r4 <= 1;\n            q <= 1;\n        end else begin\n            r0 <= q[4] ^ q[2];\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            q <= {r4, r3, r2, r1, r0};\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "22824d871e335a4bf0283fd9eb1597256a1db17bec008e8db9f80642467c8723",
+      "rtl": "module TopModule(input clk, input reset, output reg [4:0] q);\n    reg [4:0] r0, r1, r2, r3, r4;\n    always @(posedge clk) begin\n        if (reset) begin\n            r0 <= 1; r1 <= 1; r2 <= 1; r3 <= 1; r4 <= 1;\n            q <= 1;\n        end else begin\n            r0 <= q[4] ^ q[2];\n            r1 <= r0;\n            r2 <= r1;\n            r3 <= r2;\n            r4 <= r3;\n            q <= {r4, r3, r2, r1, r0};\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "83100dfa670c7aeace341eec01a6604db05c67df176f8bd695924a669ab6667f",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "4278/4443 mismatches",
+      "raw_completion": "// Maximum-length Galois LFSR, TRANSPOSED: the register is a 5-bit chain\n// of XOR gates, with the register output (q) at the head of the chain. Same\n// function as the direct form (one register, no explicit chain of XORs), but\n// the register is transposed: the next state is computed in terms of the\n// current state, not the other way around.\nmodule TopModule(input clk, input reset, output reg [4:0] q);\n    reg [4:0] next_q;\n    always @(posedge clk) begin\n        if (reset) next_q <= 5'b00001;\n        else       next_q <= {next_q[3], next_q[4] ^ next_q[0], next_q[2], next_q[1]};\n        q <= next_q;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "42880b346a199f270f176466bc1402bf3d6a80ac316d1a22ab5e5e37eaa8adc1",
+      "rtl": "module TopModule(input clk, input reset, output reg [4:0] q);\n    reg [4:0] next_q;\n    always @(posedge clk) begin\n        if (reset) next_q <= 5'b00001;\n        else       next_q <= {next_q[3], next_q[4] ^ next_q[0], next_q[2], next_q[1]};\n        q <= next_q;\n    end\nendmodule",
+      "rtl_raw_sha256": "21a212015af0bcdd417364dc7c80851d186c931a58a2291cba104e462c657eb8",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "4280/4443 mismatches",
+      "raw_completion": "// 5-bit maximal-length Galois LFSR, with active-high synchronous reset\nmodule TopModule(input clk, input reset, output reg [4:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 5'b00001;\n        else       q <= {q[3], q[4] ^ q[0], q[2], q[1], q[0]};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "141c45b3eb5eb9e007dd2bb18f356681d7e2ac09d44de1130a6db099dccbd776",
+      "rtl": "module TopModule(input clk, input reset, output reg [4:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 5'b00001;\n        else       q <= {q[3], q[4] ^ q[0], q[2], q[1], q[0]};\n    end\nendmodule",
+      "rtl_raw_sha256": "1518ad890041e51b9d9ee8e3d66812f1472d5d8da351064bcad8c879721bb8ef",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "4286/4443 mismatches",
+      "raw_completion": "// 5-bit maximal-length Galois LFSR, shifted right, with active-high\n// synchronous reset.\nmodule TopModule(input clk, input reset, output reg [4:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 5'b1;\n        else       q <= {q[3], q[4] ^ q[0], q[2], q[1]};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "99c5bbb2947ea0187454c9c7e92c5cdd24f56a9339b4bcfd58698715cd71f68e",
+      "rtl": "module TopModule(input clk, input reset, output reg [4:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 5'b1;\n        else       q <= {q[3], q[4] ^ q[0], q[2], q[1]};\n    end\nendmodule",
+      "rtl_raw_sha256": "4d4d77d1831cb299237fba8b749cf70cc359a6a81577220b3a8a3f19ad69ec04",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "4276/4443 mismatches",
+      "raw_completion": "// 5-bit maximal-length Galois LFSR, TRANSPOSED: register writes its output\n// to the input of the next stage, so the register-to-register path is a\n// direct path (the critical path) -> approximately one clock per register,\n// overall: approximately 5 clock cycles per LFSR cycle.\nmodule TopModule(input clk, input reset, output reg [4:0] q);\n    reg [4:0] r0, r1, r2, r3, r4;\n    always @(posedge clk) begin\n        if (reset) begin\n            r0 <= 1; r1 <= 1; r2 <= 1; r3 <= 1; r4 <= 1; q <= 1;\n        end else begin\n            r0 <= q;\n            r1 <= r0 ^ (q[4] ^ q[2]);\n            r2 <= r1;\n            r3 <= r2 ^ (r2[4] ^ r2[1]);\n            r4 <= r3;\n            q <= r4;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "4a09eced210ee46da45a199b58e84dc7a4dc18869e930d3649f11622245dddd7",
+      "rtl": "module TopModule(input clk, input reset, output reg [4:0] q);\n    reg [4:0] r0, r1, r2, r3, r4;\n    always @(posedge clk) begin\n        if (reset) begin\n            r0 <= 1; r1 <= 1; r2 <= 1; r3 <= 1; r4 <= 1; q <= 1;\n        end else begin\n            r0 <= q;\n            r1 <= r0 ^ (q[4] ^ q[2]);\n            r2 <= r1;\n            r3 <= r2 ^ (r2[4] ^ r2[1]);\n            r4 <= r3;\n            q <= r4;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "6d6adc3b4201c37e9564ca3cb8cf33e280f82710c3cc4e245c7f150e56c2adc1",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "4272/4443 mismatches",
+      "raw_completion": "// 5-bit maximal-length Galois LFSR, TRANSPOSED: registers are written in\n// order of their incrementing tap, so the feedback chain is independent of\n// the register order. Same period (2**5 - 1) as the direct form.\nmodule TopModule(input clk, input reset, output reg [4:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 5'b00001;\n        else       q <= {q[3], q[4] ^ q[0], q[2], q[1] ^ q[0], q[0]};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "22faca9a2debae857cd6ecf93dfc26f6f8afd90856548509ea734f800a7a4559",
+      "rtl": "module TopModule(input clk, input reset, output reg [4:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 5'b00001;\n        else       q <= {q[3], q[4] ^ q[0], q[2], q[1] ^ q[0], q[0]};\n    end\nendmodule",
+      "rtl_raw_sha256": "fba0657a114a0eb3f9c87d317416c3911f7aec7f39a20c54559273b8954ddb83",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "4276/4443 mismatches",
+      "raw_completion": "// 5-bit maximal-length Galois LFSR, with active-high synchronous reset.\nmodule TopModule(input clk, input reset, output reg [4:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 5'b1;\n        else       q <= {q[4] ^ q[2], q[0], q[1], q[2], q[3]};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "dc70feeeffdf0f931b4213d74b95acab1707f7256459e605055c7cfe5c4b5069",
+      "rtl": "module TopModule(input clk, input reset, output reg [4:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 5'b1;\n        else       q <= {q[4] ^ q[2], q[0], q[1], q[2], q[3]};\n    end\nendmodule",
+      "rtl_raw_sha256": "b53e00988d08fb4102c62e89ebbcd19a398e4a61c5446d12a308eb3d81688d7e",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "4442/4443 mismatches",
+      "raw_completion": "// 5-bit maximal-length Galois LFSR, TRANSPOSED: the LSB is the register\n// output, and the other bits are the independent feedbacks (XORed\n// to produce the next LSB). The register shifts right, so the feedbacks\n// are independent of the shift register position. Active-high reset to 1.\nmodule TopModule(input clk, input reset, output reg [4:0] q);\n    reg [4:0] r;\n    always @(posedge clk) begin\n        if (reset) r <= 5'b00001;\n        else begin\n            r[0] <= ~(r[4] ^ r[2]);\n            r[1] <= r[0];\n            r[2] <= r[1];\n            r[3] <= r[2];\n            r[4] <= r[3];\n        end\n    end\n    assign q = ~r;\nendmodule",
+      "raw_completion_raw_sha256": "591f1079752b179f2c93d0f3a45aedac5fb04396fec9cb0ce940791b353585d7",
+      "rtl": "module TopModule(input clk, input reset, output reg [4:0] q);\n    reg [4:0] r;\n    always @(posedge clk) begin\n        if (reset) r <= 5'b00001;\n        else begin\n            r[0] <= ~(r[4] ^ r[2]);\n            r[1] <= r[0];\n            r[2] <= r[1];\n            r[3] <= r[2];\n            r[4] <= r[3];\n        end\n    end\n    assign q = ~r;\nendmodule",
+      "rtl_raw_sha256": "d640b144bf4e4be93a712f7dcb8c8acf910d57e38a97c165fa4cdf82b8f16a3d",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "4276/4443 mismatches",
+      "raw_completion": "// 5-bit maximal-length Galois LFSR, with active-high synchronous reset\nmodule TopModule(input clk, input reset, output reg [4:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 5'b1;\n        else       q <= {q[4] ^ q[2], q[0], q[1], q[2], q[3]};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "d2135473b93643f696453e7f4b146d0525403e30e536bf2792f26df8cf081e5f",
+      "rtl": "module TopModule(input clk, input reset, output reg [4:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 5'b1;\n        else       q <= {q[4] ^ q[2], q[0], q[1], q[2], q[3]};\n    end\nendmodule",
+      "rtl_raw_sha256": "b53e00988d08fb4102c62e89ebbcd19a398e4a61c5446d12a308eb3d81688d7e",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "4272/4443 mismatches",
+      "raw_completion": "// 5-bit maximal-length Galois LFSR, shift register with explicit\n// feedback polynomial (the register itself is a combinational function\n// of all the bits, so the register is directly formulated as a shift\n// register with an explicit feedback polynomial).\nmodule TopModule(input clk, input reset, output reg [4:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 5'b1;\n        else       q <= {q[3], q[4] ^ q[0], q[2], q[1] ^ q[0], q[0]};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "ca6249a8a385d6ccbe2fa0c21406999128fc242cf36ca42cf744afd138fe136e",
+      "rtl": "module TopModule(input clk, input reset, output reg [4:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 5'b1;\n        else       q <= {q[3], q[4] ^ q[0], q[2], q[1] ^ q[0], q[0]};\n    end\nendmodule",
+      "rtl_raw_sha256": "4c119569dfa1354bb634fa49198b50e7cd7dd8824742ab598e2d63146272f548",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "4272/4443 mismatches",
+      "raw_completion": "// Maximum-length Galois LFSR, TRANSPOSED: register outputs the next state\n// (the function to compute q[n] is independent of the input bits) -> shorter\n// register chain (a \"short PIPE\" -> shorter Fmax). Same register chain as\n// the direct form, identical function (the register explicitly defines the\n// next state, independent of the input).\nmodule TopModule(input clk, input reset, output reg [4:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 5'b1;\n        else       q <= {q[3], q[4] ^ q[0], q[2], q[1] ^ q[0], q[0]};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "9c67cbc1eac375eb21f92c6cacd118c9e798ffbd7e7c8f541faca25688eb2db3",
+      "rtl": "module TopModule(input clk, input reset, output reg [4:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 5'b1;\n        else       q <= {q[3], q[4] ^ q[0], q[2], q[1] ^ q[0], q[0]};\n    end\nendmodule",
+      "rtl_raw_sha256": "4c119569dfa1354bb634fa49198b50e7cd7dd8824742ab598e2d63146272f548",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob086_lfsr5_ref.sv:2: syntax error",
+      "raw_completion": "// 5-bit maximal-length Galois LFSR, TRANSPOSED: the register is a chain\n// of AND gates, followed by a single OR gate. The register is \"transposed\":\n// the register stage is a combinational function of the feedback, ANDed with\n// all the other bits, followed by an OR gate. This chain of AND-OR stages\n// has the same cycle time as the \"canonical\" register-and-XOR chain, but\n// the register has a longer maximum length (2**n - 1).\nmodule TopModule(input  clk, input reset, output reg [4:0] q);\n    wire [4:0] r;\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk",
+      "raw_completion_raw_sha256": "f6d0df58cc68ed03a705e94f3512b787d222f0a571721a95cd260306bf6f016f",
+      "rtl": "module TopModule(input  clk, input reset, output reg [4:0] q);\n    wire [4:0] r;\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk, reset);\n    TRANSPOSED_REG(r, q, clk",
+      "rtl_raw_sha256": "c25fad255cef40aa3a42236bfafc3d6a325fd338df4ac6f8759f2eebef13112a",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 1,
+    "fail": 19
+  },
+  "testbench_raw_sha256": "e17dd6b4ee5387085ecac2fba94676ad53cb4bfd55fb116b246fadd2fecd04ac",
+  "training_seed": 1
+}

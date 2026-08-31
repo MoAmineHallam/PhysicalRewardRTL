@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob097_mux9to1v",
+  "problem_seed": 4547259079974734790,
+  "prompt_raw_sha256": "24e339d9938b94a16b94cfb4c90aa0bb9b7ae1263a9d8d038e2d1c67e6b609d7",
+  "reference_raw_sha256": "a10b25340da2e2672812f18e364dfc1a2d5cfb07630081de665cd2895664f55f",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input [15:0] a,\n    input [15:0] b,\n    input [15:0] c,\n    input [15:0] d,\n    input [15:0] e,\n    input [15:0] f,\n    input [15:0] g,\n    input [15:0] h,\n    input [15:0] i,\n    input [3:0] sel,\n    output reg [15:0] out\n);\n    always @(*) begin\n        case (sel)\n            0: out = a;\n            1: out = b;\n            2: out = c;\n            3: out = d;\n            4: out = e;\n            5: out = f;\n            6: out = g;\n            7: out = h;\n            8: out = i;\n            default: out = 16'hFFFF;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "91e9d7e3c7c19ff581c11d769f638b66433bf9e07de39708a569dc6ca8130144",
+      "rtl": "module TopModule (\n    input [15:0] a,\n    input [15:0] b,\n    input [15:0] c,\n    input [15:0] d,\n    input [15:0] e,\n    input [15:0] f,\n    input [15:0] g,\n    input [15:0] h,\n    input [15:0] i,\n    input [3:0] sel,\n    output reg [15:0] out\n);\n    always @(*) begin\n        case (sel)\n            0: out = a;\n            1: out = b;\n            2: out = c;\n            3: out = d;\n            4: out = e;\n            5: out = f;\n            6: out = g;\n            7: out = h;\n            8: out = i;\n            default: out = 16'hFFFF;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "91e9d7e3c7c19ff581c11d769f638b66433bf9e07de39708a569dc6ca8130144",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "101/220 mismatches",
+      "raw_completion": "module TopModule (\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [ 3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    always @(*) begin\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n        for (int i=9; i<16; i=i+1) outs[i] = 16'hFFFF;\n    end\n    assign out = outs[sel];\nendmodule",
+      "raw_completion_raw_sha256": "d67a17155ae74f8a2a50c8a672a43c48b0b3a1da74f04e4e48c3215339f36ea9",
+      "rtl": "module TopModule (\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [ 3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    always @(*) begin\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n        for (int i=9; i<16; i=i+1) outs[i] = 16'hFFFF;\n    end\n    assign out = outs[sel];\nendmodule",
+      "rtl_raw_sha256": "d67a17155ae74f8a2a50c8a672a43c48b0b3a1da74f04e4e48c3215339f36ea9",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [15:0] a,\n    input [15:0] b,\n    input [15:0] c,\n    input [15:0] d,\n    input [15:0] e,\n    input [15:0] f,\n    input [15:0] g,\n    input [15:0] h,\n    input [15:0] i,\n    input [3:0] sel,\n    output reg [15:0] out\n);\n    always @(*) begin\n        case (sel)\n            4'd0: out = a;\n            4'd1: out = b;\n            4'd2: out = c;\n            4'd3: out = d;\n            4'd4: out = e;\n            4'd5: out = f;\n            4'd6: out = g;\n            4'd7: out = h;\n            4'd8: out = i;\n            default: out = 16'hFFFF;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "e854d7e1f95571b7bb21df84833c19d25b17f3e1aee6d3fd6af58340679d894e",
+      "rtl": "module TopModule(\n    input [15:0] a,\n    input [15:0] b,\n    input [15:0] c,\n    input [15:0] d,\n    input [15:0] e,\n    input [15:0] f,\n    input [15:0] g,\n    input [15:0] h,\n    input [15:0] i,\n    input [3:0] sel,\n    output reg [15:0] out\n);\n    always @(*) begin\n        case (sel)\n            4'd0: out = a;\n            4'd1: out = b;\n            4'd2: out = c;\n            4'd3: out = d;\n            4'd4: out = e;\n            4'd5: out = f;\n            4'd6: out = g;\n            4'd7: out = h;\n            4'd8: out = i;\n            default: out = 16'hFFFF;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "e854d7e1f95571b7bb21df84833c19d25b17f3e1aee6d3fd6af58340679d894e",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [15:0] a,\n    input [15:0] b,\n    input [15:0] c,\n    input [15:0] d,\n    input [15:0] e,\n    input [15:0] f,\n    input [15:0] g,\n    input [15:0] h,\n    input [15:0] i,\n    input [3:0] sel,\n    output reg [15:0] out\n);\n    always @(*) begin\n        case (sel)\n            4'd0: out = a;\n            4'd1: out = b;\n            4'd2: out = c;\n            4'd3: out = d;\n            4'd4: out = e;\n            4'd5: out = f;\n            4'd6: out = g;\n            4'd7: out = h;\n            4'd8: out = i;\n            default: out = 16'hFFFF;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "e854d7e1f95571b7bb21df84833c19d25b17f3e1aee6d3fd6af58340679d894e",
+      "rtl": "module TopModule(\n    input [15:0] a,\n    input [15:0] b,\n    input [15:0] c,\n    input [15:0] d,\n    input [15:0] e,\n    input [15:0] f,\n    input [15:0] g,\n    input [15:0] h,\n    input [15:0] i,\n    input [3:0] sel,\n    output reg [15:0] out\n);\n    always @(*) begin\n        case (sel)\n            4'd0: out = a;\n            4'd1: out = b;\n            4'd2: out = c;\n            4'd3: out = d;\n            4'd4: out = e;\n            4'd5: out = f;\n            4'd6: out = g;\n            4'd7: out = h;\n            4'd8: out = i;\n            default: out = 16'hFFFF;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "e854d7e1f95571b7bb21df84833c19d25b17f3e1aee6d3fd6af58340679d894e",
+      "sample_index": 3,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:15: error: 'i' has already been declared in this scope.",
+      "raw_completion": "// 16-bit wide, 9-to-1 multiplexer\nmodule TopModule(\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [ 3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    integer i;\n    always @* begin\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n        for(i = 9; i < 16; i = i + 1) outs[i] = 16'hFFFF;\n        out = outs[sel];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "ada5feda53146f787b7aa12d2b964966450277967c6b73d7cd6995a028e8dcf9",
+      "rtl": "module TopModule(\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [ 3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    integer i;\n    always @* begin\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n        for(i = 9; i < 16; i = i + 1) outs[i] = 16'hFFFF;\n        out = outs[sel];\n    end\nendmodule",
+      "rtl_raw_sha256": "68d9296381b8d2e9433ec8149b2e85fea5f15a4eab87a17d9c4a033333d9c6f9",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [15:0] a,\n    input [15:0] b,\n    input [15:0] c,\n    input [15:0] d,\n    input [15:0] e,\n    input [15:0] f,\n    input [15:0] g,\n    input [15:0] h,\n    input [15:0] i,\n    input [3:0] sel,\n    output reg [15:0] out\n);\n    always @(*) begin\n        case (sel)\n            0: out = a;\n            1: out = b;\n            2: out = c;\n            3: out = d;\n            4: out = e;\n            5: out = f;\n            6: out = g;\n            7: out = h;\n            8: out = i;\n            default: out = 16'hFFFF;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "d27632db3499e41fc13af3b6f22f9161c9467053a7571ea21c17da16bdffd915",
+      "rtl": "module TopModule(\n    input [15:0] a,\n    input [15:0] b,\n    input [15:0] c,\n    input [15:0] d,\n    input [15:0] e,\n    input [15:0] f,\n    input [15:0] g,\n    input [15:0] h,\n    input [15:0] i,\n    input [3:0] sel,\n    output reg [15:0] out\n);\n    always @(*) begin\n        case (sel)\n            0: out = a;\n            1: out = b;\n            2: out = c;\n            3: out = d;\n            4: out = e;\n            5: out = f;\n            6: out = g;\n            7: out = h;\n            8: out = i;\n            default: out = 16'hFFFF;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "d27632db3499e41fc13af3b6f22f9161c9467053a7571ea21c17da16bdffd915",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "101/220 mismatches",
+      "raw_completion": "module TopModule(\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    always @(*) begin\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n        for (int i=9; i<16; i=i+1) outs[i] = 16'hFFFF;\n    end\n    assign out = outs[sel];\nendmodule",
+      "raw_completion_raw_sha256": "1178c2fb6fff675fb75f8bac0eb4e815e7cac339ed9589689837f4dc6aa892ed",
+      "rtl": "module TopModule(\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    always @(*) begin\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n        for (int i=9; i<16; i=i+1) outs[i] = 16'hFFFF;\n    end\n    assign out = outs[sel];\nendmodule",
+      "rtl_raw_sha256": "1178c2fb6fff675fb75f8bac0eb4e815e7cac339ed9589689837f4dc6aa892ed",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:15: error: 'i' has already been declared in this scope.",
+      "raw_completion": "module TopModule(\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [ 3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    integer i;\n    always @(*) begin\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n        for (i = 9; i < 16; i = i + 1) outs[i] = 16'hFFFF;\n        out = outs[sel];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "422c12df3d55af09419513931025f15e4cdf9f506eb32552b31b834e722466cd",
+      "rtl": "module TopModule(\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [ 3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    integer i;\n    always @(*) begin\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n        for (i = 9; i < 16; i = i + 1) outs[i] = 16'hFFFF;\n        out = outs[sel];\n    end\nendmodule",
+      "rtl_raw_sha256": "422c12df3d55af09419513931025f15e4cdf9f506eb32552b31b834e722466cd",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [ 3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    always @(*) begin\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n    end\n    assign out = (sel < 9) ? outs[sel] : 16'hFFFF;\nendmodule",
+      "raw_completion_raw_sha256": "f1b28f774b9a4105e01a3bbfbe17ed52d1d2c942a0447bd24354bcd7872ec012",
+      "rtl": "module TopModule(\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [ 3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    always @(*) begin\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n    end\n    assign out = (sel < 9) ? outs[sel] : 16'hFFFF;\nendmodule",
+      "rtl_raw_sha256": "f1b28f774b9a4105e01a3bbfbe17ed52d1d2c942a0447bd24354bcd7872ec012",
+      "sample_index": 8,
+      "status": "PASS"
+    },
+    {
+      "detail": "101/220 mismatches",
+      "raw_completion": "module TopModule (\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [ 3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    always @(*) begin\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n        for (int i=9; i<16; i=i+1) outs[i] = 16'hFFFF;\n    end\n    assign out = outs[sel];\nendmodule",
+      "raw_completion_raw_sha256": "d67a17155ae74f8a2a50c8a672a43c48b0b3a1da74f04e4e48c3215339f36ea9",
+      "rtl": "module TopModule (\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [ 3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    always @(*) begin\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n        for (int i=9; i<16; i=i+1) outs[i] = 16'hFFFF;\n    end\n    assign out = outs[sel];\nendmodule",
+      "rtl_raw_sha256": "d67a17155ae74f8a2a50c8a672a43c48b0b3a1da74f04e4e48c3215339f36ea9",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:29: error: out is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [ 3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    integer s;\n    always @* begin\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n        for (s = 9; s < 16; s = s + 1) begin\n            outs[s] = 16'hFFFF;\n        end\n        out = outs[sel];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "46516fde0231eb3fa6bf7da50c553dc499b76a89897213f5d346fd4f686d23e0",
+      "rtl": "module TopModule(\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [ 3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    integer s;\n    always @* begin\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n        for (s = 9; s < 16; s = s + 1) begin\n            outs[s] = 16'hFFFF;\n        end\n        out = outs[sel];\n    end\nendmodule",
+      "rtl_raw_sha256": "46516fde0231eb3fa6bf7da50c553dc499b76a89897213f5d346fd4f686d23e0",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 16-bit wide, 9-to-1 multiplexer\nmodule TopModule(\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [3:0]  sel,\n    output [15:0] out\n);\n    reg [15:0] r;\n    always @(*) begin\n        case (sel)\n            0: r = a;\n            1: r = b;\n            2: r = c;\n            3: r = d;\n            4: r = e;\n            5: r = f;\n            6: r = g;\n            7: r = h;\n            8: r = i;\n            default: r = 16'hFFFF;\n        endcase\n    end\n    assign out = r;\nendmodule",
+      "raw_completion_raw_sha256": "1f494d0a754244bc17a59feaba9e37c2ef819237d44336f672a12c8a6d5056ca",
+      "rtl": "module TopModule(\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [3:0]  sel,\n    output [15:0] out\n);\n    reg [15:0] r;\n    always @(*) begin\n        case (sel)\n            0: r = a;\n            1: r = b;\n            2: r = c;\n            3: r = d;\n            4: r = e;\n            5: r = f;\n            6: r = g;\n            7: r = h;\n            8: r = i;\n            default: r = 16'hFFFF;\n        endcase\n    end\n    assign out = r;\nendmodule",
+      "rtl_raw_sha256": "7da9a147a2ec738d81d905ac6f54aa48040f632be157ec2dd021c4ce0d26d308",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input [15:0] a,\n    input [15:0] b,\n    input [15:0] c,\n    input [15:0] d,\n    input [15:0] e,\n    input [15:0] f,\n    input [15:0] g,\n    input [15:0] h,\n    input [15:0] i,\n    input [3:0] sel,\n    output reg [15:0] out\n);\n    always @(*) begin\n        case (sel)\n            4'd0: out = a;\n            4'd1: out = b;\n            4'd2: out = c;\n            4'd3: out = d;\n            4'd4: out = e;\n            4'd5: out = f;\n            4'd6: out = g;\n            4'd7: out = h;\n            4'd8: out = i;\n            default: out = 16'hFFFF;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "46aff5f49b8047b79f19b26c99ff1ed9f0add9708754fb0b2511193aec466e5d",
+      "rtl": "module TopModule (\n    input [15:0] a,\n    input [15:0] b,\n    input [15:0] c,\n    input [15:0] d,\n    input [15:0] e,\n    input [15:0] f,\n    input [15:0] g,\n    input [15:0] h,\n    input [15:0] i,\n    input [3:0] sel,\n    output reg [15:0] out\n);\n    always @(*) begin\n        case (sel)\n            4'd0: out = a;\n            4'd1: out = b;\n            4'd2: out = c;\n            4'd3: out = d;\n            4'd4: out = e;\n            4'd5: out = f;\n            4'd6: out = g;\n            4'd7: out = h;\n            4'd8: out = i;\n            default: out = 16'hFFFF;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "46aff5f49b8047b79f19b26c99ff1ed9f0add9708754fb0b2511193aec466e5d",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob097_mux9to1v_ref.sv:2: syntax error",
+      "raw_completion": "module TopModule(\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] r0;\n    reg [15:0] r1;\n    reg [15:0] r2;\n    reg [15:0] r3;\n    reg [15:0] r4;\n    reg [15:0] r5;\n    reg [15:0] r6;\n    reg [15:0] r7;\n    reg [15:0] r8;\n    always @(*) begin\n        case (sel)\n            4'd0: r0 = a;\n            4'd1: r0 = b;\n            4'd2: r0 = c;\n            4'd3: r0 = d;\n            4'd4: r0 = e;\n            4'd5: r0 = f;\n            4'd6: r0 = g;\n            4'd7: r0 = h;\n            4'd8: r0 = i;\n            default: r0 = 16'hFFFF;\n        endcase\n        case (sel)\n            4'd1: r1 = a;\n            4'd2: r1 = b;\n            4'd3: r1 = c;\n            4'd4: r1 = d;\n            4'd5: r1 = e;\n            4'd6: r1 = f;\n            4'd7: r1 = g;\n            4'd8: r1 = h;\n            4'd9: r1 = i;\n            default: r1 = 16'hFFFF;\n        endcase\n        case (sel)\n            4'd2: r2 = a;\n            4'd3: r2 = b;\n            4'd4: r2 = c;\n            4'd5: r2 = d;\n            4'd6: r2 = e;\n            4'd7: r2 = f;\n            4'd8: r2 = g;\n            4'd9: r2 = h;\n            4'd10: r2 = i;\n            default: r2 = 16'hFFFF;\n        endcase\n        case (sel)\n            4'd3: r3 = a;\n            4'd4: r3 = b;\n            4'd5: r3 = c;\n            4'd6: r3 = d;\n            4'd7: r3 = e;\n            4'd8: r3 = f;\n            4'd9: r3 = g;\n            4'd10: r3 = h;\n            4'd11: r3 = i;\n            default: r3 = 16'hFFFF;\n        endcase\n        case (sel)\n            4'd4: r4 = a;\n            4'd5: r4 = b;\n            4'd6: r4 = c;\n            4'd7: r4 = d;\n            4'd8: r4 = e;\n            4'd9: r4 = f;\n            4'd10: r4 = g;\n            4'd11: r4 = h;\n            4'd12: r4 = i;\n            default: r4 = 16'hFFFF;\n        endcase\n        case (sel)\n            4'd5: r5 = a;\n            4'd6: r5 = b;\n            4'd7: r5 = c;\n            4'd8: r5 = d;\n            4'd9: r5 = e;\n            4'd10: r5 = f;\n            4'd11: r5 = g;\n            4'd12: r5 = h;\n            4'd13:",
+      "raw_completion_raw_sha256": "471d3a9a40be090c03a05e7b6b5d33af9b587ed89033520d7f55bdfbece84bd4",
+      "rtl": "module TopModule(\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] r0;\n    reg [15:0] r1;\n    reg [15:0] r2;\n    reg [15:0] r3;\n    reg [15:0] r4;\n    reg [15:0] r5;\n    reg [15:0] r6;\n    reg [15:0] r7;\n    reg [15:0] r8;\n    always @(*) begin\n        case (sel)\n            4'd0: r0 = a;\n            4'd1: r0 = b;\n            4'd2: r0 = c;\n            4'd3: r0 = d;\n            4'd4: r0 = e;\n            4'd5: r0 = f;\n            4'd6: r0 = g;\n            4'd7: r0 = h;\n            4'd8: r0 = i;\n            default: r0 = 16'hFFFF;\n        endcase\n        case (sel)\n            4'd1: r1 = a;\n            4'd2: r1 = b;\n            4'd3: r1 = c;\n            4'd4: r1 = d;\n            4'd5: r1 = e;\n            4'd6: r1 = f;\n            4'd7: r1 = g;\n            4'd8: r1 = h;\n            4'd9: r1 = i;\n            default: r1 = 16'hFFFF;\n        endcase\n        case (sel)\n            4'd2: r2 = a;\n            4'd3: r2 = b;\n            4'd4: r2 = c;\n            4'd5: r2 = d;\n            4'd6: r2 = e;\n            4'd7: r2 = f;\n            4'd8: r2 = g;\n            4'd9: r2 = h;\n            4'd10: r2 = i;\n            default: r2 = 16'hFFFF;\n        endcase\n        case (sel)\n            4'd3: r3 = a;\n            4'd4: r3 = b;\n            4'd5: r3 = c;\n            4'd6: r3 = d;\n            4'd7: r3 = e;\n            4'd8: r3 = f;\n            4'd9: r3 = g;\n            4'd10: r3 = h;\n            4'd11: r3 = i;\n            default: r3 = 16'hFFFF;\n        endcase\n        case (sel)\n            4'd4: r4 = a;\n            4'd5: r4 = b;\n            4'd6: r4 = c;\n            4'd7: r4 = d;\n            4'd8: r4 = e;\n            4'd9: r4 = f;\n            4'd10: r4 = g;\n            4'd11: r4 = h;\n            4'd12: r4 = i;\n            default: r4 = 16'hFFFF;\n        endcase\n        case (sel)\n            4'd5: r5 = a;\n            4'd6: r5 = b;\n            4'd7: r5 = c;\n            4'd8: r5 = d;\n            4'd9: r5 = e;\n            4'd10: r5 = f;\n            4'd11: r5 = g;\n            4'd12: r5 = h;\n            4'd13:",
+      "rtl_raw_sha256": "471d3a9a40be090c03a05e7b6b5d33af9b587ed89033520d7f55bdfbece84bd4",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [15:0] a,\n    input [15:0] b,\n    input [15:0] c,\n    input [15:0] d,\n    input [15:0] e,\n    input [15:0] f,\n    input [15:0] g,\n    input [15:0] h,\n    input [15:0] i,\n    input [3:0] sel,\n    output reg [15:0] out\n);\n    always @(*) begin\n        case (sel)\n            0: out = a;\n            1: out = b;\n            2: out = c;\n            3: out = d;\n            4: out = e;\n            5: out = f;\n            6: out = g;\n            7: out = h;\n            8: out = i;\n            default: out = 16'hFFFF;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "d27632db3499e41fc13af3b6f22f9161c9467053a7571ea21c17da16bdffd915",
+      "rtl": "module TopModule(\n    input [15:0] a,\n    input [15:0] b,\n    input [15:0] c,\n    input [15:0] d,\n    input [15:0] e,\n    input [15:0] f,\n    input [15:0] g,\n    input [15:0] h,\n    input [15:0] i,\n    input [3:0] sel,\n    output reg [15:0] out\n);\n    always @(*) begin\n        case (sel)\n            0: out = a;\n            1: out = b;\n            2: out = c;\n            3: out = d;\n            4: out = e;\n            5: out = f;\n            6: out = g;\n            7: out = h;\n            8: out = i;\n            default: out = 16'hFFFF;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "d27632db3499e41fc13af3b6f22f9161c9467053a7571ea21c17da16bdffd915",
+      "sample_index": 14,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:19: error: out is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 16-bit wide, 9-to-1 multiplexer\nmodule TopModule(\n    input [15:0] a, b, c, d, e, f, g, h, i,\n    input [ 3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    integer j;\n    always @(*) begin\n        for (j = 0; j < 9; j = j + 1) outs[j] = 16'hFFFF;\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n        out = outs[sel];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "436b2c77971562b1e033252765c0c30cfc5d0968f4a2094e12e7c248bc0c02ba",
+      "rtl": "module TopModule(\n    input [15:0] a, b, c, d, e, f, g, h, i,\n    input [ 3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    integer j;\n    always @(*) begin\n        for (j = 0; j < 9; j = j + 1) outs[j] = 16'hFFFF;\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n        out = outs[sel];\n    end\nendmodule",
+      "rtl_raw_sha256": "0b6e0dd7fd1c151e4abed6933e2d041df31c1efcc84ca72dd1cb02730740381d",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] out_reg;\n    always @(*) begin\n        case (sel)\n            0: out_reg = a;\n            1: out_reg = b;\n            2: out_reg = c;\n            3: out_reg = d;\n            4: out_reg = e;\n            5: out_reg = f;\n            6: out_reg = g;\n            7: out_reg = h;\n            8: out_reg = i;\n            default: out_reg = 16'hFFFF;\n        endcase\n    end\n    assign out = out_reg;\nendmodule",
+      "raw_completion_raw_sha256": "283364af7b28ce1d286f44d2a1f304d0c6fb7ee64361a1a70ad0c7126b193154",
+      "rtl": "module TopModule (\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] out_reg;\n    always @(*) begin\n        case (sel)\n            0: out_reg = a;\n            1: out_reg = b;\n            2: out_reg = c;\n            3: out_reg = d;\n            4: out_reg = e;\n            5: out_reg = f;\n            6: out_reg = g;\n            7: out_reg = h;\n            8: out_reg = i;\n            default: out_reg = 16'hFFFF;\n        endcase\n    end\n    assign out = out_reg;\nendmodule",
+      "rtl_raw_sha256": "283364af7b28ce1d286f44d2a1f304d0c6fb7ee64361a1a70ad0c7126b193154",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 16-bit wide, 9-to-1 multiplexer\nmodule TopModule(\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [ 3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] out_reg;\n    always @(*) begin\n        case (sel)\n            4'd0: out_reg = a;\n            4'd1: out_reg = b;\n            4'd2: out_reg = c;\n            4'd3: out_reg = d;\n            4'd4: out_reg = e;\n            4'd5: out_reg = f;\n            4'd6: out_reg = g;\n            4'd7: out_reg = h;\n            4'd8: out_reg = i;\n            default: out_reg = 16'hFFFF;\n        endcase\n    end\n    assign out = out_reg;\nendmodule",
+      "raw_completion_raw_sha256": "6d85ecb0859ebc44bf41668ecde1df9aa0a43dba045a83342b6a26d0994ea6ad",
+      "rtl": "module TopModule(\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [ 3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] out_reg;\n    always @(*) begin\n        case (sel)\n            4'd0: out_reg = a;\n            4'd1: out_reg = b;\n            4'd2: out_reg = c;\n            4'd3: out_reg = d;\n            4'd4: out_reg = e;\n            4'd5: out_reg = f;\n            4'd6: out_reg = g;\n            4'd7: out_reg = h;\n            4'd8: out_reg = i;\n            default: out_reg = 16'hFFFF;\n        endcase\n    end\n    assign out = out_reg;\nendmodule",
+      "rtl_raw_sha256": "f14bc048a997e6653cd2bf7a1f2c302845dfe473b86fa3663c8423cb81b1662c",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "101/220 mismatches",
+      "raw_completion": "module TopModule (\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    always @(*) begin\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n    end\n    assign out = outs[sel];\n    integer j;\n    always @(*) begin\n        for (j = 9; j < 16; j = j + 1) begin\n            outs[j] = 16'hFFFF;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "c1b02e7d726373d96aa2562db32c74c9b0ce05b7a6fcb673d54091690367acbd",
+      "rtl": "module TopModule (\n    input  [15:0] a,\n    input  [15:0] b,\n    input  [15:0] c,\n    input  [15:0] d,\n    input  [15:0] e,\n    input  [15:0] f,\n    input  [15:0] g,\n    input  [15:0] h,\n    input  [15:0] i,\n    input  [3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    always @(*) begin\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n    end\n    assign out = outs[sel];\n    integer j;\n    always @(*) begin\n        for (j = 9; j < 16; j = j + 1) begin\n            outs[j] = 16'hFFFF;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "c1b02e7d726373d96aa2562db32c74c9b0ce05b7a6fcb673d54091690367acbd",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:29: error: out is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(\n    input [15:0] a,\n    input [15:0] b,\n    input [15:0] c,\n    input [15:0] d,\n    input [15:0] e,\n    input [15:0] f,\n    input [15:0] g,\n    input [15:0] h,\n    input [15:0] i,\n    input [3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    integer s;\n    always @* begin\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n        for (s = 9; s < 16; s = s + 1) begin\n            outs[s] = 16'hFFFF;\n        end\n        out = outs[sel];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "363b357ee284799f42c8d646c67b75993c357e7390d75e13f687b754608a38b8",
+      "rtl": "module TopModule(\n    input [15:0] a,\n    input [15:0] b,\n    input [15:0] c,\n    input [15:0] d,\n    input [15:0] e,\n    input [15:0] f,\n    input [15:0] g,\n    input [15:0] h,\n    input [15:0] i,\n    input [3:0] sel,\n    output [15:0] out\n);\n    reg [15:0] outs [0:8];\n    integer s;\n    always @* begin\n        outs[0] = a;\n        outs[1] = b;\n        outs[2] = c;\n        outs[3] = d;\n        outs[4] = e;\n        outs[5] = f;\n        outs[6] = g;\n        outs[7] = h;\n        outs[8] = i;\n        for (s = 9; s < 16; s = s + 1) begin\n            outs[s] = 16'hFFFF;\n        end\n        out = outs[sel];\n    end\nendmodule",
+      "rtl_raw_sha256": "363b357ee284799f42c8d646c67b75993c357e7390d75e13f687b754608a38b8",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 10,
+    "compile_fail": 6,
+    "fail": 4
+  },
+  "testbench_raw_sha256": "8c28c1b2477536226bb52173ff0e9d2dd931c90a249f56395282feef90b19e67",
+  "training_seed": 2
+}

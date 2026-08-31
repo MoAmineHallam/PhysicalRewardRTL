@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob084_ece241_2013_q12",
+  "problem_seed": 2291377260785781511,
+  "prompt_raw_sha256": "fd1078991daca2074283772854e990f150646cf8abe5823645a1082b4e81ab19",
+  "reference_raw_sha256": "1ad7a305d588235457ccdff541b1892141c0eb2b9cf23f903d583328f3686d2d",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "189/530 mismatches",
+      "raw_completion": "// 8x1 memory, TRANSPOSED: the address is a 2-bit register, incremented\n// with each clock cycle, and used as a multiplexer selector. The memory\n// itself is an 8-stage shift register, with one register stage per bit\n// of the address.\nmodule TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] mem [0:7];\n    reg [1:0] addr;\n    always @(posedge clk) begin\n        if (enable) begin\n            for (int i = 7; i > 0; i = i - 1) mem[i] <= mem[i-1];\n            mem[0] <= S;\n        end\n        addr <= (addr + 1) & 2'h3;\n        Z <= mem[{A, B, C}];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "d90b2e9bc0882e7b5ad83cfb56dc7472c42054359b026431d75cbbef50e2a8ab",
+      "rtl": "module TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] mem [0:7];\n    reg [1:0] addr;\n    always @(posedge clk) begin\n        if (enable) begin\n            for (int i = 7; i > 0; i = i - 1) mem[i] <= mem[i-1];\n            mem[0] <= S;\n        end\n        addr <= (addr + 1) & 2'h3;\n        Z <= mem[{A, B, C}];\n    end\nendmodule",
+      "rtl_raw_sha256": "494679cb0cd9cb91bbbed2893112989b7e2b9bec79a9064a04c3c5123a4b0798",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "189/530 mismatches",
+      "raw_completion": "// 8-bit shift register with multiplexed output (the \"RAM\" part).\nmodule TopModule(clk, enable, S, A, B, C, Z);\n    input clk, enable, S, A, B, C;\n    output reg Z;\n    reg [7:0] Q;\n    always @(posedge clk) begin\n        if (enable) Q <= {Q[6:0], S};\n        Z <= Q[{A, B, C}];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b757f5ae610cec0747d1d401ac343a5634512dc57986005b2b70a5f1302a04a4",
+      "rtl": "module TopModule(clk, enable, S, A, B, C, Z);\n    input clk, enable, S, A, B, C;\n    output reg Z;\n    reg [7:0] Q;\n    always @(posedge clk) begin\n        if (enable) Q <= {Q[6:0], S};\n        Z <= Q[{A, B, C}];\n    end\nendmodule",
+      "rtl_raw_sha256": "f31367df62b66c4232a5ab29430eba65fcd016b9147833559182da6ae9653601",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:16: error: q is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 8x1 memory, with shift-in writing and random-access reading.\n// Realized as a 3-input logic function, generated through a\n// multiplexer-tree (the long chain of MUXes is the critical path,\n// resulting in low register-to-register path delay).\nmodule TopModule(input  clk, input  enable, input  S, input  A, input  B, input  C, output reg Z);\n    reg [7:0] ram [0:7];\n    reg [2:0] addr;\n    reg [7:0] data;\n    wire [7:0] q;\n    reg [7:0] qs [0:7];\n    integer i;\n    always @(posedge clk) begin\n        if (enable) begin\n            for (i = 7; i > 0; i = i - 1) ram[i] <= ram[i-1];\n            ram[0] <= S;\n        end\n        addr <= {A, B, C};\n        data <= ram[addr];\n        for (i = 0; i < 8; i = i + 1) qs[i] <= (i == addr) ? data : qs[i];\n        q <= qs[0];\n        Z <= q;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "7ba5bca43a0d880252e7f756f0a11ccceb756b881201e0b24906a19c81a5fb21",
+      "rtl": "module TopModule(input  clk, input  enable, input  S, input  A, input  B, input  C, output reg Z);\n    reg [7:0] ram [0:7];\n    reg [2:0] addr;\n    reg [7:0] data;\n    wire [7:0] q;\n    reg [7:0] qs [0:7];\n    integer i;\n    always @(posedge clk) begin\n        if (enable) begin\n            for (i = 7; i > 0; i = i - 1) ram[i] <= ram[i-1];\n            ram[0] <= S;\n        end\n        addr <= {A, B, C};\n        data <= ram[addr];\n        for (i = 0; i < 8; i = i + 1) qs[i] <= (i == addr) ? data : qs[i];\n        q <= qs[0];\n        Z <= q;\n    end\nendmodule",
+      "rtl_raw_sha256": "640afa936d092478fe57edf2dedaf959cddb6bb041d4c9429cc5554b6b6702cb",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "197/530 mismatches",
+      "raw_completion": "// 8x1 memory, shifted in, read \"randomly\" -> linearised transfer function.\nmodule TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] mem;\n    always @(posedge clk) begin\n        if (enable) mem <= {S, mem[7:1]};\n        Z <= mem[{A, B, C}];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "1e4a03ab96f6bf89114e4d82d86671bd368542fd5ef69cdfb11777e8cf075041",
+      "rtl": "module TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] mem;\n    always @(posedge clk) begin\n        if (enable) mem <= {S, mem[7:1]};\n        Z <= mem[{A, B, C}];\n    end\nendmodule",
+      "rtl_raw_sha256": "36b009a0a2492c78da33a57fcce5092c4a5ca4c9a55e794fd27e8840059f2de3",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "240/530 mismatches",
+      "raw_completion": "// 8x1 memory, shift-in, random-access (TRANSPOSED: the \"registers\" are\n// actually in parallel, and the register select is a multiplexer, not the\n// other way around). The function is a 3-input logic AND.\nmodule TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] Q;\n    always @(posedge clk) begin\n        if (enable) Q <= {Q[6:0], S};\n        Z <= Q[0] & A & B & C;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "f4832ee1afd99df44fc12d9e8abe251e9110c11bd51a2ef47cf46c5921ac24a4",
+      "rtl": "module TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] Q;\n    always @(posedge clk) begin\n        if (enable) Q <= {Q[6:0], S};\n        Z <= Q[0] & A & B & C;\n    end\nendmodule",
+      "rtl_raw_sha256": "71f9f1868be2be27aeb646fa910a6bc4f8408c1d7d594503a3a936b857baf0c4",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "189/530 mismatches",
+      "raw_completion": "module TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] Q;\n    always @(posedge clk) begin\n        if (enable) Q <= {Q[6:0], S};\n        Z <= Q[{A, B, C}];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "158e01f9ad9a3bcce2687626c10b3198909b0d4bfc230f425c9bcae1c3bd10cb",
+      "rtl": "module TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] Q;\n    always @(posedge clk) begin\n        if (enable) Q <= {Q[6:0], S};\n        Z <= Q[{A, B, C}];\n    end\nendmodule",
+      "rtl_raw_sha256": "158e01f9ad9a3bcce2687626c10b3198909b0d4bfc230f425c9bcae1c3bd10cb",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "197/530 mismatches",
+      "raw_completion": "// 8x1 memory, shifted in, random access read -> PROM-like (functional\n// independent of the long-path-delay register-to-register path).\nmodule TopModule(\n    input  clk,\n    input  enable,\n    input  S,\n    input  A,\n    input  B,\n    input  C,\n    output reg Z\n);\n    reg [7:0] Q;\n    wire [2:0] ADDR = {A, B, C};\n    always @(posedge clk) begin\n        if (enable) Q <= {S, Q[7:1]};\n        Z <= Q[ADDR];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "77fec445d8cc917991c9ddc6c5b14c05cd48558c0ea2d59ee79920a0e65aa01e",
+      "rtl": "module TopModule(\n    input  clk,\n    input  enable,\n    input  S,\n    input  A,\n    input  B,\n    input  C,\n    output reg Z\n);\n    reg [7:0] Q;\n    wire [2:0] ADDR = {A, B, C};\n    always @(posedge clk) begin\n        if (enable) Q <= {S, Q[7:1]};\n        Z <= Q[ADDR];\n    end\nendmodule",
+      "rtl_raw_sha256": "60e48a5a0b4c962247f1906aab148a890855d6534e2dd9379f90e848b6221bd1",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "189/530 mismatches",
+      "raw_completion": "// 8x1 memory, shift-in bits, \"random\" access: the long path to the\n// output goes to combinational logic, independent of the long path to\n// the register, so the register is clocked at the same frequency as the\n// combinational logic and the overall frequency is independent of the\n// register's frequency.\nmodule TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n  reg [7:0] Q;\n  always @(posedge clk) begin\n    if (enable) Q <= {Q[6:0], S};\n    Z <= Q[{A, B, C}];\n  end\nendmodule",
+      "raw_completion_raw_sha256": "93614f335e455dd400cd268a6b300589c9659c19dc2e20299aa0256d2a49859b",
+      "rtl": "module TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n  reg [7:0] Q;\n  always @(posedge clk) begin\n    if (enable) Q <= {Q[6:0], S};\n    Z <= Q[{A, B, C}];\n  end\nendmodule",
+      "rtl_raw_sha256": "56e530a2d80fc4d57dfa78020938f4011abcf7cebf25f92e0a4300f2e444af1f",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "197/530 mismatches",
+      "raw_completion": "// 8-bit shift register, with enable and 3-input logic function,\n// implemented as an FPGAlist ring. Same function as the reference.\nmodule TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n  reg [7:0] Q;\n  always @(posedge clk) begin\n    if (enable) Q <= {Q[6:0], S};\n    Z <= Q[{(A&B&C)|(~A&~B&~C)|(~A&~B&C)|(~A&B&~C)|(A&~B&~C)|(A&~B&C)|(A&B&~C)|(A&B&C)}];\n  end\nendmodule",
+      "raw_completion_raw_sha256": "09d8d4e9699d5dddd53aeea00628dae4dfc7e96737f919ea671b58daeea3221b",
+      "rtl": "module TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n  reg [7:0] Q;\n  always @(posedge clk) begin\n    if (enable) Q <= {Q[6:0], S};\n    Z <= Q[{(A&B&C)|(~A&~B&~C)|(~A&~B&C)|(~A&B&~C)|(A&~B&~C)|(A&~B&C)|(A&B&~C)|(A&B&C)}];\n  end\nendmodule",
+      "rtl_raw_sha256": "0b75c90e3ea54dd395ab2ee555dac6f37ea58b4a170b5177a30fbdf27f63a13e",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "255/530 mismatches",
+      "raw_completion": "// 8x1 memory, shifted in at write time -> independent read-to-write\n// delay, independent of the address -> \"random access\"\nmodule TopModule(input clk, input enable, input S, input A, input B,\n                 input C, output reg Z);\n  reg [7:0] q;\n  always @(posedge clk) begin\n    if (enable) q <= {S, q[7:1]};\n    Z <= q[0];\n  end\n  always @(posedge clk) begin\n    if (enable) q <= {A, q[7:1]};\n    Z <= q[0];\n  end\n  always @(posedge clk) begin\n    if (enable) q <= {B, q[7:1]};\n    Z <= q[0];\n  end\n  always @(posedge clk) begin\n    if (enable) q <= {C, q[7:1]};\n    Z <= q[0];\n  end\nendmodule",
+      "raw_completion_raw_sha256": "bf79fc5568ee3500869425e088c4d5d2aa84f9df3c8975756b60e344cfdeefcd",
+      "rtl": "module TopModule(input clk, input enable, input S, input A, input B,\n                 input C, output reg Z);\n  reg [7:0] q;\n  always @(posedge clk) begin\n    if (enable) q <= {S, q[7:1]};\n    Z <= q[0];\n  end\n  always @(posedge clk) begin\n    if (enable) q <= {A, q[7:1]};\n    Z <= q[0];\n  end\n  always @(posedge clk) begin\n    if (enable) q <= {B, q[7:1]};\n    Z <= q[0];\n  end\n  always @(posedge clk) begin\n    if (enable) q <= {C, q[7:1]};\n    Z <= q[0];\n  end\nendmodule",
+      "rtl_raw_sha256": "227e61d383ca75a00c12800110e9d312b097bebaab163f25604859141849f3b9",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:5: syntax error",
+      "raw_completion": "// 8-bit shift register, multiplexed to form the 3-input logic function\nmodule TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] Q;\n    always @(posedge clk) begin\n        if (enable) Q <= {Q[6:0], S};\n        Z <= Q[{(A&B&C)+(A&B)+(A&C)+(B&C)+A+B+C];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a54df23cf4b266fcd01126447f943c5cdec3a23d3902980e7e534125e6d90f0e",
+      "rtl": "module TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] Q;\n    always @(posedge clk) begin\n        if (enable) Q <= {Q[6:0], S};\n        Z <= Q[{(A&B&C)+(A&B)+(A&C)+(B&C)+A+B+C];\n    end\nendmodule",
+      "rtl_raw_sha256": "c5e0ad0d744567cf3cabaf7eed9ae664d7158236b792d28049b4b4f60582a821",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "189/530 mismatches",
+      "raw_completion": "// 8-bit shift register, active-high enable: shifts in S on each clock\n// cycle, combinational read (random access): Z = Q[Address].\nmodule TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] Q;\n    always @(posedge clk) begin\n        if (enable) Q <= {Q[6:0], S};\n        Z <= Q[{A, B, C}];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "c9b3867c3720f93b3e5e8fbb86190c3fbdb6a0bb021f4df6c9867914fa586b99",
+      "rtl": "module TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] Q;\n    always @(posedge clk) begin\n        if (enable) Q <= {Q[6:0], S};\n        Z <= Q[{A, B, C}];\n    end\nendmodule",
+      "rtl_raw_sha256": "158e01f9ad9a3bcce2687626c10b3198909b0d4bfc230f425c9bcae1c3bd10cb",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "187/530 mismatches",
+      "raw_completion": "// 8-bit shift register with 3-input logic function, as described in the\n// problem description. The register is implemented as a chain of D-type\n// flip-flops, with the shift register input S connected to the input of\n// the first FF (the MSB is shifted in first). The enable input is\n// synchronous active high.\nmodule TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] Q;\n    always @(posedge clk) begin\n        if (enable) Q <= {Q[6:0], S};\n        Z <= Q[{(A&~B&~C)|(~A&~B&C)|(~A&B&~C)|(A&B&C)}];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "c5e74e69373741b9d325b8b2d45ad414049c0beaf20d8e2085de28afca1018bb",
+      "rtl": "module TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] Q;\n    always @(posedge clk) begin\n        if (enable) Q <= {Q[6:0], S};\n        Z <= Q[{(A&~B&~C)|(~A&~B&C)|(~A&B&~C)|(A&B&C)}];\n    end\nendmodule",
+      "rtl_raw_sha256": "3bbf8a85abf394cd672692337886fab77c730b8f4eae7c6dc09595a6fea45fe3",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "183/530 mismatches",
+      "raw_completion": "// 8x1 memory, TRANSPOSED: the address changes faster than the content (the\n// long path in the critical path becomes a small pipeline).\nmodule TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n  reg [7:0] ram [0:7];\n  reg [2:0] addr;\n  always @(posedge clk) begin\n    if (enable) begin\n      for (int i=7; i>0; i=i-1) ram[i] <= ram[i-1];\n      ram[0] <= S;\n    end\n    addr <= {A, B, C};\n    Z <= ram[addr];\n  end\nendmodule",
+      "raw_completion_raw_sha256": "790b05c3564379d66293e5afecd3dd80ce852c5675d9ce7b19cc95e38c2f4a17",
+      "rtl": "module TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n  reg [7:0] ram [0:7];\n  reg [2:0] addr;\n  always @(posedge clk) begin\n    if (enable) begin\n      for (int i=7; i>0; i=i-1) ram[i] <= ram[i-1];\n      ram[0] <= S;\n    end\n    addr <= {A, B, C};\n    Z <= ram[addr];\n  end\nendmodule",
+      "rtl_raw_sha256": "53f27171993c86d6060dc88bde4e536aab6c86ec16e0cebad7a1c62ae1003138",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "400/530 mismatches",
+      "raw_completion": "// 8x1 memory, shifted in, \"random access\" read:\n// combinational multiplexer on the function, independent of the\n// address. Same as a 3-input logic function with independent\n// latches per stage (no long paths).\nmodule TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] mem [0:7];\n    integer i;\n    always @(posedge clk) begin\n        if (enable) begin\n            for (i = 7; i > 0; i = i - 1)\n                mem[i] <= mem[i - 1];\n            mem[0] <= S;\n        end\n        Z <= mem[{(A & B & C), (A & B & ~C), (A & ~B & C), (~A & B & C), (A & ~B & ~C), (~A & ~B & ~C), (~A & B & ~C), (~A & ~B & C)}];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "c90fced0a59b89228d9494e6d06e3fbbe5a3ea18e38473281055f6cd9ca22b9e",
+      "rtl": "module TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] mem [0:7];\n    integer i;\n    always @(posedge clk) begin\n        if (enable) begin\n            for (i = 7; i > 0; i = i - 1)\n                mem[i] <= mem[i - 1];\n            mem[0] <= S;\n        end\n        Z <= mem[{(A & B & C), (A & B & ~C), (A & ~B & C), (~A & B & C), (A & ~B & ~C), (~A & ~B & ~C), (~A & B & ~C), (~A & ~B & C)}];\n    end\nendmodule",
+      "rtl_raw_sha256": "b463bc12d8b96d682442cba16f9b5dd4503de9437876d2f7224bd22f7bb4fae3",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "189/530 mismatches",
+      "raw_completion": "// 8x1 memory, TRANSPOSED: the register is a 8-bit shift register,\n// followed by a multiplexer to select the desired output function.\n// Same behaviour as the direct up-down-counter path.\nmodule TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n  reg [7:0] Q;\n  always @(posedge clk) begin\n    if (enable) Q <= {Q[6:0], S};\n    Z <= Q[{A,B,C}];\n  end\nendmodule",
+      "raw_completion_raw_sha256": "d4aa0582f473501db3b61eb35d246ff58f7be63dd23c137b31931b03af9df584",
+      "rtl": "module TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n  reg [7:0] Q;\n  always @(posedge clk) begin\n    if (enable) Q <= {Q[6:0], S};\n    Z <= Q[{A,B,C}];\n  end\nendmodule",
+      "rtl_raw_sha256": "96de25637b7d5fabe417449203a3a9d5ce6f67c3f2f1f9bca4d095b817f6e34e",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "189/530 mismatches",
+      "raw_completion": "// 8-bit shift register with 3-input logic function, as described in the\n// problem description. The function is Z = Q[ABC], where ABC is a 3-bit\n// address formed from the inputs A,B,C.\nmodule TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] Q;\n    always @(posedge clk) begin\n        if (enable) Q <= {Q[6:0], S};\n        Z <= Q[{A, B, C}];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "3bf4ad1fece0998395de83e7a8c765afd6139a14fe9ca924de205d89fb32c30d",
+      "rtl": "module TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] Q;\n    always @(posedge clk) begin\n        if (enable) Q <= {Q[6:0], S};\n        Z <= Q[{A, B, C}];\n    end\nendmodule",
+      "rtl_raw_sha256": "158e01f9ad9a3bcce2687626c10b3198909b0d4bfc230f425c9bcae1c3bd10cb",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "189/530 mismatches",
+      "raw_completion": "// 8-bit shift register, plus 3-input logic function: the desired circuit.\nmodule TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] Q;\n    always @(posedge clk) begin\n        if (enable) Q <= {Q[6:0], S};\n        Z <= Q[{A,B,C}];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "7f7c07daac5bf2a97e72f04edc91098e123eb5feb4f971866f164d5f87dcef1c",
+      "rtl": "module TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] Q;\n    always @(posedge clk) begin\n        if (enable) Q <= {Q[6:0], S};\n        Z <= Q[{A,B,C}];\n    end\nendmodule",
+      "rtl_raw_sha256": "02a2ad7163ffd249743989124c846bb444b440e3afdaefe2c7f05fccef3c2d6e",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "203/530 mismatches",
+      "raw_completion": "// 8-bit shift register, with 3-input logic function\nmodule TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] Q;\n    always @(posedge clk) begin\n        if (enable) Q <= {S, Q[7:1]};\n        Z <= Q[0];\n        if (A && B && C) Z <= Q[1];\n        if (A && B && !C) Z <= Q[2];\n        if (A && !B && C) Z <= Q[3];\n        if (A && !B && !C) Z <= Q[4];\n        if (!A && B && C) Z <= Q[5];\n        if (!A && B && !C) Z <= Q[6];\n        if (!A && !B && C) Z <= Q[7];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "6d015a40829a66a35545917e33b0c131617e033f6dbf078d862a438b53165cfd",
+      "rtl": "module TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] Q;\n    always @(posedge clk) begin\n        if (enable) Q <= {S, Q[7:1]};\n        Z <= Q[0];\n        if (A && B && C) Z <= Q[1];\n        if (A && B && !C) Z <= Q[2];\n        if (A && !B && C) Z <= Q[3];\n        if (A && !B && !C) Z <= Q[4];\n        if (!A && B && C) Z <= Q[5];\n        if (!A && B && !C) Z <= Q[6];\n        if (!A && !B && C) Z <= Q[7];\n    end\nendmodule",
+      "rtl_raw_sha256": "ac3c9fd9e504e7231e2cde1244f5cae412de4daba9b58527c889168505a51bdc",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "183/530 mismatches",
+      "raw_completion": "// 8x1 memory, shift-in bits -> PROM. Random access, independent\n// addresses -> register array, multiplexed to the output. Same as\n// a long chain of AND gates.\nmodule TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] mem [0:7];\n    integer i;\n    reg [2:0] addr;\n    always @(posedge clk) begin\n        if (enable) begin\n            for (i = 7; i > 0; i = i - 1)\n                mem[i] <= mem[i - 1];\n            mem[0] <= S;\n        end\n        addr <= {A, B, C};\n        Z <= mem[addr];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "37182caa1fdfdf143af100c513b87a668290e2656196c339339bb7f5432e0993",
+      "rtl": "module TopModule(input clk, input enable, input S, input A, input B, input C, output reg Z);\n    reg [7:0] mem [0:7];\n    integer i;\n    reg [2:0] addr;\n    always @(posedge clk) begin\n        if (enable) begin\n            for (i = 7; i > 0; i = i - 1)\n                mem[i] <= mem[i - 1];\n            mem[0] <= S;\n        end\n        addr <= {A, B, C};\n        Z <= mem[addr];\n    end\nendmodule",
+      "rtl_raw_sha256": "39497affae9e9dd980e533693b54a48cb6145fa3f8ae8c624eb5cdb006065009",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 2,
+    "fail": 18
+  },
+  "testbench_raw_sha256": "f5a759073879ace65a8ba9b5dde484933164894492eeadc7ab44078598a38c45",
+  "training_seed": 2
+}

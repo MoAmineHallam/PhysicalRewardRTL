@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob081_7458",
+  "problem_seed": 6555088339783749014,
+  "prompt_raw_sha256": "6939ab267449dd7a18540a5d2a4f5329d31c4baced087df841271c4fd8687649",
+  "reference_raw_sha256": "52520a46c4bbfca19859a9ed1f7ad4b0de970c0f9aedf7d8fed688013fa7a547",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "// 7458: 3-input AND + 2-input AND + OR + OR\n// Same as the chip: 3-input AND + 2-input AND + OR + OR\nmodule TopModule (\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p1e,\n    input p1f,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire w1 = p1a & p1b & p1c;\n    wire w2 = p1d & p1e & p1f;\n    wire w3 = p2a & p2b;\n    wire w4 = p2c & p2d;\n    assign p1y = w1 | w2;\n    assign p2y = w3 | w4;\nendmodule",
+      "raw_completion_raw_sha256": "19913286971467b8dbff8b406cf55be734baf534fd339a926a61eb0f4bc759cb",
+      "rtl": "module TopModule (\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p1e,\n    input p1f,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire w1 = p1a & p1b & p1c;\n    wire w2 = p1d & p1e & p1f;\n    wire w3 = p2a & p2b;\n    wire w4 = p2c & p2d;\n    assign p1y = w1 | w2;\n    assign p2y = w3 | w4;\nendmodule",
+      "rtl_raw_sha256": "4f5b57ce7d74f174746469b75246e48cc62118d287781197a2658dcb3bf6479c",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 7458: 3-input AND + 2-input AND + OR + OR\nmodule TopModule(\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p1e,\n    input p1f,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire a1, a2, a3, o1, o2;\n    assign a1 = p1a & p1b & p1c;\n    assign a2 = p1d & p1e & p1f;\n    assign o1 = a1 | a2;\n    assign a3 = p2a & p2b;\n    assign o2 = p2c & p2d;\n    assign p1y = o1;\n    assign p2y = a3 | o2;\nendmodule",
+      "raw_completion_raw_sha256": "90ef1d57277f4ebcdc5dacfe122c0affd23e3b0015afcb92dcf607ff169ed203",
+      "rtl": "module TopModule(\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p1e,\n    input p1f,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire a1, a2, a3, o1, o2;\n    assign a1 = p1a & p1b & p1c;\n    assign a2 = p1d & p1e & p1f;\n    assign o1 = a1 | a2;\n    assign a3 = p2a & p2b;\n    assign o2 = p2c & p2d;\n    assign p1y = o1;\n    assign p2y = a3 | o2;\nendmodule",
+      "rtl_raw_sha256": "2ec7b0a8550625bb93a4bbfb4cc21354ef441c7953f0bdab72dc5d698319f4a2",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 7458: 3-input AND + OR (multiple intermediate wires)\nmodule TopModule(\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire a1, a2, a3, a4;\n    wire o1, o2;\n    assign a1 = p1a & p1b & p1c;\n    assign a2 = p1d & p1e & p1f;\n    assign o1 = a1 | a2;\n    assign a3 = p2a & p2b;\n    assign a4 = p2c & p2d;\n    assign o2 = a3 | a4;\n    assign p1y = o1;\n    assign p2y = o2;\nendmodule",
+      "raw_completion_raw_sha256": "632e8649d5801984020bfcf855bfc94766f6c34e20592a585e7e7941e0c26f5c",
+      "rtl": "module TopModule(\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire a1, a2, a3, a4;\n    wire o1, o2;\n    assign a1 = p1a & p1b & p1c;\n    assign a2 = p1d & p1e & p1f;\n    assign o1 = a1 | a2;\n    assign a3 = p2a & p2b;\n    assign a4 = p2c & p2d;\n    assign o2 = a3 | a4;\n    assign p1y = o1;\n    assign p2y = o2;\nendmodule",
+      "rtl_raw_sha256": "11119f922648c439ef0eaf0a8cd88672a68ef6e8be62277632d7890fad2eba26",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 7458: 3-input AND + 3-input AND + 2-input AND + 2-input AND -> OR ->\n//       OR, with named wires for the AND outputs (the register stage).\nmodule TopModule(\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire a1 = p1a & p1b & p1c;\n    wire a2 = p1d & p1e & p1f;\n    wire a3 = p2a & p2b;\n    wire a4 = p2c & p2d;\n    assign p1y = a1 | a2;\n    assign p2y = a3 | a4;\nendmodule",
+      "raw_completion_raw_sha256": "6d563eb421ad3ebe680523392ea7f75501ee64fe61426165f2a4dcbb60c04107",
+      "rtl": "module TopModule(\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire a1 = p1a & p1b & p1c;\n    wire a2 = p1d & p1e & p1f;\n    wire a3 = p2a & p2b;\n    wire a4 = p2c & p2d;\n    assign p1y = a1 | a2;\n    assign p2y = a3 | a4;\nendmodule",
+      "rtl_raw_sha256": "5e8e76a38f7f3abd18026ebfe1a1a5dd5c98ce0671808e1605dbc50ce3c36f36",
+      "sample_index": 3,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 7458: 3-input AND + 3-input AND + 2-input AND + 2-input AND -> OR ->\n//       OR, with the 3-input ANDs separated out to save area\nmodule TopModule(\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p1e,\n    input p1f,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire a1 = p1a & p1b & p1c;\n    wire a2 = p1d & p1e & p1f;\n    wire a3 = p2a & p2b;\n    wire a4 = p2c & p2d;\n    wire o1 = a1 | a2;\n    wire o2 = a3 | a4;\n    assign p1y = o1;\n    assign p2y = o2;\nendmodule",
+      "raw_completion_raw_sha256": "3934ad126b3399dceeff95e37eaeb2afb912229f5df22a1f954de784d36cdedb",
+      "rtl": "module TopModule(\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p1e,\n    input p1f,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire a1 = p1a & p1b & p1c;\n    wire a2 = p1d & p1e & p1f;\n    wire a3 = p2a & p2b;\n    wire a4 = p2c & p2d;\n    wire o1 = a1 | a2;\n    wire o2 = a3 | a4;\n    assign p1y = o1;\n    assign p2y = o2;\nendmodule",
+      "rtl_raw_sha256": "124ea0abef2a52d4f98882db885b1c726288fc807ccee1763afb0150f479a40f",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "418/439 mismatches",
+      "raw_completion": "// 7458: 3-input AND + 2-input AND + OR + OR\nmodule TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire w1, w2, w3, w4, w5, w6, w7, w8;\n    assign w1 = ~(p1a & p1b & p1c);\n    assign w2 = ~(p1d & p1e & p1f);\n    assign w3 = ~(p2a & p2b);\n    assign w4 = ~(p2c & p2d);\n    assign w5 = ~(w1 | w2);\n    assign w6 = ~(w3 | w4);\n    assign p1y = ~(w5);\n    assign p2y = ~(w6);\nendmodule",
+      "raw_completion_raw_sha256": "6281c58f8c65141de5071146500edccd352b939ab04d4cd34fd1596e2708dfe8",
+      "rtl": "module TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire w1, w2, w3, w4, w5, w6, w7, w8;\n    assign w1 = ~(p1a & p1b & p1c);\n    assign w2 = ~(p1d & p1e & p1f);\n    assign w3 = ~(p2a & p2b);\n    assign w4 = ~(p2c & p2d);\n    assign w5 = ~(w1 | w2);\n    assign w6 = ~(w3 | w4);\n    assign p1y = ~(w5);\n    assign p2y = ~(w6);\nendmodule",
+      "rtl_raw_sha256": "4b8f843e75e2abf127011f254f5aa1621c64a96e272f23432a4c3dfeb34125a5",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:17: error: a1 is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 7458: AND + OR = register, one FF per AND gate + ORing the FFs\nmodule TopModule (\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p1e,\n    input p1f,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output reg p1y,\n    output reg p2y\n);\n    wire a1, a2, a3, a4, o1, o2;\n    always @(*) begin\n        a1 = p1a & p1b & p1c;\n        a2 = p1d & p1e & p1f;\n        a3 = p2a & p2b;\n        a4 = p2c & p2d;\n        o1 = a1 | a2;\n        o2 = a3 | a4;\n    end\n    always @(posedge p1a) p1y <= o1;\n    always @(posedge p2a) p2y <= o2;\nendmodule",
+      "raw_completion_raw_sha256": "408563445d8f43d6f629b32c30c153317fe240a7ebcc5f7867007dc8f417a9d1",
+      "rtl": "module TopModule (\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p1e,\n    input p1f,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output reg p1y,\n    output reg p2y\n);\n    wire a1, a2, a3, a4, o1, o2;\n    always @(*) begin\n        a1 = p1a & p1b & p1c;\n        a2 = p1d & p1e & p1f;\n        a3 = p2a & p2b;\n        a4 = p2c & p2d;\n        o1 = a1 | a2;\n        o2 = a3 | a4;\n    end\n    always @(posedge p1a) p1y <= o1;\n    always @(posedge p2a) p2y <= o2;\nendmodule",
+      "rtl_raw_sha256": "5e8926f65662c606b696be7da27a4846813bf118e32a7cf1a98edcc72aad080f",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "179/439 mismatches",
+      "raw_completion": "// 7458 (AND + OR) gate array, with named wires for each AND gate's output\n// (the intermediate signals). Same function as the 7458 chip.\nmodule TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire a1, a2, a3, a4;\n    wire o1, o2;\n    assign a1 = ~(p1a & p1b & p1c);\n    assign a2 = ~(p1d & p1e & p1f);\n    assign a3 = ~(p2a & p2b);\n    assign a4 = ~(p2c & p2d);\n    assign o1 = ~(a1 | a2);\n    assign o2 = ~(a3 | a4);\n    assign p1y = o1;\n    assign p2y = o2;\nendmodule",
+      "raw_completion_raw_sha256": "d5fb93bffbb4164becf791692778d93fe0d35470f738d546c3c3c4aac3f34573",
+      "rtl": "module TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire a1, a2, a3, a4;\n    wire o1, o2;\n    assign a1 = ~(p1a & p1b & p1c);\n    assign a2 = ~(p1d & p1e & p1f);\n    assign a3 = ~(p2a & p2b);\n    assign a4 = ~(p2c & p2d);\n    assign o1 = ~(a1 | a2);\n    assign o2 = ~(a3 | a4);\n    assign p1y = o1;\n    assign p2y = o2;\nendmodule",
+      "rtl_raw_sha256": "6a26f0495c18399281c4b3a5c23a87269a6fca786aba3b5ce7a882a20b32a68f",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 7458: 3-input AND + 3-input AND + 2-input AND + 2-input AND -> 2-input\n// OR + 2-input OR, with one level of inlining (the second ANDs are ANDed\n// with the OR of the first two, etc.)\nmodule TopModule(\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire a1 = p1a & p1b & p1c;\n    wire a2 = p1d & p1e & p1f;\n    wire o1 = a1 | a2;\n    wire a3 = p2a & p2b;\n    wire a4 = p2c & p2d;\n    wire o2 = a3 | a4;\n    assign p1y = o1;\n    assign p2y = o2;\nendmodule",
+      "raw_completion_raw_sha256": "bcbbf211863e4a27cde8cb4e17204aa47a319b5d0174e76c22fb91690479b520",
+      "rtl": "module TopModule(\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire a1 = p1a & p1b & p1c;\n    wire a2 = p1d & p1e & p1f;\n    wire o1 = a1 | a2;\n    wire a3 = p2a & p2b;\n    wire a4 = p2c & p2d;\n    wire o2 = a3 | a4;\n    assign p1y = o1;\n    assign p2y = o2;\nendmodule",
+      "rtl_raw_sha256": "df8767de4d2c5fceb1d516924e31e6eabee644a8539716b76ccad8ed3174681d",
+      "sample_index": 8,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 7458: 3-input AND + 2-input AND + OR + OR\nmodule TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire a1, a2, a3, o1, o2;\n    assign a1 = p1a & p1b & p1c;\n    assign a2 = p1d & p1e & p1f;\n    assign o1 = a1 | a2;\n    assign a3 = p2a & p2b;\n    assign o2 = p2c & p2d;\n    assign p1y = o1;\n    assign p2y = a3 | o2;\nendmodule",
+      "raw_completion_raw_sha256": "d316c7e1339fb0e272ddb2e7d0ee0a8fee8c2ac884d5a5596ed843baf243d961",
+      "rtl": "module TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire a1, a2, a3, o1, o2;\n    assign a1 = p1a & p1b & p1c;\n    assign a2 = p1d & p1e & p1f;\n    assign o1 = a1 | a2;\n    assign a3 = p2a & p2b;\n    assign o2 = p2c & p2d;\n    assign p1y = o1;\n    assign p2y = a3 | o2;\nendmodule",
+      "rtl_raw_sha256": "05eba635301a4daf2413ee570f0630d0de4e96522aa81f56140da276fcac58f9",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p1e,\n    input p1f,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire and0_out, and1_out, and2_out, and3_out;\n    wire or0_out, or1_out;\n    assign and0_out = p1a & p1b & p1c;\n    assign and1_out = p1d & p1e & p1f;\n    assign and2_out = p2a & p2b;\n    assign and3_out = p2c & p2d;\n    assign or0_out = and0_out | and1_out;\n    assign or1_out = and2_out | and3_out;\n    assign p1y = or0_out;\n    assign p2y = or1_out;\nendmodule",
+      "raw_completion_raw_sha256": "4ec182b3eec22bff65c7405158917424ddc15110429af698d0a05d53a77d6906",
+      "rtl": "module TopModule (\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p1e,\n    input p1f,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire and0_out, and1_out, and2_out, and3_out;\n    wire or0_out, or1_out;\n    assign and0_out = p1a & p1b & p1c;\n    assign and1_out = p1d & p1e & p1f;\n    assign and2_out = p2a & p2b;\n    assign and3_out = p2c & p2d;\n    assign or0_out = and0_out | and1_out;\n    assign or1_out = and2_out | and3_out;\n    assign p1y = or0_out;\n    assign p2y = or1_out;\nendmodule",
+      "rtl_raw_sha256": "4ec182b3eec22bff65c7405158917424ddc15110429af698d0a05d53a77d6906",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "179/439 mismatches",
+      "raw_completion": "// Same functionality as the 7458 chip, implemented as a Verilog module.\nmodule TopModule(\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire a1, a2, a3, a4, o1, o2;\n    assign a1 = ~(p1a & p1b & p1c);\n    assign a2 = ~(p1d & p1e & p1f);\n    assign a3 = ~(p2a & p2b);\n    assign a4 = ~(p2c & p2d);\n    assign o1 = ~(a1 | a2);\n    assign o2 = ~(a3 | a4);\n    assign p1y = o1;\n    assign p2y = o2;\nendmodule",
+      "raw_completion_raw_sha256": "86ec788f292d6f5ae985fab4a9ffda9897fa6954a6a6625596976386d35261f6",
+      "rtl": "module TopModule(\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire a1, a2, a3, a4, o1, o2;\n    assign a1 = ~(p1a & p1b & p1c);\n    assign a2 = ~(p1d & p1e & p1f);\n    assign a3 = ~(p2a & p2b);\n    assign a4 = ~(p2c & p2d);\n    assign o1 = ~(a1 | a2);\n    assign o2 = ~(a3 | a4);\n    assign p1y = o1;\n    assign p2y = o2;\nendmodule",
+      "rtl_raw_sha256": "5c9e06b2c3ef7a75979c3ebe7228b03171c0c50a8628383bdc119986458c48e7",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 7458: 3-input AND + 2-input AND + OR + OR\n// Same as the 7458: 10 inputs, 2 outputs\nmodule TopModule(\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire a1 = p1a & p1b & p1c;\n    wire a2 = p1d & p1e & p1f;\n    wire a3 = p2a & p2b;\n    wire a4 = p2c & p2d;\n    assign p1y = a1 | a2;\n    assign p2y = a3 | a4;\nendmodule",
+      "raw_completion_raw_sha256": "407b370197380ce7d9ab03fc72b4de815c58cff9dc1562fa3ba5ef1bd6e78170",
+      "rtl": "module TopModule(\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire a1 = p1a & p1b & p1c;\n    wire a2 = p1d & p1e & p1f;\n    wire a3 = p2a & p2b;\n    wire a4 = p2c & p2d;\n    assign p1y = a1 | a2;\n    assign p2y = a3 | a4;\nendmodule",
+      "rtl_raw_sha256": "5e8e76a38f7f3abd18026ebfe1a1a5dd5c98ce0671808e1605dbc50ce3c36f36",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "179/439 mismatches",
+      "raw_completion": "// 7458 (AND/OR) gate: same functionality as the chip, implemented as a\n// Verilog module with named wires for the intermediate AND gates, plus an\n// extra named wire for the OR of the first two AND gates. Same function as\n// the chip.\nmodule TopModule(\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p1e,\n    input p1f,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire and0, and1, and2, and3, or0;\n    assign and0 = ~(p1a & p1b & p1c);\n    assign and1 = ~(p1d & p1e & p1f);\n    assign and2 = ~(p2a & p2b);\n    assign and3 = ~(p2c & p2d);\n    assign or0 = ~(and0 | and1);\n    assign p1y = or0;\n    assign p2y = ~(and2 | and3);\nendmodule",
+      "raw_completion_raw_sha256": "aad6add42f0f387f0a00959bdd6495b0e52dd46bce017a09fe9562d0d0c0582e",
+      "rtl": "module TopModule(\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p1e,\n    input p1f,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire and0, and1, and2, and3, or0;\n    assign and0 = ~(p1a & p1b & p1c);\n    assign and1 = ~(p1d & p1e & p1f);\n    assign and2 = ~(p2a & p2b);\n    assign and3 = ~(p2c & p2d);\n    assign or0 = ~(and0 | and1);\n    assign p1y = or0;\n    assign p2y = ~(and2 | and3);\nendmodule",
+      "rtl_raw_sha256": "c92a401fcc0084acd29b29c248088b42eb4c8db84e0f7e6beceed1a4bd1f44d7",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 7458: AND + OR = HIGH (1)\nmodule TopModule(\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire w1 = p1a & p1b & p1c;\n    wire w2 = p1d & p1e & p1f;\n    wire w3 = p2a & p2b;\n    wire w4 = p2c & p2d;\n    assign p1y = ~(~w1 & ~w2);\n    assign p2y = ~(~w3 & ~w4);\nendmodule",
+      "raw_completion_raw_sha256": "58ee918e6960f97708c73c7673d77eb9246cfd068c712feaaf6ccbc2406238e4",
+      "rtl": "module TopModule(\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire w1 = p1a & p1b & p1c;\n    wire w2 = p1d & p1e & p1f;\n    wire w3 = p2a & p2b;\n    wire w4 = p2c & p2d;\n    assign p1y = ~(~w1 & ~w2);\n    assign p2y = ~(~w3 & ~w4);\nendmodule",
+      "rtl_raw_sha256": "952b2894a21fd8d079ad9554af1a30925b7e136d7b86fac01f02f83b32c2be36",
+      "sample_index": 14,
+      "status": "PASS"
+    },
+    {
+      "detail": "439/439 mismatches",
+      "raw_completion": "module TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12;\n    assign w1 = ~(p1a & p1b & p1c);\n    assign w2 = ~(p1d & p1e & p1f);\n    assign w3 = ~(p2a & p2b);\n    assign w4 = ~(p2c & p2d);\n    assign w5 = ~(w1 & w2);\n    assign w6 = ~(w3 & w4);\n    assign w7 = ~(w5 | w6);\n    assign w8 = ~(p1a & p1b & p1c & p1d & p1e & p1f);\n    assign w9 = ~(p2a & p2b & p2c & p2d);\n    assign w10 = ~(w8 | w9);\n    assign w11 = ~(w5 & w6);\n    assign w12 = ~(w10 | w11);\n    assign p1y = ~(w7 | w12);\n    assign p2y = ~(w6 | w12);\nendmodule",
+      "raw_completion_raw_sha256": "55778b17f9663d63d869f0aac2561e3df12d8ded8adaa3795da205bcac3029c7",
+      "rtl": "module TopModule (\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12;\n    assign w1 = ~(p1a & p1b & p1c);\n    assign w2 = ~(p1d & p1e & p1f);\n    assign w3 = ~(p2a & p2b);\n    assign w4 = ~(p2c & p2d);\n    assign w5 = ~(w1 & w2);\n    assign w6 = ~(w3 & w4);\n    assign w7 = ~(w5 | w6);\n    assign w8 = ~(p1a & p1b & p1c & p1d & p1e & p1f);\n    assign w9 = ~(p2a & p2b & p2c & p2d);\n    assign w10 = ~(w8 | w9);\n    assign w11 = ~(w5 & w6);\n    assign w12 = ~(w10 | w11);\n    assign p1y = ~(w7 | w12);\n    assign p2y = ~(w6 | w12);\nendmodule",
+      "rtl_raw_sha256": "55778b17f9663d63d869f0aac2561e3df12d8ded8adaa3795da205bcac3029c7",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "198/439 mismatches",
+      "raw_completion": "// 7458: 3-input AND + 2-input AND + OR + OR\nmodule TopModule(\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p1e,\n    input p1f,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire a1, a2, a3, o1, o2;\n    assign a1 = ~(p1a & p1b & p1c);\n    assign a2 = ~(p1d & p1e & p1f);\n    assign a3 = ~(p2a & p2b);\n    assign o1 = ~(a1 | a2);\n    assign o2 = ~(p2c & p2d);\n    assign p1y = ~(o1 | o2);\n    assign p2y = ~(a3 | o2);\nendmodule",
+      "raw_completion_raw_sha256": "3e6cd5afd303a5b16c59be54d3b6e8cad19c92bceec1299cf520a39baa382c93",
+      "rtl": "module TopModule(\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p1e,\n    input p1f,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire a1, a2, a3, o1, o2;\n    assign a1 = ~(p1a & p1b & p1c);\n    assign a2 = ~(p1d & p1e & p1f);\n    assign a3 = ~(p2a & p2b);\n    assign o1 = ~(a1 | a2);\n    assign o2 = ~(p2c & p2d);\n    assign p1y = ~(o1 | o2);\n    assign p2y = ~(a3 | o2);\nendmodule",
+      "rtl_raw_sha256": "02c8680c219f908120e56d98963159e6298e20ab2b16735ae15797a01f3eec58",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "179/439 mismatches",
+      "raw_completion": "// The 7458 is a chip with four AND gates and two OR gates. Implement a\n// module with the same functionality as the 7458 chip. It has 10 inputs and\n// 2 outputs. You may choose to use an `assign` statement to drive each of\n// the output wires, or you may choose to declare (four) wires for use as\n// intermediate signals, where each internal wire is driven by the output of\n// one of the AND gates.\nmodule TopModule (\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p1e,\n    input p1f,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire g1, g2, g3, g4;\n    assign g1 = ~(p1a & p1b & p1c);\n    assign g2 = ~(p1d & p1e & p1f);\n    assign g3 = ~(p2a & p2b);\n    assign g4 = ~(p2c & p2d);\n    assign p1y = ~(g1 | g2);\n    assign p2y = ~(g3 | g4);\nendmodule",
+      "raw_completion_raw_sha256": "0ac25e9a7d868d40f9c6323cb75c4019705e6431e4c466f526098612ba8e2468",
+      "rtl": "module TopModule (\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p1e,\n    input p1f,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire g1, g2, g3, g4;\n    assign g1 = ~(p1a & p1b & p1c);\n    assign g2 = ~(p1d & p1e & p1f);\n    assign g3 = ~(p2a & p2b);\n    assign g4 = ~(p2c & p2d);\n    assign p1y = ~(g1 | g2);\n    assign p2y = ~(g3 | g4);\nendmodule",
+      "rtl_raw_sha256": "087b2e54ead091c0fadfe833d0c07885b62818a418a34b5b1def21e8afced329",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "179/439 mismatches",
+      "raw_completion": "// 7458: 3-input AND + 2-input AND + OR + OR\nmodule TopModule(\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire a1, a2, a3, a4, o1, o2;\n    assign a1 = ~(p1a & p1b & p1c);\n    assign a2 = ~(p1d & p1e & p1f);\n    assign a3 = ~(p2a & p2b);\n    assign a4 = ~(p2c & p2d);\n    assign o1 = ~(a1 | a2);\n    assign o2 = ~(a3 | a4);\n    assign p1y = o1;\n    assign p2y = o2;\nendmodule",
+      "raw_completion_raw_sha256": "ec5201ecb79c5f4f5af19d2458c50af17162196b0495bf438d32e8882a0a4ec0",
+      "rtl": "module TopModule(\n    input  p1a,\n    input  p1b,\n    input  p1c,\n    input  p1d,\n    input  p1e,\n    input  p1f,\n    input  p2a,\n    input  p2b,\n    input  p2c,\n    input  p2d,\n    output p1y,\n    output p2y\n);\n    wire a1, a2, a3, a4, o1, o2;\n    assign a1 = ~(p1a & p1b & p1c);\n    assign a2 = ~(p1d & p1e & p1f);\n    assign a3 = ~(p2a & p2b);\n    assign a4 = ~(p2c & p2d);\n    assign o1 = ~(a1 | a2);\n    assign o2 = ~(a3 | a4);\n    assign p1y = o1;\n    assign p2y = o2;\nendmodule",
+      "rtl_raw_sha256": "5c9e06b2c3ef7a75979c3ebe7228b03171c0c50a8628383bdc119986458c48e7",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "179/439 mismatches",
+      "raw_completion": "// The 7458 is a chip with four AND gates and two OR gates. Implement a\n// module with the same functionality as the 7458 chip.\nmodule TopModule(\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p1e,\n    input p1f,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire and0_out, and1_out, and2_out, and3_out;\n    wire or0_out, or1_out;\n    assign and0_out = ~(p1a & p1b & p1c);\n    assign and1_out = ~(p1d & p1e & p1f);\n    assign and2_out = ~(p2a & p2b);\n    assign and3_out = ~(p2c & p2d);\n    assign or0_out = and0_out | and1_out;\n    assign or1_out = and2_out | and3_out;\n    assign p1y = ~or0_out;\n    assign p2y = ~or1_out;\nendmodule",
+      "raw_completion_raw_sha256": "b8bfd2b57db0a94b48314057d1c3cfc957c9e927c047124b06b8efe964d79ad9",
+      "rtl": "module TopModule(\n    input p1a,\n    input p1b,\n    input p1c,\n    input p1d,\n    input p1e,\n    input p1f,\n    input p2a,\n    input p2b,\n    input p2c,\n    input p2d,\n    output p1y,\n    output p2y\n);\n    wire and0_out, and1_out, and2_out, and3_out;\n    wire or0_out, or1_out;\n    assign and0_out = ~(p1a & p1b & p1c);\n    assign and1_out = ~(p1d & p1e & p1f);\n    assign and2_out = ~(p2a & p2b);\n    assign and3_out = ~(p2c & p2d);\n    assign or0_out = and0_out | and1_out;\n    assign or1_out = and2_out | and3_out;\n    assign p1y = ~or0_out;\n    assign p2y = ~or1_out;\nendmodule",
+      "rtl_raw_sha256": "1d042fdf1f18481dc1748d17cb6b05ffc8c8a5b003b06a47e45379cf089babfa",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 10,
+    "compile_fail": 1,
+    "fail": 9
+  },
+  "testbench_raw_sha256": "bc78907942ec283eba8264b799ce57520480db6aa5c420de4695b4428b093fa9",
+  "training_seed": 1
+}

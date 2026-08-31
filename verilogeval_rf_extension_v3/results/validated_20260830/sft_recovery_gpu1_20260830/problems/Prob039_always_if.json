@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob039_always_if",
+  "problem_seed": 2905699168297823407,
+  "prompt_raw_sha256": "dce83b147548e93047df2125ac9c3e39d1d211fc5db3a3d029bd872d4fe96041",
+  "reference_raw_sha256": "5df164fd820436852f95bc1ee0067a09412148acea85b288cb7c0a8bcb0ac630",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "// 2-to-1 mux, chosen with a function (always @*).\nmodule TopModule(input a, input b, input sel_b1, input sel_b2, output reg out_assign, output reg out_always);\n    function reg ch1(input a, input b, input sel_b1, input sel_b2);\n        begin\n            ch1 = (sel_b1 & sel_b2) ? b : a;\n        end\n    endfunction\n    always @* out_assign = ch1(a, b, sel_b1, sel_b2);\n    always @* out_always = (sel_b1 & sel_b2) ? b : a;\nendmodule",
+      "raw_completion_raw_sha256": "8b92c52a86a8d68cf326fd0524f6abc2745ec50612534efee9700ce33df4673e",
+      "rtl": "module TopModule(input a, input b, input sel_b1, input sel_b2, output reg out_assign, output reg out_always);\n    function reg ch1(input a, input b, input sel_b1, input sel_b2);\n        begin\n            ch1 = (sel_b1 & sel_b2) ? b : a;\n        end\n    endfunction\n    always @* out_assign = ch1(a, b, sel_b1, sel_b2);\n    always @* out_always = (sel_b1 & sel_b2) ? b : a;\nendmodule",
+      "rtl_raw_sha256": "55be9770845a07f2e350515c1c64122593a9ea7f0c8196d57d7acfb4da7d2016",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: out_always is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 2-to-1 mux, implemented with an always block.\nmodule TopModule(\n    input  a,\n    input  b,\n    input  sel_b1,\n    input  sel_b2,\n    output out_assign,\n    output out_always\n);\n    wire sel = sel_b1 & sel_b2;\n    assign out_assign = sel ? b : a;\n    always @(*) begin\n        if (sel) out_always = b;\n        else out_always = a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "849ad1596720f2ab7731191a42d6addda33cf8fe8688893e654ca79c37c2c2ad",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  sel_b1,\n    input  sel_b2,\n    output out_assign,\n    output out_always\n);\n    wire sel = sel_b1 & sel_b2;\n    assign out_assign = sel ? b : a;\n    always @(*) begin\n        if (sel) out_always = b;\n        else out_always = a;\n    end\nendmodule",
+      "rtl_raw_sha256": "0fd7da419d45cfd35c714246a338b7bda8349118a0948c686a51cbcbcf15a7a0",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  a,\n    input  b,\n    input  sel_b1,\n    input  sel_b2,\n    output out_assign,\n    output out_always\n);\n    // 2-to-1 mux, chosen with a multiplexer (an AND-OR chain)\n    wire sel = sel_b1 & sel_b2;\n    wire mux_out_assign = sel ? b : a;\n    // Same as above, implemented with a procedural if\n    reg mux_out_always;\n    always @(*) begin\n        if (sel_b1 & sel_b2) begin\n            mux_out_always = b;\n        end else begin\n            mux_out_always = a;\n        end\n    end\n    // Same as above, implemented with a procedural if in a single\n    // combinational block.\n    reg mux_out_always_comb;\n    always @(a or b or sel_b1 or sel_b2) begin\n        if (sel_b1 & sel_b2) begin\n            mux_out_always_comb = b;\n        end else begin\n            mux_out_always_comb = a;\n        end\n    end\n    assign out_assign = mux_out_assign;\n    assign out_always = mux_out_always;\nendmodule",
+      "raw_completion_raw_sha256": "8b25eef812d5f5b8fd63bc48ce6ede18d65ac2cb57ac9790f3dc369eb91fd442",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  sel_b1,\n    input  sel_b2,\n    output out_assign,\n    output out_always\n);\n    // 2-to-1 mux, chosen with a multiplexer (an AND-OR chain)\n    wire sel = sel_b1 & sel_b2;\n    wire mux_out_assign = sel ? b : a;\n    // Same as above, implemented with a procedural if\n    reg mux_out_always;\n    always @(*) begin\n        if (sel_b1 & sel_b2) begin\n            mux_out_always = b;\n        end else begin\n            mux_out_always = a;\n        end\n    end\n    // Same as above, implemented with a procedural if in a single\n    // combinational block.\n    reg mux_out_always_comb;\n    always @(a or b or sel_b1 or sel_b2) begin\n        if (sel_b1 & sel_b2) begin\n            mux_out_always_comb = b;\n        end else begin\n            mux_out_always_comb = a;\n        end\n    end\n    assign out_assign = mux_out_assign;\n    assign out_always = mux_out_always;\nendmodule",
+      "rtl_raw_sha256": "8b25eef812d5f5b8fd63bc48ce6ede18d65ac2cb57ac9790f3dc369eb91fd442",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:20: error: Unresolved net/uwire out_assign cannot have multiple drivers.",
+      "raw_completion": "module TopModule (\n    input a,\n    input b,\n    input sel_b1,\n    input sel_b2,\n    output reg out_assign,\n    output reg out_always\n);\n    always @(*) begin\n        if (sel_b1 && sel_b2) out_always = b;\n        else out_always = a;\n    end\n\n    always @(*) begin\n        if (sel_b1 && sel_b2) out_always = b;\n        else out_always = a;\n    end\n\n    assign out_assign = (sel_b1 && sel_b2) ? b : a;\n    assign out_assign = (sel_b1 && sel_b2) ? b : a;\nendmodule",
+      "raw_completion_raw_sha256": "de1cd3536d2a167afbd8693c44330b7af24eedcb5a00c0f8c81efac632c25e11",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    input sel_b1,\n    input sel_b2,\n    output reg out_assign,\n    output reg out_always\n);\n    always @(*) begin\n        if (sel_b1 && sel_b2) out_always = b;\n        else out_always = a;\n    end\n\n    always @(*) begin\n        if (sel_b1 && sel_b2) out_always = b;\n        else out_always = a;\n    end\n\n    assign out_assign = (sel_b1 && sel_b2) ? b : a;\n    assign out_assign = (sel_b1 && sel_b2) ? b : a;\nendmodule",
+      "rtl_raw_sha256": "de1cd3536d2a167afbd8693c44330b7af24eedcb5a00c0f8c81efac632c25e11",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: out_always is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(\n    input a,\n    input b,\n    input sel_b1,\n    input sel_b2,\n    output out_assign,\n    output out_always\n);\n    wire sel = sel_b1 & sel_b2;\n    assign out_assign = sel ? b : a;\n    always @(*) begin\n        if (sel) out_always = b;\n        else out_always = a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "3d469da9a3e3f408b8ea7d3c2e26f33ca95032c9ad16dbb696de3a7a0decb081",
+      "rtl": "module TopModule(\n    input a,\n    input b,\n    input sel_b1,\n    input sel_b2,\n    output out_assign,\n    output out_always\n);\n    wire sel = sel_b1 & sel_b2;\n    assign out_assign = sel ? b : a;\n    always @(*) begin\n        if (sel) out_always = b;\n        else out_always = a;\n    end\nendmodule",
+      "rtl_raw_sha256": "3d469da9a3e3f408b8ea7d3c2e26f33ca95032c9ad16dbb696de3a7a0decb081",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: out_always is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 2-to-1 multiplexer, chosen using assign statements.\nmodule TopModule(\n    input  a,\n    input  b,\n    input  sel_b1,\n    input  sel_b2,\n    output out_assign,\n    output out_always\n);\n    wire sel = sel_b1 & sel_b2;\n    assign out_assign = sel ? b : a;\n    always @(*) begin\n        if (sel_b1 & sel_b2) out_always = b;\n        else out_always = a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "787ae5754a878b615c2f198d68348f99aa03d9e5571117dfc5f917493797a763",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  sel_b1,\n    input  sel_b2,\n    output out_assign,\n    output out_always\n);\n    wire sel = sel_b1 & sel_b2;\n    assign out_assign = sel ? b : a;\n    always @(*) begin\n        if (sel_b1 & sel_b2) out_always = b;\n        else out_always = a;\n    end\nendmodule",
+      "rtl_raw_sha256": "67319106da072f9d9b613ae05f27739306babf07e528b190417e5e4828b7ec6d",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob039_always_if_test.sv:81: vvp.tgt error: uwire \"out_always_dut\" must have a single driver, found (2).",
+      "raw_completion": "module TopModule(\n    input  a,\n    input  b,\n    input  sel_b1,\n    input  sel_b2,\n    output out_assign,\n    output out_always\n);\n    wire w_assign_0, w_assign_1;\n    reg  r_always_0, r_always_1;\n    assign w_assign_0 = sel_b1 ? b : a;\n    assign w_assign_1 = sel_b2 ? b : a;\n    always @(*) begin\n        r_always_0 = sel_b1 ? b : a;\n        r_always_1 = sel_b2 ? b : a;\n    end\n    assign out_assign = w_assign_0;\n    assign out_always = r_always_0;\n    assign out_assign = w_assign_1;\n    assign out_always = r_always_1;\nendmodule",
+      "raw_completion_raw_sha256": "1e76a8f4f3b4f8e643fd73630678c1fb50a7b2bcdc612a6929c19954e5ac9d87",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  sel_b1,\n    input  sel_b2,\n    output out_assign,\n    output out_always\n);\n    wire w_assign_0, w_assign_1;\n    reg  r_always_0, r_always_1;\n    assign w_assign_0 = sel_b1 ? b : a;\n    assign w_assign_1 = sel_b2 ? b : a;\n    always @(*) begin\n        r_always_0 = sel_b1 ? b : a;\n        r_always_1 = sel_b2 ? b : a;\n    end\n    assign out_assign = w_assign_0;\n    assign out_always = r_always_0;\n    assign out_assign = w_assign_1;\n    assign out_always = r_always_1;\nendmodule",
+      "rtl_raw_sha256": "1e76a8f4f3b4f8e643fd73630678c1fb50a7b2bcdc612a6929c19954e5ac9d87",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:5: error: out_always is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 2-to-1 mux, implemented with assign statements\nmodule TopModule(input a, input b, input sel_b1, input sel_b2, output out_assign, output out_always);\n    wire sel = sel_b1 & sel_b2;\n    assign out_assign = sel ? b : a;\n    always @(*) begin\n        if (sel_b1 & sel_b2) out_always = b;\n        else out_always = a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "5073a290acf922ae1d4b1580c45f5919f9a3b07251d2c174dbb4010315bcd1af",
+      "rtl": "module TopModule(input a, input b, input sel_b1, input sel_b2, output out_assign, output out_always);\n    wire sel = sel_b1 & sel_b2;\n    assign out_assign = sel ? b : a;\n    always @(*) begin\n        if (sel_b1 & sel_b2) out_always = b;\n        else out_always = a;\n    end\nendmodule",
+      "rtl_raw_sha256": "83aac836b7435de4755801491a1caa337bfe32ef5079aa52804b720c70dccaeb",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-to-1 multiplexer, implemented using an assign statement.\nmodule TopModule(input a, input b, input sel_b1, input sel_b2,\n                 output reg out_assign, output reg out_always);\n    assign out_assign = sel_b1 & sel_b2 ? b : a;\n    always @(*) begin\n        if (sel_b1 & sel_b2) out_always = b;\n        else out_always = a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "58dec279b854129e47fab4b9d68abf78b8efa686061f9c95e62cf3315e051266",
+      "rtl": "module TopModule(input a, input b, input sel_b1, input sel_b2,\n                 output reg out_assign, output reg out_always);\n    assign out_assign = sel_b1 & sel_b2 ? b : a;\n    always @(*) begin\n        if (sel_b1 & sel_b2) out_always = b;\n        else out_always = a;\n    end\nendmodule",
+      "rtl_raw_sha256": "4b3485628874917b9017566d06ebc6e622cd332bfba186f557dc53c0026ef265",
+      "sample_index": 8,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-to-1 mux, implemented with assign statements\nmodule TopModule(input a, input b, input sel_b1, input sel_b2, output out_assign, output out_always);\n    assign out_assign = sel_b1 & sel_b2 ? b : a;\n    assign out_always = sel_b1 & sel_b2 ? b : a;\nendmodule",
+      "raw_completion_raw_sha256": "1b8794d9852994edfe96dcacd5c023d587be883112379e3821f762af41dcc324",
+      "rtl": "module TopModule(input a, input b, input sel_b1, input sel_b2, output out_assign, output out_always);\n    assign out_assign = sel_b1 & sel_b2 ? b : a;\n    assign out_always = sel_b1 & sel_b2 ? b : a;\nendmodule",
+      "rtl_raw_sha256": "c113d546ab4ace9b3fac409ec7c1f7bb0c18532319d68ba644f9c658a26cac05",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input a,\n    input b,\n    input sel_b1,\n    input sel_b2,\n    output reg out_assign,\n    output reg out_always\n);\n    always @* begin\n        if (sel_b1 && sel_b2) out_always = b;\n        else out_always = a;\n    end\n    assign out_assign = (sel_b1 && sel_b2) ? b : a;\nendmodule",
+      "raw_completion_raw_sha256": "2be7f753ce74148b9e0a62b52754fcb06327e36fa2403f00255b6ccb91d95e96",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    input sel_b1,\n    input sel_b2,\n    output reg out_assign,\n    output reg out_always\n);\n    always @* begin\n        if (sel_b1 && sel_b2) out_always = b;\n        else out_always = a;\n    end\n    assign out_assign = (sel_b1 && sel_b2) ? b : a;\nendmodule",
+      "rtl_raw_sha256": "2be7f753ce74148b9e0a62b52754fcb06327e36fa2403f00255b6ccb91d95e96",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:11: error: out_always is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 2-to-1 MUX, implemented using an assign statement and an always block.\nmodule TopModule(a, b, sel_b1, sel_b2, out_assign, out_always);\n  input a;\n  input b;\n  input sel_b1;\n  input sel_b2;\n  output out_assign;\n  output out_always;\n  wire sel = sel_b1 & sel_b2;\n  assign out_assign = sel ? b : a;\n  always @(*) begin\n    if (sel) out_always = b;\n    else out_always = a;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "f1fb0fdfbf4e0a966c3ae454b4580fde1f555dca3b46a49050dd97f7c39d19e2",
+      "rtl": "module TopModule(a, b, sel_b1, sel_b2, out_assign, out_always);\n  input a;\n  input b;\n  input sel_b1;\n  input sel_b2;\n  output out_assign;\n  output out_always;\n  wire sel = sel_b1 & sel_b2;\n  assign out_assign = sel ? b : a;\n  always @(*) begin\n    if (sel) out_always = b;\n    else out_always = a;\n  end\nendmodule",
+      "rtl_raw_sha256": "d720039b1e622dbc6957ae2ebf61ffac0925e4539798c0d26b9d49aa7279ef59",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: out_always is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    input  sel_b1,\n    input  sel_b2,\n    output out_assign,\n    output out_always\n);\n    wire sel = sel_b1 & sel_b2;\n    assign out_assign = sel ? b : a;\n    always @(*) begin\n        if (sel) out_always = b;\n        else out_always = a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "656d6ec57ac7aa77fcb09b530fdd5b995c2aca3ebf108fc676ed6268f61048ad",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  sel_b1,\n    input  sel_b2,\n    output out_assign,\n    output out_always\n);\n    wire sel = sel_b1 & sel_b2;\n    assign out_assign = sel ? b : a;\n    always @(*) begin\n        if (sel) out_always = b;\n        else out_always = a;\n    end\nendmodule",
+      "rtl_raw_sha256": "656d6ec57ac7aa77fcb09b530fdd5b995c2aca3ebf108fc676ed6268f61048ad",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input a,\n    input b,\n    input sel_b1,\n    input sel_b2,\n    output reg out_assign,\n    output reg out_always\n);\n    always @(*) begin\n        if (sel_b1 & sel_b2) out_always = b;\n        else out_always = a;\n    end\n    assign out_assign = (sel_b1 & sel_b2) ? b : a;\nendmodule",
+      "raw_completion_raw_sha256": "88d79d24d10afb409f0cd0ee48a8f2b3255fecc15112a9f58c3c58077b811a20",
+      "rtl": "module TopModule(\n    input a,\n    input b,\n    input sel_b1,\n    input sel_b2,\n    output reg out_assign,\n    output reg out_always\n);\n    always @(*) begin\n        if (sel_b1 & sel_b2) out_always = b;\n        else out_always = a;\n    end\n    assign out_assign = (sel_b1 & sel_b2) ? b : a;\nendmodule",
+      "rtl_raw_sha256": "88d79d24d10afb409f0cd0ee48a8f2b3255fecc15112a9f58c3c58077b811a20",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: out_always is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 2-to-1 multiplexer, implemented with an always block and an assign\n// statement (the procedural if equivalent).\nmodule TopModule(\n    input  a,\n    input  b,\n    input  sel_b1,\n    input  sel_b2,\n    output out_assign,\n    output out_always\n);\n    wire out_if;\n    assign out_assign = (sel_b1 & sel_b2) ? b : a;\n    always @(*) begin\n        if (sel_b1 & sel_b2) out_always = b;\n        else out_always = a;\n    end\n    assign out_if = (sel_b1 & sel_b2) ? b : a;\nendmodule",
+      "raw_completion_raw_sha256": "8e66241d9038e6e33a46d806b08b71abdc1c8c5559a25bce7db83b1a6dc9f114",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  sel_b1,\n    input  sel_b2,\n    output out_assign,\n    output out_always\n);\n    wire out_if;\n    assign out_assign = (sel_b1 & sel_b2) ? b : a;\n    always @(*) begin\n        if (sel_b1 & sel_b2) out_always = b;\n        else out_always = a;\n    end\n    assign out_if = (sel_b1 & sel_b2) ? b : a;\nendmodule",
+      "rtl_raw_sha256": "7f5962c12712fa76d4ddb38d5591821142c63f7d45d8b97addc8abea1d30b7a0",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input a,\n    input b,\n    input sel_b1,\n    input sel_b2,\n    output out_assign,\n    output out_always\n);\n    // 2-to-1 mux, chosen with a separate wire for each path\n    wire sel_b = sel_b1 & sel_b2;\n    wire mux_a = a;\n    wire mux_b = b;\n    wire mux_out_assign = sel_b ? mux_b : mux_a;\n    // Same, implemented with procedural if\n    reg mux_out_always;\n    always @(*) begin\n        if (sel_b) mux_out_always = mux_b;\n        else mux_out_always = mux_a;\n    end\n    // Functionally identical, but with a different inline multiplexer\n    wire mux_ab_a = a;\n    wire mux_ab_b = b;\n    wire mux_ab_out_assign = sel_b1 & sel_b2 ? mux_ab_b : mux_ab_a;\n    reg mux_ab_out_always;\n    always @(*) begin\n        if (sel_b1 & sel_b2) mux_ab_out_always = mux_ab_b;\n        else mux_ab_out_always = mux_ab_a;\n    end\n    // Functionally identical, but with a different inline multiplexer and\n    // with intermediate wires for each stage of the path.\n    wire mux_stage_a = a;\n    wire mux_stage_b = b;\n    wire mux_stage_sel_b = sel_b1 & sel_b2;\n    wire mux_stage_out_a = mux_stage_a;\n    wire mux_stage_out_b = mux_stage_b;\n    wire mux_stage_out_assign = mux_stage_sel_b ? mux_stage_out_b : mux_stage_out_a;\n    reg mux_stage_out_always;\n    always @(*) begin\n        if (mux_stage_sel_b) mux_stage_out_always = mux_stage_out_b;\n        else mux_stage_out_always = mux_stage_out_a;\n    end\n    assign out_assign = mux_out_assign;\n    assign out_always = mux_out_always;\nendmodule",
+      "raw_completion_raw_sha256": "b796d87c31b5f30dd126aec4816820ab1972e2aea332034ad120a068135aa098",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    input sel_b1,\n    input sel_b2,\n    output out_assign,\n    output out_always\n);\n    // 2-to-1 mux, chosen with a separate wire for each path\n    wire sel_b = sel_b1 & sel_b2;\n    wire mux_a = a;\n    wire mux_b = b;\n    wire mux_out_assign = sel_b ? mux_b : mux_a;\n    // Same, implemented with procedural if\n    reg mux_out_always;\n    always @(*) begin\n        if (sel_b) mux_out_always = mux_b;\n        else mux_out_always = mux_a;\n    end\n    // Functionally identical, but with a different inline multiplexer\n    wire mux_ab_a = a;\n    wire mux_ab_b = b;\n    wire mux_ab_out_assign = sel_b1 & sel_b2 ? mux_ab_b : mux_ab_a;\n    reg mux_ab_out_always;\n    always @(*) begin\n        if (sel_b1 & sel_b2) mux_ab_out_always = mux_ab_b;\n        else mux_ab_out_always = mux_ab_a;\n    end\n    // Functionally identical, but with a different inline multiplexer and\n    // with intermediate wires for each stage of the path.\n    wire mux_stage_a = a;\n    wire mux_stage_b = b;\n    wire mux_stage_sel_b = sel_b1 & sel_b2;\n    wire mux_stage_out_a = mux_stage_a;\n    wire mux_stage_out_b = mux_stage_b;\n    wire mux_stage_out_assign = mux_stage_sel_b ? mux_stage_out_b : mux_stage_out_a;\n    reg mux_stage_out_always;\n    always @(*) begin\n        if (mux_stage_sel_b) mux_stage_out_always = mux_stage_out_b;\n        else mux_stage_out_always = mux_stage_out_a;\n    end\n    assign out_assign = mux_out_assign;\n    assign out_always = mux_out_always;\nendmodule",
+      "rtl_raw_sha256": "b796d87c31b5f30dd126aec4816820ab1972e2aea332034ad120a068135aa098",
+      "sample_index": 15,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: out_always is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(\n    input  a,\n    input  b,\n    input  sel_b1,\n    input  sel_b2,\n    output out_assign,\n    output out_always\n);\n    wire sel = sel_b1 & sel_b2;\n    assign out_assign = sel ? b : a;\n    always @(*) begin\n        if (sel) out_always = b;\n        else     out_always = a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "35f17f6f788e2d055ab320db50a3c19426f9e4f6c0a9efb2214edd0cc90083c7",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  sel_b1,\n    input  sel_b2,\n    output out_assign,\n    output out_always\n);\n    wire sel = sel_b1 & sel_b2;\n    assign out_assign = sel ? b : a;\n    always @(*) begin\n        if (sel) out_always = b;\n        else     out_always = a;\n    end\nendmodule",
+      "rtl_raw_sha256": "35f17f6f788e2d055ab320db50a3c19426f9e4f6c0a9efb2214edd0cc90083c7",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:13: error: w2 is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    input  sel_b1,\n    input  sel_b2,\n    output out_assign,\n    output out_always\n);\n    wire w1, w2;\n    assign w1 = sel_b1 & sel_b2 ? b : a;\n    always @(*) begin\n        if (sel_b1 & sel_b2) begin\n            w2 = b;\n        end else begin\n            w2 = a;\n        end\n    end\n    assign out_assign = w1;\n    assign out_always = w2;\nendmodule",
+      "raw_completion_raw_sha256": "8e675b82730cab678316926ba500583904674eb15f23604575fd149c56ccf11c",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  sel_b1,\n    input  sel_b2,\n    output out_assign,\n    output out_always\n);\n    wire w1, w2;\n    assign w1 = sel_b1 & sel_b2 ? b : a;\n    always @(*) begin\n        if (sel_b1 & sel_b2) begin\n            w2 = b;\n        end else begin\n            w2 = a;\n        end\n    end\n    assign out_assign = w1;\n    assign out_always = w2;\nendmodule",
+      "rtl_raw_sha256": "8e675b82730cab678316926ba500583904674eb15f23604575fd149c56ccf11c",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-to-1 mux, chosen using assign statements\nmodule TopModule(a, b, sel_b1, sel_b2, out_assign, out_always);\n    input  a;\n    input  b;\n    input  sel_b1;\n    input  sel_b2;\n    output out_assign;\n    output out_always;\n    wire   w1, w2, w3, w4;\n    assign w1 = (sel_b1 & sel_b2) ? b : a;\n    assign w2 = (sel_b1 & sel_b2) ? b : a;\n    assign out_assign = w1;\n    assign out_always = w2;\nendmodule",
+      "raw_completion_raw_sha256": "0253338de06fde19b9dff127d54bd31e16e45fc6941dc1f7b0c0bde855a6e7b8",
+      "rtl": "module TopModule(a, b, sel_b1, sel_b2, out_assign, out_always);\n    input  a;\n    input  b;\n    input  sel_b1;\n    input  sel_b2;\n    output out_assign;\n    output out_always;\n    wire   w1, w2, w3, w4;\n    assign w1 = (sel_b1 & sel_b2) ? b : a;\n    assign w2 = (sel_b1 & sel_b2) ? b : a;\n    assign out_assign = w1;\n    assign out_always = w2;\nendmodule",
+      "rtl_raw_sha256": "6aa1df55137ff7168ef4da9b3208df3a7ef64d05bd4532ea7fc944d7e98b1f8a",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: out_always is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(\n    input  a,\n    input  b,\n    input  sel_b1,\n    input  sel_b2,\n    output out_assign,\n    output out_always\n);\n    wire mux_a = (sel_b1 & sel_b2) ? b : a;\n    assign out_assign = mux_a;\n    always @(*) begin\n        if (sel_b1 && sel_b2) out_always = b;\n        else out_always = a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "8175ccf02590efa906122b0cf0fae2cf8e8b722798b8fa41b6b2e491122c6a1f",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  sel_b1,\n    input  sel_b2,\n    output out_assign,\n    output out_always\n);\n    wire mux_a = (sel_b1 & sel_b2) ? b : a;\n    assign out_assign = mux_a;\n    always @(*) begin\n        if (sel_b1 && sel_b2) out_always = b;\n        else out_always = a;\n    end\nendmodule",
+      "rtl_raw_sha256": "8175ccf02590efa906122b0cf0fae2cf8e8b722798b8fa41b6b2e491122c6a1f",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 8,
+    "compile_fail": 12
+  },
+  "testbench_raw_sha256": "9cdd8401da34627672ac19bb19bf73a9d96e3d88f1444224738b23fe920e46b1",
+  "training_seed": 0
+}

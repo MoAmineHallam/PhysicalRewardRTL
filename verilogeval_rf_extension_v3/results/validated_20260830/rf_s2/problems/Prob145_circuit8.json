@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob145_circuit8",
+  "problem_seed": 7161380114006703542,
+  "prompt_raw_sha256": "b201c97e26c73188f92ccef09d439c0ae93c77d79318e89bd4e6e83f6778b6e2",
+  "reference_raw_sha256": "fe08ece4bcb44739f21976e1371936460bdad7b5e97583a01e605460895ce392",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "235/240 mismatches",
+      "raw_completion": "// One-bit sequential circuit. The circuit is a simple FSM with two stages.\nmodule TopModule(input clock, input a, output reg p, output reg q);\n  reg [1:0] state;\n  always @(posedge clock) begin\n    case (state)\n      2'b00: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b01 : 2'b00; end\n      2'b01: begin p <= 1'b0; q <= 1'b1; state <= a ? 2'b11 : 2'b00; end\n      2'b10: begin p <= 1'b1; q <= 1'b0; state <= a ? 2'b11 : 2'b01; end\n      2'b11: begin p <= 1'b1; q <= 1'b1; state <= a ? 2'b11 : 2'b01; end\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "ba76e48dce825ab4559bbcfeff5b8e72d6e7b52cc9fd4a28b2af60cf7509697f",
+      "rtl": "module TopModule(input clock, input a, output reg p, output reg q);\n  reg [1:0] state;\n  always @(posedge clock) begin\n    case (state)\n      2'b00: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b01 : 2'b00; end\n      2'b01: begin p <= 1'b0; q <= 1'b1; state <= a ? 2'b11 : 2'b00; end\n      2'b10: begin p <= 1'b1; q <= 1'b0; state <= a ? 2'b11 : 2'b01; end\n      2'b11: begin p <= 1'b1; q <= 1'b1; state <= a ? 2'b11 : 2'b01; end\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "70d7c43efbde26ebf1c8a3fc7b7137e8a89ca274c2ef0a0abc43bdd5c97114a3",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "235/240 mismatches",
+      "raw_completion": "// One-bit sequential circuit. The output p is the function of the input a\n// and the previous state, while q is the function of the input a and the\n// previous state of p.\nmodule TopModule(input clock, input a, output reg p, output reg q);\n  always @(posedge clock) begin\n    p <= a ^ p;\n    q <= a ^ p;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "c0362f06a1b3c72b3daf90db7464a810f173b12318cb226a7282e9fa78347b40",
+      "rtl": "module TopModule(input clock, input a, output reg p, output reg q);\n  always @(posedge clock) begin\n    p <= a ^ p;\n    q <= a ^ p;\n  end\nendmodule",
+      "rtl_raw_sha256": "9518868eac9726fb6fb076e4b228879961f5dd67b29ae2f4a33b973f97724cac",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "235/240 mismatches",
+      "raw_completion": "module TopModule(\n    input  clock,\n    input  a,\n    output reg p,\n    output reg q\n);\n    reg [1:0] state;\n    always @(posedge clock) begin\n        case (state)\n            2'b00: begin p <= 1'b0; q <= 1'b0; state <= 2'b01; end\n            2'b01: begin p <= 1'b0; q <= 1'b0; state <= 2'b10; end\n            2'b10: begin p <= 1'b0; q <= 1'b0; state <= 2'b11; end\n            2'b11: begin p <= 1'b1; q <= 1'b0; state <= 2'b00; end\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "e947e79f27b0f79f22ecf3f78272e5161872ec5ecefd22efeb73ac601f773fed",
+      "rtl": "module TopModule(\n    input  clock,\n    input  a,\n    output reg p,\n    output reg q\n);\n    reg [1:0] state;\n    always @(posedge clock) begin\n        case (state)\n            2'b00: begin p <= 1'b0; q <= 1'b0; state <= 2'b01; end\n            2'b01: begin p <= 1'b0; q <= 1'b0; state <= 2'b10; end\n            2'b10: begin p <= 1'b0; q <= 1'b0; state <= 2'b11; end\n            2'b11: begin p <= 1'b1; q <= 1'b0; state <= 2'b00; end\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "e947e79f27b0f79f22ecf3f78272e5161872ec5ecefd22efeb73ac601f773fed",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "235/240 mismatches",
+      "raw_completion": "// Sequential circuit: the output depends on the current and previous\n// inputs, and the previous outputs. The register stage is explicitly\n// synthesized (the long path to the DFF makes it go at the same speed\n// as the combinational path, making it behave like a register stage in\n// the functional behaviour)\nmodule TopModule(input clock, input a, output p, output q);\n  reg p_reg, q_reg;\n  wire p_next, q_next;\n  always @(posedge clock) begin\n    p_reg <= p_next;\n    q_reg <= q_next;\n  end\n  assign p_next = a ? (q_reg ? 1'b0 : 1'b1) : (p_reg ? 1'b0 : 1'b1);\n  assign q_next = a ? (p_reg ? 1'b0 : 1'b1) : (q_reg ? 1'b0 : 1'b1);\n  assign p = p_reg;\n  assign q = q_reg;\nendmodule",
+      "raw_completion_raw_sha256": "357341fa5c23658c2a4f2c950e612f5cce056641a7f34786dbd20022ef54e666",
+      "rtl": "module TopModule(input clock, input a, output p, output q);\n  reg p_reg, q_reg;\n  wire p_next, q_next;\n  always @(posedge clock) begin\n    p_reg <= p_next;\n    q_reg <= q_next;\n  end\n  assign p_next = a ? (q_reg ? 1'b0 : 1'b1) : (p_reg ? 1'b0 : 1'b1);\n  assign q_next = a ? (p_reg ? 1'b0 : 1'b1) : (q_reg ? 1'b0 : 1'b1);\n  assign p = p_reg;\n  assign q = q_reg;\nendmodule",
+      "rtl_raw_sha256": "8db12a5d3efaac94881c95703eca61e2c44bbce90270dc0e10b6434824848c11",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "235/240 mismatches",
+      "raw_completion": "// Sequential circuit described in the problem description.\nmodule TopModule(input clock, input a, output reg p, output reg q);\n  reg [1:0] state;\n  always @(posedge clock) begin\n    case (state)\n      2'b00: begin p <= 1'b0; q <= 1'b0; if (a) state <= 2'b01; end\n      2'b01: begin p <= 1'b0; q <= 1'b0; if (~a) state <= 2'b10; end\n      2'b10: begin p <= 1'b1; q <= 1'b0; if (a) state <= 2'b11; end\n      2'b11: begin p <= 1'b1; q <= 1'b0; if (~a) state <= 2'b00; end\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "a3e7945c502e28a18a128c92c726998be2c8d0a5f3cf829700f4b6285bb06f3b",
+      "rtl": "module TopModule(input clock, input a, output reg p, output reg q);\n  reg [1:0] state;\n  always @(posedge clock) begin\n    case (state)\n      2'b00: begin p <= 1'b0; q <= 1'b0; if (a) state <= 2'b01; end\n      2'b01: begin p <= 1'b0; q <= 1'b0; if (~a) state <= 2'b10; end\n      2'b10: begin p <= 1'b1; q <= 1'b0; if (a) state <= 2'b11; end\n      2'b11: begin p <= 1'b1; q <= 1'b0; if (~a) state <= 2'b00; end\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "17335e1fe2933ae7157dae9f75137d19674d66390af624986b16790adac93ac6",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "198/240 mismatches",
+      "raw_completion": "// Sequential circuit from simulation waveforms. The combinational path from\n// the output to the input causes a short-circuit, so the circuit is\n// effectively combinational.\nmodule TopModule(input clock, input a, output p, output q);\n  reg [1:0] r;\n  always @(posedge clock) begin\n    r <= {r[0], a};\n  end\n  assign p = r[1];\n  assign q = r[0];\nendmodule",
+      "raw_completion_raw_sha256": "1ee2faad1224669c25eacbfe94b635ffb3c3c958c8a35c828377520bc7745331",
+      "rtl": "module TopModule(input clock, input a, output p, output q);\n  reg [1:0] r;\n  always @(posedge clock) begin\n    r <= {r[0], a};\n  end\n  assign p = r[1];\n  assign q = r[0];\nendmodule",
+      "rtl_raw_sha256": "d254ef6f2a7f2b2040910196a96f4b43e4f22fbb11be9d15bc8bed2c229ac3a7",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: error: p is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Sequential circuit from the simulation waveforms\nmodule TopModule (\n    input  clock,\n    input  a,\n    output p,\n    output q\n);\n    reg [1:0] state;\n    always @(posedge clock) begin\n        case (state)\n            2'b00: begin state <= 2'b01; p <= 1'b0; q <= 1'b0; end\n            2'b01: begin state <= 2'b10; p <= 1'b0; q <= 1'b0; end\n            2'b10: begin state <= 2'b11; p <= 1'b0; q <= 1'b0; end\n            2'b11: begin state <= 2'b00; p <= a; q <= 1'b0; end\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "4260b655de3c8bdc906b3655e7e07341f597c6f7673c3a7b4e4bd2ac7624e6ee",
+      "rtl": "module TopModule (\n    input  clock,\n    input  a,\n    output p,\n    output q\n);\n    reg [1:0] state;\n    always @(posedge clock) begin\n        case (state)\n            2'b00: begin state <= 2'b01; p <= 1'b0; q <= 1'b0; end\n            2'b01: begin state <= 2'b10; p <= 1'b0; q <= 1'b0; end\n            2'b10: begin state <= 2'b11; p <= 1'b0; q <= 1'b0; end\n            2'b11: begin state <= 2'b00; p <= a; q <= 1'b0; end\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "cac04b0899ef917d21b424b973f2659dca8faf21c1fa869541fe926142a54407",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "235/240 mismatches",
+      "raw_completion": "// Sequential circuit, determined by simulation waveforms. The \"reg\"\n// statements implement the flip-flops, the \"wire\" statements are\n// intermediate signals, and the combinational logic is in the\n// immediately following block.\nmodule TopModule(input clock, input a, output reg p, output reg q);\n    reg [1:0] state;\n    always @(posedge clock) begin\n        case (state)\n            2'b00: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b01 : 2'b00; end\n            2'b01: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b10 : 2'b00; end\n            2'b10: begin p <= 1'b1; q <= 1'b0; state <= a ? 2'b11 : 2'b00; end\n            2'b11: begin p <= 1'b1; q <= 1'b1; state <= a ? 2'b01 : 2'b00; end\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "79719e778d1c9752342de2ac4e0dbc509092e16e9eff9884c91f140c9f1b462a",
+      "rtl": "module TopModule(input clock, input a, output reg p, output reg q);\n    reg [1:0] state;\n    always @(posedge clock) begin\n        case (state)\n            2'b00: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b01 : 2'b00; end\n            2'b01: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b10 : 2'b00; end\n            2'b10: begin p <= 1'b1; q <= 1'b0; state <= a ? 2'b11 : 2'b00; end\n            2'b11: begin p <= 1'b1; q <= 1'b1; state <= a ? 2'b01 : 2'b00; end\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "c80e7f4b98438603d5448b2ccccefef6c05046774b56f4d94a7cbca9b30a8276",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "235/240 mismatches",
+      "raw_completion": "// One-bit sequential circuit, determined by the simulation waveforms.\nmodule TopModule(input clock, input a, output reg p, output reg q);\n    reg [1:0] state;\n    always @(posedge clock) begin\n        case (state)\n            2'b00: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b01 : 2'b00; end\n            2'b01: begin p <= 1'b0; q <= 1'b1; state <= a ? 2'b11 : 2'b00; end\n            2'b11: begin p <= 1'b1; q <= 1'b1; state <= a ? 2'b11 : 2'b01; end\n            2'b10: begin p <= 1'b1; q <= 1'b0; state <= a ? 2'b11 : 2'b01; end\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "7cee202266c5369c2bd5af45c58d48c91ad2fdebd8a9bc76d40eccd74d6d0949",
+      "rtl": "module TopModule(input clock, input a, output reg p, output reg q);\n    reg [1:0] state;\n    always @(posedge clock) begin\n        case (state)\n            2'b00: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b01 : 2'b00; end\n            2'b01: begin p <= 1'b0; q <= 1'b1; state <= a ? 2'b11 : 2'b00; end\n            2'b11: begin p <= 1'b1; q <= 1'b1; state <= a ? 2'b11 : 2'b01; end\n            2'b10: begin p <= 1'b1; q <= 1'b0; state <= a ? 2'b11 : 2'b01; end\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "2da1700da4ca980b6bf7fe29a8c818a644413942d70bfb88b311b36ded56e490",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "235/240 mismatches",
+      "raw_completion": "// One-bit sequential circuit determined by the simulation waveforms.\nmodule TopModule(input clock, input a, output reg p, output reg q);\n    always @(posedge clock) begin\n        p <= #5 a;\n        q <= #10 p;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "143210a9976e83cdbde0409e81ee03a62ce7195e481caed633c74d82370630dc",
+      "rtl": "module TopModule(input clock, input a, output reg p, output reg q);\n    always @(posedge clock) begin\n        p <= #5 a;\n        q <= #10 p;\n    end\nendmodule",
+      "rtl_raw_sha256": "b9d064b4e1a9e94d7ff8c9ee9155ea489a63a33370f625413213b04e545bb789",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "235/240 mismatches",
+      "raw_completion": "// Sequential circuit with unknown combinational feedback. The behavior is\n// determined by simulating the circuit and observing the waveforms.\nmodule TopModule(input clock, input a, output reg p, output reg q);\n    reg [1:0] state;\n    always @(posedge clock) begin\n        case (state)\n            2'b00: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b01 : 2'b00; end\n            2'b01: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b10 : 2'b00; end\n            2'b10: begin p <= 1'b1; q <= 1'b0; state <= a ? 2'b11 : 2'b00; end\n            2'b11: begin p <= 1'b1; q <= 1'b1; state <= a ? 2'b00 : 2'b00; end\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "d85a7c5affec2407274fd69fe5030155b5a270bb2df7cce6e4e708c2337d5fb6",
+      "rtl": "module TopModule(input clock, input a, output reg p, output reg q);\n    reg [1:0] state;\n    always @(posedge clock) begin\n        case (state)\n            2'b00: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b01 : 2'b00; end\n            2'b01: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b10 : 2'b00; end\n            2'b10: begin p <= 1'b1; q <= 1'b0; state <= a ? 2'b11 : 2'b00; end\n            2'b11: begin p <= 1'b1; q <= 1'b1; state <= a ? 2'b00 : 2'b00; end\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "b9e332dd5a12a819eca28fc1a5fb92c87137ea32774e4aab941da50da1e73ad4",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "235/240 mismatches",
+      "raw_completion": "// One-bit sequential circuit, determined by simulation waveforms.\nmodule TopModule(input clock, input a, output reg p, output reg q);\n  reg [1:0] state;\n  always @(posedge clock) begin\n    case (state)\n      2'b00: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b01 : 2'b00; end\n      2'b01: begin p <= 1'b0; q <= 1'b1; state <= a ? 2'b10 : 2'b00; end\n      2'b10: begin p <= 1'b1; q <= 1'b1; state <= a ? 2'b11 : 2'b00; end\n      2'b11: begin p <= 1'b1; q <= 1'b0; state <= a ? 2'b01 : 2'b00; end\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "0e11e627c6f12115e08e529904f0f5bbf960f77a41f9bb529b59b3ac67a97e47",
+      "rtl": "module TopModule(input clock, input a, output reg p, output reg q);\n  reg [1:0] state;\n  always @(posedge clock) begin\n    case (state)\n      2'b00: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b01 : 2'b00; end\n      2'b01: begin p <= 1'b0; q <= 1'b1; state <= a ? 2'b10 : 2'b00; end\n      2'b10: begin p <= 1'b1; q <= 1'b1; state <= a ? 2'b11 : 2'b00; end\n      2'b11: begin p <= 1'b1; q <= 1'b0; state <= a ? 2'b01 : 2'b00; end\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "37f9d9eb286d7208b837c20464197f91e50b6e8f39f268da110ed601fc0d21cc",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "235/240 mismatches",
+      "raw_completion": "// Sequential circuit, determined by the simulation waveforms.\nmodule TopModule(input clock, input a, output reg p, output reg q);\n  reg [1:0] state;\n  always @(posedge clock) begin\n    case (state)\n      2'b00: begin p <= 1'b0; q <= 1'b0; if (a) state <= 2'b01; end\n      2'b01: begin p <= 1'b0; q <= 1'b0; if (!a) state <= 2'b10; end\n      2'b10: begin p <= 1'b1; q <= 1'b0; if (!a) state <= 2'b11; end\n      2'b11: begin p <= 1'b1; q <= 1'b1; if (a) state <= 2'b00; end\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "6270c64cf37835bf1b5a924a1d9fa5fc6446f4658c88e8bfd2893df9691d8e4a",
+      "rtl": "module TopModule(input clock, input a, output reg p, output reg q);\n  reg [1:0] state;\n  always @(posedge clock) begin\n    case (state)\n      2'b00: begin p <= 1'b0; q <= 1'b0; if (a) state <= 2'b01; end\n      2'b01: begin p <= 1'b0; q <= 1'b0; if (!a) state <= 2'b10; end\n      2'b10: begin p <= 1'b1; q <= 1'b0; if (!a) state <= 2'b11; end\n      2'b11: begin p <= 1'b1; q <= 1'b1; if (a) state <= 2'b00; end\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "26a7eb5f5f6a3236a824879fffcafffd2b9720f2c0582e28678f8721150e2521",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "165/240 mismatches",
+      "raw_completion": "// One-bit sequential circuit, determined by the simulation waveforms. The\n// circuit is a combination of DFFs and AND gates, with the AND gates\n// forming the long-term functionality of the circuit (the \"feedback\" path).\nmodule TopModule(\n    input  clock,\n    input  a,\n    output p,\n    output q\n);\n    wire g1, g2, g3, g4;\n    reg  r1, r2, r3, r4;\n    assign g1 = a & r1;\n    assign g2 = a & r2;\n    assign g3 = a & r3;\n    assign g4 = a & r4;\n    always @(posedge clock) begin\n        r1 <= g1;\n        r2 <= g2;\n        r3 <= g3;\n        r4 <= g4;\n    end\n    assign p = r1;\n    assign q = r4;\nendmodule",
+      "raw_completion_raw_sha256": "c8f92c619c3aa3ca952c6024cc1041a6ff5aceb7b2fae872661fac6e149906c3",
+      "rtl": "module TopModule(\n    input  clock,\n    input  a,\n    output p,\n    output q\n);\n    wire g1, g2, g3, g4;\n    reg  r1, r2, r3, r4;\n    assign g1 = a & r1;\n    assign g2 = a & r2;\n    assign g3 = a & r3;\n    assign g4 = a & r4;\n    always @(posedge clock) begin\n        r1 <= g1;\n        r2 <= g2;\n        r3 <= g3;\n        r4 <= g4;\n    end\n    assign p = r1;\n    assign q = r4;\nendmodule",
+      "rtl_raw_sha256": "8d84ffee77af89f7350162afceb991b6d956d159869db9ba49b42bddf5cc63c5",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob145_circuit8_test.sv:101: error: Unknown module type: TopModule",
+      "raw_completion": "// Sequential circuit with exactly the same behaviour as the reference\n// waveform. The name \"Seq\" is a somewhat arbitrary choice of name for\n// the module implementing the circuit.\nmodule Seq(input clock, input a, output reg p, output reg q);\n  reg [1:0] state;\n  always @(posedge clock) begin\n    case (state)\n      2'b00: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b01 : 2'b00; end\n      2'b01: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b10 : 2'b00; end\n      2'b10: begin p <= 1'b1; q <= 1'b0; state <= a ? 2'b11 : 2'b00; end\n      2'b11: begin p <= 1'b1; q <= 1'b1; state <= a ? 2'b00 : 2'b00; end\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "bc6354f5e578b93e604bda9af9f9042d00c5396e047a042b398fce7af28af517",
+      "rtl": "module Seq(input clock, input a, output reg p, output reg q);\n  reg [1:0] state;\n  always @(posedge clock) begin\n    case (state)\n      2'b00: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b01 : 2'b00; end\n      2'b01: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b10 : 2'b00; end\n      2'b10: begin p <= 1'b1; q <= 1'b0; state <= a ? 2'b11 : 2'b00; end\n      2'b11: begin p <= 1'b1; q <= 1'b1; state <= a ? 2'b00 : 2'b00; end\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "a360316b0b0cc83e8082c6ebb767fd824144bffbbf31e9bbc72214ec0bcc75b2",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "235/240 mismatches",
+      "raw_completion": "// The sequential circuit described in the problem description.\nmodule TopModule(input  clock, input  a, output reg p, output reg q);\n  reg [1:0] state;\n  always @(posedge clock) begin\n    case (state)\n      2'b00: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b01 : 2'b00; end\n      2'b01: begin p <= 1'b0; q <= 1'b1; state <= a ? 2'b11 : 2'b00; end\n      2'b10: begin p <= 1'b1; q <= 1'b0; state <= a ? 2'b11 : 2'b00; end\n      2'b11: begin p <= 1'b1; q <= 1'b1; state <= a ? 2'b01 : 2'b00; end\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "a8d3d6c12532b2584064cd7dccd86ba42194f25048fa10d0e9e99d85efcf5f7d",
+      "rtl": "module TopModule(input  clock, input  a, output reg p, output reg q);\n  reg [1:0] state;\n  always @(posedge clock) begin\n    case (state)\n      2'b00: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b01 : 2'b00; end\n      2'b01: begin p <= 1'b0; q <= 1'b1; state <= a ? 2'b11 : 2'b00; end\n      2'b10: begin p <= 1'b1; q <= 1'b0; state <= a ? 2'b11 : 2'b00; end\n      2'b11: begin p <= 1'b1; q <= 1'b1; state <= a ? 2'b01 : 2'b00; end\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "55fd833c0178cda179d993c7b1649890456394dbb51078ded6234f88ead04495",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "235/240 mismatches",
+      "raw_completion": "// The sequential circuit described in the comments is implemented here.\nmodule TopModule (\n    input  clock,\n    input  a,\n    output reg p,\n    output reg q\n);\n    reg [1:0] state;\n    always @(posedge clock) begin\n        case (state)\n            2'b00: begin p <= 1'b0; q <= 1'b0; state <= 2'b01; end\n            2'b01: begin p <= 1'b0; q <= 1'b0; state <= 2'b10; end\n            2'b10: begin p <= 1'b0; q <= 1'b0; state <= 2'b11; end\n            2'b11: begin p <= a; q <= 1'b0; state <= 2'b00; end\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "48f2ec2cdddb1cc2b2310ad9b29d8dfaf84361b38e840d528c48af9a5716747b",
+      "rtl": "module TopModule (\n    input  clock,\n    input  a,\n    output reg p,\n    output reg q\n);\n    reg [1:0] state;\n    always @(posedge clock) begin\n        case (state)\n            2'b00: begin p <= 1'b0; q <= 1'b0; state <= 2'b01; end\n            2'b01: begin p <= 1'b0; q <= 1'b0; state <= 2'b10; end\n            2'b10: begin p <= 1'b0; q <= 1'b0; state <= 2'b11; end\n            2'b11: begin p <= a; q <= 1'b0; state <= 2'b00; end\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "cf313620cbb9bda878dc1a3b089a9a09a55fe3c8d133465ffb0d6f8d16853ca0",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "229/240 mismatches",
+      "raw_completion": "// One-bit sequential circuit: register (p AND NOT(q)) followed by\n// register (q AND NOT(p))\nmodule TopModule(input clock, input a, output p, output q);\n    reg r1, r2;\n    always @(posedge clock) begin\n        r1 <= a & ~q;\n        r2 <= q & ~r1;\n    end\n    assign p = r1;\n    assign q = r2;\nendmodule",
+      "raw_completion_raw_sha256": "e2e55fed1b2f89e1214e4ebbc9427cfe7bb83091769801e4fdf46caec422b0dc",
+      "rtl": "module TopModule(input clock, input a, output p, output q);\n    reg r1, r2;\n    always @(posedge clock) begin\n        r1 <= a & ~q;\n        r2 <= q & ~r1;\n    end\n    assign p = r1;\n    assign q = r2;\nendmodule",
+      "rtl_raw_sha256": "9101d5db623da0c755b072c459d1e8c7f794aea6d11fa3ae7374138fd34f9709",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: error: p is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(\n  input  clock,\n  input  a,\n  output p,\n  output q\n);\n  reg [1:0] state;\n  always @(posedge clock) begin\n    case(state)\n      2'b00: begin state <= 2'b01; p <= 1'b0; q <= 1'b0; end\n      2'b01: begin state <= 2'b10; p <= 1'b0; q <= 1'b0; end\n      2'b10: begin state <= 2'b11; p <= 1'b0; q <= 1'b0; end\n      2'b11: begin state <= 2'b00; p <= 1'b0; q <= 1'b0; end\n      default: begin state <= 2'b00; p <= 1'b0; q <= 1'b0; end\n    endcase\n    if(a) state <= state + 1;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "5744f99a3c42c9443565287f0e367d0f1b0ea806e991dee65e6128a7676d5639",
+      "rtl": "module TopModule(\n  input  clock,\n  input  a,\n  output p,\n  output q\n);\n  reg [1:0] state;\n  always @(posedge clock) begin\n    case(state)\n      2'b00: begin state <= 2'b01; p <= 1'b0; q <= 1'b0; end\n      2'b01: begin state <= 2'b10; p <= 1'b0; q <= 1'b0; end\n      2'b10: begin state <= 2'b11; p <= 1'b0; q <= 1'b0; end\n      2'b11: begin state <= 2'b00; p <= 1'b0; q <= 1'b0; end\n      default: begin state <= 2'b00; p <= 1'b0; q <= 1'b0; end\n    endcase\n    if(a) state <= state + 1;\n  end\nendmodule",
+      "rtl_raw_sha256": "5744f99a3c42c9443565287f0e367d0f1b0ea806e991dee65e6128a7676d5639",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "235/240 mismatches",
+      "raw_completion": "// Sequential circuit, determined by simulation waveforms\nmodule TopModule (\n  input  clock,\n  input  a,\n  output reg p,\n  output reg q\n);\n  reg [1:0] state;\n  always @(posedge clock) begin\n    case (state)\n      2'b00: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b01 : 2'b00; end\n      2'b01: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b10 : 2'b01; end\n      2'b10: begin p <= 1'b1; q <= 1'b0; state <= a ? 2'b11 : 2'b10; end\n      2'b11: begin p <= 1'b1; q <= 1'b1; state <= a ? 2'b00 : 2'b11; end\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "85d281123c7fb8a9e787aa9c76ba3b2d871e21822acfc6302eb6581b2b725831",
+      "rtl": "module TopModule (\n  input  clock,\n  input  a,\n  output reg p,\n  output reg q\n);\n  reg [1:0] state;\n  always @(posedge clock) begin\n    case (state)\n      2'b00: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b01 : 2'b00; end\n      2'b01: begin p <= 1'b0; q <= 1'b0; state <= a ? 2'b10 : 2'b01; end\n      2'b10: begin p <= 1'b1; q <= 1'b0; state <= a ? 2'b11 : 2'b10; end\n      2'b11: begin p <= 1'b1; q <= 1'b1; state <= a ? 2'b00 : 2'b11; end\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "005b4af89cce8f9c57d98b1d50371d532f9a33955137d80ec582f7acbb691fef",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 3,
+    "fail": 17
+  },
+  "testbench_raw_sha256": "d1e05230a13e86f094eb1b435876b1778ecf3d12b3da6ecc0f91044ec53f7038",
+  "training_seed": 2
+}

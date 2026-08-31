@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob009_popcount3",
+  "problem_seed": 5442587559293639188,
+  "prompt_raw_sha256": "d15e01d44228cef9753c4f592176873c9bb1e89b322d7f06b36290baee5e891e",
+  "reference_raw_sha256": "69e2707f010de1da3f810a77c8805da28b04ac6c56438290f3d8fa177a39561c",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "<TMP>/candidate.sv:8: error: Unknown module type: popcount_1bit",
+      "raw_completion": "// One-hot population count (a.k.a. Hamming weight)\nmodule TopModule (\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] c0;\n    wire [1:0] c1;\n    wire [1:0] c2;\n    popcount_1bit pc0 (.in(in[0]), .out(c0));\n    popcount_1bit pc1 (.in(in[1]), .out(c1));\n    popcount_1bit pc2 (.in(in[2]), .out(c2));\n    assign out = c0 + c1 + c2;\nendmodule",
+      "raw_completion_raw_sha256": "612fb18f875e313b29372a9684461c505af6c792fe24bb50960c0737005ad449",
+      "rtl": "module TopModule (\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] c0;\n    wire [1:0] c1;\n    wire [1:0] c2;\n    popcount_1bit pc0 (.in(in[0]), .out(c0));\n    popcount_1bit pc1 (.in(in[1]), .out(c1));\n    popcount_1bit pc2 (.in(in[2]), .out(c2));\n    assign out = c0 + c1 + c2;\nendmodule",
+      "rtl_raw_sha256": "b2342b75baf800c347b4988780e17ee7895a7829982728bd492614732f35dd62",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob009_popcount3_test.sv:84: error: Unknown module type: TopModule",
+      "raw_completion": "// Population count (one-hot to binary counter)\nmodule PopCount (\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] c0;\n    wire [1:0] c1;\n    wire [1:0] c2;\n    assign c0 = 1'b1;\n    assign c1 = in[0] + c0;\n    assign c2 = in[1] + c1;\n    assign out = in[2] + c2;\nendmodule",
+      "raw_completion_raw_sha256": "5733b2a51183e3c426b1c6cba8e2dcfb216d9fec191489b57da85008bfbb2ec5",
+      "rtl": "module PopCount (\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] c0;\n    wire [1:0] c1;\n    wire [1:0] c2;\n    assign c0 = 1'b1;\n    assign c1 = in[0] + c0;\n    assign c2 = in[1] + c1;\n    assign out = in[2] + c2;\nendmodule",
+      "rtl_raw_sha256": "8bc6184cef16888a4e6081611385c387f730e28131568668430b3398252b15c8",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob009_popcount3_test.sv:84: error: Unknown module type: TopModule",
+      "raw_completion": "// One-hot population count\nmodule PopCount (\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] t1 = in[0] + in[1];\n    wire [1:0] t2 = t1[0] + in[2];\n    assign out = t2;\nendmodule",
+      "raw_completion_raw_sha256": "81a145b60392ee558183b36a477a6b55a200fc12b06ccb12d7f103c66b40c31c",
+      "rtl": "module PopCount (\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] t1 = in[0] + in[1];\n    wire [1:0] t2 = t1[0] + in[2];\n    assign out = t2;\nendmodule",
+      "rtl_raw_sha256": "090139ff543d2e09bb72dc3fa0dcbdd108c64b667b53c8cb722671d79c374318",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob009_popcount3_test.sv:84: error: Unknown module type: TopModule",
+      "raw_completion": "// One-hot population count\nmodule PopCount (\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] t1 = in[0] + in[1];\n    wire [1:0] t2 = in[2] + t1;\n    assign out = t2;\nendmodule",
+      "raw_completion_raw_sha256": "3e1ba602d281823f6a51b82dd298439211b1f6a762c4f69e1c1d4962f0a4cd87",
+      "rtl": "module PopCount (\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] t1 = in[0] + in[1];\n    wire [1:0] t2 = in[2] + t1;\n    assign out = t2;\nendmodule",
+      "rtl_raw_sha256": "6eb602dffe1a7f63f5b15ef4d706e3086e935faab75acfabc67797e0ced200a1",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob009_popcount3_test.sv:84: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit population count\nmodule PopCount1 (\n    input  [2:0] in,\n    output [0:0] out\n);\n    wire w1 = in[0] & ~in[1] & ~in[2];\n    wire w2 = ~in[0] & in[1] & ~in[2];\n    wire w3 = ~in[0] & ~in[1] & in[2];\n    wire w4 = in[0] & in[1] & ~in[2];\n    wire w5 = ~in[0] & in[1] & in[2];\n    wire w6 = in[0] & ~in[1] & in[2];\n    wire w7 = in[0] & in[1] & in[2];\n    assign out = w1 + w2 + w3 + w4 + w5 + w6 + w7;\nendmodule",
+      "raw_completion_raw_sha256": "fc22a55f9878ab5f4e71e541b31c74e2a853c2694b3cd34f5f0b561351f1a859",
+      "rtl": "module PopCount1 (\n    input  [2:0] in,\n    output [0:0] out\n);\n    wire w1 = in[0] & ~in[1] & ~in[2];\n    wire w2 = ~in[0] & in[1] & ~in[2];\n    wire w3 = ~in[0] & ~in[1] & in[2];\n    wire w4 = in[0] & in[1] & ~in[2];\n    wire w5 = ~in[0] & in[1] & in[2];\n    wire w6 = in[0] & ~in[1] & in[2];\n    wire w7 = in[0] & in[1] & in[2];\n    assign out = w1 + w2 + w3 + w4 + w5 + w6 + w7;\nendmodule",
+      "rtl_raw_sha256": "f32b2fa77b3910adbd418ca576c0b905fd69f85e2a911fa2bdb6f6ce1788e79d",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob009_popcount3_test.sv:84: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit population count (short-circuited tree)\nmodule popcount1 (\n    input  [2:0] in,\n    output [0:0] out\n);\n    wire [0:0] a = in[0] ^ in[1];\n    wire [0:0] b = in[2] ^ a;\n    wire [0:0] c = in[0] & in[1];\n    wire [0:0] d = in[2] & a;\n    wire [0:0] e = c | d;\n    assign out = a + b + e;\nendmodule",
+      "raw_completion_raw_sha256": "162412115708e6ecb365456730bde090c346506f0a2fba8d38ba540cd6dcf238",
+      "rtl": "module popcount1 (\n    input  [2:0] in,\n    output [0:0] out\n);\n    wire [0:0] a = in[0] ^ in[1];\n    wire [0:0] b = in[2] ^ a;\n    wire [0:0] c = in[0] & in[1];\n    wire [0:0] d = in[2] & a;\n    wire [0:0] e = c | d;\n    assign out = a + b + e;\nendmodule",
+      "rtl_raw_sha256": "6163a322d7596cae8f5f991b4d2031dacccceffb4d173a26017040a3fd002328",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: error: Unknown module type: PopCount1Bit",
+      "raw_completion": "// One-hot population count: counts the number of bits set to 1.\nmodule PopCount(\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] c1;\n    wire [1:0] c2;\n    PopCount1Bit pc1 (.in(in[0]), .out(c1[0]));\n    PopCount1Bit pc2 (.in(in[1]), .out(c1[1]));\n    PopCount1Bit pc3 (.in(in[2]), .out(c2[0]));\n    PopCount2Bits pc4 (.in({c1[0], c1[1]}), .out(c2[1]));\n    PopCount2Bits pc5 (.in({c2[0], c2[1]}), .out(out));\nendmodule",
+      "raw_completion_raw_sha256": "20698e1eacccd3e1d2bfda8f2e2ec78372b254c647af02fa33b71a34ced6a4c2",
+      "rtl": "module PopCount(\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] c1;\n    wire [1:0] c2;\n    PopCount1Bit pc1 (.in(in[0]), .out(c1[0]));\n    PopCount1Bit pc2 (.in(in[1]), .out(c1[1]));\n    PopCount1Bit pc3 (.in(in[2]), .out(c2[0]));\n    PopCount2Bits pc4 (.in({c1[0], c1[1]}), .out(c2[1]));\n    PopCount2Bits pc5 (.in({c2[0], c2[1]}), .out(out));\nendmodule",
+      "rtl_raw_sha256": "42be265719c5789c6c18e8edb8c01a95fe4ca040063e6d939f0d37ab00c3a495",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:3: error: Unknown module type: half_adder",
+      "raw_completion": "// One-bit population count (full adder stage)\nmodule pc1(input [2:0] x, output reg [1:0] y);\n  wire [1:0] c1, c2;\n  half_adder h0(x[0], x[1], y[0], c1[0]);\n  half_adder h1(x[2], c1[0], y[1], c2[0]);\n  full_adder f0(x[0], x[1], c1[0], c1[1]);\n  full_adder f1(x[2], c1[1], c2[0], c2[1]);\nendmodule",
+      "raw_completion_raw_sha256": "b6f4c46019e90bc35dc6399a562711146bd0c321be0b3b1f6e4c0f50861950c7",
+      "rtl": "module pc1(input [2:0] x, output reg [1:0] y);\n  wire [1:0] c1, c2;\n  half_adder h0(x[0], x[1], y[0], c1[0]);\n  half_adder h1(x[2], c1[0], y[1], c2[0]);\n  full_adder f0(x[0], x[1], c1[0], c1[1]);\n  full_adder f1(x[2], c1[1], c2[0], c2[1]);\nendmodule",
+      "rtl_raw_sha256": "87b063a7fe66fd2eb3ca96058ff5b95b28e66498a9a3e3538b3a9725bbe7ffad",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob009_popcount3_test.sv:84: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit population count (full adder stage)\nmodule popcnt1 (\n    input  wire        a,\n    input  wire        b,\n    output wire        c,\n    output wire        s\n);\n    wire        p, g;\n    assign p = a ^ b;\n    assign g = a & b;\n    assign c = g;\n    assign s = p;\nendmodule",
+      "raw_completion_raw_sha256": "afb14830f420f9217933275dbd67376e45b63a993904155fa891d9f209be9417",
+      "rtl": "module popcnt1 (\n    input  wire        a,\n    input  wire        b,\n    output wire        c,\n    output wire        s\n);\n    wire        p, g;\n    assign p = a ^ b;\n    assign g = a & b;\n    assign c = g;\n    assign s = p;\nendmodule",
+      "rtl_raw_sha256": "ef403be474f110553420b1290ab19f2382c4db1fdd2b8ccb08a578ecb77aa1ff",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "197/220 mismatches",
+      "raw_completion": "// One-hot population count (one register per bit, inline)\nmodule TopModule(input [2:0] in, output reg [1:0] out);\n  reg [1:0] c1, c2, c3;\n  always @(*) begin\n    c1 = {1'b0, 1'b0};\n    c2 = {1'b0, 1'b0};\n    c3 = {1'b0, 1'b0};\n    if (in[0]) c1 = {1'b1, 1'b0};\n    if (in[1]) c2 = {1'b1, 1'b0};\n    if (in[2]) c3 = {1'b1, 1'b0};\n    out = c1[0] + c2[0] + c3[0];\n  end\nendmodule",
+      "raw_completion_raw_sha256": "3d5e7d0666b761d7f0536e6766a14928f1af8e79fba857b09de0906d2835b4bf",
+      "rtl": "module TopModule(input [2:0] in, output reg [1:0] out);\n  reg [1:0] c1, c2, c3;\n  always @(*) begin\n    c1 = {1'b0, 1'b0};\n    c2 = {1'b0, 1'b0};\n    c3 = {1'b0, 1'b0};\n    if (in[0]) c1 = {1'b1, 1'b0};\n    if (in[1]) c2 = {1'b1, 1'b0};\n    if (in[2]) c3 = {1'b1, 1'b0};\n    out = c1[0] + c2[0] + c3[0];\n  end\nendmodule",
+      "rtl_raw_sha256": "7f2a000e330610edd5e1a430ac9beb52dad67825157371cc55b2bbf4f120c2b0",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: error: Unknown module type: PopCount1Bit",
+      "raw_completion": "// One-hot population count: counts the number of '1's in the input vector.\nmodule PopCount1 (\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] c0;\n    wire [1:0] c1;\n    PopCount1Bit pc0 (.in(in[0]), .out(c0));\n    PopCount1Bit pc1 (.in(in[1]), .out(c1));\n    PopCount1Bit pc2 (.in(in[2]), .out(out));\n    assign out = c0 + c1;\nendmodule",
+      "raw_completion_raw_sha256": "4bbaa921ef181d97ca803e66d32f5e07205636f352af6ced53c4852e05ecba17",
+      "rtl": "module PopCount1 (\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] c0;\n    wire [1:0] c1;\n    PopCount1Bit pc0 (.in(in[0]), .out(c0));\n    PopCount1Bit pc1 (.in(in[1]), .out(c1));\n    PopCount1Bit pc2 (.in(in[2]), .out(out));\n    assign out = c0 + c1;\nendmodule",
+      "rtl_raw_sha256": "45c8ba0d1e315127d148556ffe5e25122e659c35d7a0d03e6033d774d149bdcc",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob009_popcount3_test.sv:84: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit population count (1-of-2 sub-stage)\nmodule pc1 (\n    input  wire        i0,\n    output reg  [1:0]  o\n);\n    always @* begin\n        o[0] = i0;\n        o[1] = i0 ^ o[0];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a0bdac5c81b2fe529ff408e48df3fb82c453215d3d944b18d58e38189c29badf",
+      "rtl": "module pc1 (\n    input  wire        i0,\n    output reg  [1:0]  o\n);\n    always @* begin\n        o[0] = i0;\n        o[1] = i0 ^ o[0];\n    end\nendmodule",
+      "rtl_raw_sha256": "2bd8aff83a9d832d1c25e4d7e8859baed4b90736817959cd884ebafcf335144e",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob009_popcount3_test.sv:84: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit population count (sum of AND gates)\nmodule PopCount1 (\n    input  [2:0] in,\n    output reg [0:0] out\n);\n    always @* out = in[0] + in[1] + in[2];\nendmodule",
+      "raw_completion_raw_sha256": "2f10d3f232298af1102cf360daa38da4835cd4c317aca77dc5327e92f2883f27",
+      "rtl": "module PopCount1 (\n    input  [2:0] in,\n    output reg [0:0] out\n);\n    always @* out = in[0] + in[1] + in[2];\nendmodule",
+      "rtl_raw_sha256": "30dd6e884710fce2adbab193d33e29717381ee0156e41151fdb75db73b18719e",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "193/220 mismatches",
+      "raw_completion": "// One-hot population count (sum of products)\nmodule TopModule(\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] p1, p2;\n    assign p1 = ~(in[0] & in[1]);\n    assign p2 = ~(in[0] & in[2]);\n    assign out = p1 + p2 + in[0] + in[1] + in[2];\nendmodule",
+      "raw_completion_raw_sha256": "7f53f79aae010bbe9efd718c83d55d3bbc7683f45c2f49f66d2fb2cb9a53e55a",
+      "rtl": "module TopModule(\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] p1, p2;\n    assign p1 = ~(in[0] & in[1]);\n    assign p2 = ~(in[0] & in[2]);\n    assign out = p1 + p2 + in[0] + in[1] + in[2];\nendmodule",
+      "rtl_raw_sha256": "923d2745723f46895a2e154b58290badf4438e12576c718cdd0be2a55ce6159d",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob009_popcount3_test.sv:84: error: Unknown module type: TopModule",
+      "raw_completion": "// Population count\nmodule PopCount (\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] c1;\n    wire [1:0] c2;\n    assign c1 = in[0] + in[1];\n    assign c2 = in[2] + c1;\n    assign out = c2;\nendmodule",
+      "raw_completion_raw_sha256": "56555fd4b47011f5db167f92262434f30942a74a46291d54aee183bd4e28e90e",
+      "rtl": "module PopCount (\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] c1;\n    wire [1:0] c2;\n    assign c1 = in[0] + in[1];\n    assign c2 = in[2] + c1;\n    assign out = c2;\nendmodule",
+      "rtl_raw_sha256": "9e1b85d8a7a4a95533f9d634ef97c31df10672a20bafc5ae657ddc804b5816dc",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob009_popcount3_test.sv:84: error: Unknown module type: TopModule",
+      "raw_completion": "// One-hot population count (3-to-2 pipeline register).\nmodule PopCount1 (\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] t0, t1;\n    assign t0 = 1'b1;\n    assign t1 = t0 + in[0];\n    assign out = t1 + in[1];\nendmodule",
+      "raw_completion_raw_sha256": "d2bbe70e1486a29fb02455d6ab8250bc6ed98de52de09b3fb76d5d011f8e2a90",
+      "rtl": "module PopCount1 (\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] t0, t1;\n    assign t0 = 1'b1;\n    assign t1 = t0 + in[0];\n    assign out = t1 + in[1];\nendmodule",
+      "rtl_raw_sha256": "b4eb719dfc28d8ce3b4a94e4670fab2b522767173f7f6c9423501e14757b468e",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "152/220 mismatches",
+      "raw_completion": "module TopModule(\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] pc_1, pc_2;\n    assign pc_1[0] = ~(in[0] | in[1] | in[2]);\n    assign pc_1[1] = ~(in[0] & in[1]) & in[2];\n    assign pc_2[0] = ~(in[1] | in[2]) & in[0];\n    assign pc_2[1] = ~(in[0] & in[1]) & ~in[2];\n    assign out = pc_1 + pc_2;\nendmodule",
+      "raw_completion_raw_sha256": "fa949a343f4237694366af84303adcfa033ae210899924fe0839b1f8d3222643",
+      "rtl": "module TopModule(\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] pc_1, pc_2;\n    assign pc_1[0] = ~(in[0] | in[1] | in[2]);\n    assign pc_1[1] = ~(in[0] & in[1]) & in[2];\n    assign pc_2[0] = ~(in[1] | in[2]) & in[0];\n    assign pc_2[1] = ~(in[0] & in[1]) & ~in[2];\n    assign out = pc_1 + pc_2;\nendmodule",
+      "rtl_raw_sha256": "fa949a343f4237694366af84303adcfa033ae210899924fe0839b1f8d3222643",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob009_popcount3_test.sv:84: error: Unknown module type: TopModule",
+      "raw_completion": "// Population count (also known as Hamming weight) circuit.\nmodule PopCount (\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] s1;\n    wire [1:0] s2;\n    wire [1:0] s3;\n    wire [1:0] s4;\n    assign s1 = in[0] + in[1];\n    assign s2 = in[2] + s1;\n    assign s3 = s1 + s2;\n    assign out = s3;\nendmodule",
+      "raw_completion_raw_sha256": "67edfe868a7c333ac0b1b66396aa4e6edd4d26ec7846e28604788ba0f2489c28",
+      "rtl": "module PopCount (\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] s1;\n    wire [1:0] s2;\n    wire [1:0] s3;\n    wire [1:0] s4;\n    assign s1 = in[0] + in[1];\n    assign s2 = in[2] + s1;\n    assign s3 = s1 + s2;\n    assign out = s3;\nendmodule",
+      "rtl_raw_sha256": "194dca8f9fcf32e8a64c40e7fc6b130fd9e82c18950cd70572a3360129bf1243",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob009_popcount3_ref.sv:2: syntax error",
+      "raw_completion": "// One-bit population count (positional: XOR + AND chain)\nmodule popcnt_1bit (\n    input  wire       in,\n    output reg  [1:0] out\n);\n    wire       t0;\n    wire       t1;\n    wire       t2;\n    wire       t3;\n    wire       t4;\n    wire       t5;\n    wire       t6;\n    wire       t7;\n    wire       t8;\n    wire       t9;\n    wire       t10;\n    wire       t11;\n    wire       t12;\n    wire       t13;\n    wire       t14;\n    wire       t15;\n    wire       t16;\n    wire       t17;\n    wire       t18;\n    wire       t19;\n    wire       t20;\n    wire       t21;\n    wire       t22;\n    wire       t23;\n    wire       t24;\n    wire       t25;\n    wire       t26;\n    wire       t27;\n    wire       t28;\n    wire       t29;\n    wire       t30;\n    wire       t31;\n    wire       t32;\n    wire       t33;\n    wire       t34;\n    wire       t35;\n    wire       t36;\n    wire       t37;\n    wire       t38;\n    wire       t39;\n    wire       t40;\n    wire       t41;\n    wire       t42;\n    wire       t43;\n    wire       t44;\n    wire       t45;\n    wire       t46;\n    wire       t47;\n    wire       t48;\n    wire       t49;\n    wire       t50;\n    wire       t51;\n    wire       t52;\n    wire       t53;\n    wire       t54;\n    wire       t55;\n    wire       t56;\n    wire       t57;\n    wire       t58;\n    wire       t59;\n    wire       t60;\n    wire       t61;\n    wire       t62;\n    wire       t63;\n    wire       t64;\n    wire       t65;\n    wire       t66;\n    wire       t67;\n    wire       t68;\n    wire       t69;\n    wire       t70;\n    wire       t71;\n    wire       t72;\n    wire       t73;\n    wire       t74;\n    wire       t75;\n    wire       t76;\n    wire       t77;\n    wire       t78;\n    wire       t79;\n    wire       t80;\n    wire       t81;\n    wire       t82;\n    wire       t83;\n    wire       t84;\n    wire       t85;\n    wire       t86;\n    wire       t87;\n    wire       t88;\n    wire       t89;\n    wire       t90;\n    wire       t91;\n    wire       t92;\n    wire       t93;\n    wire       t94;\n    wire       t95;\n    wire       t96;\n    wire       t97;\n    wire       t98;\n    wire       t99;\n    wire       t100;\n    wire       t101;\n    wire       t102;\n    wire       t103;\n    wire       t104;\n    wire       t105;\n    wire       t106;\n    wire       t107;\n    wire       t108;\n    wire       t109;\n    wire       t110;\n    wire       t111;\n    wire       t112;\n    wire       t113;\n    wire       t114;\n    wire       t115;\n    wire       t116;\n    wire       t117;\n    wire       t118;\n    wire       t119;\n    wire       t120",
+      "raw_completion_raw_sha256": "c3a9c75c8a79cba6a4c7148453e6eb721ba7f953156cafe1a3e5cbf730324ce4",
+      "rtl": "module popcnt_1bit (\n    input  wire       in,\n    output reg  [1:0] out\n);\n    wire       t0;\n    wire       t1;\n    wire       t2;\n    wire       t3;\n    wire       t4;\n    wire       t5;\n    wire       t6;\n    wire       t7;\n    wire       t8;\n    wire       t9;\n    wire       t10;\n    wire       t11;\n    wire       t12;\n    wire       t13;\n    wire       t14;\n    wire       t15;\n    wire       t16;\n    wire       t17;\n    wire       t18;\n    wire       t19;\n    wire       t20;\n    wire       t21;\n    wire       t22;\n    wire       t23;\n    wire       t24;\n    wire       t25;\n    wire       t26;\n    wire       t27;\n    wire       t28;\n    wire       t29;\n    wire       t30;\n    wire       t31;\n    wire       t32;\n    wire       t33;\n    wire       t34;\n    wire       t35;\n    wire       t36;\n    wire       t37;\n    wire       t38;\n    wire       t39;\n    wire       t40;\n    wire       t41;\n    wire       t42;\n    wire       t43;\n    wire       t44;\n    wire       t45;\n    wire       t46;\n    wire       t47;\n    wire       t48;\n    wire       t49;\n    wire       t50;\n    wire       t51;\n    wire       t52;\n    wire       t53;\n    wire       t54;\n    wire       t55;\n    wire       t56;\n    wire       t57;\n    wire       t58;\n    wire       t59;\n    wire       t60;\n    wire       t61;\n    wire       t62;\n    wire       t63;\n    wire       t64;\n    wire       t65;\n    wire       t66;\n    wire       t67;\n    wire       t68;\n    wire       t69;\n    wire       t70;\n    wire       t71;\n    wire       t72;\n    wire       t73;\n    wire       t74;\n    wire       t75;\n    wire       t76;\n    wire       t77;\n    wire       t78;\n    wire       t79;\n    wire       t80;\n    wire       t81;\n    wire       t82;\n    wire       t83;\n    wire       t84;\n    wire       t85;\n    wire       t86;\n    wire       t87;\n    wire       t88;\n    wire       t89;\n    wire       t90;\n    wire       t91;\n    wire       t92;\n    wire       t93;\n    wire       t94;\n    wire       t95;\n    wire       t96;\n    wire       t97;\n    wire       t98;\n    wire       t99;\n    wire       t100;\n    wire       t101;\n    wire       t102;\n    wire       t103;\n    wire       t104;\n    wire       t105;\n    wire       t106;\n    wire       t107;\n    wire       t108;\n    wire       t109;\n    wire       t110;\n    wire       t111;\n    wire       t112;\n    wire       t113;\n    wire       t114;\n    wire       t115;\n    wire       t116;\n    wire       t117;\n    wire       t118;\n    wire       t119;\n    wire       t120",
+      "rtl_raw_sha256": "36877b3b60a52d58cf71910a78cb24e2cf087ed6f79a8d90d6481d77c7843bc5",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:6: error: Unknown module type: popcount",
+      "raw_completion": "// 3-bit population count (2-stage pipeline)\nmodule PopCount2Stage (\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] p1, p2;\n    popcount pc0 (in[0], p1[0]);\n    popcount pc1 (in[1], p1[1]);\n    popcount pc2 (in[2], p2[0]);\n    popcount pc3 (p1[0] + p1[1], p2[1]);\n    assign out = p2;\nendmodule",
+      "raw_completion_raw_sha256": "fe599ee0850c86610494c6057acdfcb52e53a0036dee05a405ad171d7155e322",
+      "rtl": "module PopCount2Stage (\n    input  [2:0] in,\n    output [1:0] out\n);\n    wire [1:0] p1, p2;\n    popcount pc0 (in[0], p1[0]);\n    popcount pc1 (in[1], p1[1]);\n    popcount pc2 (in[2], p2[0]);\n    popcount pc3 (p1[0] + p1[1], p2[1]);\n    assign out = p2;\nendmodule",
+      "rtl_raw_sha256": "157e268a581ba204833e30ef0cee49f079afa0e597a5921195ed4fcf5d46b180",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 17,
+    "fail": 3
+  },
+  "testbench_raw_sha256": "2eaa55a73c5efd6bb0b67046bb2c0a92a92364de7e57c948e8257f4f6562a270",
+  "training_seed": 1
+}

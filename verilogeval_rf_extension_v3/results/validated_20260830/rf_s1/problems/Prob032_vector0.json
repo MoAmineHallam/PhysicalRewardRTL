@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob032_vector0",
+  "problem_seed": 2697362322484202194,
+  "prompt_raw_sha256": "86607e1d27d54efeeb53ee5574c6884b1b51ab855b693422cf6c1bfdaba98ca0",
+  "reference_raw_sha256": "afae7d42f345cf72d691d2b908e2294c99dab71f447b0906d11947a4ef1749e3",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [2:0] vec,\n    output [2:0] outv,\n    output       o2,\n    output       o1,\n    output       o0\n);\n    assign outv = vec;\n    assign o2 = vec[2];\n    assign o1 = vec[1];\n    assign o0 = vec[0];\nendmodule",
+      "raw_completion_raw_sha256": "5c5dbe8d95101a151b03fe00a7ec25ba4fa831d15164c2e9a566b6dcda735262",
+      "rtl": "module TopModule (\n    input  [2:0] vec,\n    output [2:0] outv,\n    output       o2,\n    output       o1,\n    output       o0\n);\n    assign outv = vec;\n    assign o2 = vec[2];\n    assign o1 = vec[1];\n    assign o0 = vec[0];\nendmodule",
+      "rtl_raw_sha256": "5c5dbe8d95101a151b03fe00a7ec25ba4fa831d15164c2e9a566b6dcda735262",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit split of a 3-bit input.\nmodule TopModule (\n    input  [2:0] vec,\n    output [2:0] outv,\n    output       o2,\n    output       o1,\n    output       o0\n);\n    assign outv = vec;\n    assign o2 = vec[2];\n    assign o1 = vec[1];\n    assign o0 = vec[0];\nendmodule",
+      "raw_completion_raw_sha256": "81931a350fc7d13df468853838a0783d8d28071ca26b1bbb38bc2621aed0ed29",
+      "rtl": "module TopModule (\n    input  [2:0] vec,\n    output [2:0] outv,\n    output       o2,\n    output       o1,\n    output       o0\n);\n    assign outv = vec;\n    assign o2 = vec[2];\n    assign o1 = vec[1];\n    assign o0 = vec[0];\nendmodule",
+      "rtl_raw_sha256": "5c5dbe8d95101a151b03fe00a7ec25ba4fa831d15164c2e9a566b6dcda735262",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "raw_completion_raw_sha256": "12169eea5101aba1cd0bd947670df4efdec503b6c03745bc7cf5fc3e8643deb7",
+      "rtl": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "rtl_raw_sha256": "12169eea5101aba1cd0bd947670df4efdec503b6c03745bc7cf5fc3e8643deb7",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "21/21 mismatches",
+      "raw_completion": "// One-bit register, named with a prefix to show it's a separate\n// register to the one-bit wire with the same name.\nreg [2:0] vec_reg;\n\n// Same function as the input, but registered.\nwire [2:0] outv = vec_reg;\n\n// Split the input into three one-bit outputs.\nwire o2 = vec_reg[2];\nwire o1 = vec_reg[1];\nwire o0 = vec_reg[0];\n\nTopModule tm(.vec(vec_reg), .outv(outv), .o2(o2), .o1(o1), .o0(o0));\n\n// The actual module.\nmodule TopModule(input [2:0] vec, output [2:0] outv, output o2, output o1, output o0);\nendmodule",
+      "raw_completion_raw_sha256": "200bddc201f0dc320c6b656f361e5642a067b23752ae1596a7e22883eafc93d2",
+      "rtl": "module TopModule(input [2:0] vec, output [2:0] outv, output o2, output o1, output o0);\nendmodule",
+      "rtl_raw_sha256": "eabbd000ed63440624cb0f4b25bdfcc9c1f438cdc09f2c245719b9367a93e8fd",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit split of a 3-bit input:\nmodule TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "raw_completion_raw_sha256": "65223fe8c15a8cde6196d82e0ada3fd4c74a5ee724e48976d12347ea468cead1",
+      "rtl": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "rtl_raw_sha256": "12169eea5101aba1cd0bd947670df4efdec503b6c03745bc7cf5fc3e8643deb7",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "raw_completion_raw_sha256": "12169eea5101aba1cd0bd947670df4efdec503b6c03745bc7cf5fc3e8643deb7",
+      "rtl": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "rtl_raw_sha256": "12169eea5101aba1cd0bd947670df4efdec503b6c03745bc7cf5fc3e8643deb7",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o2 = vec[2];\n    assign o1 = vec[1];\n    assign o0 = vec[0];\nendmodule",
+      "raw_completion_raw_sha256": "a757b6dc71c3253b50b23ee689a28af52556456b45f46499061f4fd6cf619edd",
+      "rtl": "module TopModule (\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o2 = vec[2];\n    assign o1 = vec[1];\n    assign o0 = vec[0];\nendmodule",
+      "rtl_raw_sha256": "a757b6dc71c3253b50b23ee689a28af52556456b45f46499061f4fd6cf619edd",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o2 = vec[2];\n    assign o1 = vec[1];\n    assign o0 = vec[0];\nendmodule",
+      "raw_completion_raw_sha256": "d4cecc975ae7a471e07f416437de8a4796eaeefc5fab363c4933295eb6d1c58c",
+      "rtl": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o2 = vec[2];\n    assign o1 = vec[1];\n    assign o0 = vec[0];\nendmodule",
+      "rtl_raw_sha256": "d4cecc975ae7a471e07f416437de8a4796eaeefc5fab363c4933295eb6d1c58c",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "raw_completion_raw_sha256": "12169eea5101aba1cd0bd947670df4efdec503b6c03745bc7cf5fc3e8643deb7",
+      "rtl": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "rtl_raw_sha256": "12169eea5101aba1cd0bd947670df4efdec503b6c03745bc7cf5fc3e8643deb7",
+      "sample_index": 8,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o2 = vec[2];\n    assign o1 = vec[1];\n    assign o0 = vec[0];\nendmodule",
+      "raw_completion_raw_sha256": "a757b6dc71c3253b50b23ee689a28af52556456b45f46499061f4fd6cf619edd",
+      "rtl": "module TopModule (\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o2 = vec[2];\n    assign o1 = vec[1];\n    assign o0 = vec[0];\nendmodule",
+      "rtl_raw_sha256": "a757b6dc71c3253b50b23ee689a28af52556456b45f46499061f4fd6cf619edd",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o2 = vec[2];\n    assign o1 = vec[1];\n    assign o0 = vec[0];\nendmodule",
+      "raw_completion_raw_sha256": "a757b6dc71c3253b50b23ee689a28af52556456b45f46499061f4fd6cf619edd",
+      "rtl": "module TopModule (\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o2 = vec[2];\n    assign o1 = vec[1];\n    assign o0 = vec[0];\nendmodule",
+      "rtl_raw_sha256": "a757b6dc71c3253b50b23ee689a28af52556456b45f46499061f4fd6cf619edd",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "raw_completion_raw_sha256": "7b712abb20dc3a10f5c85e7c2fe33b0bf6fd42f06b7a186e1732674afead2227",
+      "rtl": "module TopModule(\n    input [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "rtl_raw_sha256": "7b712abb20dc3a10f5c85e7c2fe33b0bf6fd42f06b7a186e1732674afead2227",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "raw_completion_raw_sha256": "86fb157886a727c18c347f1ececb4494135274eddc93b922133c2784d7aff897",
+      "rtl": "module TopModule (\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "rtl_raw_sha256": "86fb157886a727c18c347f1ececb4494135274eddc93b922133c2784d7aff897",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "raw_completion_raw_sha256": "12169eea5101aba1cd0bd947670df4efdec503b6c03745bc7cf5fc3e8643deb7",
+      "rtl": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "rtl_raw_sha256": "12169eea5101aba1cd0bd947670df4efdec503b6c03745bc7cf5fc3e8643deb7",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output       o2,\n    output       o1,\n    output       o0\n);\n    assign outv = vec;\n    assign o2 = vec[2];\n    assign o1 = vec[1];\n    assign o0 = vec[0];\nendmodule",
+      "raw_completion_raw_sha256": "e225d96e5abd9b49dbb8b5dafc353b8310ff40ec4d7448747c34bae5604883c3",
+      "rtl": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output       o2,\n    output       o1,\n    output       o0\n);\n    assign outv = vec;\n    assign o2 = vec[2];\n    assign o1 = vec[1];\n    assign o0 = vec[0];\nendmodule",
+      "rtl_raw_sha256": "e225d96e5abd9b49dbb8b5dafc353b8310ff40ec4d7448747c34bae5604883c3",
+      "sample_index": 14,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [2:0] vec,\n    output [2:0] outv,\n    output       o2,\n    output       o1,\n    output       o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "raw_completion_raw_sha256": "bd9cda0b0307fe97bffcae029338635ad74aec7c64e6c5b7802ba377a5ffbee7",
+      "rtl": "module TopModule (\n    input  [2:0] vec,\n    output [2:0] outv,\n    output       o2,\n    output       o1,\n    output       o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "rtl_raw_sha256": "bd9cda0b0307fe97bffcae029338635ad74aec7c64e6c5b7802ba377a5ffbee7",
+      "sample_index": 15,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "raw_completion_raw_sha256": "12169eea5101aba1cd0bd947670df4efdec503b6c03745bc7cf5fc3e8643deb7",
+      "rtl": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "rtl_raw_sha256": "12169eea5101aba1cd0bd947670df4efdec503b6c03745bc7cf5fc3e8643deb7",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "raw_completion_raw_sha256": "12169eea5101aba1cd0bd947670df4efdec503b6c03745bc7cf5fc3e8643deb7",
+      "rtl": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o0 = vec[0];\n    assign o1 = vec[1];\n    assign o2 = vec[2];\nendmodule",
+      "rtl_raw_sha256": "12169eea5101aba1cd0bd947670df4efdec503b6c03745bc7cf5fc3e8643deb7",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o2 = vec[2];\n    assign o1 = vec[1];\n    assign o0 = vec[0];\nendmodule",
+      "raw_completion_raw_sha256": "d4cecc975ae7a471e07f416437de8a4796eaeefc5fab363c4933295eb6d1c58c",
+      "rtl": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o2 = vec[2];\n    assign o1 = vec[1];\n    assign o0 = vec[0];\nendmodule",
+      "rtl_raw_sha256": "d4cecc975ae7a471e07f416437de8a4796eaeefc5fab363c4933295eb6d1c58c",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o2 = vec[2];\n    assign o1 = vec[1];\n    assign o0 = vec[0];\nendmodule",
+      "raw_completion_raw_sha256": "d4cecc975ae7a471e07f416437de8a4796eaeefc5fab363c4933295eb6d1c58c",
+      "rtl": "module TopModule(\n    input  [2:0] vec,\n    output [2:0] outv,\n    output o2,\n    output o1,\n    output o0\n);\n    assign outv = vec;\n    assign o2 = vec[2];\n    assign o1 = vec[1];\n    assign o0 = vec[0];\nendmodule",
+      "rtl_raw_sha256": "d4cecc975ae7a471e07f416437de8a4796eaeefc5fab363c4933295eb6d1c58c",
+      "sample_index": 19,
+      "status": "PASS"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 19,
+    "fail": 1
+  },
+  "testbench_raw_sha256": "423e28396233aab94ecf63204ef27147855729c21b8930bce7fae441cfff6f3b",
+  "training_seed": 1
+}

@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob059_wire4",
+  "problem_seed": 546694864734175042,
+  "prompt_raw_sha256": "f9ced086c39a835532ce255239fe04f6efa09b809245f725819af463ed42c8db",
+  "reference_raw_sha256": "8d0689bd426e7410c382db87eb0395146ee9cf07803e20c8d8227751827cd70e",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "<TMP>/candidate.sv:19: error: w_wire is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit wires\nmodule TopModule(\n    input a,\n    input b,\n    input c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = 1'b0;\n    wire x_wire = 1'b0;\n    wire y_wire = 1'b0;\n    wire z_wire = 1'b0;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\n    always @(*) begin\n        w_wire = a;\n        x_wire = b;\n        y_wire = b;\n        z_wire = c;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b983f8002280df2343b6098205b223f3295d10ad8d593a9686017d3250657df8",
+      "rtl": "module TopModule(\n    input a,\n    input b,\n    input c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = 1'b0;\n    wire x_wire = 1'b0;\n    wire y_wire = 1'b0;\n    wire z_wire = 1'b0;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\n    always @(*) begin\n        w_wire = a;\n        x_wire = b;\n        y_wire = b;\n        z_wire = c;\n    end\nendmodule",
+      "rtl_raw_sha256": "6e9b221abcdce9c1a2469fe69d6303cae6d227e346d7331fb5bfd5f0df7c4199",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit wires, behaving like the connections described in the problem\n// description.\nmodule TopModule(input a, input b, input c, output w, output x, output y, output z);\n  wire w_wire = a;\n  wire x_wire = b;\n  wire y_wire = b;\n  wire z_wire = c;\n  assign w = w_wire;\n  assign x = x_wire;\n  assign y = y_wire;\n  assign z = z_wire;\nendmodule",
+      "raw_completion_raw_sha256": "d8b88d391044f58444a7e16b693e89dcd0657d054266b956feceb8b06a7f22c0",
+      "rtl": "module TopModule(input a, input b, input c, output w, output x, output y, output z);\n  wire w_wire = a;\n  wire x_wire = b;\n  wire y_wire = b;\n  wire z_wire = c;\n  assign w = w_wire;\n  assign x = x_wire;\n  assign y = y_wire;\n  assign z = z_wire;\nendmodule",
+      "rtl_raw_sha256": "7d4b109d965da038542dc76eeacdc919d95874650fe8ea10ee209832a5fe816a",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit wires, makes the connections explicitly.\nmodule TopModule (\n    input a,\n    input b,\n    input c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = a;\n    wire x_wire = b;\n    wire y_wire = b;\n    wire z_wire = c;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\nendmodule",
+      "raw_completion_raw_sha256": "f0dd609dc035c4961fc64a87d21ca08bb93101cf93afe0b4313652c982898aba",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    input c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = a;\n    wire x_wire = b;\n    wire y_wire = b;\n    wire z_wire = c;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\nendmodule",
+      "rtl_raw_sha256": "7245198c807b7d1f74b98185a518ca75e41c169e2fbe32f7d70dad6028245a2f",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit wire-per-function chain, the shortest possible functional\n// equivalent (the long-path shortens to the identity, so inline the\n// long-path explicitly).\nmodule TopModule(input a, b, c, output w, x, y, z);\n    wire w_ = a;\n    wire x_ = b;\n    wire y_ = b;\n    wire z_ = c;\n    assign w = w_;\n    assign x = x_;\n    assign y = y_;\n    assign z = z_;\nendmodule",
+      "raw_completion_raw_sha256": "6df8992f3744a449ed4d67763e77d4cfbd1f53bf5d184a56b50fa638e2215ce9",
+      "rtl": "module TopModule(input a, b, c, output w, x, y, z);\n    wire w_ = a;\n    wire x_ = b;\n    wire y_ = b;\n    wire z_ = c;\n    assign w = w_;\n    assign x = x_;\n    assign y = y_;\n    assign z = z_;\nendmodule",
+      "rtl_raw_sha256": "4680b33cd3e6411a40565edf32434b781b9ffc91f498dd45aa445823c0b56548",
+      "sample_index": 3,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit wires.\nmodule TopModule(input a, b, c, output w, x, y, z);\n    assign w = a;\n    assign x = b;\n    assign y = b;\n    assign z = c;\nendmodule",
+      "raw_completion_raw_sha256": "1f310410a1aecf8474644cf5f23f2fef4172dd81647649c45ec7892b8a53e23b",
+      "rtl": "module TopModule(input a, b, c, output w, x, y, z);\n    assign w = a;\n    assign x = b;\n    assign y = b;\n    assign z = c;\nendmodule",
+      "rtl_raw_sha256": "f6d0b7390d2b33eb778fe1b386050114b8798a1c809675e47df875664be18faf",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit wire connection test\nmodule TopModule(\n    input a,\n    input b,\n    input c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    assign w = a;\n    assign x = b;\n    assign y = b;\n    assign z = c;\nendmodule",
+      "raw_completion_raw_sha256": "c6567d9ca3c04a41a245dfecaf86ec98a75c1d53485416b4d92201feb4be9fc8",
+      "rtl": "module TopModule(\n    input a,\n    input b,\n    input c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    assign w = a;\n    assign x = b;\n    assign y = b;\n    assign z = c;\nendmodule",
+      "rtl_raw_sha256": "570dc251a18aaaa2737726b8cee0766c04e734aa9aad0fbd562d5e0929ce4f88",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob059_wire4_test.sv:104: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit wire-level gate (equivalent to a straight wire)\nmodule WireGate(input a, output reg out);\n  always @(a) out <= a;\nendmodule",
+      "raw_completion_raw_sha256": "1b612c837c2f7e72bacd8a91587d355816fb3591c7e050315ed407f5ef5ffdfd",
+      "rtl": "module WireGate(input a, output reg out);\n  always @(a) out <= a;\nendmodule",
+      "rtl_raw_sha256": "61af61be1b7bf0be8a4114e220cae77b4861c644e14f4aaed3b26ee45685a021",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit wires, no other logic\nmodule TopModule (\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = a;\n    wire x_wire = b;\n    wire y_wire = b;\n    wire z_wire = c;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\nendmodule",
+      "raw_completion_raw_sha256": "23fbfa5fd07da171c5abbbdd8cbb0c96b9b1cded0c929b336e85e443ee297a24",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = a;\n    wire x_wire = b;\n    wire y_wire = b;\n    wire z_wire = c;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\nendmodule",
+      "rtl_raw_sha256": "ab5788a78a125cebbb181c4f22e64c69b743d6244377e83ac2ec27b69e508d5a",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    assign w = a;\n    assign x = b;\n    assign y = b;\n    assign z = c;\nendmodule",
+      "raw_completion_raw_sha256": "235c014936b73685921969a95f8b83391aa81afd6226d00280b5723827937ce4",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    assign w = a;\n    assign x = b;\n    assign y = b;\n    assign z = c;\nendmodule",
+      "rtl_raw_sha256": "235c014936b73685921969a95f8b83391aa81afd6226d00280b5723827937ce4",
+      "sample_index": 8,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit wire-per-signal combinational circuit\nmodule TopModule(\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = a;\n    wire x_wire = b;\n    wire y_wire = b;\n    wire z_wire = c;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\nendmodule",
+      "raw_completion_raw_sha256": "928e8e7b4ea26839f8d933c11611c839d6760a3e89cc90b97cc28d3e70b6132c",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = a;\n    wire x_wire = b;\n    wire y_wire = b;\n    wire z_wire = c;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\nendmodule",
+      "rtl_raw_sha256": "7215f9740bba4cfc8422759cc895a56c91d663e636d72a98012be78e07ff234b",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit wire-based module: the direct wiring to inputs implies a short\n// path, low fan-out -> low Fmax. Using named wires instead of inline one-bit\n// wires also helps the synthesis tool to apply early bundling, another\n// critical factor for low Fmax.\nmodule TopModule (\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = a;\n    wire x_wire = b;\n    wire y_wire = b;\n    wire z_wire = c;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\nendmodule",
+      "raw_completion_raw_sha256": "1754064a61630a00b46aee4be8b35d66f887c652f0c3dcd455f93e924e20e48a",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = a;\n    wire x_wire = b;\n    wire y_wire = b;\n    wire z_wire = c;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\nendmodule",
+      "rtl_raw_sha256": "ab5788a78a125cebbb181c4f22e64c69b743d6244377e83ac2ec27b69e508d5a",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:18: error: w_wire is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit wire-per-signal FULLY transparent combinational logic chain:\n// a -> w, b -> x, b -> y, c -> z.\nmodule TopModule (\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z);\n    wire w_wire = 1'b0;\n    wire x_wire = 1'b0;\n    wire y_wire = 1'b0;\n    wire z_wire = 1'b0;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\n    always @(*) begin\n        w_wire = a;\n        x_wire = b;\n        y_wire = b;\n        z_wire = c;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "350ad5ca8eca26c9824811fde4345cd7d77045c6a7b227b44b52fee93a08a4f1",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z);\n    wire w_wire = 1'b0;\n    wire x_wire = 1'b0;\n    wire y_wire = 1'b0;\n    wire z_wire = 1'b0;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\n    always @(*) begin\n        w_wire = a;\n        x_wire = b;\n        y_wire = b;\n        z_wire = c;\n    end\nendmodule",
+      "rtl_raw_sha256": "a6289d4bcefdae23517190f85f95cc4d76594cc16c18b5907af7df41999feb25",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:19: error: w_wire is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit wires, named explicitly\nmodule TopModule (\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = 1'b0;\n    wire x_wire = 1'b0;\n    wire y_wire = 1'b0;\n    wire z_wire = 1'b0;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\n    always @(*) begin\n        w_wire = a;\n        x_wire = b;\n        y_wire = b;\n        z_wire = c;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "8ca8acac6334bb164db27e5b8e21ce7b25ad49b9631d6ef8b7d76561f2766fbb",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = 1'b0;\n    wire x_wire = 1'b0;\n    wire y_wire = 1'b0;\n    wire z_wire = 1'b0;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\n    always @(*) begin\n        w_wire = a;\n        x_wire = b;\n        y_wire = b;\n        z_wire = c;\n    end\nendmodule",
+      "rtl_raw_sha256": "a70e038dc194d29c3a017aff194f252081e01a5e5e06cf9c03a4845562b1fdec",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit wires. Same name as the port means a wire.\nmodule TopModule(\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z);\n    assign w = a;\n    assign x = b;\n    assign y = b;\n    assign z = c;\nendmodule",
+      "raw_completion_raw_sha256": "bb9e4e7b3f190d57b6d07b05c97eb172d30ad728f93f8a2942ae82e875ab962c",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z);\n    assign w = a;\n    assign x = b;\n    assign y = b;\n    assign z = c;\nendmodule",
+      "rtl_raw_sha256": "b49caf97d811cee29f026a2b53a23164b0c88e420f66ca56a6443d63408ffc51",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "217/218 mismatches",
+      "raw_completion": "// One-bit wires: behaves like an AND gate with an inverted second input.\nmodule TopModule(input a, b, c, output w, x, y, z);\n    wire nb;\n    not gate1 (nb, b);\n    and gate2 (w, a, nb);\n    and gate3 (x, nb);\n    and gate4 (y, nb);\n    and gate5 (z, c);\nendmodule",
+      "raw_completion_raw_sha256": "9858005615c9e3894b6b830de9648ae9624cf0e4b0548ded15c2649c814af355",
+      "rtl": "module TopModule(input a, b, c, output w, x, y, z);\n    wire nb;\n    not gate1 (nb, b);\n    and gate2 (w, a, nb);\n    and gate3 (x, nb);\n    and gate4 (y, nb);\n    and gate5 (z, c);\nendmodule",
+      "rtl_raw_sha256": "e6d0626dfa9e2556385361f148fd99161b63d63204659ae5537ad5c4d91c7c32",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:19: error: w_wire is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = 1'b0;\n    wire x_wire = 1'b0;\n    wire y_wire = 1'b0;\n    wire z_wire = 1'b0;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\n    always @(*) begin\n        w_wire = a;\n        x_wire = b;\n        y_wire = b;\n        z_wire = c;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a70e038dc194d29c3a017aff194f252081e01a5e5e06cf9c03a4845562b1fdec",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = 1'b0;\n    wire x_wire = 1'b0;\n    wire y_wire = 1'b0;\n    wire z_wire = 1'b0;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\n    always @(*) begin\n        w_wire = a;\n        x_wire = b;\n        y_wire = b;\n        z_wire = c;\n    end\nendmodule",
+      "rtl_raw_sha256": "a70e038dc194d29c3a017aff194f252081e01a5e5e06cf9c03a4845562b1fdec",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit wires; same name as the port means a direct connection.\nmodule TopModule (\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = a;\n    wire x_wire = b;\n    wire y_wire = b;\n    wire z_wire = c;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\nendmodule",
+      "raw_completion_raw_sha256": "c472e4aafdb271500381f56ed7ace1b9a249f0efa024c19b66353782c3789a64",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = a;\n    wire x_wire = b;\n    wire y_wire = b;\n    wire z_wire = c;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\nendmodule",
+      "rtl_raw_sha256": "ab5788a78a125cebbb181c4f22e64c69b743d6244377e83ac2ec27b69e508d5a",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit wires, no registers or logic. Direct connections as in the\n// spec.\nmodule TopModule(input a, input b, input c, output w, output x, output y, output z);\n    assign w = a;\n    assign x = b;\n    assign y = b;\n    assign z = c;\nendmodule",
+      "raw_completion_raw_sha256": "734951a9053457b35e745599acdd494257b389aedf07056a5c68cc60adad9bd4",
+      "rtl": "module TopModule(input a, input b, input c, output w, output x, output y, output z);\n    assign w = a;\n    assign x = b;\n    assign y = b;\n    assign z = c;\nendmodule",
+      "rtl_raw_sha256": "184e9d334bce73a0bd628eaec16057e32d913112b0d267ffd3ffffd8d7249a16",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit wires, named explicitly\nmodule TopModule (\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = a;\n    wire x_wire = b;\n    wire y_wire = b;\n    wire z_wire = c;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\nendmodule",
+      "raw_completion_raw_sha256": "29f3a91d51f5fcd075dfa83d19cb4a4a15a453dafb11b10c6e2c9a0531bb9f75",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = a;\n    wire x_wire = b;\n    wire y_wire = b;\n    wire z_wire = c;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\nendmodule",
+      "rtl_raw_sha256": "ab5788a78a125cebbb181c4f22e64c69b743d6244377e83ac2ec27b69e508d5a",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:19: error: w_wire is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit wires, no feedback -> simple wire-level truth table.\nmodule TopModule(\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = 1'b0;\n    wire x_wire = 1'b0;\n    wire y_wire = 1'b0;\n    wire z_wire = 1'b0;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\n    always @(*) begin\n        w_wire = a;\n        x_wire = b;\n        y_wire = b;\n        z_wire = c;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "5983a7d81509980b1e79cf7cd03068a84ec29c181f2014b91c1a21ecbbeb7f4f",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  c,\n    output w,\n    output x,\n    output y,\n    output z\n);\n    wire w_wire = 1'b0;\n    wire x_wire = 1'b0;\n    wire y_wire = 1'b0;\n    wire z_wire = 1'b0;\n    assign w = w_wire;\n    assign x = x_wire;\n    assign y = y_wire;\n    assign z = z_wire;\n    always @(*) begin\n        w_wire = a;\n        x_wire = b;\n        y_wire = b;\n        z_wire = c;\n    end\nendmodule",
+      "rtl_raw_sha256": "fe4caf2fcc15bfed4d0ad486d60d7febd38ff13173e0e8a9b625fca0b1d10c8f",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 13,
+    "compile_fail": 6,
+    "fail": 1
+  },
+  "testbench_raw_sha256": "66cdcbbdc855c4c7ca8964d899f1671fa9425fb3726e6b01bb4244baf4c7a82e",
+  "training_seed": 1
+}

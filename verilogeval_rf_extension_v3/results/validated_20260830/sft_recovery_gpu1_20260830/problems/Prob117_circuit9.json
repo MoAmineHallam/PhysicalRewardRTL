@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob117_circuit9",
+  "problem_seed": 3911712075820463588,
+  "prompt_raw_sha256": "6a375fa69e8a987a777692d207c46e6c11b398f69b55a0e93408209e6719cb35",
+  "reference_raw_sha256": "4cac8fde1519b37da67a5761b3be4b8a3036ec0c0a5f3af8ff9b467c3fb0d79f",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "192/245 mismatches",
+      "raw_completion": "// One-bit register\nreg [2:0] q;\n\nalways @(posedge clk) begin\n  if (a) begin\n    q <= 4;\n  end else begin\n    q <= q + 1;\n  end\nend\n\n// Top-level module, with one-bit register as a nested module\nmodule TopModule (input clk, input a, output reg [2:0] q);\n  // Same as the register, inline\n  always @(posedge clk) begin\n    if (a) begin\n      q <= 4;\n    end else begin\n      q <= q + 1;\n    end\n  end\nendmodule",
+      "raw_completion_raw_sha256": "252b0184b0e8eb0cf36d9a4d9f70ec1432a38f70d376a3f6dc418631197c0400",
+      "rtl": "module TopModule (input clk, input a, output reg [2:0] q);\n  // Same as the register, inline\n  always @(posedge clk) begin\n    if (a) begin\n      q <= 4;\n    end else begin\n      q <= q + 1;\n    end\n  end\nendmodule",
+      "rtl_raw_sha256": "5f485ad6411b03cb46d3518dbc2dc59a7df4287063f5f5e71dde55caa9326e84",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "212/245 mismatches",
+      "raw_completion": "// One-bit register, with a combinational read-during-write cycle (the\n// \"read-under-write\" register). This makes the circuit have a constant\n// delay of one clock cycle, independent of the register's function.\nmodule TopModule(input clk, input a, output reg [2:0] q);\n  always @(posedge clk) begin\n    q <= {q[1:0], a};\n  end\nendmodule",
+      "raw_completion_raw_sha256": "75318d1467d1277eac094efab7e528b2736931ceba76d225edcb3f353c063743",
+      "rtl": "module TopModule(input clk, input a, output reg [2:0] q);\n  always @(posedge clk) begin\n    q <= {q[1:0], a};\n  end\nendmodule",
+      "rtl_raw_sha256": "a6a041d167423527b26b6872d1e2f35b7d922bbaf25655c4c28a995c464e51e7",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: error: Unable to bind wire/reg/memory `stage3' in `tb.top_module1'",
+      "raw_completion": "// One-bit register stage.\nreg [2:0] stage1;\n// Another register stage.\nreg [2:0] stage2;\n// Another register stage.\nreg [2:0] stage3;\n// Functional combinational circuit that determines the next stage's output\n// given the current stage's output and the input.\nreg [2:0] func (input [2:0] stage, input a);\n  begin\n    case (stage)\n      3'b000: if (a) return 3'b001; else return 3'b000;\n      3'b001: if (a) return 3'b010; else return 3'b000;\n      3'b010: if (a) return 3'b011; else return 3'b000;\n      3'b011: if (a) return 3'b100; else return 3'b000;\n      3'b100: if (a) return 3'b101; else return 3'b001;\n      3'b101: if (a) return 3'b110; else return 3'b001;\n      3'b110: if (a) return 3'b111; else return 3'b001;\n      3'b111: if (a) return 3'b000; else return 3'b001;\n      default: $display(\"Invalid stage value\");\n    endcase\n  end\n// The top-level module.\nmodule TopModule (input clk, input a, output [2:0] q);\n  always @(posedge clk) begin\n    stage1 <= func(3'b000, a);\n    stage2 <= func(stage1, a);\n    stage3 <= func(stage2, a);\n  end\n  assign q = stage3;\nendmodule",
+      "raw_completion_raw_sha256": "858e4549dd80c9d29eab03a81761db66c70d15037ac3e0a437c0fc1f25b23c1b",
+      "rtl": "module TopModule (input clk, input a, output [2:0] q);\n  always @(posedge clk) begin\n    stage1 <= func(3'b000, a);\n    stage2 <= func(stage1, a);\n    stage3 <= func(stage2, a);\n  end\n  assign q = stage3;\nendmodule",
+      "rtl_raw_sha256": "66f003fc46855f8d0ed10860ce74030b5a9be77d4f37efdb7ebdc76763ea3be3",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "212/245 mismatches",
+      "raw_completion": "// Sequential circuit, known as a register, as described in the problem\n// description. The output follows the input exactly one clock cycle.\nmodule TopModule (\n    input  clk,\n    input  a,\n    output reg [2:0] q\n);\n    always @(posedge clk) begin\n        q <= {q[1:0], a};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "2778f7c146d706dad6f386632c58d384c164c1de27ffa98020b234ef5815bbfc",
+      "rtl": "module TopModule (\n    input  clk,\n    input  a,\n    output reg [2:0] q\n);\n    always @(posedge clk) begin\n        q <= {q[1:0], a};\n    end\nendmodule",
+      "rtl_raw_sha256": "219426db3e0f44046f72d8775949347ff0d423afba14f9e198978f08ed648ae5",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "212/245 mismatches",
+      "raw_completion": "// One-bit register chain, as a sequential circuit.\nmodule TopModule (\n    input  clk,\n    input  a,\n    output [2:0] q\n);\n    reg [2:0] r0, r1, r2;\n    always @(posedge clk) begin\n        r0 <= 1;\n        r1 <= {r0, a};\n        r2 <= {r1, r0};\n    end\n    assign q = r2;\nendmodule",
+      "raw_completion_raw_sha256": "bbbe6951576ef6924e3c0717ea9e11c2641ec5fb15ced23ab368b3ed8308f3d5",
+      "rtl": "module TopModule (\n    input  clk,\n    input  a,\n    output [2:0] q\n);\n    reg [2:0] r0, r1, r2;\n    always @(posedge clk) begin\n        r0 <= 1;\n        r1 <= {r0, a};\n        r2 <= {r1, r0};\n    end\n    assign q = r2;\nendmodule",
+      "rtl_raw_sha256": "530fd0affe6c341860d2cdccaf1c3348dd40be1d2174dc497120e05473de93bb",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "244/245 mismatches",
+      "raw_completion": "// Sequential circuit, the combinational circuit that determines the next\n// state is explicitly written out.\nmodule TopModule(input clk, input a, output reg [2:0] q);\n  reg [2:0] next_q;\n  always @(*) begin\n    case ({q, a})\n      3'bxxx1: next_q = 3'b001;\n      3'b0011: next_q = 3'b010;\n      3'b0101: next_q = 3'b011;\n      3'b0111: next_q = 3'b100;\n      3'b1001: next_q = 3'b100;\n      3'b1000: next_q = 3'b101;\n      3'b1010: next_q = 3'b110;\n      3'b1100: next_q = 3'b111;\n      3'b1110: next_q = 3'b001;\n      default: next_q = 3'bxxx;\n    endcase\n  end\n  always @(posedge clk) q <= next_q;\nendmodule",
+      "raw_completion_raw_sha256": "7129aecc08f6d934d65a903af78f02847f62a20a93a267b712aa7273ea700198",
+      "rtl": "module TopModule(input clk, input a, output reg [2:0] q);\n  reg [2:0] next_q;\n  always @(*) begin\n    case ({q, a})\n      3'bxxx1: next_q = 3'b001;\n      3'b0011: next_q = 3'b010;\n      3'b0101: next_q = 3'b011;\n      3'b0111: next_q = 3'b100;\n      3'b1001: next_q = 3'b100;\n      3'b1000: next_q = 3'b101;\n      3'b1010: next_q = 3'b110;\n      3'b1100: next_q = 3'b111;\n      3'b1110: next_q = 3'b001;\n      default: next_q = 3'bxxx;\n    endcase\n  end\n  always @(posedge clk) q <= next_q;\nendmodule",
+      "rtl_raw_sha256": "9ad3656c336f71bc638cf43f5e8572181adc323e20c5a8df9832235afc927478",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "210/245 mismatches",
+      "raw_completion": "// Sequential circuit, read the simulation waveforms to determine what the\n// circuit does.\nmodule TopModule(input clk, input a, output reg [2:0] q);\n    always @(posedge clk) begin\n        case(q)\n            3'b000: q = a ? 3'b001 : 3'b000;\n            3'b001: q = a ? 3'b010 : 3'b000;\n            3'b010: q = a ? 3'b011 : 3'b001;\n            3'b011: q = a ? 3'b100 : 3'b001;\n            3'b100: q = a ? 3'b101 : 3'b010;\n            3'b101: q = a ? 3'b110 : 3'b010;\n            3'b110: q = a ? 3'b111 : 3'b011;\n            3'b111: q = a ? 3'b000 : 3'b011;\n            default: q = 3'b000;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "2af936b951ededddfc3a994df2f8ad0439ef6fb1da9cb993e85174c9be6a7a18",
+      "rtl": "module TopModule(input clk, input a, output reg [2:0] q);\n    always @(posedge clk) begin\n        case(q)\n            3'b000: q = a ? 3'b001 : 3'b000;\n            3'b001: q = a ? 3'b010 : 3'b000;\n            3'b010: q = a ? 3'b011 : 3'b001;\n            3'b011: q = a ? 3'b100 : 3'b001;\n            3'b100: q = a ? 3'b101 : 3'b010;\n            3'b101: q = a ? 3'b110 : 3'b010;\n            3'b110: q = a ? 3'b111 : 3'b011;\n            3'b111: q = a ? 3'b000 : 3'b011;\n            default: q = 3'b000;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "0a6c79eee01ad8f27c2c06281a718b3233ba0e61e3e3b274ae191c1e5b8a6665",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "244/245 mismatches",
+      "raw_completion": "// Sequential circuit described in the problem description.\nmodule TopModule(input clk, input a, output reg [2:0] q);\n  always @(posedge clk) begin\n    case ({q, a})\n      3'bxxx_0: q <= 3'b000;\n      3'b000_0: q <= 3'b000;\n      3'b000_1: q <= 3'b001;\n      3'b001_0: q <= 3'b001;\n      3'b001_1: q <= 3'b010;\n      3'b010_0: q <= 3'b001;\n      3'b010_1: q <= 3'b011;\n      3'b011_0: q <= 3'b010;\n      3'b011_1: q <= 3'b100;\n      3'b100_0: q <= 3'b010;\n      3'b100_1: q <= 3'b011;\n      3'b101_0: q <= 3'b011;\n      3'b101_1: q <= 3'b100;\n      3'b110_0: q <= 3'b011;\n      3'b110_1: q <= 3'b100;\n      3'b111_0: q <= 3'b100;\n      3'b111_1: q <= 3'b000;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "f9a6c0c0a87e4b7665b7704edc124325343b669dc213780de0e5211def2241f1",
+      "rtl": "module TopModule(input clk, input a, output reg [2:0] q);\n  always @(posedge clk) begin\n    case ({q, a})\n      3'bxxx_0: q <= 3'b000;\n      3'b000_0: q <= 3'b000;\n      3'b000_1: q <= 3'b001;\n      3'b001_0: q <= 3'b001;\n      3'b001_1: q <= 3'b010;\n      3'b010_0: q <= 3'b001;\n      3'b010_1: q <= 3'b011;\n      3'b011_0: q <= 3'b010;\n      3'b011_1: q <= 3'b100;\n      3'b100_0: q <= 3'b010;\n      3'b100_1: q <= 3'b011;\n      3'b101_0: q <= 3'b011;\n      3'b101_1: q <= 3'b100;\n      3'b110_0: q <= 3'b011;\n      3'b110_1: q <= 3'b100;\n      3'b111_0: q <= 3'b100;\n      3'b111_1: q <= 3'b000;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "b75ffd27ef614107ea5f870d799cf1d30f23da176410463596f74cc1395dd0b7",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob117_circuit9_test.sv:91: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit register.\nmodule reg1 (input wire clk, input wire a, output reg q);\n  always @(posedge clk) q <= a;\nendmodule",
+      "raw_completion_raw_sha256": "5fbbeb10070278b7cdf02c6719bb602fe7eb3938a666d3d82754f2b9f7da4415",
+      "rtl": "module reg1 (input wire clk, input wire a, output reg q);\n  always @(posedge clk) q <= a;\nendmodule",
+      "rtl_raw_sha256": "dca9b2f438a25e4b38ad28cd0573b720394adb75d0999d2d7f6b3b2ad8e3468e",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "212/245 mismatches",
+      "raw_completion": "// Sequential circuit as described in the problem description. The path from a to\n// q is a simple register path.\nmodule TopModule(\n  input  clk,\n  input  a,\n  output reg [2:0] q\n);\n  always @(posedge clk) begin\n    q <= {q[1:0], a};\n  end\nendmodule",
+      "raw_completion_raw_sha256": "063a73d9cdf17608b625154db5d7929b3fc2e947a401c60e54fc4918adddbf24",
+      "rtl": "module TopModule(\n  input  clk,\n  input  a,\n  output reg [2:0] q\n);\n  always @(posedge clk) begin\n    q <= {q[1:0], a};\n  end\nendmodule",
+      "rtl_raw_sha256": "3a8dad1f52dd193029036425b7471697901438beb8039cf9b8285dbae057ac72",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "212/245 mismatches",
+      "raw_completion": "// Sequential circuit. The output is determined by the current state, and the\n// next state is determined by the input at the same time.\nmodule TopModule(input clk, input a, output [2:0] q);\n  reg [2:0] state;\n  always @(posedge clk) begin\n    case (state)\n      3'b000: state = a ? 3'b001 : 3'b000;\n      3'b001: state = a ? 3'b011 : 3'b000;\n      3'b011: state = a ? 3'b011 : 3'b010;\n      3'b010: state = a ? 3'b011 : 3'b000;\n      3'b100: state = a ? 3'b101 : 3'b100;\n      3'b101: state = a ? 3'b101 : 3'b110;\n      3'b110: state = a ? 3'b101 : 3'b000;\n      3'b111: state = a ? 3'b111 : 3'b110;\n      default: state = 3'b000;\n    endcase\n  end\n  assign q = state;\nendmodule",
+      "raw_completion_raw_sha256": "5128f238cd3b67d6e494b5687ecd2927da10ee56e34322f45f3b94ff50262726",
+      "rtl": "module TopModule(input clk, input a, output [2:0] q);\n  reg [2:0] state;\n  always @(posedge clk) begin\n    case (state)\n      3'b000: state = a ? 3'b001 : 3'b000;\n      3'b001: state = a ? 3'b011 : 3'b000;\n      3'b011: state = a ? 3'b011 : 3'b010;\n      3'b010: state = a ? 3'b011 : 3'b000;\n      3'b100: state = a ? 3'b101 : 3'b100;\n      3'b101: state = a ? 3'b101 : 3'b110;\n      3'b110: state = a ? 3'b101 : 3'b000;\n      3'b111: state = a ? 3'b111 : 3'b110;\n      default: state = 3'b000;\n    endcase\n  end\n  assign q = state;\nendmodule",
+      "rtl_raw_sha256": "ed1e4ec5faef48c2b3198e4484e3102e15bbc3514aeb03c3198c6c70545d1d7a",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "214/245 mismatches",
+      "raw_completion": "// Sequential circuit, determined by the simulation waveforms.\nmodule TopModule(input clk, input a, output reg [2:0] q);\n  always @(posedge clk) begin\n    case(q)\n      3'b000: q = a ? 3'b001 : 3'b000;\n      3'b001: q = a ? 3'b011 : 3'b001;\n      3'b011: q = a ? 3'b111 : 3'b010;\n      3'b111: q = a ? 3'b111 : 3'b100;\n      3'b100: q = a ? 3'b101 : 3'b100;\n      3'b101: q = a ? 3'b001 : 3'b100;\n      3'b010: q = a ? 3'b011 : 3'b010;\n      default: q = 3'b000;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "7be297eb5cf9c3a29f714a9e5ae2847c618d6a9c8b4cd78dab12f5f64ec205cd",
+      "rtl": "module TopModule(input clk, input a, output reg [2:0] q);\n  always @(posedge clk) begin\n    case(q)\n      3'b000: q = a ? 3'b001 : 3'b000;\n      3'b001: q = a ? 3'b011 : 3'b001;\n      3'b011: q = a ? 3'b111 : 3'b010;\n      3'b111: q = a ? 3'b111 : 3'b100;\n      3'b100: q = a ? 3'b101 : 3'b100;\n      3'b101: q = a ? 3'b001 : 3'b100;\n      3'b010: q = a ? 3'b011 : 3'b010;\n      default: q = 3'b000;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "16f6845fe7f574ea77c11eb9a852c54add79e015fc6a573d013a75c4fed1d69c",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "212/245 mismatches",
+      "raw_completion": "// One-bit register, combinational next-state function. Registers all the\n// inputs, so the circuit has a combinational (unrolled) register-lookup\n// next-state function.\nmodule TopModule(input clk, input a, output reg [2:0] q);\n    always @(posedge clk) begin\n        q <= {q[1:0], a};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "70c791df46ce16a26c2e6192277132c0cbb429916b3b95cf3d75099f00bda265",
+      "rtl": "module TopModule(input clk, input a, output reg [2:0] q);\n    always @(posedge clk) begin\n        q <= {q[1:0], a};\n    end\nendmodule",
+      "rtl_raw_sha256": "61da81120315650fd2157fcd8c1c13033121788a119570e44e4a2c6d77c63216",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob117_circuit9_test.sv:91: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit FF with asynchronous reset\nmodule ff (\n    input clk,\n    input a,\n    input reset,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 1'b0;\n        else       q <= a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "ae03521883b1478ced1dd719da76cda114ee07c380bd20c8cac9762dc86cecdb",
+      "rtl": "module ff (\n    input clk,\n    input a,\n    input reset,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 1'b0;\n        else       q <= a;\n    end\nendmodule",
+      "rtl_raw_sha256": "85ad57b880b4d580c78c2bb826ba461024a84b2b3b237a9470d20c32ab2acafe",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "206/245 mismatches",
+      "raw_completion": "// Sequential circuit that reads the simulation waveform. The reference\n// solution does not explicitly list the state transitions, just the\n// function that the state + input -> next state + output.\nmodule TopModule(input clk, input a, output reg [2:0] q);\n  reg [2:0] ns;\n  always @(*) begin\n    case ({q, a})\n      3'b000: ns = 3'b001;\n      3'b001: ns = 3'b010;\n      3'b010: ns = 3'b011;\n      3'b011: ns = 3'b100;\n      3'b100: ns = 3'b100;\n      3'b101: ns = 3'b001;\n      default: ns = 3'b000;\n    endcase\n  end\n  always @(posedge clk) q <= ns;\nendmodule",
+      "raw_completion_raw_sha256": "9a2903390bb8410fa86348366910812779a97d29c8e69bef6e7d6c43e390249b",
+      "rtl": "module TopModule(input clk, input a, output reg [2:0] q);\n  reg [2:0] ns;\n  always @(*) begin\n    case ({q, a})\n      3'b000: ns = 3'b001;\n      3'b001: ns = 3'b010;\n      3'b010: ns = 3'b011;\n      3'b011: ns = 3'b100;\n      3'b100: ns = 3'b100;\n      3'b101: ns = 3'b001;\n      default: ns = 3'b000;\n    endcase\n  end\n  always @(posedge clk) q <= ns;\nendmodule",
+      "rtl_raw_sha256": "23cc01e60cd1b787a941505e9ad2478e97edd581ed8d0b2fa8fb0f1b7ff79fd6",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob117_circuit9_test.sv:91: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit FF with asynchronous reset\nmodule FF (input clk, input a, input reset, output reg q);\n  always @(posedge clk) begin\n    if (reset) q <= 1'b0;\n    else       q <= a;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "974165f94859bcff00c8675206d3ec52101219c578ec3fbecd836504626a1102",
+      "rtl": "module FF (input clk, input a, input reset, output reg q);\n  always @(posedge clk) begin\n    if (reset) q <= 1'b0;\n    else       q <= a;\n  end\nendmodule",
+      "rtl_raw_sha256": "c589e6ed1cfc368fa6ceda238c6b5e98ce760f16ef129c3d05c345d638ce7864",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "212/245 mismatches",
+      "raw_completion": "// The sequential circuit implemented as a register with a combinational\n// next state.\nmodule TopModule(input clk, input a, output reg [2:0] q);\n  always @(posedge clk) q <= {q[1:0], a};\nendmodule",
+      "raw_completion_raw_sha256": "d4ce2ce2b0e90193c3d08315bf289428234810e84b522e6bf8043e3044eeb6fb",
+      "rtl": "module TopModule(input clk, input a, output reg [2:0] q);\n  always @(posedge clk) q <= {q[1:0], a};\nendmodule",
+      "rtl_raw_sha256": "38f4f69c0ac8c33c5a34195c5047f9c9afac7720e50fa49a42ed52e1c6cdc1d0",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob117_circuit9_test.sv:91: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit sequential circuit: the register stage.\nmodule Register (\n    input  clk,\n    input  a,\n    output reg [2:0] q\n);\n    always @(posedge clk) q <= {q[1:0], a};\nendmodule",
+      "raw_completion_raw_sha256": "a8083035abaf483b3e9f8a346d475f0571f47eec8c13f665a3d9a344f942770e",
+      "rtl": "module Register (\n    input  clk,\n    input  a,\n    output reg [2:0] q\n);\n    always @(posedge clk) q <= {q[1:0], a};\nendmodule",
+      "rtl_raw_sha256": "b81a51db354b220bdbf0a6f65d6933458042f243dcc7102baaa033f53e342043",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob117_circuit9_test.sv:91: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit register with asynchronous reset\nmodule reg1 (input clk, input a, output reg q);\n  always @(posedge clk) q <= a;\nendmodule",
+      "raw_completion_raw_sha256": "4f32d55c4a23eb9e8591400ad0614d754a4da84c8a3a1b37a44dfc1a7f538c67",
+      "rtl": "module reg1 (input clk, input a, output reg q);\n  always @(posedge clk) q <= a;\nendmodule",
+      "rtl_raw_sha256": "35af0454dd5dfcbdcbffc93cc4fd6e6dee3b9656a5deae36546afd972b438301",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "244/245 mismatches",
+      "raw_completion": "// Sequential circuit that matches the waveforms from the problem\n// description, with a register stage.\nmodule TopModule(input clk, input a, output reg [2:0] q);\n  reg [2:0] next_q;\n  always @(*) begin\n    case ({q, a})\n      3'bxxx1: next_q = 3'b001;\n      3'b0011: next_q = 3'b010;\n      3'b0101: next_q = 3'b011;\n      3'b0111: next_q = 3'b100;\n      3'b1001: next_q = 3'b100;\n      3'b1011: next_q = 3'b101;\n      3'b1101: next_q = 3'b110;\n      3'b1111: next_q = 3'b111;\n      3'b0001: next_q = 3'b000;\n      3'b0010: next_q = 3'b000;\n      3'b0100: next_q = 3'b000;\n      3'b0110: next_q = 3'b000;\n      3'b1000: next_q = 3'b000;\n      3'b1010: next_q = 3'b001;\n      3'b1100: next_q = 3'b010;\n      3'b1110: next_q = 3'b011;\n    endcase\n  end\n  always @(posedge clk) q <= next_q;\nendmodule",
+      "raw_completion_raw_sha256": "41f391ced4ea035244f0e1e65cd710723f2649ad9d297a4af15575a4e9d419ee",
+      "rtl": "module TopModule(input clk, input a, output reg [2:0] q);\n  reg [2:0] next_q;\n  always @(*) begin\n    case ({q, a})\n      3'bxxx1: next_q = 3'b001;\n      3'b0011: next_q = 3'b010;\n      3'b0101: next_q = 3'b011;\n      3'b0111: next_q = 3'b100;\n      3'b1001: next_q = 3'b100;\n      3'b1011: next_q = 3'b101;\n      3'b1101: next_q = 3'b110;\n      3'b1111: next_q = 3'b111;\n      3'b0001: next_q = 3'b000;\n      3'b0010: next_q = 3'b000;\n      3'b0100: next_q = 3'b000;\n      3'b0110: next_q = 3'b000;\n      3'b1000: next_q = 3'b000;\n      3'b1010: next_q = 3'b001;\n      3'b1100: next_q = 3'b010;\n      3'b1110: next_q = 3'b011;\n    endcase\n  end\n  always @(posedge clk) q <= next_q;\nendmodule",
+      "rtl_raw_sha256": "b1d88dadbd83efd11cd6fa46e2e1ad263f19e9b5724741032baff7b3f14f1273",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 6,
+    "fail": 14
+  },
+  "testbench_raw_sha256": "4ab057289bd82f98f588bfa7ce8f519d7c95cdd7762a7bd21155dfdf928b65ea",
+  "training_seed": 0
+}

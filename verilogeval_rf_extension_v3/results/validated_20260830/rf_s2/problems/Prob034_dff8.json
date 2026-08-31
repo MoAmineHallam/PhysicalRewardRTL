@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob034_dff8",
+  "problem_seed": 8861521374106085521,
+  "prompt_raw_sha256": "af4a3759be65a9c2ab59af1cd4b207a64bdf9528cc79953c96c8694ec46432d8",
+  "reference_raw_sha256": "f2cefccbae78a8cd532c6b66eb75eb08b60cf11497b3f89bd09bcb9d892fef69",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "<TMP>/candidate.sv:5: error: Unknown module type: DFF_EXAMPLE_GLUE",
+      "raw_completion": "// 8-stage pipeline with registers. One DFF per stage -> short path -> low Fmax.\n// Toggle the register enable (reg_enable) to go from pipeline to串联形式.\nmodule TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    reg reg_enable;\n    wire [7:0] q2;\n    DFF_EXAMPLE_GLUE d0 (.D(d[0]), .Q(r0), .CLK(clk));\n    DFF_EXAMPLE_GLUE d1 (.D(d[1]), .Q(r1), .CLK(clk));\n    DFF_EXAMPLE_GLUE d2 (.D(d[2]), .Q(r2), .CLK(clk));\n    DFF_EXAMPLE_GLUE d3 (.D(d[3]), .Q(r3), .CLK(clk));\n    DFF_EXAMPLE_GLUE d4 (.D(d[4]), .Q(r4), .CLK(clk));\n    DFF_EXAMPLE_GLUE d5 (.D(d[5]), .Q(r5), .CLK(clk));\n    DFF_EXAMPLE_GLUE d6 (.D(d[6]), .Q(r6), .CLK(clk));\n    DFF_EXAMPLE_GLUE d7 (.D(d[7]), .Q(r7), .CLK(clk));\n    always @(*) begin\n        if (reg_enable) q2 = {r0, r1, r2, r3, r4, r5, r6, r7};\n        else q2 = d;\n    end\n    DFF_EXAMPLE_GLUE d8 (.D(q2[0]), .Q(q[0]), .CLK(clk));\n    DFF_EXAMPLE_GLUE d9 (.D(q2[1]), .Q(q[1]), .CLK(clk));\n    DFF_EXAMPLE_GLUE d10 (.D(q2[2]), .Q(q[2]), .CLK(clk));\n    DFF_EXAMPLE_GLUE d11 (.D(q2[3]), .Q(q[3]), .CLK(clk));\n    DFF_EXAMPLE_GLUE d12 (.D(q2[4]), .Q(q[4]), .CLK(clk));\n    DFF_EXAMPLE_GLUE d13 (.D(q2[5]), .Q(q[5]), .CLK(clk));\n    DFF_EXAMPLE_GLUE d14 (.D(q2[6]), .Q(q[6]), .CLK(clk));\n    DFF_EXAMPLE_GLUE d15 (.D(q2[7]), .Q(q[7]), .CLK(clk));\n    initial reg_enable = 1;\nendmodule",
+      "raw_completion_raw_sha256": "04af05efa89d0307c86f49ed1ec2a500840e041eae4a5cf5721456803130743d",
+      "rtl": "module TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    reg reg_enable;\n    wire [7:0] q2;\n    DFF_EXAMPLE_GLUE d0 (.D(d[0]), .Q(r0), .CLK(clk));\n    DFF_EXAMPLE_GLUE d1 (.D(d[1]), .Q(r1), .CLK(clk));\n    DFF_EXAMPLE_GLUE d2 (.D(d[2]), .Q(r2), .CLK(clk));\n    DFF_EXAMPLE_GLUE d3 (.D(d[3]), .Q(r3), .CLK(clk));\n    DFF_EXAMPLE_GLUE d4 (.D(d[4]), .Q(r4), .CLK(clk));\n    DFF_EXAMPLE_GLUE d5 (.D(d[5]), .Q(r5), .CLK(clk));\n    DFF_EXAMPLE_GLUE d6 (.D(d[6]), .Q(r6), .CLK(clk));\n    DFF_EXAMPLE_GLUE d7 (.D(d[7]), .Q(r7), .CLK(clk));\n    always @(*) begin\n        if (reg_enable) q2 = {r0, r1, r2, r3, r4, r5, r6, r7};\n        else q2 = d;\n    end\n    DFF_EXAMPLE_GLUE d8 (.D(q2[0]), .Q(q[0]), .CLK(clk));\n    DFF_EXAMPLE_GLUE d9 (.D(q2[1]), .Q(q[1]), .CLK(clk));\n    DFF_EXAMPLE_GLUE d10 (.D(q2[2]), .Q(q[2]), .CLK(clk));\n    DFF_EXAMPLE_GLUE d11 (.D(q2[3]), .Q(q[3]), .CLK(clk));\n    DFF_EXAMPLE_GLUE d12 (.D(q2[4]), .Q(q[4]), .CLK(clk));\n    DFF_EXAMPLE_GLUE d13 (.D(q2[5]), .Q(q[5]), .CLK(clk));\n    DFF_EXAMPLE_GLUE d14 (.D(q2[6]), .Q(q[6]), .CLK(clk));\n    DFF_EXAMPLE_GLUE d15 (.D(q2[7]), .Q(q[7]), .CLK(clk));\n    initial reg_enable = 1;\nendmodule",
+      "rtl_raw_sha256": "95a894036ee5385ab70eda22a7c2f28461e867deff85fd833e1907c99d3dd8c3",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob034_dff8_test.sv:85: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit D flip-flop\nmodule dff (\n    input  clk,\n    input  d,\n    output reg q\n);\n    always @(posedge clk) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "0f59dbae0fcb09726af307ed1a7efb5dd3137938e48bbb7f62d2c2564b8f1784",
+      "rtl": "module dff (\n    input  clk,\n    input  d,\n    output reg q\n);\n    always @(posedge clk) q <= d;\nendmodule",
+      "rtl_raw_sha256": "8dfee5c311800126bac97bd8e3053023497873b44f94df97ba8151ec4ddc1fcf",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:23: error: q is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0;\n    reg [7:0] r1;\n    reg [7:0] r2;\n    reg [7:0] r3;\n    reg [7:0] r4;\n    reg [7:0] r5;\n    reg [7:0] r6;\n    reg [7:0] r7;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n        q <= r7;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "0c18d22d822bd04b9df266b79c25ddbdedb8291798bdf7da0c0b8e4acadedb9d",
+      "rtl": "module TopModule (\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0;\n    reg [7:0] r1;\n    reg [7:0] r2;\n    reg [7:0] r3;\n    reg [7:0] r4;\n    reg [7:0] r5;\n    reg [7:0] r6;\n    reg [7:0] r7;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n        q <= r7;\n    end\nendmodule",
+      "rtl_raw_sha256": "0c18d22d822bd04b9df266b79c25ddbdedb8291798bdf7da0c0b8e4acadedb9d",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: q is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 8-stage pipeline, with one register per stage. The register at the output\n// goes to the output port.\nmodule TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n        q <= r7;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "6d63218b38230cd3096d0074adb78300bc1c86398712a44d8d4958d81d52cf3c",
+      "rtl": "module TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n        q <= r7;\n    end\nendmodule",
+      "rtl_raw_sha256": "0003252a6a0b6a5884cd20fb19ec7f699046a8dd0cf223a26086896dcabcb6b2",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: q is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 8-stage delay chain, all DFFs are triggered on positive edge of clock.\nmodule TopModule(input clk, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    r0 <= d;\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n    q <= r7;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "c97d33d3b32ac6ca119bc3513996c7a665bece3011b838f6f832b6fb8b6be423",
+      "rtl": "module TopModule(input clk, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    r0 <= d;\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n    q <= r7;\n  end\nendmodule",
+      "rtl_raw_sha256": "619cc322d28523ef3681fd732946145fcc2a3f2825e119918ef56b597c7acc4a",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "39/41 mismatches",
+      "raw_completion": "// 8-stage pipeline with register-to-register feedback, TRANSPOSED: the\n// output stage is the first one, the input stage is the last one.\nmodule TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n    end\n    assign q = r7;\nendmodule",
+      "raw_completion_raw_sha256": "eeb089a1e893c4d3904283fdb47a7f7d485e63303c48659546dee28f812ad13b",
+      "rtl": "module TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n    end\n    assign q = r7;\nendmodule",
+      "rtl_raw_sha256": "c367f9d2cf060633313f28e8776a6af924e0d269a6f3d72210f3ee288f9a6ee7",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: q is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 8-stage pipeline stage, with one register per stage. Registers are named\n// r0, r1, ..., r7. Stage i's output is stage i+1's input.\nmodule TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n        q <= r7;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "ae3eae01a4baf612d8c4c0118b6efc004fd4e4b404241487489f32dcff9d6e5f",
+      "rtl": "module TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n        q <= r7;\n    end\nendmodule",
+      "rtl_raw_sha256": "0003252a6a0b6a5884cd20fb19ec7f699046a8dd0cf223a26086896dcabcb6b2",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:5: error: q2 is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 8-stage pipeline, with register-to-register feedback (the long path is\n// critical to avoid short-circuit in the critical path, triggering a long\n// register-to-register chain)\nmodule TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    wire [7:0] q2, q3, q4, q5, q6, q7;\n    always @(posedge clk) r0 <= d;\n    always @(posedge clk) q2 <= r0;\n    always @(posedge clk) r1 <= q2;\n    always @(posedge clk) q3 <= r1;\n    always @(posedge clk) r2 <= q3;\n    always @(posedge clk) q4 <= r2;\n    always @(posedge clk) r3 <= q4;\n    always @(posedge clk) q5 <= r3;\n    always @(posedge clk) r4 <= q5;\n    always @(posedge clk) q6 <= r4;\n    always @(posedge clk) r5 <= q6;\n    always @(posedge clk) q7 <= r5;\n    always @(posedge clk) r6 <= q7;\n    always @(posedge clk) q <= r7;\n    always @(posedge clk) r7 <= q;\nendmodule",
+      "raw_completion_raw_sha256": "c1f24dffc55028a5ac910de91d43c5d99ac930cef9f84a59353e8b571249f56a",
+      "rtl": "module TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    wire [7:0] q2, q3, q4, q5, q6, q7;\n    always @(posedge clk) r0 <= d;\n    always @(posedge clk) q2 <= r0;\n    always @(posedge clk) r1 <= q2;\n    always @(posedge clk) q3 <= r1;\n    always @(posedge clk) r2 <= q3;\n    always @(posedge clk) q4 <= r2;\n    always @(posedge clk) r3 <= q4;\n    always @(posedge clk) q5 <= r3;\n    always @(posedge clk) r4 <= q5;\n    always @(posedge clk) q6 <= r4;\n    always @(posedge clk) r5 <= q6;\n    always @(posedge clk) q7 <= r5;\n    always @(posedge clk) r6 <= q7;\n    always @(posedge clk) q <= r7;\n    always @(posedge clk) r7 <= q;\nendmodule",
+      "rtl_raw_sha256": "32912b12881d560721a879e99eaa0f9a79aea2004772994997912cecef24c823",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob034_dff8_test.sv:85: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit D flip-flop\nmodule dff (\n    input  clk,\n    input  d,\n    output reg q\n);\n    always @(posedge clk) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "0f59dbae0fcb09726af307ed1a7efb5dd3137938e48bbb7f62d2c2564b8f1784",
+      "rtl": "module dff (\n    input  clk,\n    input  d,\n    output reg q\n);\n    always @(posedge clk) q <= d;\nendmodule",
+      "rtl_raw_sha256": "8dfee5c311800126bac97bd8e3053023497873b44f94df97ba8151ec4ddc1fcf",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: q is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 8-stage pipeline, with register at the end (same as the reference).\nmodule TopModule(input  clk, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    r0 <= d;\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n    q <= r7;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "32172ef091584b1732c793b3d5d28fb62ceed98850c3f755b09f9caffdb2ae58",
+      "rtl": "module TopModule(input  clk, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    r0 <= d;\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n    q <= r7;\n  end\nendmodule",
+      "rtl_raw_sha256": "7658158557d00c40c3618646c82ce29706671d08acd70aa2b17f7c56beccfdf0",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: q is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 8-stage delay chain, with one register (the first stage) per DFF.\nmodule TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n        q <= r7;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "d9edd324a9496795715dfa5a1f1ebaf58b1922a452345a3f57ce13094c1e4b2e",
+      "rtl": "module TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n        q <= r7;\n    end\nendmodule",
+      "rtl_raw_sha256": "0003252a6a0b6a5884cd20fb19ec7f699046a8dd0cf223a26086896dcabcb6b2",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: q is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 8-stage pipeline, with register-to-register feedback (the long path\n// between stages creates a long critical path; pipeline registers are\n// inserted to reduce this to the same as the reference up to a fixed\n// extra latency).\nmodule TopModule(input clk, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    r0 <= d;\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n    q <= r7;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "9ecdded60640c9798dcef9211a20aec233fd736f7006b78c6f2745f1dab17416",
+      "rtl": "module TopModule(input clk, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    r0 <= d;\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n    q <= r7;\n  end\nendmodule",
+      "rtl_raw_sha256": "619cc322d28523ef3681fd732946145fcc2a3f2825e119918ef56b597c7acc4a",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob034_dff8_test.sv:85: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit D flip-flop\nmodule dff (input clk, input d, output reg q);\n    always @(posedge clk) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "c3e46f51d5aa02901700002efdb6f8231458e92dde2c27488327bc4023b33bf2",
+      "rtl": "module dff (input clk, input d, output reg q);\n    always @(posedge clk) q <= d;\nendmodule",
+      "rtl_raw_sha256": "c27ac05c1c433aecd326e2acae69466d6f78e71b744f4b4b3177c1613a3e4f52",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:4: error: Unknown module type: DFF_a",
+      "raw_completion": "// 8-stage pipelined chain of DFFs, with register-to-register feedback\n// (the long path bypasses the DFFs). Same function as the reference.\nmodule TopModule(input clk, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  wire [7:0] p0, p1, p2, p3, p4, p5, p6, p7;\n  DFF_a D0(.D(d[0]), .Q(p0), .clk(clk));\n  DFF_a D1(.D(d[1]), .Q(p1), .clk(clk));\n  DFF_a D2(.D(d[2]), .Q(p2), .clk(clk));\n  DFF_a D3(.D(d[3]), .Q(p3), .clk(clk));\n  DFF_a D4(.D(d[4]), .Q(p4), .clk(clk));\n  DFF_a D5(.D(d[5]), .Q(p5), .clk(clk));\n  DFF_a D6(.D(d[6]), .Q(p6), .clk(clk));\n  DFF_a D7(.D(d[7]), .Q(p7), .clk(clk));\n  always @(posedge clk) begin\n    r0 <= p0;\n    r1 <= p1;\n    r2 <= p2;\n    r3 <= p3;\n    r4 <= p4;\n    r5 <= p5;\n    r6 <= p6;\n    r7 <= p7;\n  end\n  DFF_a D8(.D(r0), .Q(q[0]), .clk(clk));\n  DFF_a D9(.D(r1), .Q(q[1]), .clk(clk));\n  DFF_a D10(.D(r2), .Q(q[2]), .clk(clk));\n  DFF_a D11(.D(r3), .Q(q[3]), .clk(clk));\n  DFF_a D12(.D(r4), .Q(q[4]), .clk(clk));\n  DFF_a D13(.D(r5), .Q(q[5]), .clk(clk));\n  DFF_a D14(.D(r6), .Q(q[6]), .clk(clk));\n  DFF_a D15(.D(r7), .Q(q[7]), .clk(clk));\nendmodule",
+      "raw_completion_raw_sha256": "0cfdbe6a0dd443daf51cb5ff7d135e71acf5d00225cb9ad0a3c17a8cb43908b3",
+      "rtl": "module TopModule(input clk, input [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  wire [7:0] p0, p1, p2, p3, p4, p5, p6, p7;\n  DFF_a D0(.D(d[0]), .Q(p0), .clk(clk));\n  DFF_a D1(.D(d[1]), .Q(p1), .clk(clk));\n  DFF_a D2(.D(d[2]), .Q(p2), .clk(clk));\n  DFF_a D3(.D(d[3]), .Q(p3), .clk(clk));\n  DFF_a D4(.D(d[4]), .Q(p4), .clk(clk));\n  DFF_a D5(.D(d[5]), .Q(p5), .clk(clk));\n  DFF_a D6(.D(d[6]), .Q(p6), .clk(clk));\n  DFF_a D7(.D(d[7]), .Q(p7), .clk(clk));\n  always @(posedge clk) begin\n    r0 <= p0;\n    r1 <= p1;\n    r2 <= p2;\n    r3 <= p3;\n    r4 <= p4;\n    r5 <= p5;\n    r6 <= p6;\n    r7 <= p7;\n  end\n  DFF_a D8(.D(r0), .Q(q[0]), .clk(clk));\n  DFF_a D9(.D(r1), .Q(q[1]), .clk(clk));\n  DFF_a D10(.D(r2), .Q(q[2]), .clk(clk));\n  DFF_a D11(.D(r3), .Q(q[3]), .clk(clk));\n  DFF_a D12(.D(r4), .Q(q[4]), .clk(clk));\n  DFF_a D13(.D(r5), .Q(q[5]), .clk(clk));\n  DFF_a D14(.D(r6), .Q(q[6]), .clk(clk));\n  DFF_a D15(.D(r7), .Q(q[7]), .clk(clk));\nendmodule",
+      "rtl_raw_sha256": "54a3e28ba72fd2fb0e717faf86332de0fa622123c236b36b2aab6a0fc6654b6b",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: Unknown module type: SRL8",
+      "raw_completion": "// 8-stage SRL pipeline, with register at the end (the long path causes\n// combinational loops in synthesis -> restructure to go faster).\nmodule TopModule(\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    wire [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    reg  [7:0] q2;\n    SRL8 #(8) s0 (.Q(r0), .D(d[0]), .A0(1'b1), .CLK(clk));\n    SRL8 #(8) s1 (.Q(r1), .D(d[1]), .A0(r0), .CLK(clk));\n    SRL8 #(8) s2 (.Q(r2), .D(d[2]), .A0(r1), .CLK(clk));\n    SRL8 #(8) s3 (.Q(r3), .D(d[3]), .A0(r2), .CLK(clk));\n    SRL8 #(8) s4 (.Q(r4), .D(d[4]), .A0(r3), .CLK(clk));\n    SRL8 #(8) s5 (.Q(r5), .D(d[5]), .A0(r4), .CLK(clk));\n    SRL8 #(8) s6 (.Q(r6), .D(d[6]), .A0(r5), .CLK(clk));\n    SRL8 #(8) s7 (.Q(r7), .D(d[7]), .A0(r6), .CLK(clk));\n    always @(posedge clk) q2 <= r7;\n    assign q = q2;\nendmodule",
+      "raw_completion_raw_sha256": "ffab7e89a370d0c67cc0ece2f7f95b6de1fdffc29151c7138cf385b78cfe3cca",
+      "rtl": "module TopModule(\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    wire [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    reg  [7:0] q2;\n    SRL8 #(8) s0 (.Q(r0), .D(d[0]), .A0(1'b1), .CLK(clk));\n    SRL8 #(8) s1 (.Q(r1), .D(d[1]), .A0(r0), .CLK(clk));\n    SRL8 #(8) s2 (.Q(r2), .D(d[2]), .A0(r1), .CLK(clk));\n    SRL8 #(8) s3 (.Q(r3), .D(d[3]), .A0(r2), .CLK(clk));\n    SRL8 #(8) s4 (.Q(r4), .D(d[4]), .A0(r3), .CLK(clk));\n    SRL8 #(8) s5 (.Q(r5), .D(d[5]), .A0(r4), .CLK(clk));\n    SRL8 #(8) s6 (.Q(r6), .D(d[6]), .A0(r5), .CLK(clk));\n    SRL8 #(8) s7 (.Q(r7), .D(d[7]), .A0(r6), .CLK(clk));\n    always @(posedge clk) q2 <= r7;\n    assign q = q2;\nendmodule",
+      "rtl_raw_sha256": "bdc9070513b4945b2c20762b9648a3b6b24b5c630489f80b4c3032bfbe9c298c",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "39/41 mismatches",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d[0];\n        r1 <= d[1];\n        r2 <= d[2];\n        r3 <= d[3];\n        r4 <= d[4];\n        r5 <= d[5];\n        r6 <= d[6];\n        r7 <= d[7];\n    end\n    assign q = {r7, r6, r5, r4, r3, r2, r1, r0};\nendmodule",
+      "raw_completion_raw_sha256": "69f5e10224dc0e7d42e4515372e7b5c9811c5829e3678056e7724db76a8b9f43",
+      "rtl": "module TopModule (\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d[0];\n        r1 <= d[1];\n        r2 <= d[2];\n        r3 <= d[3];\n        r4 <= d[4];\n        r5 <= d[5];\n        r6 <= d[6];\n        r7 <= d[7];\n    end\n    assign q = {r7, r6, r5, r4, r3, r2, r1, r0};\nendmodule",
+      "rtl_raw_sha256": "69f5e10224dc0e7d42e4515372e7b5c9811c5829e3678056e7724db76a8b9f43",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: q is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 8-stage pipeline with one register per stage, with the register at the\n// output of the final stage going directly to the output of the top-level\n// module.\nmodule TopModule(input  clk, input  [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    r0 <= d;\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n    q <= r7;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "01852df13ad282cfdc4e4e7392afa5d79918d6e937d25a6be202604f6fac1a8d",
+      "rtl": "module TopModule(input  clk, input  [7:0] d, output [7:0] q);\n  reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n  always @(posedge clk) begin\n    r0 <= d;\n    r1 <= r0;\n    r2 <= r1;\n    r3 <= r2;\n    r4 <= r3;\n    r5 <= r4;\n    r6 <= r5;\n    r7 <= r6;\n    q <= r7;\n  end\nendmodule",
+      "rtl_raw_sha256": "741d0c4c8ae187e020c62c59b8bc414ac043e8c3222474d7b9bd1d7d823ebe6e",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "39/41 mismatches",
+      "raw_completion": "// 8-stage pipeline, with registers named explicitly (no array or\n// generate-generated named registers). Triggered on positive edge of clock.\nmodule TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n    end\n    assign q = r7;\nendmodule",
+      "raw_completion_raw_sha256": "19f03f3d25ce82a247e9c1ae881dd784a31f33217e94119bc22a734e5511e8cb",
+      "rtl": "module TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n    end\n    assign q = r7;\nendmodule",
+      "rtl_raw_sha256": "c367f9d2cf060633313f28e8776a6af924e0d269a6f3d72210f3ee288f9a6ee7",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:16: error: q is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 8-stage pipeline stage, with register at the end. Same as the original\n// stage, but with an extra register at the end (the register on the\n// right-hand side of the stage).\nmodule TopModule(\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n        q <= r7;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "463c55b861e47364257937f40abc3d1a2068fab9bebd3add3d630dbc81aeb966",
+      "rtl": "module TopModule(\n    input  clk,\n    input  [7:0] d,\n    output [7:0] q\n);\n    reg [7:0] r0, r1, r2, r3, r4, r5, r6, r7;\n    always @(posedge clk) begin\n        r0 <= d;\n        r1 <= r0;\n        r2 <= r1;\n        r3 <= r2;\n        r4 <= r3;\n        r5 <= r4;\n        r6 <= r5;\n        r7 <= r6;\n        q <= r7;\n    end\nendmodule",
+      "rtl_raw_sha256": "61d9b55c73a85562af308a622ee2fda213ae4c1ecc2d7946ffb3874383e9e910",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "39/41 mismatches",
+      "raw_completion": "// 8-stage pipeline with one register per stage, with registers named by the\n// stage number (reg0 is the input, reg8 is the output). All registers are\n// clocked explicitly.\nmodule TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] reg0;\n    reg [7:0] reg1;\n    reg [7:0] reg2;\n    reg [7:0] reg3;\n    reg [7:0] reg4;\n    reg [7:0] reg5;\n    reg [7:0] reg6;\n    reg [7:0] reg7;\n    always @(posedge clk) reg0 <= d;\n    always @(posedge clk) reg1 <= reg0;\n    always @(posedge clk) reg2 <= reg1;\n    always @(posedge clk) reg3 <= reg2;\n    always @(posedge clk) reg4 <= reg3;\n    always @(posedge clk) reg5 <= reg4;\n    always @(posedge clk) reg6 <= reg5;\n    always @(posedge clk) reg7 <= reg6;\n    assign q = reg7;\nendmodule",
+      "raw_completion_raw_sha256": "bb0b9c7a34f9c29beea68b5c67b17369aa09a5209076794333d9a119b6de985d",
+      "rtl": "module TopModule(input clk, input [7:0] d, output [7:0] q);\n    reg [7:0] reg0;\n    reg [7:0] reg1;\n    reg [7:0] reg2;\n    reg [7:0] reg3;\n    reg [7:0] reg4;\n    reg [7:0] reg5;\n    reg [7:0] reg6;\n    reg [7:0] reg7;\n    always @(posedge clk) reg0 <= d;\n    always @(posedge clk) reg1 <= reg0;\n    always @(posedge clk) reg2 <= reg1;\n    always @(posedge clk) reg3 <= reg2;\n    always @(posedge clk) reg4 <= reg3;\n    always @(posedge clk) reg5 <= reg4;\n    always @(posedge clk) reg6 <= reg5;\n    always @(posedge clk) reg7 <= reg6;\n    assign q = reg7;\nendmodule",
+      "rtl_raw_sha256": "c5c18eb5ff066d28cd1f80fbf894b6f4a6eefdcf767e19499c1f9d9a789521e5",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 16,
+    "fail": 4
+  },
+  "testbench_raw_sha256": "021b074f53d3d1a1fd6982a73d5460a9151f8b6eb9a5f2034ff821835fe94e1b",
+  "training_seed": 2
+}

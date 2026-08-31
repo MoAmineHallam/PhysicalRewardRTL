@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob044_vectorgates",
+  "problem_seed": 3336676549829072692,
+  "prompt_raw_sha256": "ca7e990ab01903f606c956d8af8fb9faf01adf063847560d23e3d99fc10968a7",
+  "reference_raw_sha256": "c985c4e754baf171526e86dd8f130549132e148da7db7e3348c079162d8f8353",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "261/261 mismatches",
+      "raw_completion": "// One-bit OR of two 3-bit vectors (the bitwise form)\nmodule TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or0_out;\n    wire       or1_out;\n    wire [2:0] not0_out;\n    wire [2:0] not1_out;\n    or  #1 (or0_out[0], a[0], b[0]);\n    or  #1 (or0_out[1], a[1], b[1]);\n    or  #1 (or0_out[2], a[2], b[2]);\n    or  #1 (or1_out, a[0] | a[1] | a[2], b[0] | b[1] | b[2]);\n    not #1 (not0_out[0], b[0]);\n    not #1 (not0_out[1], b[1]);\n    not #1 (not0_out[2], b[2]);\n    not #1 (not1_out[0], a[0]);\n    not #1 (not1_out[1], a[1]);\n    not #1 (not1_out[2], a[2]);\n    assign out_or_bitwise = or0_out;\n    assign out_or_logical = or1_out;\n    assign out_not = {not0_out, not1_out};\nendmodule",
+      "raw_completion_raw_sha256": "108405981c2ff3eef27e60d74acc835c575cbc2c0260368568e712a896a3c1d5",
+      "rtl": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or0_out;\n    wire       or1_out;\n    wire [2:0] not0_out;\n    wire [2:0] not1_out;\n    or  #1 (or0_out[0], a[0], b[0]);\n    or  #1 (or0_out[1], a[1], b[1]);\n    or  #1 (or0_out[2], a[2], b[2]);\n    or  #1 (or1_out, a[0] | a[1] | a[2], b[0] | b[1] | b[2]);\n    not #1 (not0_out[0], b[0]);\n    not #1 (not0_out[1], b[1]);\n    not #1 (not0_out[2], b[2]);\n    not #1 (not1_out[0], a[0]);\n    not #1 (not1_out[1], a[1]);\n    not #1 (not1_out[2], a[2]);\n    assign out_or_bitwise = or0_out;\n    assign out_or_logical = or1_out;\n    assign out_not = {not0_out, not1_out};\nendmodule",
+      "rtl_raw_sha256": "c679ace4f51864976d7c7a22ebfe55c9e51929a5f2fe6fa06228d6c48677b1d0",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "raw_completion_raw_sha256": "bd700fdd76fbb90902658527c0960ec9e69126f386db182e3f62c1dbbd0c4dbe",
+      "rtl": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "rtl_raw_sha256": "bd700fdd76fbb90902658527c0960ec9e69126f386db182e3f62c1dbbd0c4dbe",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "raw_completion_raw_sha256": "bd700fdd76fbb90902658527c0960ec9e69126f386db182e3f62c1dbbd0c4dbe",
+      "rtl": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "rtl_raw_sha256": "bd700fdd76fbb90902658527c0960ec9e69126f386db182e3f62c1dbbd0c4dbe",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [2:0] a,\n    input [2:0] b,\n    output [2:0] out_or_bitwise,\n    output out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire or_logical = (a != 0) || (b != 0);\n    wire [5:0] not_inv = {~a, ~b};\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_inv[2:0], not_inv[5:3]};\nendmodule",
+      "raw_completion_raw_sha256": "d843d9b165b439d26d73d8636268cc1a11a85cf8172420cf4242d5fab9401052",
+      "rtl": "module TopModule(\n    input [2:0] a,\n    input [2:0] b,\n    output [2:0] out_or_bitwise,\n    output out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire or_logical = (a != 0) || (b != 0);\n    wire [5:0] not_inv = {~a, ~b};\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_inv[2:0], not_inv[5:3]};\nendmodule",
+      "rtl_raw_sha256": "d843d9b165b439d26d73d8636268cc1a11a85cf8172420cf4242d5fab9401052",
+      "sample_index": 3,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "raw_completion_raw_sha256": "bd700fdd76fbb90902658527c0960ec9e69126f386db182e3f62c1dbbd0c4dbe",
+      "rtl": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "rtl_raw_sha256": "bd700fdd76fbb90902658527c0960ec9e69126f386db182e3f62c1dbbd0c4dbe",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "231/261 mismatches",
+      "raw_completion": "// 3-bit bitwise OR\n// 3-bit logical OR\n// 6-bit NOT of both inputs\nmodule TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output      out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [5:0] not_func = ~(a | b);\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_func[2:0], not_func[5:3]};\nendmodule",
+      "raw_completion_raw_sha256": "2e2c9319f1c6ffe7856ac9586d6ce4889b7854223f76628f3da0e5dd131073ea",
+      "rtl": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output      out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [5:0] not_func = ~(a | b);\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_func[2:0], not_func[5:3]};\nendmodule",
+      "rtl_raw_sha256": "90c5cbae6966411f043995d5fdcfa6669c3c8475a80f7b1c5d41fd42b68c8bc5",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 3-bit bitwise-OR of a and b\n// 3-bit logical-OR of a and b\n// 6-bit inverse of both a and b, split over two 3-bit segments\nmodule TopModule(\n    input [2:0] a,\n    input [2:0] b,\n    output [2:0] out_or_bitwise,\n    output out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [5:0] not_combined = ~({(6){1'b1}} & {a, b});\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_combined[2:0], not_combined[5:3]};\nendmodule",
+      "raw_completion_raw_sha256": "9fb21956f61c4b363cc7b997176f9d146b36bd0edbac56ba6308912908435815",
+      "rtl": "module TopModule(\n    input [2:0] a,\n    input [2:0] b,\n    output [2:0] out_or_bitwise,\n    output out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [5:0] not_combined = ~({(6){1'b1}} & {a, b});\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_combined[2:0], not_combined[5:3]};\nendmodule",
+      "rtl_raw_sha256": "f85871890ab64f10a5d25dcafc85f36b46a78d143965461fa022bc49d74cdc86",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "raw_completion_raw_sha256": "bd700fdd76fbb90902658527c0960ec9e69126f386db182e3f62c1dbbd0c4dbe",
+      "rtl": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "rtl_raw_sha256": "bd700fdd76fbb90902658527c0960ec9e69126f386db182e3f62c1dbbd0c4dbe",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [2:0] a,\n    input [2:0] b,\n    output [2:0] out_or_bitwise,\n    output out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire        or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "raw_completion_raw_sha256": "67a523f16fbaa3fe5ebd4bc511a9e0116f60ee5aaeca7775b2f248e219058408",
+      "rtl": "module TopModule(\n    input [2:0] a,\n    input [2:0] b,\n    output [2:0] out_or_bitwise,\n    output out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire        or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "rtl_raw_sha256": "67a523f16fbaa3fe5ebd4bc511a9e0116f60ee5aaeca7775b2f248e219058408",
+      "sample_index": 8,
+      "status": "PASS"
+    },
+    {
+      "detail": "261/261 mismatches",
+      "raw_completion": "module TopModule (\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = ~(a | b);\n    wire       or_logical = ~(a || b);\n    wire [5:0] not_ = ~(a & b);\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = not_;\nendmodule",
+      "raw_completion_raw_sha256": "4707c1a962de13994cdee80f482712975f859d8d286d219a38f9d4d8c140b272",
+      "rtl": "module TopModule (\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = ~(a | b);\n    wire       or_logical = ~(a || b);\n    wire [5:0] not_ = ~(a & b);\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = not_;\nendmodule",
+      "rtl_raw_sha256": "4707c1a962de13994cdee80f482712975f859d8d286d219a38f9d4d8c140b272",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 3-bit bitwise-OR of two 3-bit inputs (same as logical-OR).\nmodule TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 3'b0) || (b != 3'b0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "raw_completion_raw_sha256": "8f760adfcba50fa15b0145b578c5aceb311809270128a4368eec13a343c79965",
+      "rtl": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 3'b0) || (b != 3'b0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "rtl_raw_sha256": "0b356e1a651d8fe1ed15a82bec7eef346b59fe46e8f300ccc7cc9b4f60e07445",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "219/261 mismatches",
+      "raw_completion": "// 3-bit bitwise-OR, logical-OR, and NOT of two inputs\nmodule TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = ~(~a & ~b);\n    wire       or_logical = (a != 3'b0) || (b != 3'b0);\n    wire [5:0] not_ = ~(a | b);\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = not_;\nendmodule",
+      "raw_completion_raw_sha256": "fee83c4b2d1edb3d6279bb2c80bf670f5c2f463fa0826b6fd8a0ae06f6959410",
+      "rtl": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = ~(~a & ~b);\n    wire       or_logical = (a != 3'b0) || (b != 3'b0);\n    wire [5:0] not_ = ~(a | b);\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = not_;\nendmodule",
+      "rtl_raw_sha256": "3f178f60384ffa80feb436bb952764123f5f565a9396be33aff1ae6adf65bd53",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output      out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "raw_completion_raw_sha256": "b830dc20426ab67305cf250b448b4c85c844e995656a1d0d887eb558a5a58f80",
+      "rtl": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output      out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "rtl_raw_sha256": "b830dc20426ab67305cf250b448b4c85c844e995656a1d0d887eb558a5a58f80",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "raw_completion_raw_sha256": "bd700fdd76fbb90902658527c0960ec9e69126f386db182e3f62c1dbbd0c4dbe",
+      "rtl": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "rtl_raw_sha256": "bd700fdd76fbb90902658527c0960ec9e69126f386db182e3f62c1dbbd0c4dbe",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "raw_completion_raw_sha256": "bd700fdd76fbb90902658527c0960ec9e69126f386db182e3f62c1dbbd0c4dbe",
+      "rtl": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "rtl_raw_sha256": "bd700fdd76fbb90902658527c0960ec9e69126f386db182e3f62c1dbbd0c4dbe",
+      "sample_index": 14,
+      "status": "PASS"
+    },
+    {
+      "detail": "222/261 mismatches",
+      "raw_completion": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [5:0] not_full   = {~a, ~b};\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = not_full;\nendmodule",
+      "raw_completion_raw_sha256": "d9e36af984a1256ff1b537df45767174b9f53a566989a98a526d22827577c40c",
+      "rtl": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [5:0] not_full   = {~a, ~b};\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = not_full;\nendmodule",
+      "rtl_raw_sha256": "d9e36af984a1256ff1b537df45767174b9f53a566989a98a526d22827577c40c",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "222/261 mismatches",
+      "raw_completion": "module TopModule(\n    input [2:0] a,\n    input [2:0] b,\n    output [2:0] out_or_bitwise,\n    output out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [5:0] not_vec = ~({a, b});\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = not_vec;\nendmodule",
+      "raw_completion_raw_sha256": "4ce4b10a3d8f9b2cceb0ce494501778fdac5ed9df65dc3dda3c1e709d07f8b0a",
+      "rtl": "module TopModule(\n    input [2:0] a,\n    input [2:0] b,\n    output [2:0] out_or_bitwise,\n    output out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [5:0] not_vec = ~({a, b});\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = not_vec;\nendmodule",
+      "rtl_raw_sha256": "4ce4b10a3d8f9b2cceb0ce494501778fdac5ed9df65dc3dda3c1e709d07f8b0a",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Bitwise-OR of two 3-bit vectors\n// Logical-OR of two 3-bit vectors\n// Inverse (NOT) of both vectors\nmodule TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "raw_completion_raw_sha256": "d25cf079341b0d8cb0763f5ff736c01f254f1e83a299669e583321989cafbda0",
+      "rtl": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "rtl_raw_sha256": "bd700fdd76fbb90902658527c0960ec9e69126f386db182e3f62c1dbbd0c4dbe",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 3-bit bitwise-OR + logical-OR + NOT chain\nmodule TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "raw_completion_raw_sha256": "69165c46a06d98f3d8c2ea1eba1407f5c3f8f2b0de88a9ba998840ae86d3f3d4",
+      "rtl": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "rtl_raw_sha256": "bd700fdd76fbb90902658527c0960ec9e69126f386db182e3f62c1dbbd0c4dbe",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "raw_completion_raw_sha256": "bd700fdd76fbb90902658527c0960ec9e69126f386db182e3f62c1dbbd0c4dbe",
+      "rtl": "module TopModule(\n    input  [2:0] a,\n    input  [2:0] b,\n    output [2:0] out_or_bitwise,\n    output       out_or_logical,\n    output [5:0] out_not\n);\n    wire [2:0] or_bitwise = a | b;\n    wire       or_logical = (a != 0) || (b != 0);\n    wire [2:0] not_a = ~a;\n    wire [2:0] not_b = ~b;\n    assign out_or_bitwise = or_bitwise;\n    assign out_or_logical = or_logical;\n    assign out_not = {not_b, not_a};\nendmodule",
+      "rtl_raw_sha256": "bd700fdd76fbb90902658527c0960ec9e69126f386db182e3f62c1dbbd0c4dbe",
+      "sample_index": 19,
+      "status": "PASS"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 14,
+    "fail": 6
+  },
+  "testbench_raw_sha256": "1ad5f4ee9503777a728ad9fc2f5fb6dd1807719070c3148bb85e96e29965a940",
+  "training_seed": 0
+}

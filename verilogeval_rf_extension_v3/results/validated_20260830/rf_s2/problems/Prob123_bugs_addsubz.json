@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob123_bugs_addsubz",
+  "problem_seed": 6825234815135809390,
+  "prompt_raw_sha256": "104c8b48752ca525a21220ee6fb2bfad62c6a9b42bf9d1aed3b8810106b089cb",
+  "reference_raw_sha256": "7669a9ce6ae5f5ab094ac215fd29f6891733813ad143488ea3daa22c7477a649",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "4/118 mismatches",
+      "raw_completion": "The bug in the provided module is that the zero flag is set to 1 whenever the output of the adder-subtractor is zero. This is wrong, because if the output is zero, it means the result of the addition/subtraction was zero. The correct behavior should be to set the zero flag to 1 only if the input a and b were the same.\n\nHere is the corrected module:\n\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (a == b)\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "37675712ccd7ad37a8731d35fdeed303c68be77c6ef3c92df5407762bc44ad19",
+      "rtl": "module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (a == b)\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "ab0d87a4e0d13fae9157191a9be37b0bef860cd53d948abf20067fd1a0b1a80e",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "115/118 mismatches",
+      "raw_completion": "The bug is that the zero flag is set to 1 not just when the result is zero,\nbut also when the result is equal to 255 (the maximum unsigned value for an\n8-bit register, which is the maximum value for the adder-subtractor). This\nmeans that the zero flag is set to 1 even when the operation should result in\na non-zero value.\n\nThe following corrected version fixes this bug:\n\n```\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (out == 8'd0)\n              result_is_zero = 1;\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "76b8c3c15b4dc97b710659991eb9173e99453ce1a395824b4584707b036e6df4",
+      "rtl": "module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (out == 8'd0)\n              result_is_zero = 1;\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "32b0d279a2cb526a4ab918e3e80ab50c2ad200ce4b352a664d853d7f70a2eba7",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "The bug is that the `result_is_zero` flag is always set to 1, regardless of the\nvalue of the `out` register. This happens because the zero flag is always set\nwhen the register is read, even if the register contains a non-zero value.\n\nTo fix the bug, we need to change the zero flag to be a registered value, and\nupdate it whenever the `out` register changes. We also need to make sure the\nregister is read after the case statement (to make the flag update happen at the\nright time). Here is the corrected code:\n\n```\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n      reg [7:0] out_reg;\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n          out_reg = out;\n\n          result_is_zero = out_reg == 8'b0;\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "2458db0def2537bbb79b9c91cd6fcfa333789005f54de626233ed2e6000723d5",
+      "rtl": "module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n      reg [7:0] out_reg;\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n          out_reg = out;\n\n          result_is_zero = out_reg == 8'b0;\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "3051f10b2b21d529b206c96bfb542e9f0eaf57e96b986acb77cb4655a76c4933",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "63/118 mismatches",
+      "raw_completion": "The bug is that the \"result_is_zero\" output is set to 1 whenever the\n\"out\" register is 0, no matter whether the operation was addition or\nsubtraction. The intended behavior is that \"result_is_zero\" should only\nbe 1 if the operation was subtraction and the result was 0.\n\nThe corrected module is as follows:\n\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      reg [7:0] sub_result;\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: sub_result = a-b;\n          endcase\n\n          if (do_sub & ~sub_result)\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "46cb8c3e037640bdc5faab976c403f2ca938a0320c95d3f9707ae407bc64dacf",
+      "rtl": "module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      reg [7:0] sub_result;\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: sub_result = a-b;\n          endcase\n\n          if (do_sub & ~sub_result)\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "64962dcceca6ee954fa4c6f0741a279c062d55bc80af8f58acaf3da8fc113b90",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "114/118 mismatches",
+      "raw_completion": "The bug is that the \"result_is_zero\" flag is set to 1 whenever the output\nregister \"out\" is zero, regardless of the operation (add or subtract).\n\nThe correct behavior is to only set \"result_is_zero\" to 1 if the final\nresult is zero, no matter which operation was performed.\n\nThe corrected module is as follows:\n\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      reg [7:0] temp;\n\n      always @(*) begin\n          case (do_sub)\n            0: temp = a+b;\n            1: temp = a-b;\n          endcase\n\n          out = temp;\n          if (~out)\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "b8319bb10f5b581a00e5da3e97069ed8ef2dd9844039daeb85b8a44a8e8e8461",
+      "rtl": "module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      reg [7:0] temp;\n\n      always @(*) begin\n          case (do_sub)\n            0: temp = a+b;\n            1: temp = a-b;\n          endcase\n\n          out = temp;\n          if (~out)\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "411e80f28705bf98ab8e766f4e7dc7ad5fd25f6125ab6973ad753d33888909d9",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "53/118 mismatches",
+      "raw_completion": "The bug is that the zero flag is not set when the result is zero, even though\nthe function returns a 1 in that case. The function should return the\ncomplement of the result instead of the result itself.\n\nHere's the fixed module:\n\n```\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          result_is_zero = ~out;\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "35f9fc29e7c9be17ace13241ee81a1bd59c63c958328366a5026ece378ac7d28",
+      "rtl": "module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          result_is_zero = ~out;\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "27306db90818a28a45803eff06ce23e0b0730af9d50a4db805d0d22c74c8bf50",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "The bug is in the zero flag: if the result is zero, the flag is not set. This is because the flag is only set in a single \"if\" statement that is only called when the result is not zero. To fix the bug, we need to ensure that the flag is set when the result is zero.\n\nHere is the corrected module:\n\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (out == 8'b0)\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "9633abcbe9fa86bf8bfb2829327ecf9f1b2d55c9918539cb1bf7a81fc1c8da58",
+      "rtl": "module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (out == 8'b0)\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "bbd33e2cd0f972fb9e3afed3e79b04db378bdb03987694aaec5f1b05b4c5a91a",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "114/118 mismatches",
+      "raw_completion": "The bug in the original module is that the result_is_zero signal is not reset to 0 when do_sub changes. This means that if you do a subtraction and then immediately switch to addition, the result_is_zero signal will still be set to 1.\n\nThe fixed module is shown below:\n\n```\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (~out)\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "af7183c9bc79ac7c3de51a29bb9ac4e07151bd0236a80d97cc38696237585d25",
+      "rtl": "module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (~out)\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "4c9e1885035068e3eb53414ce582b168fa0303eec93d5d557f7b90f0ded41795",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "115/118 mismatches",
+      "raw_completion": "The bug in the original module is that the zero flag is set even when the result\nis not zero. This is because the if (~out) statement is negating the value of the\noutput, so it becomes 1 when the result is zero, rather than 0.\n\nTo fix the bug, we simply need to remove the tilde (~) from the if statement:\n\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (out == 8'h00)\n              result_is_zero = 1;\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "1becb23f51c6ea6a802afec46caffc274a7d7d2620a408161aeb18f000c803b4",
+      "rtl": "module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (out == 8'h00)\n              result_is_zero = 1;\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "15fbcea58f08a173a27b9d37176604d81eeb18314ecf1746bfaedb0f2cbc363c",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "115/118 mismatches",
+      "raw_completion": "The bug is that the zero flag is only set when the result is zero. However, the\nzero flag should also be set if the result is exactly 0xFF. This is because\nit's an 8-bit value and we can't go higher than 0xFF.\n\nHere's the fixed module:\n\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (~out || out == 8'hFF)\n              result_is_zero = 1;\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "8229cb1bce6859c69ea92698f007072394b69f5afd2c821995e321847ef4869f",
+      "rtl": "module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (~out || out == 8'hFF)\n              result_is_zero = 1;\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "44949cc05362c889a74055be2684fa9830712ea77a9024b92c3c5a5e3ca4e1f5",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "The bug in the original module is that the zero flag is set to 1 whenever the\noutput of the add-sub register is 0, regardless of whether the operation was\naddition or subtraction. This means that if the operation was addition, the zero\nflag will be set to 1, even if the result was not zero. The same applies to\nsubtraction.\n\nTo fix the bug, we need to check the operation (addition or subtraction) and\nonly set the zero flag when the result is 0. Here is the corrected module:\n\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (do_sub)\n              result_is_zero = (out == 8'b0);\n          else\n              result_is_zero = (out == 8'b0);\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "08acd2db4414741d70bb1e50960f497d39d382f6b3b6c6476ec50addbb578e8d",
+      "rtl": "module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (do_sub)\n              result_is_zero = (out == 8'b0);\n          else\n              result_is_zero = (out == 8'b0);\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "8814940648fa5b3997f80e255ac790bfb487dfc1887258c97b01b8bd77a2e291",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "The bug in the module is that the zero flag is incorrectly set to 1 whenever the\nresult of the addition/subtraction is 0. The correct behavior should be to set\nthe zero flag to 1 when the result is 0, and to 0 when the result is any other\nvalue.\n\nThe corrected module is as follows:\n\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (out == 8'b0)\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "b9808ac5be521f79f4a7046f9785ee476381a14ef336e5515630c2f8db3c0abc",
+      "rtl": "module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (out == 8'b0)\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "bbd33e2cd0f972fb9e3afed3e79b04db378bdb03987694aaec5f1b05b4c5a91a",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "2/118 mismatches",
+      "raw_completion": "The bug in the original module is that the result_is_zero flag is set whenever the output register out equals zero, regardless of whether the operation was addition or subtraction. Therefore, if the operation was addition and the result was zero, the flag would incorrectly be set.\n\nTo fix the bug, we need to set the result_is_zero flag only if the operation was a subtraction (do_sub == 1) and the result was zero. In other cases, the flag should not be set.\n\nHere's the corrected module:\n\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (do_sub && (out == 8'b0))\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "25466d61317ce6af0030b74615af733104fd258df5cdc18803570abb3299572f",
+      "rtl": "module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (do_sub && (out == 8'b0))\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "0762e9848c8aeb9ebec29caf8f367267b8c6328def72a8f27101ff32a1b98731",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "115/118 mismatches",
+      "raw_completion": "The bug in the provided module is that it does not properly handle the case when do_sub is 1 (subtract). Specifically, when do_sub is 1, the subtraction should be performed with the operands swapped (i.e., a-b should be replaced with b-a).\n\nHere's the corrected module:\n\n```\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = (do_sub ? b-a : a+b);\n          endcase\n\n          if (~out)\n              result_is_zero = 1;\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "ddbe775ae934e3af7e5f03d7259c4e6c16c156a819a77f2a5e1396ebc3786218",
+      "rtl": "module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = (do_sub ? b-a : a+b);\n          endcase\n\n          if (~out)\n              result_is_zero = 1;\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "60a3a73dfd55063021323b5d6b9d06b810d655e6cc47373da7e9878c44999f7c",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "The bug in the original module is that the zero flag is not correctly set when the result is zero. The correct behavior should be to set the zero flag whenever the output register 'out' is zero.\n\nHere is the corrected version:\n\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          result_is_zero = (out == 8'h00);\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "27458e943c7e8f1c9529ad8f122314545d864027008640d3b96b6c2e9b660ac9",
+      "rtl": "module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          result_is_zero = (out == 8'h00);\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "e38ba7b08ae6a52073547d444e49bcd61d27a03f9ef4e4c5c19b673fa70aadbc",
+      "sample_index": 14,
+      "status": "PASS"
+    },
+    {
+      "detail": "115/118 mismatches",
+      "raw_completion": "The bug is that the zero flag is only set when the result is zero, regardless of whether the operation was an addition or a subtraction. To fix this, we need to set the zero flag when the result is exactly zero, regardless of the operation. Here's the corrected code:\n\n```\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (out == 8'b0)\n              result_is_zero = 1;\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "653b443a8b80122f72c194f050b5f28505e0e9afaa77c2d0a31757010f7d14cf",
+      "rtl": "module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (out == 8'b0)\n              result_is_zero = 1;\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "1e139e270ad0ae925f6bdf420449ad9462d59c5dbd801e02f36d4cfc3faa6092",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "114/118 mismatches",
+      "raw_completion": "The bug is that the zero flag (result_is_zero) does not get reset to 0 when\nthe operation changes. This means that if the operation is changed from add\nto subtract (or vice versa) and the result is zero, the zero flag is still\nset.\n\nTo fix this, we need to reset the zero flag whenever the operation changes.\nThe reset can be done by moving it outside of the always @ (*) block.\n\nThe fixed module is:\n\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n      end\n\n      always @(do_sub, out) begin\n          if (~out)\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "f30230049095ea9ab026e82d2c39cc702e33a61bf591bccf694c9ce235385f7d",
+      "rtl": "module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n      end\n\n      always @(do_sub, out) begin\n          if (~out)\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "37db83b313fbd8ea4de29efb323a844e39bb798ea0216597eac19e4a00cb449c",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "118/118 mismatches",
+      "raw_completion": "The bug in the original module is that the zero flag (result_is_zero) is set to 1 if the result of the addition/subtraction is 0, regardless of the input values. This is because the if (~out) statement is inside the always @(*) block, which means that the zero flag is set at every clock edge, regardless of the input values.\n\nTo fix the bug, we need to move the zero flag setting into a separate always @(posedge clk) block, where clk is the clock input. This ensures that the zero flag is only set once per clock cycle, based on the current input values.\n\nHere is the corrected module:\n\n```\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input clk,\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n      end\n\n      always @(posedge clk) begin\n          if (~out)\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n  endmodule",
+      "raw_completion_raw_sha256": "a6aaa465824eb1ba1db7227f011b29e94ad494cb1db2048d71bfc206dc7fb02f",
+      "rtl": "module TopModule (\n      input clk,\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n      end\n\n      always @(posedge clk) begin\n          if (~out)\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n  endmodule",
+      "rtl_raw_sha256": "8ff9b1f76dff5e074ed05f2500a9f0b488f3eeaa39e0949dd9f09b391b75ef19",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "2/118 mismatches",
+      "raw_completion": "// Fixed version of the adder-subtractor with a zero flag\n// This version changes the behavior of the zero flag to be the same as the\n// standard zero flag (1 if the result is zero, 0 otherwise).\nsynthesis verilog_input_version verilog_2001\nmodule TopModule (\n    input do_sub,\n    input [7:0] a,\n    input [7:0] b,\n    output reg [7:0] out,\n    output reg result_is_zero\n);\n\n    reg [8:0] temp;\n\n    always @(*) begin\n        case (do_sub)\n            0: temp = a+b;\n            1: temp = a-b;\n        endcase\n\n        if (temp == 8'b0)\n            result_is_zero = 1;\n        else\n            result_is_zero = 0;\n\n        out = temp[7:0];\n    end\n\nendmodule",
+      "raw_completion_raw_sha256": "ce40d067b2a663bc481e8376ae18cca005d14f50e882afe685a623a3b79ed26f",
+      "rtl": "module TopModule (\n    input do_sub,\n    input [7:0] a,\n    input [7:0] b,\n    output reg [7:0] out,\n    output reg result_is_zero\n);\n\n    reg [8:0] temp;\n\n    always @(*) begin\n        case (do_sub)\n            0: temp = a+b;\n            1: temp = a-b;\n        endcase\n\n        if (temp == 8'b0)\n            result_is_zero = 1;\n        else\n            result_is_zero = 0;\n\n        out = temp[7:0];\n    end\n\nendmodule",
+      "rtl_raw_sha256": "5bd00d5074ab79523cf3192eaf543bce80b6353062d05947235e3dd932bcc2e5",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "114/118 mismatches",
+      "raw_completion": "The bug is that the result_is_zero signal is not reset to 0 when the do_sub\ninput changes. This means that if you switch from adding to subtracting, the\nresult_is_zero signal will still be set to 1 for the previous operation, even\nthough the result is now 0.\n\nHere's the fixed module:\n\n```\n  synthesis verilog_input_version verilog_2001\n  module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (~out)\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n\n  endmodule",
+      "raw_completion_raw_sha256": "6e43428cac51b3a0a28cfd9a356b60d792f133776bd5856cd11d163f4e22ca62",
+      "rtl": "module TopModule (\n      input do_sub,\n      input [7:0] a,\n      input [7:0] b,\n      output reg [7:0] out,\n      output reg result_is_zero\n  );\n\n      always @(*) begin\n          case (do_sub)\n            0: out = a+b;\n            1: out = a-b;\n          endcase\n\n          if (~out)\n              result_is_zero = 1;\n          else\n              result_is_zero = 0;\n      end\n\n  endmodule",
+      "rtl_raw_sha256": "4c9e1885035068e3eb53414ce582b168fa0303eec93d5d557f7b90f0ded41795",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 5,
+    "fail": 15
+  },
+  "testbench_raw_sha256": "b3259685e3ac8b6f30533fb60c7758738d92db8b5e12e792208ec114c792e182",
+  "training_seed": 2
+}

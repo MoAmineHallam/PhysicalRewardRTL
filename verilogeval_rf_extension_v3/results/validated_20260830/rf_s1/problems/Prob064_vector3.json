@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob064_vector3",
+  "problem_seed": 1577585007136314213,
+  "prompt_raw_sha256": "ff98e7fba9109a1736b495bc5a2b9fe1c5e8f058e97fe511ecf1cb330c5b1da9",
+  "reference_raw_sha256": "8bc8223b5ae69ce879121668936bcf71d42baf79e2b5c85f99203e19352c6cb8",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "// Concatenate the input vectors together and split them up into several\n// output vectors. The input vectors are a, b, c, d, e, and f, for a total\n// of 30 bits of input. The output vectors are w, x, y, and z, for 32 bits\n// of output. The output should be a concatenation of the input vectors\n// followed by two 1 bits (the two 1 bits should be in the LSB positions).\nmodule TopModule(\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] combined = {a, b, c, d, e, f};\n    assign {w, x, y, z} = {combined, 2'b11};\nendmodule",
+      "raw_completion_raw_sha256": "e77667c43da2c7e1e691e2e9d4f7e98fb693dc416bf7b2d3a9d8c65c67af8f12",
+      "rtl": "module TopModule(\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] combined = {a, b, c, d, e, f};\n    assign {w, x, y, z} = {combined, 2'b11};\nendmodule",
+      "rtl_raw_sha256": "b1532744fac8dac1f590cf89b1611eca63fa656372c2041f5f537337273b69a4",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "123/126 mismatches",
+      "raw_completion": "// Concatenate inputs, split into 8-bit words and append two 1 bits.\nmodule TopModule(\n    input  [4:0] a,\n    input  [4:0] b,\n    input  [4:0] c,\n    input  [4:0] d,\n    input  [4:0] e,\n    input  [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] concat = 30'd0;\n    assign concat = {a, b, c, d, e, f};\n    assign {w, x, y, z} = {concat, 2'b11};\nendmodule",
+      "raw_completion_raw_sha256": "6b111f2213cbd4f7122aa132c8f2905223eaa110b39b7bc4e533a407a78cd1d1",
+      "rtl": "module TopModule(\n    input  [4:0] a,\n    input  [4:0] b,\n    input  [4:0] c,\n    input  [4:0] d,\n    input  [4:0] e,\n    input  [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] concat = 30'd0;\n    assign concat = {a, b, c, d, e, f};\n    assign {w, x, y, z} = {concat, 2'b11};\nendmodule",
+      "rtl_raw_sha256": "0f2854d51f5da03d336275f62a0761bc01bdaf8c153f56fe0578c579f81a41a4",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "126/126 mismatches",
+      "raw_completion": "module TopModule (\n    input  [4:0] a,\n    input  [4:0] b,\n    input  [4:0] c,\n    input  [4:0] d,\n    input  [4:0] e,\n    input  [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] combined = 30'd0;\n    assign combined = {a, b, c, d, e, f};\n    assign w = combined[7:0];\n    assign x = combined[15:8];\n    assign y = combined[23:16];\n    assign z = combined[31:24];\nendmodule",
+      "raw_completion_raw_sha256": "89bc0118806ce4e9e0388084ab025974138b67a6f881a2148eb7b232e52fc2b0",
+      "rtl": "module TopModule (\n    input  [4:0] a,\n    input  [4:0] b,\n    input  [4:0] c,\n    input  [4:0] d,\n    input  [4:0] e,\n    input  [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] combined = 30'd0;\n    assign combined = {a, b, c, d, e, f};\n    assign w = combined[7:0];\n    assign x = combined[15:8];\n    assign y = combined[23:16];\n    assign z = combined[31:24];\nendmodule",
+      "rtl_raw_sha256": "89bc0118806ce4e9e0388084ab025974138b67a6f881a2148eb7b232e52fc2b0",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "126/126 mismatches",
+      "raw_completion": "// Concatenate the input vectors and split them into several output vectors.\nmodule TopModule (\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] concat = {a, b, c, d, e, f};\n    assign w = concat[7:0];\n    assign x = concat[15:8];\n    assign y = concat[23:16];\n    assign z = concat[31:24];\nendmodule",
+      "raw_completion_raw_sha256": "c2e899e50baf5ac6cc71e95a657f638cdeea289108b8c62d24940ef1faf38769",
+      "rtl": "module TopModule (\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] concat = {a, b, c, d, e, f};\n    assign w = concat[7:0];\n    assign x = concat[15:8];\n    assign y = concat[23:16];\n    assign z = concat[31:24];\nendmodule",
+      "rtl_raw_sha256": "e3b69059580e392c45fcc76ff74ad537f279a4f39babbe417f75aee2fde89978",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "126/126 mismatches",
+      "raw_completion": "module TopModule(\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] i0;\n    assign i0 = {a, b, c, d, e, f};\n    assign w = i0[7:0];\n    assign x = i0[15:8];\n    assign y = i0[23:16];\n    assign z = i0[31:24];\nendmodule",
+      "raw_completion_raw_sha256": "77a95ac3825efbe4047672456c9cea4fdefd78cba64e069f0402c88d9bff5e3b",
+      "rtl": "module TopModule(\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] i0;\n    assign i0 = {a, b, c, d, e, f};\n    assign w = i0[7:0];\n    assign x = i0[15:8];\n    assign y = i0[23:16];\n    assign z = i0[31:24];\nendmodule",
+      "rtl_raw_sha256": "77a95ac3825efbe4047672456c9cea4fdefd78cba64e069f0402c88d9bff5e3b",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "126/126 mismatches",
+      "raw_completion": "module TopModule (\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output reg [7:0] w,\n    output reg [7:0] x,\n    output reg [7:0] y,\n    output reg [7:0] z\n);\n    reg [29:0] in;\n    always @(*) begin\n        in = {a, b, c, d, e, f};\n        {w, x, y, z} = {in[7:0], in[15:8], in[23:16], in[31:24]};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "04e290fd18f687a085244027f37899f087b91303c68f63ceb5484496dbd066d5",
+      "rtl": "module TopModule (\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output reg [7:0] w,\n    output reg [7:0] x,\n    output reg [7:0] y,\n    output reg [7:0] z\n);\n    reg [29:0] in;\n    always @(*) begin\n        in = {a, b, c, d, e, f};\n        {w, x, y, z} = {in[7:0], in[15:8], in[23:16], in[31:24]};\n    end\nendmodule",
+      "rtl_raw_sha256": "04e290fd18f687a085244027f37899f087b91303c68f63ceb5484496dbd066d5",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "126/126 mismatches",
+      "raw_completion": "// Concatenate the input vectors together, then split them up into four\n// output vectors.\nmodule TopModule (\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output reg [7:0] w,\n    output reg [7:0] x,\n    output reg [7:0] y,\n    output reg [7:0] z\n);\n    reg [29:0] all_inputs = {a, b, c, d, e, f};\n    always @(*) begin\n        {w, x, y, z} = all_inputs[29:0];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a6075f3fe4aca65bc8fa8b96e5f2dd74622e0158a4691ef669da6a7dc5de2831",
+      "rtl": "module TopModule (\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output reg [7:0] w,\n    output reg [7:0] x,\n    output reg [7:0] y,\n    output reg [7:0] z\n);\n    reg [29:0] all_inputs = {a, b, c, d, e, f};\n    always @(*) begin\n        {w, x, y, z} = all_inputs[29:0];\n    end\nendmodule",
+      "rtl_raw_sha256": "c77a3b6353156bac1d5fa4d661ec64b92674dd9b34a9742248a1eea031557182",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "126/126 mismatches",
+      "raw_completion": "module TopModule (\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output reg [7:0] w,\n    output reg [7:0] x,\n    output reg [7:0] y,\n    output reg [7:0] z\n);\n    reg [29:0] in;\n    always @* begin\n        in = {a, b, c, d, e, f};\n        w = in[7:0];\n        x = in[15:8];\n        y = in[23:16];\n        z = in[31:24];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "9e4143f6fbac2313d70b5548ea701327e2b3acacc0cb10cabefab8d79e4b6d9a",
+      "rtl": "module TopModule (\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output reg [7:0] w,\n    output reg [7:0] x,\n    output reg [7:0] y,\n    output reg [7:0] z\n);\n    reg [29:0] in;\n    always @* begin\n        in = {a, b, c, d, e, f};\n        w = in[7:0];\n        x = in[15:8];\n        y = in[23:16];\n        z = in[31:24];\n    end\nendmodule",
+      "rtl_raw_sha256": "9e4143f6fbac2313d70b5548ea701327e2b3acacc0cb10cabefab8d79e4b6d9a",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "126/126 mismatches",
+      "raw_completion": "module TopModule (\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output reg [7:0] w,\n    output reg [7:0] x,\n    output reg [7:0] y,\n    output reg [7:0] z\n);\n    reg [29:0] i;\n    always @(*) begin\n        i = {a, b, c, d, e, f, 2'b11};\n        {w, x, y, z} = i[7:0] + i[15:8] + i[23:16] + i[31:24];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "74b02b285962f462dcb03adb26e1d0006ac84a0f567a1f7269a5547067c59a44",
+      "rtl": "module TopModule (\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output reg [7:0] w,\n    output reg [7:0] x,\n    output reg [7:0] y,\n    output reg [7:0] z\n);\n    reg [29:0] i;\n    always @(*) begin\n        i = {a, b, c, d, e, f, 2'b11};\n        {w, x, y, z} = i[7:0] + i[15:8] + i[23:16] + i[31:24];\n    end\nendmodule",
+      "rtl_raw_sha256": "74b02b285962f462dcb03adb26e1d0006ac84a0f567a1f7269a5547067c59a44",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "126/126 mismatches",
+      "raw_completion": "module TopModule(\n    input  [4:0] a,\n    input  [4:0] b,\n    input  [4:0] c,\n    input  [4:0] d,\n    input  [4:0] e,\n    input  [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] in = {a, b, c, d, e, f};\n    assign w = in[7:0];\n    assign x = in[15:8];\n    assign y = in[23:16];\n    assign z = in[31:24];\nendmodule",
+      "raw_completion_raw_sha256": "0a276f153cdf99663615fbf4fc26dd7faf32efbd559e68786e664db15447e11e",
+      "rtl": "module TopModule(\n    input  [4:0] a,\n    input  [4:0] b,\n    input  [4:0] c,\n    input  [4:0] d,\n    input  [4:0] e,\n    input  [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] in = {a, b, c, d, e, f};\n    assign w = in[7:0];\n    assign x = in[15:8];\n    assign y = in[23:16];\n    assign z = in[31:24];\nendmodule",
+      "rtl_raw_sha256": "0a276f153cdf99663615fbf4fc26dd7faf32efbd559e68786e664db15447e11e",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "126/126 mismatches",
+      "raw_completion": "// Concatenate the input vectors together then split them up into several\n// output vectors.\nmodule TopModule (\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output reg [7:0] w,\n    output reg [7:0] x,\n    output reg [7:0] y,\n    output reg [7:0] z\n);\n    reg [29:0] in;\n    always @(*) in = {a, b, c, d, e, f};\n    always @(*) begin\n        w = in[7:0];\n        x = in[15:8];\n        y = in[23:16];\n        z = in[31:24];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "d7e1496428cd8dcf8880059e1e815b165a2a6ababb568c8a2a7b8f0af128df63",
+      "rtl": "module TopModule (\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output reg [7:0] w,\n    output reg [7:0] x,\n    output reg [7:0] y,\n    output reg [7:0] z\n);\n    reg [29:0] in;\n    always @(*) in = {a, b, c, d, e, f};\n    always @(*) begin\n        w = in[7:0];\n        x = in[15:8];\n        y = in[23:16];\n        z = in[31:24];\n    end\nendmodule",
+      "rtl_raw_sha256": "f08cd577a3b4095dbeb6335e5642fbe4108df1ce125bcde31fdff8a0aa3b6b45",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "126/126 mismatches",
+      "raw_completion": "// 5-bit input vectors, concatenated and split into 8-bit output vectors.\n// The two 1-bits are always in the LSB positions.\nmodule TopModule(\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] i0 = 30'd0;\n    wire [29:0] i1 = {a, b, c, d, e, f};\n    assign w = i1[7:0];\n    assign x = i1[15:8];\n    assign y = i1[23:16];\n    assign z = i1[31:24];\nendmodule",
+      "raw_completion_raw_sha256": "b5af1d4afd6c8c371d86ba96b1a120450dbae7c3100c7bba80bc50d2fd4b41b9",
+      "rtl": "module TopModule(\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] i0 = 30'd0;\n    wire [29:0] i1 = {a, b, c, d, e, f};\n    assign w = i1[7:0];\n    assign x = i1[15:8];\n    assign y = i1[23:16];\n    assign z = i1[31:24];\nendmodule",
+      "rtl_raw_sha256": "e10d38c2329a150a0fb0b29629212cc3f94348a10a8e6f9df53a3d98c7fa1ebf",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "126/126 mismatches",
+      "raw_completion": "// Concatenate all inputs and split them into four output vectors.\nmodule TopModule (\n    input  [4:0] a,\n    input  [4:0] b,\n    input  [4:0] c,\n    input  [4:0] d,\n    input  [4:0] e,\n    input  [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] all_inputs = {a, b, c, d, e, f};\n    assign w = all_inputs[7:0];\n    assign x = all_inputs[15:8];\n    assign y = all_inputs[23:16];\n    assign z = all_inputs[31:24];\nendmodule",
+      "raw_completion_raw_sha256": "ad7c345dda10e8f514a1c596e60b15e1dfb585a128fe8414043d1f1c8af8d16f",
+      "rtl": "module TopModule (\n    input  [4:0] a,\n    input  [4:0] b,\n    input  [4:0] c,\n    input  [4:0] d,\n    input  [4:0] e,\n    input  [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] all_inputs = {a, b, c, d, e, f};\n    assign w = all_inputs[7:0];\n    assign x = all_inputs[15:8];\n    assign y = all_inputs[23:16];\n    assign z = all_inputs[31:24];\nendmodule",
+      "rtl_raw_sha256": "b8255faf58de54970b139475de78fce22a7eba06699c6a76192cdb7a12ae1a0c",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "126/126 mismatches",
+      "raw_completion": "module TopModule(\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] i0;\n    assign i0 = {a, b, c, d, e, f};\n    assign w = i0[7:0];\n    assign x = i0[15:8];\n    assign y = i0[23:16];\n    assign z = i0[31:24];\nendmodule",
+      "raw_completion_raw_sha256": "77a95ac3825efbe4047672456c9cea4fdefd78cba64e069f0402c88d9bff5e3b",
+      "rtl": "module TopModule(\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] i0;\n    assign i0 = {a, b, c, d, e, f};\n    assign w = i0[7:0];\n    assign x = i0[15:8];\n    assign y = i0[23:16];\n    assign z = i0[31:24];\nendmodule",
+      "rtl_raw_sha256": "77a95ac3825efbe4047672456c9cea4fdefd78cba64e069f0402c88d9bff5e3b",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "126/126 mismatches",
+      "raw_completion": "module TopModule(\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output reg [7:0] w,\n    output reg [7:0] x,\n    output reg [7:0] y,\n    output reg [7:0] z\n);\n    reg [29:0] in;\n    always @(*) begin\n        in = {a, b, c, d, e, f};\n        {w, x, y, z} = {in[7:0], in[15:8], in[23:16], in[31:24]};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "c44d5a8707f20307cceee58d211eaf4dc8ca6641b94e9b54dd50ebc3383f56b9",
+      "rtl": "module TopModule(\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output reg [7:0] w,\n    output reg [7:0] x,\n    output reg [7:0] y,\n    output reg [7:0] z\n);\n    reg [29:0] in;\n    always @(*) begin\n        in = {a, b, c, d, e, f};\n        {w, x, y, z} = {in[7:0], in[15:8], in[23:16], in[31:24]};\n    end\nendmodule",
+      "rtl_raw_sha256": "c44d5a8707f20307cceee58d211eaf4dc8ca6641b94e9b54dd50ebc3383f56b9",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "126/126 mismatches",
+      "raw_completion": "module TopModule (\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] in = {a, b, c, d, e, f};\n    assign w = in[7:0];\n    assign x = in[15:8];\n    assign y = in[23:16];\n    assign z = in[31:24];\nendmodule",
+      "raw_completion_raw_sha256": "e42a9d6247146f95827c68e03b9052da41d2b9e7890d8f80cab5a9c81535d35f",
+      "rtl": "module TopModule (\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] in = {a, b, c, d, e, f};\n    assign w = in[7:0];\n    assign x = in[15:8];\n    assign y = in[23:16];\n    assign z = in[31:24];\nendmodule",
+      "rtl_raw_sha256": "e42a9d6247146f95827c68e03b9052da41d2b9e7890d8f80cab5a9c81535d35f",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "126/126 mismatches",
+      "raw_completion": "// Concatenate inputs and split into outputs\nmodule TopModule(\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output reg [7:0] w,\n    output reg [7:0] x,\n    output reg [7:0] y,\n    output reg [7:0] z\n);\n    wire [29:0] in = {a, b, c, d, e, f};\n    always @(*) begin\n        {w, x, y, z} = {in[7:0], in[15:8], in[23:16], in[31:24], 1'b1, 1'b1};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "8cf8d9a0c355c7acb2b990f4b58544407727d58c40a38e25b73f32ea338e7373",
+      "rtl": "module TopModule(\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output reg [7:0] w,\n    output reg [7:0] x,\n    output reg [7:0] y,\n    output reg [7:0] z\n);\n    wire [29:0] in = {a, b, c, d, e, f};\n    always @(*) begin\n        {w, x, y, z} = {in[7:0], in[15:8], in[23:16], in[31:24], 1'b1, 1'b1};\n    end\nendmodule",
+      "rtl_raw_sha256": "5fd429f7e0448645e3dc4f747e18b9ad76a14a93a3f0633a944cd9ae78e5c252",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "126/126 mismatches",
+      "raw_completion": "// Concatenate the input vectors and split them into the output vectors.\nmodule TopModule(\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output reg [7:0] w,\n    output reg [7:0] x,\n    output reg [7:0] y,\n    output reg [7:0] z\n);\n    wire [29:0] bus = 30'd0;\n    assign bus = {a, b, c, d, e, f};\n    always @(*) begin\n        {w, x, y, z} = bus[29:0];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "20d73f7c5329776902da23532071502d9e58d0d1f32f5fb58561fc2722815b69",
+      "rtl": "module TopModule(\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output reg [7:0] w,\n    output reg [7:0] x,\n    output reg [7:0] y,\n    output reg [7:0] z\n);\n    wire [29:0] bus = 30'd0;\n    assign bus = {a, b, c, d, e, f};\n    always @(*) begin\n        {w, x, y, z} = bus[29:0];\n    end\nendmodule",
+      "rtl_raw_sha256": "abf3427298f2ef1c439f42fecc9b5f00f06b45adb5e64ce4d8c8ee7adeb81b7d",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "126/126 mismatches",
+      "raw_completion": "module TopModule (\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] in = {a, b, c, d, e, f};\n    assign {w, x, y, z} = {in, 2'b10};\nendmodule",
+      "raw_completion_raw_sha256": "31921ab568fe4badba0a43d87ebd2483c4fa871bc342f4dfd828d9e2822994d0",
+      "rtl": "module TopModule (\n    input [4:0] a,\n    input [4:0] b,\n    input [4:0] c,\n    input [4:0] d,\n    input [4:0] e,\n    input [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] in = {a, b, c, d, e, f};\n    assign {w, x, y, z} = {in, 2'b10};\nendmodule",
+      "rtl_raw_sha256": "31921ab568fe4badba0a43d87ebd2483c4fa871bc342f4dfd828d9e2822994d0",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "126/126 mismatches",
+      "raw_completion": "// Concatenate the input vectors and split them into the output vectors.\nmodule TopModule (\n    input  [4:0] a,\n    input  [4:0] b,\n    input  [4:0] c,\n    input  [4:0] d,\n    input  [4:0] e,\n    input  [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] i0;\n    assign i0 = {a, b, c, d, e, f};\n    assign w = i0[7:0];\n    assign x = i0[15:8];\n    assign y = i0[23:16];\n    assign z = i0[31:24];\nendmodule",
+      "raw_completion_raw_sha256": "5d7108c84081492a1155ce1af4b8c689a2a2fed7d055fc78bcfc136a07d91c13",
+      "rtl": "module TopModule (\n    input  [4:0] a,\n    input  [4:0] b,\n    input  [4:0] c,\n    input  [4:0] d,\n    input  [4:0] e,\n    input  [4:0] f,\n    output [7:0] w,\n    output [7:0] x,\n    output [7:0] y,\n    output [7:0] z\n);\n    wire [29:0] i0;\n    assign i0 = {a, b, c, d, e, f};\n    assign w = i0[7:0];\n    assign x = i0[15:8];\n    assign y = i0[23:16];\n    assign z = i0[31:24];\nendmodule",
+      "rtl_raw_sha256": "3b897d3cbd9e222ac2165e378b5be63185dfac0fde2ea4023be36a460e35b19e",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 1,
+    "fail": 19
+  },
+  "testbench_raw_sha256": "d2f4468430bdd9224cf9552ab3f9c74967d96acd6b78521002f7a3fd47ae14be",
+  "training_seed": 1
+}

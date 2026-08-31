@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob058_alwaysblock2",
+  "problem_seed": 5030046644898788654,
+  "prompt_raw_sha256": "8332e8ca609d6e36cce74d514ec19ba122bfb23fa6c25d0242ba9f1dcc37bfbe",
+  "reference_raw_sha256": "392bc7b761c4c825747e1b85b0dcb9ebb37a6ef14844f807daf992ddd56bf7b6",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "<TMP>/candidate.sv:13: error: out_always_comb is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    wire xor1 = a ^ b;\n    wire xor2 = a ^ b;\n    wire xor3 = a ^ b;\n    assign out_assign = xor1 ^ xor2 ^ xor3;\n    always @(*) out_always_comb = xor1 ^ xor2 ^ xor3;\n    reg out_reg;\n    always @(posedge clk) out_reg <= xor1 ^ xor2 ^ xor3;\n    assign out_always_ff = out_reg;\nendmodule",
+      "raw_completion_raw_sha256": "87ab45503a80c3734255053ba518c8b60188251979219072216d58c78dfc92dd",
+      "rtl": "module TopModule (\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    wire xor1 = a ^ b;\n    wire xor2 = a ^ b;\n    wire xor3 = a ^ b;\n    assign out_assign = xor1 ^ xor2 ^ xor3;\n    always @(*) out_always_comb = xor1 ^ xor2 ^ xor3;\n    reg out_reg;\n    always @(posedge clk) out_reg <= xor1 ^ xor2 ^ xor3;\n    assign out_always_ff = out_reg;\nendmodule",
+      "rtl_raw_sha256": "87ab45503a80c3734255053ba518c8b60188251979219072216d58c78dfc92dd",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:13: error: out_always_comb is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    wire xor1 = a ^ b;\n    assign out_assign = xor1;\n\n    wire xor2 = a ^ b;\n    always @(*) out_always_comb = xor2;\n\n    reg out_ff;\n    always @(posedge clk) out_ff <= a ^ b;\n    assign out_always_ff = out_ff;\nendmodule",
+      "raw_completion_raw_sha256": "667e23abd8b90fd3259689ee888ebb772f7d148568a32bafdc71425dbb9f6599",
+      "rtl": "module TopModule(\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    wire xor1 = a ^ b;\n    assign out_assign = xor1;\n\n    wire xor2 = a ^ b;\n    always @(*) out_always_comb = xor2;\n\n    reg out_ff;\n    always @(posedge clk) out_ff <= a ^ b;\n    assign out_always_ff = out_ff;\nendmodule",
+      "rtl_raw_sha256": "667e23abd8b90fd3259689ee888ebb772f7d148568a32bafdc71425dbb9f6599",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:11: error: out_always_comb is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    wire xor1 = a ^ b;\n    assign out_assign = xor1;\n    always @(*) out_always_comb = xor1;\n    reg out_ff;\n    always @(posedge clk) out_ff <= xor1;\n    assign out_always_ff = out_ff;\nendmodule",
+      "raw_completion_raw_sha256": "0f4a852464991c36ef5130ba82f069342bc4552e5b1b034eb70ec820de93687b",
+      "rtl": "module TopModule (\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    wire xor1 = a ^ b;\n    assign out_assign = xor1;\n    always @(*) out_always_comb = xor1;\n    reg out_ff;\n    always @(posedge clk) out_ff <= xor1;\n    assign out_always_ff = out_ff;\nendmodule",
+      "rtl_raw_sha256": "0f4a852464991c36ef5130ba82f069342bc4552e5b1b034eb70ec820de93687b",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:13: error: out_always_comb is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    wire xor_assign = a ^ b;\n    assign out_assign = xor_assign;\n    wire xor_always_comb = a ^ b;\n    always @(*) begin\n        out_always_comb = xor_always_comb;\n    end\n    reg xor_always_ff;\n    always @(posedge clk) begin\n        xor_always_ff <= a ^ b;\n    end\n    assign out_always_ff = xor_always_ff;\nendmodule",
+      "raw_completion_raw_sha256": "e7bcb396217c95c2c01aeb4d99c911167356b11bfcbec3efe0764c3016956361",
+      "rtl": "module TopModule(\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    wire xor_assign = a ^ b;\n    assign out_assign = xor_assign;\n    wire xor_always_comb = a ^ b;\n    always @(*) begin\n        out_always_comb = xor_always_comb;\n    end\n    reg xor_always_ff;\n    always @(posedge clk) begin\n        xor_always_ff <= a ^ b;\n    end\n    assign out_always_ff = xor_always_ff;\nendmodule",
+      "rtl_raw_sha256": "e7bcb396217c95c2c01aeb4d99c911167356b11bfcbec3efe0764c3016956361",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob058_alwaysblock2_test.sv:100: error: port ``out_always_comb'' is not a port of top_module1.",
+      "raw_completion": "// One-bit XOR, using an assign statement\nmodule TopModule(input  clk, input  a, input  b, output out_assign);\n    assign out_assign = a ^ b;\n// One-bit XOR, using a combinational always block\n    always @(*) out_always_comb = a ^ b;\n// One-bit XOR, using a clocked always block (produces a different\n// circuit: the output is delayed)\n    reg out_ff;\n    always @(posedge clk) out_ff <= a ^ b;\n    assign out_always_ff = out_ff;\nendmodule",
+      "raw_completion_raw_sha256": "9b654876dac180fd38d0f631bc6a01a78162050e28569924c7c0c917fae55aa1",
+      "rtl": "module TopModule(input  clk, input  a, input  b, output out_assign);\n    assign out_assign = a ^ b;\n// One-bit XOR, using a combinational always block\n    always @(*) out_always_comb = a ^ b;\n// One-bit XOR, using a clocked always block (produces a different\n// circuit: the output is delayed)\n    reg out_ff;\n    always @(posedge clk) out_ff <= a ^ b;\n    assign out_always_ff = out_ff;\nendmodule",
+      "rtl_raw_sha256": "96afdb29d36d4f45078e5c6c6b4e5927a2705142d944073d32e3fda41bff93c2",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob058_alwaysblock2_test.sv:100: error: port ``out_always_comb'' is not a port of top_module1.",
+      "raw_completion": "// One-bit XOR gate, implemented in an assign statement.\n// Delay: 0 (ideal combinational circuit)\nmodule TopModule(input clk, input a, input b, output reg out_assign);\n    always @(*) out_assign = a ^ b;\nendmodule",
+      "raw_completion_raw_sha256": "985fb4bd1f8a8979112139bbe514e81e96020df01261db48f8c2b4eb44f6d1eb",
+      "rtl": "module TopModule(input clk, input a, input b, output reg out_assign);\n    always @(*) out_assign = a ^ b;\nendmodule",
+      "rtl_raw_sha256": "fcb2048b3256c445254b235aaa52e558e8498b195f0dbfbbf24f05fcd8d66110",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob058_alwaysblock2_test.sv:100: error: port ``out_always_comb'' is not a port of top_module1.",
+      "raw_completion": "// One-bit XOR gate, implemented with an assign statement.\nmodule TopModule(input clk, input a, input b, output out_assign);\n    assign out_assign = a ^ b;\nendmodule",
+      "raw_completion_raw_sha256": "e616812abc9a5574e00f5d60e7bc7a6b81668599d95e215cf6b58af9a964feaa",
+      "rtl": "module TopModule(input clk, input a, input b, output out_assign);\n    assign out_assign = a ^ b;\nendmodule",
+      "rtl_raw_sha256": "1281a15d9fecd28d4756fc7876afb12a8cc16a32b135c964a282635672c8b194",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob058_alwaysblock2_test.sv:100: error: port ``out_always_comb'' is not a port of top_module1.",
+      "raw_completion": "// One-bit XOR, implemented in an assign statement\nmodule TopModule(input clk, input a, input b, output reg out_assign);\n    assign out_assign = a ^ b;\nendmodule",
+      "raw_completion_raw_sha256": "8b99439e2fcc7893b6dde0f0995447b5577553f274608b102e185da03048b321",
+      "rtl": "module TopModule(input clk, input a, input b, output reg out_assign);\n    assign out_assign = a ^ b;\nendmodule",
+      "rtl_raw_sha256": "1b299a126efd03b76683232fcf83c2277c1154e1ad646c9eb11e7bab92801802",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:13: error: out_always_comb is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    wire xor1 = a ^ b;\n    wire xor2 = a ^ b;\n    wire xor3 = a ^ b;\n    assign out_assign = xor1 ^ xor2 ^ xor3;\n    always @(*) out_always_comb = xor1 ^ xor2 ^ xor3;\n    reg ff;\n    always @(posedge clk) ff <= a ^ b;\n    assign out_always_ff = ff;\nendmodule",
+      "raw_completion_raw_sha256": "dbdd8a660bdcff8ba34e26ef6d5a7d56cb77857d226dbcbb1d0ff389b962e1dc",
+      "rtl": "module TopModule (\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    wire xor1 = a ^ b;\n    wire xor2 = a ^ b;\n    wire xor3 = a ^ b;\n    assign out_assign = xor1 ^ xor2 ^ xor3;\n    always @(*) out_always_comb = xor1 ^ xor2 ^ xor3;\n    reg ff;\n    always @(posedge clk) ff <= a ^ b;\n    assign out_always_ff = ff;\nendmodule",
+      "rtl_raw_sha256": "dbdd8a660bdcff8ba34e26ef6d5a7d56cb77857d226dbcbb1d0ff389b962e1dc",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit XOR, assigned (the same as a ^ b).\n// Same as a ^ b.\n// Same as (a & ~b) | (~a & b).\n// Same as (a & ~b) | (b & ~a).\n// Same as (a & ~b & ~a) | (~a & b & ~a) | (~a & ~b & a).\n// Same as (0 & ~0 & ~0) | (~0 & 0 & ~0) | (~0 & ~0 & 0).\n// Same as 0.\nmodule TopModule(input clk, input a, input b, output reg out_assign, output reg out_always_comb, output reg out_always_ff);\n    assign out_assign = a ^ b;\n    always @(*) out_always_comb = a ^ b;\n    always @(posedge clk) out_always_ff <= a ^ b;\nendmodule",
+      "raw_completion_raw_sha256": "7ec3dbb479e8aad9c4e238495ff3cb1dfa48ee581fd1f2235815094420cc234a",
+      "rtl": "module TopModule(input clk, input a, input b, output reg out_assign, output reg out_always_comb, output reg out_always_ff);\n    assign out_assign = a ^ b;\n    always @(*) out_always_comb = a ^ b;\n    always @(posedge clk) out_always_ff <= a ^ b;\nendmodule",
+      "rtl_raw_sha256": "c3e5a7b4fe6ab2137e0af5f24d932b4f0e4755d4d308da5f2e8638283140975a",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit XOR gate, assigned (no register, no delay)\n// (same as the combinational always block, Fmax-wise)\n// (the register-less register-less register Fmax: around 900MHz,\n// independent of the input delay -> critical path independent of the\n// register delay -> high Fmax)\nmodule TopModule(input clk, input a, input b, output reg out_assign, output reg out_always_comb, output reg out_always_ff);\n    assign out_assign = a ^ b;\n    always @* out_always_comb = a ^ b;\n    always @(posedge clk) out_always_ff <= a ^ b;\nendmodule",
+      "raw_completion_raw_sha256": "3bffac3f49b9d6fc434c9db1f50d3d04efb6bc28bb97cf98f63353a7bea3b4b6",
+      "rtl": "module TopModule(input clk, input a, input b, output reg out_assign, output reg out_always_comb, output reg out_always_ff);\n    assign out_assign = a ^ b;\n    always @* out_always_comb = a ^ b;\n    always @(posedge clk) out_always_ff <= a ^ b;\nendmodule",
+      "rtl_raw_sha256": "d1c966739bdd33c221477533e0d4766d06051be1c880216781a4a0c8e3dfde3c",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:13: error: out_always_comb is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    wire xor0_out;\n    wire xor1_out;\n    wire xor2_out;\n    assign out_assign = a ^ b;\n    always @(*) out_always_comb = a ^ b;\n    always @(posedge clk) out_always_ff <= a ^ b;\n    assign xor0_out = a ^ b;\n    assign xor1_out = a ^ b;\n    assign xor2_out = a ^ b;\n    always @(posedge clk) begin\n        xor0_out <= a ^ b;\n        xor1_out <= a ^ b;\n        xor2_out <= a ^ b;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "802cac3e601dc8b6a2c2e7f8b9b432d794ff38eb800efaf547aa21ec1215f0c2",
+      "rtl": "module TopModule (\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    wire xor0_out;\n    wire xor1_out;\n    wire xor2_out;\n    assign out_assign = a ^ b;\n    always @(*) out_always_comb = a ^ b;\n    always @(posedge clk) out_always_ff <= a ^ b;\n    assign xor0_out = a ^ b;\n    assign xor1_out = a ^ b;\n    assign xor2_out = a ^ b;\n    always @(posedge clk) begin\n        xor0_out <= a ^ b;\n        xor1_out <= a ^ b;\n        xor2_out <= a ^ b;\n    end\nendmodule",
+      "rtl_raw_sha256": "802cac3e601dc8b6a2c2e7f8b9b432d794ff38eb800efaf547aa21ec1215f0c2",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:16: error: out_always_comb is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    // Functionally equivalent to an XOR gate, implemented with an\n    // assign statement.\n    assign out_assign = a ^ b;\n\n    // Functionally equivalent to an XOR gate, implemented with a combinational\n    // always block.\n    always @(*) begin\n        out_always_comb = a ^ b;\n    end\n\n    // Functionally equivalent to an XOR gate, implemented with a clocked always\n    // block. The flip-flop delays the output by one clock cycle.\n    reg out_ff;\n    always @(posedge clk) begin\n        out_ff <= a ^ b;\n    end\n    assign out_always_ff = out_ff;\nendmodule",
+      "raw_completion_raw_sha256": "aaa0b0edc911aa0883a9fd1c30aa8f068f1d6b134ee82d0043a7eb53132b7fdb",
+      "rtl": "module TopModule (\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    // Functionally equivalent to an XOR gate, implemented with an\n    // assign statement.\n    assign out_assign = a ^ b;\n\n    // Functionally equivalent to an XOR gate, implemented with a combinational\n    // always block.\n    always @(*) begin\n        out_always_comb = a ^ b;\n    end\n\n    // Functionally equivalent to an XOR gate, implemented with a clocked always\n    // block. The flip-flop delays the output by one clock cycle.\n    reg out_ff;\n    always @(posedge clk) begin\n        out_ff <= a ^ b;\n    end\n    assign out_always_ff = out_ff;\nendmodule",
+      "rtl_raw_sha256": "aaa0b0edc911aa0883a9fd1c30aa8f068f1d6b134ee82d0043a7eb53132b7fdb",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob058_alwaysblock2_test.sv:100: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit XOR gate, implemented using an assign statement.\n// (same as the inline one-bit gate, just named)\nmodule XOR_assign (input a, b, output reg out);\n  always @(*) out = a ^ b;\nendmodule",
+      "raw_completion_raw_sha256": "80a2d80212ca9646d1e4a30ed20e3d595043ee7e928a4381f71abb47252c1056",
+      "rtl": "module XOR_assign (input a, b, output reg out);\n  always @(*) out = a ^ b;\nendmodule",
+      "rtl_raw_sha256": "ea22d8647cb8905bba63effe4ec8387d0a3d1de4f6a931b002fa6f4879ff585a",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:4: error: out_always_comb is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit XOR, assigned (same as always combinational, functional\n// equivalent).\nmodule TopModule(input  clk, input  a, input  b, output out_assign, output out_always_comb, output out_always_ff);\n    wire xor1 = a ^ b;\n    assign out_assign = xor1;\n    always @(*) out_always_comb = xor1;\n    reg ff1;\n    always @(posedge clk) ff1 <= a ^ b;\n    assign out_always_ff = ff1;\nendmodule",
+      "raw_completion_raw_sha256": "abb33609d030a8b9fd1bca3ee528f04fcd27dd029aefae6671f37bbecb2e6457",
+      "rtl": "module TopModule(input  clk, input  a, input  b, output out_assign, output out_always_comb, output out_always_ff);\n    wire xor1 = a ^ b;\n    assign out_assign = xor1;\n    always @(*) out_always_comb = xor1;\n    reg ff1;\n    always @(posedge clk) ff1 <= a ^ b;\n    assign out_always_ff = ff1;\nendmodule",
+      "rtl_raw_sha256": "1c4604802103970846cf08988e26d118554a7f30930d58e5bc545709b6fb61b4",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob058_alwaysblock2_test.sv:100: error: port ``out_always_comb'' is not a port of top_module1.",
+      "raw_completion": "// One-bit XOR, implemented in an assign statement\nmodule TopModule(input clk, input a, input b, output reg out_assign);\n    assign out_assign = a ^ b;\nendmodule",
+      "raw_completion_raw_sha256": "8b99439e2fcc7893b6dde0f0995447b5577553f274608b102e185da03048b321",
+      "rtl": "module TopModule(input clk, input a, input b, output reg out_assign);\n    assign out_assign = a ^ b;\nendmodule",
+      "rtl_raw_sha256": "1b299a126efd03b76683232fcf83c2277c1154e1ad646c9eb11e7bab92801802",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob058_alwaysblock2_test.sv:100: error: port ``out_always_comb'' is not a port of top_module1.",
+      "raw_completion": "// One-bit XOR gate, implemented in an assign statement.\nmodule TopModule(input clk, input a, input b, output reg out_assign);\n  always @(*) out_assign = a ^ b;\nendmodule",
+      "raw_completion_raw_sha256": "b293c1a0985bd11feac5d3f39cb925978bf07650b64c75e4dbd04524d1cf2297",
+      "rtl": "module TopModule(input clk, input a, input b, output reg out_assign);\n  always @(*) out_assign = a ^ b;\nendmodule",
+      "rtl_raw_sha256": "7d1ec73415934a1ad8427101b52fa721c4a69c90fea9a080bf1c45e91f355453",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:11: error: out_always_comb is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit XOR, implemented in various ways\nmodule TopModule (\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    wire xor0 = a ^ b;\n    assign out_assign = xor0;\n    always @(*) out_always_comb = xor0;\n    reg ff0;\n    always @(posedge clk) ff0 <= a ^ b;\n    assign out_always_ff = ff0;\nendmodule",
+      "raw_completion_raw_sha256": "50b15370425b4e0b92f629a56b0b34732826ecc19f117d72c56b7fc0e1088128",
+      "rtl": "module TopModule (\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    wire xor0 = a ^ b;\n    assign out_assign = xor0;\n    always @(*) out_always_comb = xor0;\n    reg ff0;\n    always @(posedge clk) ff0 <= a ^ b;\n    assign out_always_ff = ff0;\nendmodule",
+      "rtl_raw_sha256": "b09c1b5ca7311f766136d8d4febf6057ed7399539e19958525aaaa8553e8a709",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: error: out_always_comb is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit XOR gate, implemented three ways: an assign statement, a\n// combinational always block, and a clocked always block, with the\n// latter producing a different circuit (the flip-flop delays the\n// output).\nmodule TopModule (\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    assign out_assign = a ^ b;\n    always @(*) out_always_comb = a ^ b;\n    reg ff;\n    always @(posedge clk) ff <= a ^ b;\n    assign out_always_ff = ff;\nendmodule",
+      "raw_completion_raw_sha256": "53f949cbfe933e8c0d066eb0c64766bcd166b9e396e7d3bfadc66c9e5e86396e",
+      "rtl": "module TopModule (\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    assign out_assign = a ^ b;\n    always @(*) out_always_comb = a ^ b;\n    reg ff;\n    always @(posedge clk) ff <= a ^ b;\n    assign out_always_ff = ff;\nendmodule",
+      "rtl_raw_sha256": "42bab48995c34fc1f34a6d3186edf1162bdebb6073c40489d6d9afd481f45bce",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:11: error: out_always_comb is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-bit XOR, different implementations\nmodule TopModule (\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    wire xor0 = a ^ b;\n    assign out_assign = xor0;\n    always @(*) out_always_comb = xor0;\n    reg out_ff;\n    always @(posedge clk) out_ff <= a ^ b;\n    assign out_always_ff = out_ff;\nendmodule",
+      "raw_completion_raw_sha256": "f251e95aa97e2417da1327ecbf74770232bab0b5e3438ebb85dac5a18e3a1d8e",
+      "rtl": "module TopModule (\n    input  clk,\n    input  a,\n    input  b,\n    output out_assign,\n    output out_always_comb,\n    output out_always_ff\n);\n    wire xor0 = a ^ b;\n    assign out_assign = xor0;\n    always @(*) out_always_comb = xor0;\n    reg out_ff;\n    always @(posedge clk) out_ff <= a ^ b;\n    assign out_always_ff = out_ff;\nendmodule",
+      "rtl_raw_sha256": "5b7b650c86cbfe081397892c206ac1fd207aef9021950c5429406eff8ee082ec",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 2,
+    "compile_fail": 18
+  },
+  "testbench_raw_sha256": "2d1083d9cf01d4fa34d133995f31bd2da207256e67600f2283a9f584ba65cdb1",
+  "training_seed": 1
+}

@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob017_mux2to1v",
+  "problem_seed": 255889059181294369,
+  "prompt_raw_sha256": "ca1ab98b3e6a272305637437b38ff985ebc6f164ab9500d9d8cee342c87b180f",
+  "reference_raw_sha256": "1e45bcb124de9c52b905bf1fd7c13e67648a3730c693fd3f86974c6a219f7505",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "// 2-1 MUX, one-bit inputs and outputs, inline named wires.\nmodule TopModule (\n    input [99:0] a,\n    input [99:0] b,\n    input sel,\n    output [99:0] out\n);\n    wire [99:0] _T_0;\n    wire [99:0] _T_1;\n    assign _T_0 = a;\n    assign _T_1 = b;\n    assign out = sel ? _T_1 : _T_0;\nendmodule",
+      "raw_completion_raw_sha256": "45cbf115e379be8952075969de8d774792a9ba331d1fc2e8ca27090762ae4245",
+      "rtl": "module TopModule (\n    input [99:0] a,\n    input [99:0] b,\n    input sel,\n    output [99:0] out\n);\n    wire [99:0] _T_0;\n    wire [99:0] _T_1;\n    assign _T_0 = a;\n    assign _T_1 = b;\n    assign out = sel ? _T_1 : _T_0;\nendmodule",
+      "rtl_raw_sha256": "41e41b44e818c8f49d5d6028df043d2526efa27fa5699b2188f5d24925a831aa",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "114/114 mismatches",
+      "raw_completion": "// 2-1 multiplexer, one bit at a time\nmodule TopModule(input [99:0] a, b, output [99:0] out, input sel);\n  wire [99:0] sel_vec;\n  assign sel_vec = {100{(sel == 1)}} & b + {100{(sel == 0)}} & a;\n  assign out = sel_vec;\nendmodule",
+      "raw_completion_raw_sha256": "d73bcf6858be9bec2e4fd6cf89871c830617ef75deffb800f59b6de66313044f",
+      "rtl": "module TopModule(input [99:0] a, b, output [99:0] out, input sel);\n  wire [99:0] sel_vec;\n  assign sel_vec = {100{(sel == 1)}} & b + {100{(sel == 0)}} & a;\n  assign out = sel_vec;\nendmodule",
+      "rtl_raw_sha256": "088bef8f371fed4a581c49967fa86682632234ac9b63d1765fed35550fe912fb",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:79: error: 'x7' has already been declared in this scope.",
+      "raw_completion": "// 2-1 multiplexer, one bit per stage, unrolled chain of AND+OR gates ->\n// register-to-register path shorter than a pipeline stage -> higher Fmax.\nmodule TopModule(\n    input [99:0] a,\n    input [99:0] b,\n    input sel,\n    output [99:0] out\n);\n    wire [99:0] x0;\n    wire [99:0] x1;\n    wire [99:0] x2;\n    wire [99:0] x3;\n    wire [99:0] x4;\n    wire [99:0] x5;\n    wire [99:0] x6;\n    wire [99:0] x7;\n    wire [99:0] x8;\n    wire [99:0] x9;\n    wire [99:0] x10;\n    wire [99:0] x11;\n    wire [99:0] x12;\n    wire [99:0] x13;\n    wire [99:0] x14;\n    wire [99:0] x15;\n    wire [99:0] x16;\n    wire [99:0] x17;\n    wire [99:0] x18;\n    wire [99:0] x19;\n    wire [99:0] x20;\n    wire [99:0] x21;\n    wire [99:0] x22;\n    wire [99:0] x23;\n    wire [99:0] x24;\n    wire [99:0] x25;\n    wire [99:0] x26;\n    wire [99:0] x27;\n    wire [99:0] x28;\n    wire [99:0] x29;\n    wire [99:0] x30;\n    wire [99:0] x31;\n    wire [99:0] x32;\n    wire [99:0] x33;\n    wire [99:0] x34;\n    wire [99:0] x35;\n    wire [99:0] x36;\n    wire [99:0] x37;\n    wire [99:0] x38;\n    wire [99:0] x39;\n    wire [99:0] x40;\n    wire [99:0] x41;\n    wire [99:0] x42;\n    wire [99:0] x43;\n    wire [99:0] x44;\n    wire [99:0] x45;\n    wire [99:0] x46;\n    wire [99:0] x47;\n    wire [99:0] x48;\n    wire [99:0] x49;\n    wire [99:0] x50;\n    wire [99:0] x51;\n    wire [99:0] x52;\n    wire [99:0] x53;\n    wire [99:0] x54;\n    wire [99:0] x55;\n    wire [99:0] x56;\n    wire [99:0] x57;\n    wire [99:0] x58;\n    wire [99:0] x59;\n    wire [99:0] x60;\n    wire [99:0] x61;\n    wire [99:0] x62;\n    wire [99:0] x63;\n    wire [99:0] x64;\n    wire [99:0] x65;\n    wire [99:0] x66;\n    wire [99:0] x67;\n    wire [99:0] x68;\n    wire [99:0] x69;\n    wire [99:0] x70;\n    wire [99:0] x71;\n    wire [99:0] x7",
+      "raw_completion_raw_sha256": "8749993be3a6bc9915821d00c7364ed46d9ed7403154a554024bf4fe26538bd1",
+      "rtl": "module TopModule(\n    input [99:0] a,\n    input [99:0] b,\n    input sel,\n    output [99:0] out\n);\n    wire [99:0] x0;\n    wire [99:0] x1;\n    wire [99:0] x2;\n    wire [99:0] x3;\n    wire [99:0] x4;\n    wire [99:0] x5;\n    wire [99:0] x6;\n    wire [99:0] x7;\n    wire [99:0] x8;\n    wire [99:0] x9;\n    wire [99:0] x10;\n    wire [99:0] x11;\n    wire [99:0] x12;\n    wire [99:0] x13;\n    wire [99:0] x14;\n    wire [99:0] x15;\n    wire [99:0] x16;\n    wire [99:0] x17;\n    wire [99:0] x18;\n    wire [99:0] x19;\n    wire [99:0] x20;\n    wire [99:0] x21;\n    wire [99:0] x22;\n    wire [99:0] x23;\n    wire [99:0] x24;\n    wire [99:0] x25;\n    wire [99:0] x26;\n    wire [99:0] x27;\n    wire [99:0] x28;\n    wire [99:0] x29;\n    wire [99:0] x30;\n    wire [99:0] x31;\n    wire [99:0] x32;\n    wire [99:0] x33;\n    wire [99:0] x34;\n    wire [99:0] x35;\n    wire [99:0] x36;\n    wire [99:0] x37;\n    wire [99:0] x38;\n    wire [99:0] x39;\n    wire [99:0] x40;\n    wire [99:0] x41;\n    wire [99:0] x42;\n    wire [99:0] x43;\n    wire [99:0] x44;\n    wire [99:0] x45;\n    wire [99:0] x46;\n    wire [99:0] x47;\n    wire [99:0] x48;\n    wire [99:0] x49;\n    wire [99:0] x50;\n    wire [99:0] x51;\n    wire [99:0] x52;\n    wire [99:0] x53;\n    wire [99:0] x54;\n    wire [99:0] x55;\n    wire [99:0] x56;\n    wire [99:0] x57;\n    wire [99:0] x58;\n    wire [99:0] x59;\n    wire [99:0] x60;\n    wire [99:0] x61;\n    wire [99:0] x62;\n    wire [99:0] x63;\n    wire [99:0] x64;\n    wire [99:0] x65;\n    wire [99:0] x66;\n    wire [99:0] x67;\n    wire [99:0] x68;\n    wire [99:0] x69;\n    wire [99:0] x70;\n    wire [99:0] x71;\n    wire [99:0] x7",
+      "rtl_raw_sha256": "1be75fcfe400d5d7bad6e102e07f9c1e3f5edc45ee6fd44cb2db5d7cc4bc8f54",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob017_mux2to1v_ref.sv:2: syntax error",
+      "raw_completion": "// 2-1 multiplexer, one bit per stage, with a long wire chain.\nmodule TopModule(\n    input [99:0] a,\n    input [99:0] b,\n    input sel,\n    output [99:0] out\n);\n    wire [99:0] x0;\n    wire [99:0] x1;\n    wire [99:0] x2;\n    wire [99:0] x3;\n    wire [99:0] x4;\n    wire [99:0] x5;\n    wire [99:0] x6;\n    wire [99:0] x7;\n    wire [99:0] x8;\n    wire [99:0] x9;\n    wire [99:0] x10;\n    wire [99:0] x11;\n    wire [99:0] x12;\n    wire [99:0] x13;\n    wire [99:0] x14;\n    wire [99:0] x15;\n    wire [99:0] x16;\n    wire [99:0] x17;\n    wire [99:0] x18;\n    wire [99:0] x19;\n    wire [99:0] x20;\n    wire [99:0] x21;\n    wire [99:0] x22;\n    wire [99:0] x23;\n    wire [99:0] x24;\n    wire [99:0] x25;\n    wire [99:0] x26;\n    wire [99:0] x27;\n    wire [99:0] x28;\n    wire [99:0] x29;\n    wire [99:0] x30;\n    wire [99:0] x31;\n    wire [99:0] x32;\n    wire [99:0] x33;\n    wire [99:0] x34;\n    wire [99:0] x35;\n    wire [99:0] x36;\n    wire [99:0] x37;\n    wire [99:0] x38;\n    wire [99:0] x39;\n    wire [99:0] x40;\n    wire [99:0] x41;\n    wire [99:0] x42;\n    wire [99:0] x43;\n    wire [99:0] x44;\n    wire [99:0] x45;\n    wire [99:0] x46;\n    wire [99:0] x47;\n    wire [99:0] x48;\n    wire [99:0] x49;\n    wire [99:0] x50;\n    wire [99:0] x51;\n    wire [99:0] x52;\n    wire [99:0] x53;\n    wire [99:0] x54;\n    wire [99:0] x55;\n    wire [99:0] x56;\n    wire [99:0] x57;\n    wire [99:0] x58;\n    wire [99:0] x59;\n    wire [99:0] x60;\n    wire [99:0] x61;\n    wire [99:0] x62;\n    wire [99:0] x63;\n    wire [99:0] x64;\n    wire [99:0] x65;\n    wire [99:0] x66;\n    wire [99:0] x67;\n    wire [99:0] x68;\n    wire [99:0] x69;\n    wire [99:0] x70;\n    wire [99:0] x71;\n    wire [99:0] x72;\n    wire [99:0] x73;\n    wire [99:0",
+      "raw_completion_raw_sha256": "090607d1f8d312ed272f25ef413b4d34d3d3ac7312633b505406df6e841fc33f",
+      "rtl": "module TopModule(\n    input [99:0] a,\n    input [99:0] b,\n    input sel,\n    output [99:0] out\n);\n    wire [99:0] x0;\n    wire [99:0] x1;\n    wire [99:0] x2;\n    wire [99:0] x3;\n    wire [99:0] x4;\n    wire [99:0] x5;\n    wire [99:0] x6;\n    wire [99:0] x7;\n    wire [99:0] x8;\n    wire [99:0] x9;\n    wire [99:0] x10;\n    wire [99:0] x11;\n    wire [99:0] x12;\n    wire [99:0] x13;\n    wire [99:0] x14;\n    wire [99:0] x15;\n    wire [99:0] x16;\n    wire [99:0] x17;\n    wire [99:0] x18;\n    wire [99:0] x19;\n    wire [99:0] x20;\n    wire [99:0] x21;\n    wire [99:0] x22;\n    wire [99:0] x23;\n    wire [99:0] x24;\n    wire [99:0] x25;\n    wire [99:0] x26;\n    wire [99:0] x27;\n    wire [99:0] x28;\n    wire [99:0] x29;\n    wire [99:0] x30;\n    wire [99:0] x31;\n    wire [99:0] x32;\n    wire [99:0] x33;\n    wire [99:0] x34;\n    wire [99:0] x35;\n    wire [99:0] x36;\n    wire [99:0] x37;\n    wire [99:0] x38;\n    wire [99:0] x39;\n    wire [99:0] x40;\n    wire [99:0] x41;\n    wire [99:0] x42;\n    wire [99:0] x43;\n    wire [99:0] x44;\n    wire [99:0] x45;\n    wire [99:0] x46;\n    wire [99:0] x47;\n    wire [99:0] x48;\n    wire [99:0] x49;\n    wire [99:0] x50;\n    wire [99:0] x51;\n    wire [99:0] x52;\n    wire [99:0] x53;\n    wire [99:0] x54;\n    wire [99:0] x55;\n    wire [99:0] x56;\n    wire [99:0] x57;\n    wire [99:0] x58;\n    wire [99:0] x59;\n    wire [99:0] x60;\n    wire [99:0] x61;\n    wire [99:0] x62;\n    wire [99:0] x63;\n    wire [99:0] x64;\n    wire [99:0] x65;\n    wire [99:0] x66;\n    wire [99:0] x67;\n    wire [99:0] x68;\n    wire [99:0] x69;\n    wire [99:0] x70;\n    wire [99:0] x71;\n    wire [99:0] x72;\n    wire [99:0] x73;\n    wire [99:0",
+      "rtl_raw_sha256": "6961a0c325539ef284726922f63dfcded247b1910cdc1dd09b9f7fe59e98a201",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-1 multiplexer, one bit wide, inline feedback\nmodule TopModule(input [99:0] a, b, output [99:0] out, input sel);\n  wire [99:0] x;\n  assign x = sel ? b : a;\n  assign out = x;\nendmodule",
+      "raw_completion_raw_sha256": "32f5802f657bdd8f5a6e487358fd4dcc3f731f66be5f5661cf633858d46c2f2f",
+      "rtl": "module TopModule(input [99:0] a, b, output [99:0] out, input sel);\n  wire [99:0] x;\n  assign x = sel ? b : a;\n  assign out = x;\nendmodule",
+      "rtl_raw_sha256": "54562ba197f2cc44851f0ad929a369b7f82a7f21b446121a449b2932deaab0de",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-1 multiplexer, one bit per stage, inline feedback.\nmodule TopModule(input [99:0] a, b, output [99:0] out, input sel);\n    wire [99:0] s0, s1;\n    assign s0 = a;\n    assign s1 = b;\n    assign out = sel ? s1 : s0;\nendmodule",
+      "raw_completion_raw_sha256": "38ed18e4d905823b36c3c07d956f72a0994790fb8df7da7d1e15c06260a4a6b1",
+      "rtl": "module TopModule(input [99:0] a, b, output [99:0] out, input sel);\n    wire [99:0] s0, s1;\n    assign s0 = a;\n    assign s1 = b;\n    assign out = sel ? s1 : s0;\nendmodule",
+      "rtl_raw_sha256": "5cfc03569d279338313a6c6d31faab2f961281244925964f40152abf87fe0f60",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-1 multiplexer, one-bit per stage, Pipeline-registered stages (register\n// the output of one stage as the input of the next, essentially creating a\n// small pipeline).\nmodule TopModule(\n    input [99:0] a,\n    input [99:0] b,\n    input sel,\n    output [99:0] out\n);\n    wire [99:0] s0, s1;\n    reg [99:0] r0, r1;\n    assign s0 = a;\n    assign s1 = b;\n    always @(*) r0 <= s0;\n    always @(*) r1 <= s1;\n    assign out = sel ? r1 : r0;\nendmodule",
+      "raw_completion_raw_sha256": "d7562dd5e458503257f0f4262598125d7fdd49de10db02f5bf23cefdb77356fb",
+      "rtl": "module TopModule(\n    input [99:0] a,\n    input [99:0] b,\n    input sel,\n    output [99:0] out\n);\n    wire [99:0] s0, s1;\n    reg [99:0] r0, r1;\n    assign s0 = a;\n    assign s1 = b;\n    always @(*) r0 <= s0;\n    always @(*) r1 <= s1;\n    assign out = sel ? r1 : r0;\nendmodule",
+      "rtl_raw_sha256": "2431da1df77a60e1958700969aae59ceb2b58f033bb0bc593aa05a29bc4a79a9",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob017_mux2to1v_test.sv:93: error: Unknown module type: TopModule",
+      "raw_completion": "// 2-1 multiplexer, one-hot selected (prioritized). Same as a UNI, FULLY\n// PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a\n// UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1).\n// Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL\n// MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI,\n// FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same\n// as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX\n// (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY\n// PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a\n// UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1).\n// Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL\n// MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI,\n// FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same\n// as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX\n// (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY\n// PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a\n// UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1).\n// Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL\n// MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI,\n// FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same\n// as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX\n// (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY\n// PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a\n// UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1).\n// Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL\n// MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI,\n// FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same\n// as a UNI, F",
+      "raw_completion_raw_sha256": "c8c849e7840e8f90b71baec1ce08bb886301f3ea0c19af66b76af963bf020a45",
+      "rtl": "// 2-1 multiplexer, one-hot selected (prioritized). Same as a UNI, FULLY\n// PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a\n// UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1).\n// Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL\n// MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI,\n// FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same\n// as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX\n// (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY\n// PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a\n// UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1).\n// Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL\n// MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI,\n// FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same\n// as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX\n// (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY\n// PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a\n// UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1).\n// Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL\n// MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI,\n// FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same\n// as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX\n// (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY\n// PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a\n// UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1).\n// Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL\n// MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same as a UNI,\n// FULLY PARALLEL MUX (2->1). Same as a UNI, FULLY PARALLEL MUX (2->1). Same\n// as a UNI, F",
+      "rtl_raw_sha256": "c8c849e7840e8f90b71baec1ce08bb886301f3ea0c19af66b76af963bf020a45",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-1 multiplexer, 100-bit wide. Same as a full-adder, but shorter.\nmodule TopModule(input [99:0] a, b, output [99:0] out, input sel);\n    wire [99:0] x;\n    assign x = sel ? b : a;\n    assign out = x;\nendmodule",
+      "raw_completion_raw_sha256": "498a77ab0a677a67ed6a8ecf1de648736b15b39fd8a0e34b02cf0010caad8545",
+      "rtl": "module TopModule(input [99:0] a, b, output [99:0] out, input sel);\n    wire [99:0] x;\n    assign x = sel ? b : a;\n    assign out = x;\nendmodule",
+      "rtl_raw_sha256": "a59cb0615037762d8eed53aa0e98baa5b6c024a67320918daad1eb525386afa5",
+      "sample_index": 8,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: a_reg is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 2-1 multiplexer, one bit at a time. Registered output (register to register\n// chain -> low Fmax).\nmodule TopModule(\n    input  [99:0] a,\n    input  [99:0] b,\n    input  sel,\n    output [99:0] out\n);\n    wire [99:0] a_reg, b_reg;\n    reg  [99:0] out_reg;\n    always @(*) a_reg = a;\n    always @(*) b_reg = b;\n    always @(*) out_reg = sel ? b_reg : a_reg;\n    assign out = out_reg;\nendmodule",
+      "raw_completion_raw_sha256": "81f2adee32030c44cd66ad667ac75fb7735a0a3e3bdc01f388a80f5c77cff9d3",
+      "rtl": "module TopModule(\n    input  [99:0] a,\n    input  [99:0] b,\n    input  sel,\n    output [99:0] out\n);\n    wire [99:0] a_reg, b_reg;\n    reg  [99:0] out_reg;\n    always @(*) a_reg = a;\n    always @(*) b_reg = b;\n    always @(*) out_reg = sel ? b_reg : a_reg;\n    assign out = out_reg;\nendmodule",
+      "rtl_raw_sha256": "03666b9237a971916b417c304dc620cd8df67ed39fe0d4036a4993807e66adbc",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob017_mux2to1v_ref.sv:2: syntax error",
+      "raw_completion": "// 2-1 multiplexer, one bit per stage (short path).\nmodule TopModule(\n    input  [99:0] a,\n    input  [99:0] b,\n    input         sel,\n    output [99:0] out\n);\n    wire [99:0] a0;\n    wire [99:0] b0;\n    wire [99:0] a1;\n    wire [99:0] b1;\n    wire [99:0] a2;\n    wire [99:0] b2;\n    wire [99:0] a3;\n    wire [99:0] b3;\n    wire [99:0] a4;\n    wire [99:0] b4;\n    wire [99:0] a5;\n    wire [99:0] b5;\n    wire [99:0] a6;\n    wire [99:0] b6;\n    wire [99:0] a7;\n    wire [99:0] b7;\n    wire [99:0] a8;\n    wire [99:0] b8;\n    wire [99:0] a9;\n    wire [99:0] b9;\n    wire [99:0] a10;\n    wire [99:0] b10;\n    wire [99:0] a11;\n    wire [99:0] b11;\n    wire [99:0] a12;\n    wire [99:0] b12;\n    wire [99:0] a13;\n    wire [99:0] b13;\n    wire [99:0] a14;\n    wire [99:0] b14;\n    wire [99:0] a15;\n    wire [99:0] b15;\n    wire [99:0] a16;\n    wire [99:0] b16;\n    wire [99:0] a17;\n    wire [99:0] b17;\n    wire [99:0] a18;\n    wire [99:0] b18;\n    wire [99:0] a19;\n    wire [99:0] b19;\n    wire [99:0] a20;\n    wire [99:0] b20;\n    wire [99:0] a21;\n    wire [99:0] b21;\n    wire [99:0] a22;\n    wire [99:0] b22;\n    wire [99:0] a23;\n    wire [99:0] b23;\n    wire [99:0] a24;\n    wire [99:0] b24;\n    wire [99:0] a25;\n    wire [99:0] b25;\n    wire [99:0] a26;\n    wire [99:0] b26;\n    wire [99:0] a27;\n    wire [99:0] b27;\n    wire [99:0] a28;\n    wire [99:0] b28;\n    wire [99:0] a29;\n    wire [99:0] b29;\n    wire [99:0] a30;\n    wire [99:0] b30;\n    wire [99:0] a31;\n    wire [99:0] b31;\n    wire [99:0] a32;\n    wire [99:0] b32;\n    wire [99:0] a33;\n    wire [99:0] b33;\n    wire [99:0] a34;\n    wire [99:0] b34;\n    wire [99:0] a35;\n    wire [99:0] b35;\n    wire [99:0] a36;\n    wire [99:0] b36;\n    wire [99:0] a37;\n    wire [9",
+      "raw_completion_raw_sha256": "5655c0f1d90cc38d898d5d9185a079b765c35d2c325326aa7b22daa939907a12",
+      "rtl": "module TopModule(\n    input  [99:0] a,\n    input  [99:0] b,\n    input         sel,\n    output [99:0] out\n);\n    wire [99:0] a0;\n    wire [99:0] b0;\n    wire [99:0] a1;\n    wire [99:0] b1;\n    wire [99:0] a2;\n    wire [99:0] b2;\n    wire [99:0] a3;\n    wire [99:0] b3;\n    wire [99:0] a4;\n    wire [99:0] b4;\n    wire [99:0] a5;\n    wire [99:0] b5;\n    wire [99:0] a6;\n    wire [99:0] b6;\n    wire [99:0] a7;\n    wire [99:0] b7;\n    wire [99:0] a8;\n    wire [99:0] b8;\n    wire [99:0] a9;\n    wire [99:0] b9;\n    wire [99:0] a10;\n    wire [99:0] b10;\n    wire [99:0] a11;\n    wire [99:0] b11;\n    wire [99:0] a12;\n    wire [99:0] b12;\n    wire [99:0] a13;\n    wire [99:0] b13;\n    wire [99:0] a14;\n    wire [99:0] b14;\n    wire [99:0] a15;\n    wire [99:0] b15;\n    wire [99:0] a16;\n    wire [99:0] b16;\n    wire [99:0] a17;\n    wire [99:0] b17;\n    wire [99:0] a18;\n    wire [99:0] b18;\n    wire [99:0] a19;\n    wire [99:0] b19;\n    wire [99:0] a20;\n    wire [99:0] b20;\n    wire [99:0] a21;\n    wire [99:0] b21;\n    wire [99:0] a22;\n    wire [99:0] b22;\n    wire [99:0] a23;\n    wire [99:0] b23;\n    wire [99:0] a24;\n    wire [99:0] b24;\n    wire [99:0] a25;\n    wire [99:0] b25;\n    wire [99:0] a26;\n    wire [99:0] b26;\n    wire [99:0] a27;\n    wire [99:0] b27;\n    wire [99:0] a28;\n    wire [99:0] b28;\n    wire [99:0] a29;\n    wire [99:0] b29;\n    wire [99:0] a30;\n    wire [99:0] b30;\n    wire [99:0] a31;\n    wire [99:0] b31;\n    wire [99:0] a32;\n    wire [99:0] b32;\n    wire [99:0] a33;\n    wire [99:0] b33;\n    wire [99:0] a34;\n    wire [99:0] b34;\n    wire [99:0] a35;\n    wire [99:0] b35;\n    wire [99:0] a36;\n    wire [99:0] b36;\n    wire [99:0] a37;\n    wire [9",
+      "rtl_raw_sha256": "e9d75619cfccc858b7607d83a398b2c39207c72d6def67460d8f17700aaea52b",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: error: 'out' has already been declared in this scope.",
+      "raw_completion": "module TopModule (\n    input  [99:0] a,\n    input  [99:0] b,\n    input  sel,\n    output [99:0] out\n);\n    wire [99:0] out;\n    assign out = sel ? b : a;\nendmodule",
+      "raw_completion_raw_sha256": "e0d7c1358eeb51afc046a8ea959c7ee630dc9bf68c3744af59462b1604c0b74a",
+      "rtl": "module TopModule (\n    input  [99:0] a,\n    input  [99:0] b,\n    input  sel,\n    output [99:0] out\n);\n    wire [99:0] out;\n    assign out = sel ? b : a;\nendmodule",
+      "rtl_raw_sha256": "e0d7c1358eeb51afc046a8ea959c7ee630dc9bf68c3744af59462b1604c0b74a",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: register ``i'' unknown in tb.top_module1.",
+      "raw_completion": "// 2-1 multiplexer, one bit at a time, as a nested chain of ANDs + ORs.\nmodule TopModule(input [99:0] a, b, output [99:0] out, input sel);\n    wire [99:0] a_not;\n    wire [99:0] b_and_not_a;\n    wire [99:0] out_or_b_and_not_a;\n    genvar i;\n    assign a_not = ~a;\n    assign b_and_not_a = b & a_not;\n    assign out_or_b_and_not_a = out | b_and_not_a;\n    always @(*) begin\n        for (i = 0; i < 100; i = i + 1) begin\n            out[i] = sel ? b[i] : a[i];\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a9edb5f9a7a417af2eee01ad00eec1aaf6f7b4bb33602b5b4c187329405d1839",
+      "rtl": "module TopModule(input [99:0] a, b, output [99:0] out, input sel);\n    wire [99:0] a_not;\n    wire [99:0] b_and_not_a;\n    wire [99:0] out_or_b_and_not_a;\n    genvar i;\n    assign a_not = ~a;\n    assign b_and_not_a = b & a_not;\n    assign out_or_b_and_not_a = out | b_and_not_a;\n    always @(*) begin\n        for (i = 0; i < 100; i = i + 1) begin\n            out[i] = sel ? b[i] : a[i];\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "62dfc28389ea365373558c0ec2a98cada38b06df1577cbdec37564fa86431a35",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob017_mux2to1v_ref.sv:2: syntax error",
+      "raw_completion": "// 2-1 multiplexer, one bit per stage, explicitly named wires.\nmodule TopModule(\n    input  [99:0] a,\n    input  [99:0] b,\n    input         sel,\n    output [99:0] out\n);\n    wire [99:0] a0 = a;\n    wire [99:0] b0 = b;\n    wire [99:0] sel0 = sel;\n    wire [99:0] a1 = sel0 ? b0 : a0;\n    wire [99:0] b1 = b;\n    wire [99:0] sel1 = 1'b1;\n    wire [99:0] a2 = sel1 ? b1 : a1;\n    wire [99:0] b2 = b;\n    wire [99:0] sel2 = 1'b1;\n    wire [99:0] a3 = sel2 ? b2 : a2;\n    wire [99:0] b3 = b;\n    wire [99:0] sel3 = 1'b1;\n    wire [99:0] a4 = sel3 ? b3 : a3;\n    wire [99:0] b4 = b;\n    wire [99:0] sel4 = 1'b1;\n    wire [99:0] a5 = sel4 ? b4 : a4;\n    wire [99:0] b5 = b;\n    wire [99:0] sel5 = 1'b1;\n    wire [99:0] a6 = sel5 ? b5 : a5;\n    wire [99:0] b6 = b;\n    wire [99:0] sel6 = 1'b1;\n    wire [99:0] a7 = sel6 ? b6 : a6;\n    wire [99:0] b7 = b;\n    wire [99:0] sel7 = 1'b1;\n    wire [99:0] a8 = sel7 ? b7 : a7;\n    wire [99:0] b8 = b;\n    wire [99:0] sel8 = 1'b1;\n    wire [99:0] a9 = sel8 ? b8 : a8;\n    wire [99:0] b9 = b;\n    wire [99:0] sel9 = 1'b1;\n    wire [99:0] a10 = sel9 ? b9 : a9;\n    wire [99:0] b10 = b;\n    wire [99:0] sel10 = 1'b1;\n    wire [99:0] a11 = sel10 ? b10 : a10;\n    wire [99:0] b11 = b;\n    wire [99:0] sel11 = 1'b1;\n    wire [99:0] a12 = sel11 ? b11 : a11;\n    wire [99:0] b12 = b;\n    wire [99:0] sel12 = 1'b1;\n    wire [99:0] a13 = sel12 ? b12 : a12;\n    wire [99:0] b13 = b;\n    wire [99:0] sel13 = 1'b1;\n    wire [99:0] a14 = sel13 ? b13 : a13;\n    wire [99:0] b14 = b;\n    wire [99:0] sel14 = 1'b1;\n    wire [99:0] a15 = sel14 ? b14 : a14;\n    wire [99:0] b15 = b;\n    wire [99:0] sel15 = 1'b1;\n    wire [99:0] a16 = sel15 ? b15 : a15;\n    wire [99:0] b16 = b;\n    wire [99:0] sel16 = 1'b1;\n    wire [99:0] a17 = sel16 ? b16 : a16;\n    wire [99:0] b17 = b;\n    wire [99",
+      "raw_completion_raw_sha256": "8c6e589f9330e81060115ea0f054fb9aecfcaf52628e6e70bd6515d3a9a6daad",
+      "rtl": "module TopModule(\n    input  [99:0] a,\n    input  [99:0] b,\n    input         sel,\n    output [99:0] out\n);\n    wire [99:0] a0 = a;\n    wire [99:0] b0 = b;\n    wire [99:0] sel0 = sel;\n    wire [99:0] a1 = sel0 ? b0 : a0;\n    wire [99:0] b1 = b;\n    wire [99:0] sel1 = 1'b1;\n    wire [99:0] a2 = sel1 ? b1 : a1;\n    wire [99:0] b2 = b;\n    wire [99:0] sel2 = 1'b1;\n    wire [99:0] a3 = sel2 ? b2 : a2;\n    wire [99:0] b3 = b;\n    wire [99:0] sel3 = 1'b1;\n    wire [99:0] a4 = sel3 ? b3 : a3;\n    wire [99:0] b4 = b;\n    wire [99:0] sel4 = 1'b1;\n    wire [99:0] a5 = sel4 ? b4 : a4;\n    wire [99:0] b5 = b;\n    wire [99:0] sel5 = 1'b1;\n    wire [99:0] a6 = sel5 ? b5 : a5;\n    wire [99:0] b6 = b;\n    wire [99:0] sel6 = 1'b1;\n    wire [99:0] a7 = sel6 ? b6 : a6;\n    wire [99:0] b7 = b;\n    wire [99:0] sel7 = 1'b1;\n    wire [99:0] a8 = sel7 ? b7 : a7;\n    wire [99:0] b8 = b;\n    wire [99:0] sel8 = 1'b1;\n    wire [99:0] a9 = sel8 ? b8 : a8;\n    wire [99:0] b9 = b;\n    wire [99:0] sel9 = 1'b1;\n    wire [99:0] a10 = sel9 ? b9 : a9;\n    wire [99:0] b10 = b;\n    wire [99:0] sel10 = 1'b1;\n    wire [99:0] a11 = sel10 ? b10 : a10;\n    wire [99:0] b11 = b;\n    wire [99:0] sel11 = 1'b1;\n    wire [99:0] a12 = sel11 ? b11 : a11;\n    wire [99:0] b12 = b;\n    wire [99:0] sel12 = 1'b1;\n    wire [99:0] a13 = sel12 ? b12 : a12;\n    wire [99:0] b13 = b;\n    wire [99:0] sel13 = 1'b1;\n    wire [99:0] a14 = sel13 ? b13 : a13;\n    wire [99:0] b14 = b;\n    wire [99:0] sel14 = 1'b1;\n    wire [99:0] a15 = sel14 ? b14 : a14;\n    wire [99:0] b15 = b;\n    wire [99:0] sel15 = 1'b1;\n    wire [99:0] a16 = sel15 ? b15 : a15;\n    wire [99:0] b16 = b;\n    wire [99:0] sel16 = 1'b1;\n    wire [99:0] a17 = sel16 ? b16 : a16;\n    wire [99:0] b17 = b;\n    wire [99",
+      "rtl_raw_sha256": "e9a6f01cf5e4fe648779b118797d8c7be1c742e0e25fa2f15931297930c08019",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: 'out' has already been declared in this scope.",
+      "raw_completion": "module TopModule(\n  input  [99:0] a,\n  input  [99:0] b,\n  input         sel,\n  output [99:0] out\n);\n  wire [99:0] _out_unreg;\n  assign _out_unreg = sel ? b : a;\n  reg [99:0] out;\n  always @(posedge sel) out <= _out_unreg;\nendmodule",
+      "raw_completion_raw_sha256": "d7f0682bcfb917aa7d39b5e3d9caba70d5e5b08024da5b0e589e8b3075263a9b",
+      "rtl": "module TopModule(\n  input  [99:0] a,\n  input  [99:0] b,\n  input         sel,\n  output [99:0] out\n);\n  wire [99:0] _out_unreg;\n  assign _out_unreg = sel ? b : a;\n  reg [99:0] out;\n  always @(posedge sel) out <= _out_unreg;\nendmodule",
+      "rtl_raw_sha256": "d7f0682bcfb917aa7d39b5e3d9caba70d5e5b08024da5b0e589e8b3075263a9b",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-1 multiplexer, 100-bit inputs, inline feedback.\nmodule TopModule(out, a, b, sel);\n    output [99:0] out;\n    input  [99:0] a;\n    input  [99:0] b;\n    input  sel;\n    wire  [99:0] x0;\n    assign x0 = sel ? b : a;\n    assign out = x0;\nendmodule",
+      "raw_completion_raw_sha256": "7dcea608200f26ca53f95be19f0ef1bd5bd3ee06534a0e68c2989062246e3a50",
+      "rtl": "module TopModule(out, a, b, sel);\n    output [99:0] out;\n    input  [99:0] a;\n    input  [99:0] b;\n    input  sel;\n    wire  [99:0] x0;\n    assign x0 = sel ? b : a;\n    assign out = x0;\nendmodule",
+      "rtl_raw_sha256": "9dd1629013dbbba7aa760e850c0c934f1018a58f8aa7de0c57151b3f138da1b0",
+      "sample_index": 15,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-1 multiplexer, one bit wide, inline named wires.\nmodule TopModule(\n    input [99:0] a,\n    input [99:0] b,\n    input sel,\n    output [99:0] out\n);\n    wire [99:0] a_wire = a;\n    wire [99:0] b_wire = b;\n    assign out = sel ? b_wire : a_wire;\nendmodule",
+      "raw_completion_raw_sha256": "598612cc4664f84f16275cf5220e31917c4ea257e1e3e3ac6c24b505adb6e3e2",
+      "rtl": "module TopModule(\n    input [99:0] a,\n    input [99:0] b,\n    input sel,\n    output [99:0] out\n);\n    wire [99:0] a_wire = a;\n    wire [99:0] b_wire = b;\n    assign out = sel ? b_wire : a_wire;\nendmodule",
+      "rtl_raw_sha256": "2f87bfd6278f827b3b7b87690e16d7ba43285752272879d5c574ba6fb52526bf",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-1 multiplexer: identical to a regular 2-1 multiplexer, but with an\n// identical wire for the selector, so the critical path is shorter.\nmodule TopModule(input [99:0] a, b, output [99:0] out, input sel);\n    wire sel2 = sel;\n    assign out = sel2 ? b : a;\nendmodule",
+      "raw_completion_raw_sha256": "5e36dc88f1889b8d58e09f32ab99d3106e62ca85b306a41323d67216075e8b9e",
+      "rtl": "module TopModule(input [99:0] a, b, output [99:0] out, input sel);\n    wire sel2 = sel;\n    assign out = sel2 ? b : a;\nendmodule",
+      "rtl_raw_sha256": "c8731488aca33f175f1d625f3acb60b2abc29916d9c7c6acaed0fca6fb453345",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 2-1 multiplexer, one bit per stage, with inline feedback. Same as the\n// long-standing \"2-stage PI stage\" -> \"1-stage PI stage\" pipeline.\nmodule TopModule(input [99:0] a, b, input sel, output reg [99:0] out);\n    reg [99:0] stage1;\n    always @(*) stage1 = sel ? b : a;\n    always @(*) out = stage1;\nendmodule",
+      "raw_completion_raw_sha256": "a498a3a3682ac70b9fc671e419fcc4083d4dd7d39fad9711af089edda83fc9c3",
+      "rtl": "module TopModule(input [99:0] a, b, input sel, output reg [99:0] out);\n    reg [99:0] stage1;\n    always @(*) stage1 = sel ? b : a;\n    always @(*) out = stage1;\nendmodule",
+      "rtl_raw_sha256": "b25d0f7dab03c09d2edbbed7729acb0882c3852ecbb8fae3d39c09199e079fff",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob017_mux2to1v_ref.sv:2: syntax error",
+      "raw_completion": "// 2-1 multiplexer, inline feedback, one register per stage + an extra\n// register at the output stage to go around register-to-register\n// inference. Same function as the reference.\nmodule TopModule(input [99:0] a, b, input sel, output reg [99:0] out);\n    reg [99:0] stage1;\n    reg [99:0] stage2;\n    reg [99:0] stage3;\n    reg [99:0] stage4;\n    reg [99:0] stage5;\n    reg [99:0] stage6;\n    reg [99:0] stage7;\n    reg [99:0] stage8;\n    reg [99:0] stage9;\n    reg [99:0] stage10;\n    reg [99:0] stage11;\n    reg [99:0] stage12;\n    reg [99:0] stage13;\n    reg [99:0] stage14;\n    reg [99:0] stage15;\n    reg [99:0] stage16;\n    reg [99:0] stage17;\n    reg [99:0] stage18;\n    reg [99:0] stage19;\n    reg [99:0] stage20;\n    reg [99:0] stage21;\n    reg [99:0] stage22;\n    reg [99:0] stage23;\n    reg [99:0] stage24;\n    reg [99:0] stage25;\n    reg [99:0] stage26;\n    reg [99:0] stage27;\n    reg [99:0] stage28;\n    reg [99:0] stage29;\n    reg [99:0] stage30;\n    reg [99:0] stage31;\n    reg [99:0] stage32;\n    reg [99:0] stage33;\n    reg [99:0] stage34;\n    reg [99:0] stage35;\n    reg [99:0] stage36;\n    reg [99:0] stage37;\n    reg [99:0] stage38;\n    reg [99:0] stage39;\n    reg [99:0] stage40;\n    reg [99:0] stage41;\n    reg [99:0] stage42;\n    reg [99:0] stage43;\n    reg [99:0] stage44;\n    reg [99:0] stage45;\n    reg [99:0] stage46;\n    reg [99:0] stage47;\n    reg [99:0] stage48;\n    reg [99:0] stage49;\n    reg [99:0] stage50;\n    reg [99:0] stage51;\n    reg [99:0] stage52;\n    reg [99:0] stage53;\n    reg [99:0] stage54;\n    reg [99:0] stage55;\n    reg [99:0] stage56;\n    reg [99:0] stage57;\n    reg [99:0] stage58;\n    reg [99:0] stage59;\n    reg [99:0] stage60;\n    reg [99:0] stage61;\n    reg [99:0] stage62;\n    reg [99:0] stage63;\n    reg [99:0] stage64;\n    reg [99:0] stage65;\n    reg [99:0] stage66;\n    reg [99:0] stage67;\n    reg [99:0] stage68;\n    reg [99:0] stage69;\n    reg [99:0] stage70;\n    reg [99:0] stage71;\n    reg [99:0] stage72;\n    reg [99:0] stage73;\n    reg [99:0] stage7",
+      "raw_completion_raw_sha256": "fee29789a581a6c671c208ebfd1997f6f8668e737d431a9237961b11403b9d6a",
+      "rtl": "module TopModule(input [99:0] a, b, input sel, output reg [99:0] out);\n    reg [99:0] stage1;\n    reg [99:0] stage2;\n    reg [99:0] stage3;\n    reg [99:0] stage4;\n    reg [99:0] stage5;\n    reg [99:0] stage6;\n    reg [99:0] stage7;\n    reg [99:0] stage8;\n    reg [99:0] stage9;\n    reg [99:0] stage10;\n    reg [99:0] stage11;\n    reg [99:0] stage12;\n    reg [99:0] stage13;\n    reg [99:0] stage14;\n    reg [99:0] stage15;\n    reg [99:0] stage16;\n    reg [99:0] stage17;\n    reg [99:0] stage18;\n    reg [99:0] stage19;\n    reg [99:0] stage20;\n    reg [99:0] stage21;\n    reg [99:0] stage22;\n    reg [99:0] stage23;\n    reg [99:0] stage24;\n    reg [99:0] stage25;\n    reg [99:0] stage26;\n    reg [99:0] stage27;\n    reg [99:0] stage28;\n    reg [99:0] stage29;\n    reg [99:0] stage30;\n    reg [99:0] stage31;\n    reg [99:0] stage32;\n    reg [99:0] stage33;\n    reg [99:0] stage34;\n    reg [99:0] stage35;\n    reg [99:0] stage36;\n    reg [99:0] stage37;\n    reg [99:0] stage38;\n    reg [99:0] stage39;\n    reg [99:0] stage40;\n    reg [99:0] stage41;\n    reg [99:0] stage42;\n    reg [99:0] stage43;\n    reg [99:0] stage44;\n    reg [99:0] stage45;\n    reg [99:0] stage46;\n    reg [99:0] stage47;\n    reg [99:0] stage48;\n    reg [99:0] stage49;\n    reg [99:0] stage50;\n    reg [99:0] stage51;\n    reg [99:0] stage52;\n    reg [99:0] stage53;\n    reg [99:0] stage54;\n    reg [99:0] stage55;\n    reg [99:0] stage56;\n    reg [99:0] stage57;\n    reg [99:0] stage58;\n    reg [99:0] stage59;\n    reg [99:0] stage60;\n    reg [99:0] stage61;\n    reg [99:0] stage62;\n    reg [99:0] stage63;\n    reg [99:0] stage64;\n    reg [99:0] stage65;\n    reg [99:0] stage66;\n    reg [99:0] stage67;\n    reg [99:0] stage68;\n    reg [99:0] stage69;\n    reg [99:0] stage70;\n    reg [99:0] stage71;\n    reg [99:0] stage72;\n    reg [99:0] stage73;\n    reg [99:0] stage7",
+      "rtl_raw_sha256": "399a8bb8f167567d9f4e7b226e8114d0f2a30b4a42b631826957178ed04d1a80",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 9,
+    "compile_fail": 10,
+    "fail": 1
+  },
+  "testbench_raw_sha256": "a6edd3a92e7fa15b4a023c3a2176fa893a3caa89c2cb9ec1222378d3b55e5b36",
+  "training_seed": 1
+}

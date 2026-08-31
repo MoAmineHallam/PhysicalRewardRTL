@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob027_fadd",
+  "problem_seed": 6236707315646300231,
+  "prompt_raw_sha256": "003fe0030919be268ac5a57ceb7704b88d0a731192c282f62d97f839ab036089",
+  "reference_raw_sha256": "8607c120d36481ba0a8c2f6b8d71af7a7ba27b4850781b0b7326020b4046ac30",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob027_fadd_test.sv:99: error: Unknown module type: TopModule",
+      "raw_completion": "// Full Adder (1-bit)\nmodule FullAdder(\n    input a,\n    input b,\n    input cin,\n    output sum,\n    output cout\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "fa0bd23c651af34fafc8263439c7c174205c1c4e4ed93345eacf5f07e85a689a",
+      "rtl": "module FullAdder(\n    input a,\n    input b,\n    input cin,\n    output sum,\n    output cout\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "15c13527ef4b698f4a7fa3460a0c030928f54010a12a9e810f55bd493c908cf6",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Full adder\nmodule TopModule(input a, input b, input cin, output cout, output sum);\n    wire w1, w2, w3;\n    // First stage: sum of two bits\n    assign w1 = a ^ b;\n    // Second stage: sum of first sum and carry-in\n    assign w2 = w1 ^ cin;\n    // Carry-out is the AND of the two first sums, plus the AND of the first\n    // sum and the carry-in\n    assign w3 = (a & b) | (a & cin) | (b & cin);\n    assign sum = w2;\n    assign cout = w3;\nendmodule",
+      "raw_completion_raw_sha256": "777d105d5336953da88592f9a4d1c7751b23d5f4e048dbef6d613f28a933d36f",
+      "rtl": "module TopModule(input a, input b, input cin, output cout, output sum);\n    wire w1, w2, w3;\n    // First stage: sum of two bits\n    assign w1 = a ^ b;\n    // Second stage: sum of first sum and carry-in\n    assign w2 = w1 ^ cin;\n    // Carry-out is the AND of the two first sums, plus the AND of the first\n    // sum and the carry-in\n    assign w3 = (a & b) | (a & cin) | (b & cin);\n    assign sum = w2;\n    assign cout = w3;\nendmodule",
+      "rtl_raw_sha256": "b84c0984e28816c318904118b47acbada520a720f3122adde9c7ab0e89772454",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob027_fadd_test.sv:99: error: Unknown module type: TopModule",
+      "raw_completion": "// Full Adder\nmodule FullAdder(\n    input a,\n    input b,\n    input cin,\n    output cout,\n    output sum\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or #1 (cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "60b7d04c181e0b2fa9f7a44b9c8b8f1ee9c8ee13f6acb3ab32b1c797e87d5d68",
+      "rtl": "module FullAdder(\n    input a,\n    input b,\n    input cin,\n    output cout,\n    output sum\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or #1 (cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "aeaec584608386390e143133f03a32103622a8e4f88aa90d54ebdbe3e4323295",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "213/214 mismatches",
+      "raw_completion": "// Full adder\nmodule TopModule(a, b, cin, sum, cout);\n  input a;\n  input b;\n  input cin;\n  output sum;\n  output cout;\n  wire w1, w2, w3;\n  xor #1 (w1, a, b);\n  xor #1 (sum, w1, cin);\n  and #1 (w2, a, b);\n  and #1 (w3, w1, cin);\n  or  #1 (cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "6de3280f3fbaeb01707327f7527a6ba7f71fec15ba137a7e862d94dc8d880b5b",
+      "rtl": "module TopModule(a, b, cin, sum, cout);\n  input a;\n  input b;\n  input cin;\n  output sum;\n  output cout;\n  wire w1, w2, w3;\n  xor #1 (w1, a, b);\n  xor #1 (sum, w1, cin);\n  and #1 (w2, a, b);\n  and #1 (w3, w1, cin);\n  or  #1 (cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "ed6e6d8f7def7e8e2a8e1ef8c2fb0a920952e9c5b55323f3ed27a01406b06cf1",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob027_fadd_test.sv:99: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit full adder\nmodule FullAdder(input a, b, cin, output sum, cout);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "af47b04f8b1030c56e17998c901848737c2cc3ed57c4c1f01c83ccf30c92b038",
+      "rtl": "module FullAdder(input a, b, cin, output sum, cout);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "512ffa673abe3b44803cdd20161becffa599b402b5beeae569a407be9951fed2",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob027_fadd_test.sv:99: error: Unknown module type: TopModule",
+      "raw_completion": "// Full adder\nmodule FullAdder (\n    input a,\n    input b,\n    input cin,\n    output sum,\n    output cout\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "b58bbacdc77c16a5f024516eafaf30617706ef7bdd69e56971dc930de9538750",
+      "rtl": "module FullAdder (\n    input a,\n    input b,\n    input cin,\n    output sum,\n    output cout\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "678128c2f7da35714be1ab10d30f6ef23a26c7b627cf44cb2318f62fde5a5be1",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob027_fadd_test.sv:99: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit full adder\nmodule FullAdder(\n    input a,\n    input b,\n    input cin,\n    output cout,\n    output sum\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or #1 (cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "22e3cbe53ecb654cb7089789cb2812109f9f3883f7f0973b56b2b11a98da48a0",
+      "rtl": "module FullAdder(\n    input a,\n    input b,\n    input cin,\n    output cout,\n    output sum\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or #1 (cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "aeaec584608386390e143133f03a32103622a8e4f88aa90d54ebdbe3e4323295",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob027_fadd_test.sv:99: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit full adder\nmodule FA (\n    input a,\n    input b,\n    input cin,\n    output cout,\n    output sum\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "733a089c73ebfbd5a6c342cfb80dfe38eb1076ca0b2e1c458f1df76090c46ba6",
+      "rtl": "module FA (\n    input a,\n    input b,\n    input cin,\n    output cout,\n    output sum\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "be729caad7c53273b53be24ed8a26ae36b361e9426429395434639d35eb20b82",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob027_fadd_test.sv:99: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit full adder\nmodule FullAdder (\n    input a,\n    input b,\n    input cin,\n    output reg sum,\n    output reg cout\n);\n    always @(*) begin\n        sum = a ^ b ^ cin;\n        cout = (a & b) | (a & cin) | (b & cin);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "786a33697a4e74774caeb8b97cc052867082acab03207b97c264f3ef6a7d2be7",
+      "rtl": "module FullAdder (\n    input a,\n    input b,\n    input cin,\n    output reg sum,\n    output reg cout\n);\n    always @(*) begin\n        sum = a ^ b ^ cin;\n        cout = (a & b) | (a & cin) | (b & cin);\n    end\nendmodule",
+      "rtl_raw_sha256": "96abf9374a4fdf5ad609181501abe36e148709b941c31713fc0acf49abf14bba",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob027_fadd_test.sv:99: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit full adder\nmodule FullAdder (\n    input  a,\n    input  b,\n    input  cin,\n    output cout,\n    output sum\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "5dd582a7fefc8719b14c50cdbd9e498ca18023b243e266380096b3059d5445f8",
+      "rtl": "module FullAdder (\n    input  a,\n    input  b,\n    input  cin,\n    output cout,\n    output sum\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "083d8ed505107c82ba095eb3f27fa4d15be3709e41229e8db3905c0c72c5bf27",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob027_fadd_test.sv:99: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit full adder\nmodule FullAdder (\n    input  a,\n    input  b,\n    input  cin,\n    output cout,\n    output sum\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "5dd582a7fefc8719b14c50cdbd9e498ca18023b243e266380096b3059d5445f8",
+      "rtl": "module FullAdder (\n    input  a,\n    input  b,\n    input  cin,\n    output cout,\n    output sum\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "083d8ed505107c82ba095eb3f27fa4d15be3709e41229e8db3905c0c72c5bf27",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob027_fadd_test.sv:99: error: Unknown module type: TopModule",
+      "raw_completion": "// Full adder: implements a + b + cin, producing sum and cout\nmodule FullAdder (\n    input a,\n    input b,\n    input cin,\n    output sum,\n    output cout\n);\n    wire w1, w2, w3;\n    xor #1 x1 (w1, a, b);\n    xor #1 x2 (sum, w1, cin);\n    and #1 a1 (w2, a, b);\n    and #1 a2 (w3, w1, cin);\n    or  #1 o1 (cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "59db8c85b25e37aa30c384936636d1a6e51d737ab20b62fe57c90e12081447f9",
+      "rtl": "module FullAdder (\n    input a,\n    input b,\n    input cin,\n    output sum,\n    output cout\n);\n    wire w1, w2, w3;\n    xor #1 x1 (w1, a, b);\n    xor #1 x2 (sum, w1, cin);\n    and #1 a1 (w2, a, b);\n    and #1 a2 (w3, w1, cin);\n    or  #1 o1 (cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "49577b6db19c1bdf6a318075e425280687ed8588419b12baff830d15d55e0c6c",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:4: error: Unknown module type: half_adder",
+      "raw_completion": "// Full adder (half adder + carry)\nmodule TopModule(input a, input b, input cin, output cout, output sum);\n    wire w1, w2, w3;\n    // First half adder stage\n    half_adder h1(.a(a), .b(b), .sum(w1), .cout(w2));\n    // Second half adder stage plus carry chaining\n    half_adder h2(.a(w1), .b(cin), .sum(sum), .cout(w3));\n    assign cout = w2 | w3;\nendmodule",
+      "raw_completion_raw_sha256": "49deb029e35d25176d6ef9517a86f7cb4666aceede0663841e2d62dee5b50d93",
+      "rtl": "module TopModule(input a, input b, input cin, output cout, output sum);\n    wire w1, w2, w3;\n    // First half adder stage\n    half_adder h1(.a(a), .b(b), .sum(w1), .cout(w2));\n    // Second half adder stage plus carry chaining\n    half_adder h2(.a(w1), .b(cin), .sum(sum), .cout(w3));\n    assign cout = w2 | w3;\nendmodule",
+      "rtl_raw_sha256": "5a76794c60aad8a49061a82b60510b0bbe92064d7fc037e37a69d4052a06a5d2",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob027_fadd_test.sv:99: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit full adder\nmodule FA1 (\n    input  a,\n    input  b,\n    input  cin,\n    output cout,\n    output sum\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "0170fcad3815766302ff90c61a6bbc8f22d4e9d3440c7c403ea5e32aac0bdf1a",
+      "rtl": "module FA1 (\n    input  a,\n    input  b,\n    input  cin,\n    output cout,\n    output sum\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "a88efb1c5981c07b5107862e1dd6e28a3f3573224082bb7190a27a23c8f29630",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob027_fadd_test.sv:99: error: Unknown module type: TopModule",
+      "raw_completion": "// Full adder\nmodule FullAdder(\n    input a,\n    input b,\n    input cin,\n    output cout,\n    output sum\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "96bf483c5ab89db47efd188547d31d26812ab2bb1548853d72e6167f4ede7283",
+      "rtl": "module FullAdder(\n    input a,\n    input b,\n    input cin,\n    output cout,\n    output sum\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "263dc0f7fa635719b5caaab10c953be74f00fcaf076e5cacdb31a57ee3979573",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob027_fadd_test.sv:99: error: Unknown module type: TopModule",
+      "raw_completion": "// Full adder\nmodule FullAdder(\n    input a,\n    input b,\n    input cin,\n    output reg sum,\n    output reg cout\n);\n    always @(*) begin\n        sum = a ^ b ^ cin;\n        cout = (a & b) | (a & cin) | (b & cin);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "16ce16b5e0dc35e2975f93c22bbbef6c30948c500f5f72033883e57a621c6aa4",
+      "rtl": "module FullAdder(\n    input a,\n    input b,\n    input cin,\n    output reg sum,\n    output reg cout\n);\n    always @(*) begin\n        sum = a ^ b ^ cin;\n        cout = (a & b) | (a & cin) | (b & cin);\n    end\nendmodule",
+      "rtl_raw_sha256": "98e0d658f15c13c5d45c5f83c58dcd186dde40202f9054c31392a5ff781d1aa3",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Full adder\nmodule TopModule(a, b, cin, sum, cout);\n  input a, b, cin;\n  output sum, cout;\n  wire w1, w2, w3;\n  xor(sum, a, b, cin);\n  and(w1, a, b);\n  and(w2, a, cin);\n  and(w3, b, cin);\n  or(cout, w1, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "755dd43d880724a6ffbb01406a5af5e5ccb7f165f3a452929cad5536e7996dd3",
+      "rtl": "module TopModule(a, b, cin, sum, cout);\n  input a, b, cin;\n  output sum, cout;\n  wire w1, w2, w3;\n  xor(sum, a, b, cin);\n  and(w1, a, b);\n  and(w2, a, cin);\n  and(w3, b, cin);\n  or(cout, w1, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "d943c3e15b41abbd455d42fd4eb0a9ab6e1a290b951a95fe779ba7607e43fb74",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob027_fadd_test.sv:99: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit full adder\nmodule FullAdder (\n    input a,\n    input b,\n    input cin,\n    output reg sum,\n    output reg cout\n);\n    always @(*) begin\n        sum = a ^ b ^ cin;\n        cout = (a & b) | (a & cin) | (b & cin);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "786a33697a4e74774caeb8b97cc052867082acab03207b97c264f3ef6a7d2be7",
+      "rtl": "module FullAdder (\n    input a,\n    input b,\n    input cin,\n    output reg sum,\n    output reg cout\n);\n    always @(*) begin\n        sum = a ^ b ^ cin;\n        cout = (a & b) | (a & cin) | (b & cin);\n    end\nendmodule",
+      "rtl_raw_sha256": "96abf9374a4fdf5ad609181501abe36e148709b941c31713fc0acf49abf14bba",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "213/214 mismatches",
+      "raw_completion": "// Full adder\nmodule TopModule(\n    input  a,\n    input  b,\n    input  cin,\n    output cout,\n    output sum\n);\n    wire w1, w2, w3;\n    xor #1 g1(w1, a, b);\n    xor #1 g2(sum, w1, cin);\n    and #1 g3(w2, a, b);\n    and #1 g4(w3, w1, cin);\n    or  #1 g5(cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "3630e27f58cb4fd69a6cba4ca3336eb79d14bfa9ceb77a6b28cbff9982d99b7e",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  cin,\n    output cout,\n    output sum\n);\n    wire w1, w2, w3;\n    xor #1 g1(w1, a, b);\n    xor #1 g2(sum, w1, cin);\n    and #1 g3(w2, a, b);\n    and #1 g4(w3, w1, cin);\n    or  #1 g5(cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "460ca8c63428e6cb41bb295fdc95eb27bfeca59894d52a81ff87b930003af0fe",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob027_fadd_test.sv:99: error: Unknown module type: TopModule",
+      "raw_completion": "// Full adder\nmodule FullAdder(\n    input a,\n    input b,\n    input cin,\n    output cout,\n    output sum\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "96bf483c5ab89db47efd188547d31d26812ab2bb1548853d72e6167f4ede7283",
+      "rtl": "module FullAdder(\n    input a,\n    input b,\n    input cin,\n    output cout,\n    output sum\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "263dc0f7fa635719b5caaab10c953be74f00fcaf076e5cacdb31a57ee3979573",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 2,
+    "compile_fail": 16,
+    "fail": 2
+  },
+  "testbench_raw_sha256": "83bc76bc52bb134aba9a4cc1c762740cb6785f60413fa75becb826ce9128a9d8",
+  "training_seed": 1
+}

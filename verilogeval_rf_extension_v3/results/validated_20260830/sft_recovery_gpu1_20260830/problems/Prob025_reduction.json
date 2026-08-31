@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob025_reduction",
+  "problem_seed": 5576290643707759062,
+  "prompt_raw_sha256": "0734b084119e62e858a877d0cb729da5d28f503fcb40c93a5c82a6fa75051d2d",
+  "reference_raw_sha256": "2c3ed80d11c32321cb8c416c36ab78514880592e99f20a53b794cdf0944240be",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob025_reduction_test.sv:62: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit wide Parity generator, used as a submodule.\nmodule Parity_8 (\n    input  [7:0] in,\n    output reg parity\n);\n    always @* parity = ^in;\nendmodule",
+      "raw_completion_raw_sha256": "4ff116924ca8c86553b06192a6a50d2b7e055b84f1f36f468511d3b4e88ce595",
+      "rtl": "module Parity_8 (\n    input  [7:0] in,\n    output reg parity\n);\n    always @* parity = ^in;\nendmodule",
+      "rtl_raw_sha256": "122e5a61caf3e46ae47fd84d0988ddffb8c106e6aea808d7510c14056801851b",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Even parity (XOR of all data bits)\nmodule TopModule (\n    input  [7:0] in,\n    output        parity\n);\n    wire           x0 = in[0];\n    wire           x1 = in[1];\n    wire           x2 = in[2];\n    wire           x3 = in[3];\n    wire           x4 = in[4];\n    wire           x5 = in[5];\n    wire           x6 = in[6];\n    wire           x7 = in[7];\n    wire           p = x0 ^ x1 ^ x2 ^ x3 ^ x4 ^ x5 ^ x6 ^ x7;\n    assign parity = p;\nendmodule",
+      "raw_completion_raw_sha256": "fc04b6e9293efba66bde55358c40bbfb0a1ad837fd474584d5bb49ca0c53c406",
+      "rtl": "module TopModule (\n    input  [7:0] in,\n    output        parity\n);\n    wire           x0 = in[0];\n    wire           x1 = in[1];\n    wire           x2 = in[2];\n    wire           x3 = in[3];\n    wire           x4 = in[4];\n    wire           x5 = in[5];\n    wire           x6 = in[6];\n    wire           x7 = in[7];\n    wire           p = x0 ^ x1 ^ x2 ^ x3 ^ x4 ^ x5 ^ x6 ^ x7;\n    assign parity = p;\nendmodule",
+      "rtl_raw_sha256": "ddb5751a81f256e961ced2255b736c26aa30b9e4ab8ad900ab5064ff2a1617b0",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "99/100 mismatches",
+      "raw_completion": "module TopModule (\n    input [7:0] in,\n    output reg parity\n);\n    reg [7:0] data = in;\n    reg p;\n    integer i;\n    always @(*) begin\n        p = 1'b0;\n        for (i = 0; i < 8; i = i + 1) begin\n            p = p ^ data[i];\n        end\n        parity = p;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "ce7c5c1d09f87d4fc52233ecc88b59feba7d02e6d09e4331867cd08c5803b6b5",
+      "rtl": "module TopModule (\n    input [7:0] in,\n    output reg parity\n);\n    reg [7:0] data = in;\n    reg p;\n    integer i;\n    always @(*) begin\n        p = 1'b0;\n        for (i = 0; i < 8; i = i + 1) begin\n            p = p ^ data[i];\n        end\n        parity = p;\n    end\nendmodule",
+      "rtl_raw_sha256": "ce7c5c1d09f87d4fc52233ecc88b59feba7d02e6d09e4331867cd08c5803b6b5",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob025_reduction_test.sv:62: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit wide parity generator, for a full 8-bit byte (with parity bit\n// 0). Computes parity as an XOR of all data bits.\nmodule Parity1 (\n    input  [7:0] in,\n    output reg   parity\n);\n    always @(*) parity = ^in;\nendmodule",
+      "raw_completion_raw_sha256": "a0a933e596d266a4a633fdbb040a9aeb572c18b3210d496f8bb2f00ba6d0a1b9",
+      "rtl": "module Parity1 (\n    input  [7:0] in,\n    output reg   parity\n);\n    always @(*) parity = ^in;\nendmodule",
+      "rtl_raw_sha256": "f22bae29b0d4bc903367f2ab7166c7d3a29a3bd262d37158f77776e9500cf9b5",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob025_reduction_test.sv:62: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit parity-checking module. Computes the parity of an 8-bit word.\nmodule Parity (\n    input  [7:0] in,\n    output reg   parity\n);\n    always @(*) parity = ^in;\nendmodule",
+      "raw_completion_raw_sha256": "2b91be36629e04963004ae2fe1f06213e002178a50edc11a405eb466a8226c55",
+      "rtl": "module Parity (\n    input  [7:0] in,\n    output reg   parity\n);\n    always @(*) parity = ^in;\nendmodule",
+      "rtl_raw_sha256": "0f82ddc52fe1cfa3bf6fa468829d755832c493f763917543e354156eeb8c09b2",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Even parity for 8-bit data (9th bit is the parity bit)\nmodule TopModule(\n    input  [7:0] in,\n    output        parity\n);\n    wire p = ^in;\n    assign parity = p;\nendmodule",
+      "raw_completion_raw_sha256": "f0c9600e936ce3dfbac263a7155b2bd4382bfbe73557d5adcd871b81bda68e24",
+      "rtl": "module TopModule(\n    input  [7:0] in,\n    output        parity\n);\n    wire p = ^in;\n    assign parity = p;\nendmodule",
+      "rtl_raw_sha256": "7c9e484d345c44db040f9ea1a11a6ecd9cdd4e22964c9fe21e2098dfcbe8910b",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob025_reduction_test.sv:62: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit full-adder: computes sum and carry for one bit of data\nmodule FullAdder (\n    input  a,\n    input  b,\n    input  cin,\n    output sum,\n    output cout\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "3c3ba4261c172884e6fbf85f4d508a9ba0ff979789533783d754a1a2114198ce",
+      "rtl": "module FullAdder (\n    input  a,\n    input  b,\n    input  cin,\n    output sum,\n    output cout\n);\n    wire w1, w2, w3;\n    xor #1 (w1, a, b);\n    xor #1 (sum, w1, cin);\n    and #1 (w2, a, b);\n    and #1 (w3, w1, cin);\n    or  #1 (cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "9094c6ad5340185fc511acac99c02df27a0deadd3501ffc59a2673f99f83fffb",
+      "sample_index": 6,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 8-bit even parity checker\nmodule TopModule (\n    input  [7:0] in,\n    output parity\n);\n    wire parity_calc = ^in;\n    assign parity = parity_calc;\nendmodule",
+      "raw_completion_raw_sha256": "67930d9d89679f28333a65b2113f397b9505d98fe1e68dfcd64ce1d5aa449eaa",
+      "rtl": "module TopModule (\n    input  [7:0] in,\n    output parity\n);\n    wire parity_calc = ^in;\n    assign parity = parity_calc;\nendmodule",
+      "rtl_raw_sha256": "81a9886c1d865437f3d90e9c540a4b2c7e4229eff484bdd5acad62b1e2ba979c",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob025_reduction_test.sv:62: error: Unknown module type: TopModule",
+      "raw_completion": "// 8-bit even parity generator\nmodule Parity(\n    input [7:0] in,\n    output reg parity\n);\n    always @(*) parity = ^in;\nendmodule",
+      "raw_completion_raw_sha256": "683e8b66c2f0457c53d1992a3985b82d7f1d04355f1ca6beab6522e70e51979e",
+      "rtl": "module Parity(\n    input [7:0] in,\n    output reg parity\n);\n    always @(*) parity = ^in;\nendmodule",
+      "rtl_raw_sha256": "25ab36bbea941a054233974df8c1bfc0e2139f35accb2f1c96dbbcf3cf59eda1",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "43/100 mismatches",
+      "raw_completion": "// Even parity: the parity bit is 1 if the number of 1s in the byte is even,\n// and 0 if the number of 1s is odd.\nmodule TopModule(\n    input  [7:0] in,\n    output        parity\n);\n    wire [7:0] xored = in ^ in[0] ^ in[1] ^ in[2] ^ in[3] ^ in[4] ^ in[5] ^ in[6] ^ in[7];\n    assign parity = ~xored;\nendmodule",
+      "raw_completion_raw_sha256": "fde9caedddf0ea662f3ae919e26b53121da884d8bc193d5b28b523fb044001f5",
+      "rtl": "module TopModule(\n    input  [7:0] in,\n    output        parity\n);\n    wire [7:0] xored = in ^ in[0] ^ in[1] ^ in[2] ^ in[3] ^ in[4] ^ in[5] ^ in[6] ^ in[7];\n    assign parity = ~xored;\nendmodule",
+      "rtl_raw_sha256": "598f7f70f2ea73dffaf349c5a3b28fb78f86500b74754c62c67f10d7b6b18f3d",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob025_reduction_test.sv:62: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit full adder (from Hack register file, stage 1)\nmodule FullAdder(\n    input  wire        a,\n    input  wire        b,\n    input  wire        cin,\n    output wire        s,\n    output wire        cout\n);\n    wire w1, w2, w3;\n    xor #1 x1(w1, a, b);\n    xor #1 x2(s, w1, cin);\n    and #1 a1(w2, a, b);\n    and #1 a2(w3, w1, cin);\n    or  #1 o1(cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "ec6e3bebf65c21206a9270dc10759d47acbf255fde2c9f86d034f26d11d944df",
+      "rtl": "module FullAdder(\n    input  wire        a,\n    input  wire        b,\n    input  wire        cin,\n    output wire        s,\n    output wire        cout\n);\n    wire w1, w2, w3;\n    xor #1 x1(w1, a, b);\n    xor #1 x2(s, w1, cin);\n    and #1 a1(w2, a, b);\n    and #1 a2(w3, w1, cin);\n    or  #1 o1(cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "18facd104708470e57b7770e9025489844c9cd5cc805ebe1ad58fc50c2996287",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: Unknown module type: XOR",
+      "raw_completion": "// One-bit wide full-adder (half-adder + carry)\nmodule FA (\n    input  a,\n    input  b,\n    input  cin,\n    output reg s,\n    output reg cout\n);\n    wire w1, w2, w3;\n    XOR #(1) x1 (.a(a), .b(b), .y(w1));\n    XOR #(1) x2 (.a(w1), .b(cin), .y(s));\n    AND #(1) a1 (.a(a), .b(b), .y(w2));\n    AND #(1) a2 (.a(w1), .b(cin), .y(w3));\n    OR  #(1) o1 (.a(w2), .b(w3), .y(cout));\nendmodule",
+      "raw_completion_raw_sha256": "e3849303ae39e95e9f03f0089d290d2962ec8f2b2d478a6ba4a97012b907ee26",
+      "rtl": "module FA (\n    input  a,\n    input  b,\n    input  cin,\n    output reg s,\n    output reg cout\n);\n    wire w1, w2, w3;\n    XOR #(1) x1 (.a(a), .b(b), .y(w1));\n    XOR #(1) x2 (.a(w1), .b(cin), .y(s));\n    AND #(1) a1 (.a(a), .b(b), .y(w2));\n    AND #(1) a2 (.a(w1), .b(cin), .y(w3));\n    OR  #(1) o1 (.a(w2), .b(w3), .y(cout));\nendmodule",
+      "rtl_raw_sha256": "79d33f1f66fd5451b627851211f54c5e0dc2cb9125bbe633064dbb214fd4ef0b",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [7:0] in,\n    output        parity\n);\n    wire [7:0] xored = in[0] ^ in[1] ^ in[2] ^ in[3] ^ in[4] ^ in[5] ^ in[6] ^ in[7];\n    assign parity = xored;\nendmodule",
+      "raw_completion_raw_sha256": "f4f837b92b016d2180759a8afd56742a003eb3aefb0508670956edf7784334f2",
+      "rtl": "module TopModule (\n    input  [7:0] in,\n    output        parity\n);\n    wire [7:0] xored = in[0] ^ in[1] ^ in[2] ^ in[3] ^ in[4] ^ in[5] ^ in[6] ^ in[7];\n    assign parity = xored;\nendmodule",
+      "rtl_raw_sha256": "f4f837b92b016d2180759a8afd56742a003eb3aefb0508670956edf7784334f2",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob025_reduction_test.sv:62: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit wide full adder\nmodule FullAdder (\n    input  a,\n    input  b,\n    input  cin,\n    output reg s,\n    output reg cout\n);\n    always @(*) begin\n        s = a ^ b ^ cin;\n        cout = (a & b) | (a & cin) | (b & cin);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "216aae5e31273cbe673a8d268db31a96b0991cb39e4ee5ccda6c2283c734728a",
+      "rtl": "module FullAdder (\n    input  a,\n    input  b,\n    input  cin,\n    output reg s,\n    output reg cout\n);\n    always @(*) begin\n        s = a ^ b ^ cin;\n        cout = (a & b) | (a & cin) | (b & cin);\n    end\nendmodule",
+      "rtl_raw_sha256": "0c8eb8d4cb82e6798fbf64be3d843f3c01fc8540624e408c75955c97e9914fbc",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob025_reduction_test.sv:62: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit full-adder, used in the parity-checking function.\nmodule FA (\n    input a, b, cin,\n    output wire s, cout\n);\n    wire w1, w2, w3;\n    xor(w1, a, b);\n    xor(s, w1, cin);\n    and(w2, a, b);\n    and(w3, w1, cin);\n    or(cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "3fefc015ec55cd5e1e62e2231c040a4650092bda533dd6d39786109862823865",
+      "rtl": "module FA (\n    input a, b, cin,\n    output wire s, cout\n);\n    wire w1, w2, w3;\n    xor(w1, a, b);\n    xor(s, w1, cin);\n    and(w2, a, b);\n    and(w3, w1, cin);\n    or(cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "cfb97d2da2d0cba4e43778dea84d06727a7cd4ab351e51ac99d19b4e7d380b2d",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [7:0] in,\n    output parity\n);\n    wire [7:0] x;\n    assign x = ^in;\n    assign parity = x;\nendmodule",
+      "raw_completion_raw_sha256": "593c9c179bad5ea0383a91cdc6db463d87520e10fd2d25182181a789ee9df818",
+      "rtl": "module TopModule(\n    input  [7:0] in,\n    output parity\n);\n    wire [7:0] x;\n    assign x = ^in;\n    assign parity = x;\nendmodule",
+      "rtl_raw_sha256": "593c9c179bad5ea0383a91cdc6db463d87520e10fd2d25182181a789ee9df818",
+      "sample_index": 15,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob025_reduction_test.sv:62: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit wide Parity generator, computing the even parity (XOR of all bits)\nmodule Parity (\n    input  [7:0] in,\n    output reg parity\n);\n    always @(*) parity = ^in;\nendmodule",
+      "raw_completion_raw_sha256": "e5e6e39442725c9cfe08ddbf0ae7791ce9eb7acc4fc124381db0ebb34460905c",
+      "rtl": "module Parity (\n    input  [7:0] in,\n    output reg parity\n);\n    always @(*) parity = ^in;\nendmodule",
+      "rtl_raw_sha256": "cb9d7e4267583034000465f7028b1dc8e70e6ae6d626857e38636d66599292eb",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob025_reduction_test.sv:62: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit wide full-adder.\nmodule FullAdder (\n    input  wire a,\n    input  wire b,\n    input  wire cin,\n    output reg  s,\n    output reg  cout\n);\n    always @(*) begin\n        s = a ^ b ^ cin;\n        cout = (a & b) | (a & cin) | (b & cin);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "6d0d1d72a81a8e9436ec64889070e8110cf6b50f86d02f46c087a6fdc7dcc6c2",
+      "rtl": "module FullAdder (\n    input  wire a,\n    input  wire b,\n    input  wire cin,\n    output reg  s,\n    output reg  cout\n);\n    always @(*) begin\n        s = a ^ b ^ cin;\n        cout = (a & b) | (a & cin) | (b & cin);\n    end\nendmodule",
+      "rtl_raw_sha256": "c4b04009687828a1565b04461c2d2466013962381526aba50ffcbbc2362ac1aa",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob025_reduction_test.sv:62: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit wide full-adder\nmodule FA (\n    input a, b, c,\n    output s, cout\n);\n    wire w1, w2, w3;\n    xor(w1, a, b);\n    xor(s, w1, c);\n    and(w2, a, b);\n    and(w3, w1, c);\n    or(cout, w2, w3);\nendmodule",
+      "raw_completion_raw_sha256": "6b98394b3fc0c73e4ab65db1214609bc9aeee5e24923d319dbc4990466b57c76",
+      "rtl": "module FA (\n    input a, b, c,\n    output s, cout\n);\n    wire w1, w2, w3;\n    xor(w1, a, b);\n    xor(s, w1, c);\n    and(w2, a, b);\n    and(w3, w1, c);\n    or(cout, w2, w3);\nendmodule",
+      "rtl_raw_sha256": "0ab08158909afa2aea19219e8aa8a3d545bf82f406b6efe602eda836a97cb5f2",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit parity computation for an 8-bit byte. The resulting 9-bit data\n// word includes the parity bit at position 8.\nmodule TopModule (\n    input  [7:0] in,\n    output        parity\n);\n    wire p = in[0] ^ in[1] ^ in[2] ^ in[3] ^ in[4] ^ in[5] ^ in[6] ^ in[7];\n    assign parity = p;\nendmodule",
+      "raw_completion_raw_sha256": "18dd8663b30f3e57dcc7c066a7387d690015e92b989a82329fb9cfd0c7b9e7a1",
+      "rtl": "module TopModule (\n    input  [7:0] in,\n    output        parity\n);\n    wire p = in[0] ^ in[1] ^ in[2] ^ in[3] ^ in[4] ^ in[5] ^ in[6] ^ in[7];\n    assign parity = p;\nendmodule",
+      "rtl_raw_sha256": "139be487ad1b364d91b2362af0cdf6a4e511ce270616ec7ff8987a1d8c42dc86",
+      "sample_index": 19,
+      "status": "PASS"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 6,
+    "compile_fail": 12,
+    "fail": 2
+  },
+  "testbench_raw_sha256": "66a717ac9794a526f8d87e25b14b5a65669b3f52b6854a19651a42a9d6603895",
+  "training_seed": 0
+}

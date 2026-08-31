@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob066_edgecapture",
+  "problem_seed": 3093729071668629510,
+  "prompt_raw_sha256": "b1898b09d8af0c9d7c2340e756eb24cfd24ff4d2987e69ed7d8843943d966464",
+  "reference_raw_sha256": "e36bcc084d7672e3f76f3c485f386b9ae02341252cb27e3c4605d54a227af1fe",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob066_edgecapture_test.sv:138: error: Unknown module type: TopModule",
+      "raw_completion": "// Single-bit edge-triggered registers chain, stage 1\n// (register to go directly to the output, no extra register in\n// the critical path)\nmodule EdgeRegChainStage1 (\n    input  reg  clk,\n    input  reg  reset,\n    input  reg  d,\n    output reg  q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 1'b0;\n        else       q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b7d8bef59c8354dc612bf2c5fccd7dbdb736b3c0a7605fe0bf9f73797055353e",
+      "rtl": "module EdgeRegChainStage1 (\n    input  reg  clk,\n    input  reg  reset,\n    input  reg  d,\n    output reg  q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 1'b0;\n        else       q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "9e560f013cdb68c88d8694464d72a98f37d9923c7b7e3bd9041a9e9d5fe78293",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "229/266 mismatches",
+      "raw_completion": "// One-shot capture, register-to-register F max (6 Fmax)\nmodule TopModule(\n    input  clk,\n    input  reset,\n    input  [31:0] in,\n    output reg [31:0] out\n);\n    reg [31:0] diff;\n    reg [31:0] q1, q2;\n    always @(posedge clk) begin\n        if (reset) begin\n            q1 <= 32'd0;\n            q2 <= 32'd0;\n            out <= 32'd0;\n        end else begin\n            diff <= in ^ q1;\n            q1 <= in;\n            q2 <= diff;\n            out <= q2;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "eb9a5cf402c53bed21c12ee23f0c12ed128f6ae6c02878dfe79896acd81ceffc",
+      "rtl": "module TopModule(\n    input  clk,\n    input  reset,\n    input  [31:0] in,\n    output reg [31:0] out\n);\n    reg [31:0] diff;\n    reg [31:0] q1, q2;\n    always @(posedge clk) begin\n        if (reset) begin\n            q1 <= 32'd0;\n            q2 <= 32'd0;\n            out <= 32'd0;\n        end else begin\n            diff <= in ^ q1;\n            q1 <= in;\n            q2 <= diff;\n            out <= q2;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "ec63cc6e79157d0ccb8995df0003e2542f74668eff82a43532ffb962fa2d23a8",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob066_edgecapture_test.sv:138: error: Unknown module type: TopModule",
+      "raw_completion": "// One-shot register: triggers one clock cycle after the input signal\n// changes from 1 to 0.\nmodule one_shot (\n    input  clk,\n    input  reset,\n    input  in,\n    output out\n);\n    reg q1, q2, q3;\n    wire trigger;\n    assign trigger = ~q1 & q2;\n    always @(posedge clk) begin\n        if (reset) begin\n            q1 <= 1'b0;\n            q2 <= 1'b0;\n            q3 <= 1'b0;\n        end else begin\n            q1 <= in;\n            q2 <= q1;\n            q3 <= trigger;\n        end\n    end\n    assign out = q3;\nendmodule",
+      "raw_completion_raw_sha256": "d23c2d384409d4ca5f40e7a4281b080f75bbd5c36f74ae22e639134ef34fe95d",
+      "rtl": "module one_shot (\n    input  clk,\n    input  reset,\n    input  in,\n    output out\n);\n    reg q1, q2, q3;\n    wire trigger;\n    assign trigger = ~q1 & q2;\n    always @(posedge clk) begin\n        if (reset) begin\n            q1 <= 1'b0;\n            q2 <= 1'b0;\n            q3 <= 1'b0;\n        end else begin\n            q1 <= in;\n            q2 <= q1;\n            q3 <= trigger;\n        end\n    end\n    assign out = q3;\nendmodule",
+      "rtl_raw_sha256": "2a2438b078638bda4d13dcf8a10c206510035c45bd31403c260f3bc88662231f",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob066_edgecapture_test.sv:138: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit edge-triggered register, inlined.\nmodule Flop (input clk, input d, output reg q);\n    always @(posedge clk) q <= d;\nendmodule",
+      "raw_completion_raw_sha256": "53d7e6a888190b53414fdf0d3b5395c89afeda7232df5da2a0830233868fa61e",
+      "rtl": "module Flop (input clk, input d, output reg q);\n    always @(posedge clk) q <= d;\nendmodule",
+      "rtl_raw_sha256": "c9f23c7004235d0e63eb0818fb388b0e5481745de40a05cbd2632b30e234c0e8",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob066_edgecapture_test.sv:138: error: Unknown module type: TopModule",
+      "raw_completion": "// One-shot capture: goes high for one clock cycle, then goes low.\nmodule CaptureOneShot (\n    input  clk,\n    input  reset,\n    input  in,\n    output reg out\n);\n    reg last_in;\n    reg first_transition_this_cycle;\n    always @(posedge clk) begin\n        if (reset) begin\n            out <= 1'b0;\n            first_transition_this_cycle <= 1'b0;\n        end else begin\n            if (in != last_in && !first_transition_this_cycle) begin\n                out <= 1'b1;\n                first_transition_this_cycle <= 1'b1;\n            end\n            last_in <= in;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a394786918831d81683dd684117aa3ed6582158f3b4befa4adb907056294cf28",
+      "rtl": "module CaptureOneShot (\n    input  clk,\n    input  reset,\n    input  in,\n    output reg out\n);\n    reg last_in;\n    reg first_transition_this_cycle;\n    always @(posedge clk) begin\n        if (reset) begin\n            out <= 1'b0;\n            first_transition_this_cycle <= 1'b0;\n        end else begin\n            if (in != last_in && !first_transition_this_cycle) begin\n                out <= 1'b1;\n                first_transition_this_cycle <= 1'b1;\n            end\n            last_in <= in;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "6042b47d3a9fabf6a3ac91fe11bf0a17ff10cc079d8020ca7f83ca4d70301c28",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: Unknown module type: one_shot",
+      "raw_completion": "// One-shot: trigger high, pause, trigger low.\nmodule TopModule(input clk, input reset, input [31:0] in, output [31:0] out);\n  reg [31:0] last;\n  wire [31:0] changed;\n  wire [31:0] q;\n  reg [31:0] r;\n  genvar i;\n  generate\n    for (i = 0; i < 32; i = i + 1) begin : g\n      one_shot os (.clk(clk), .reset(reset), .p(in[i] & ~last[i]), .q(changed[i]));\n      assign q[i] = r[i] & ~changed[i];\n      always @(posedge clk) last[i] <= in[i];\n      always @(posedge clk) r[i] <= q[i];\n    end\n  endgenerate\n  assign out = r;\nendmodule",
+      "raw_completion_raw_sha256": "4c47dc4f7fd94b583621bc18190fec795a0679deb70f1f8590917ff4562a04e7",
+      "rtl": "module TopModule(input clk, input reset, input [31:0] in, output [31:0] out);\n  reg [31:0] last;\n  wire [31:0] changed;\n  wire [31:0] q;\n  reg [31:0] r;\n  genvar i;\n  generate\n    for (i = 0; i < 32; i = i + 1) begin : g\n      one_shot os (.clk(clk), .reset(reset), .p(in[i] & ~last[i]), .q(changed[i]));\n      assign q[i] = r[i] & ~changed[i];\n      always @(posedge clk) last[i] <= in[i];\n      always @(posedge clk) r[i] <= q[i];\n    end\n  endgenerate\n  assign out = r;\nendmodule",
+      "rtl_raw_sha256": "258033fdf36aeb00e86480e75a0f87d1068595d032e1fe68d7d48e2d7767f002",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "119/266 mismatches",
+      "raw_completion": "// One-shot capture of rising edge transition\nmodule TopModule(\n    input  clk,\n    input  reset,\n    input  [31:0] in,\n    output reg [31:0] out\n);\n    reg [31:0] last;\n    wire [31:0] edges;\n    assign edges = in & ~last;\n    always @(posedge clk) begin\n        if (reset) begin\n            out <= 32'b0;\n        end else begin\n            out <= out | edges;\n        end\n        last <= in;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "5ab54b3f024321236b4c0f1b78382362fa513a256da3bc471111d75726db75c4",
+      "rtl": "module TopModule(\n    input  clk,\n    input  reset,\n    input  [31:0] in,\n    output reg [31:0] out\n);\n    reg [31:0] last;\n    wire [31:0] edges;\n    assign edges = in & ~last;\n    always @(posedge clk) begin\n        if (reset) begin\n            out <= 32'b0;\n        end else begin\n            out <= out | edges;\n        end\n        last <= in;\n    end\nendmodule",
+      "rtl_raw_sha256": "51f814e5c7bdc958a1eb35ec7c2ce753fdce7ada657dcb87f04b45d7ce5e555e",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob066_edgecapture_ref.sv:2: syntax error",
+      "raw_completion": "// One-shot capture on each bit of the 32-bit input, registerd on the\n// clock domain. Longer-lasting one-shots make the register go low as\n// soon as the input goes to 0, so we get a rapid capture of the rising\n// edge of the input signal.\nmodule TopModule (\n    input  clk,\n    input  reset,\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] reg0, reg1, reg2, reg3, reg4, reg5, reg6, reg7, reg8, reg9, reg10, reg11, reg12, reg13, reg14, reg15, reg16, reg17, reg18, reg19, reg20, reg21, reg22, reg23, reg24, reg25, reg26, reg27, reg28, reg29, reg30, reg31;\n    wire [31:0] q = {reg31, reg30, reg29, reg28, reg27, reg26, reg25, reg24, reg23, reg22, reg21, reg20, reg19, reg18, reg17, reg16, reg15, reg14, reg13, reg12, reg11, reg10, reg9, reg8, reg7, reg6, reg5, reg4, reg3, reg2, reg1, reg0};\n    always @(posedge clk) begin\n        if (reset) begin\n            reg0 <= 1'b0; reg1 <= 1'b0; reg2 <= 1'b0; reg3 <= 1'b0; reg4 <= 1'b0; reg5 <= 1'b0; reg6 <= 1'b0; reg7 <= 1'b0; reg8 <= 1'b0; reg9 <= 1'b0; reg10 <= 1'b0; reg11 <= 1'b0; reg12 <= 1'b0; reg13 <= 1'b0; reg14 <= 1'b0; reg15 <= 1'b0; reg16 <= 1'b0; reg17 <= 1'b0; reg18 <= 1'b0; reg19 <= 1'b0; reg20 <= 1'b0; reg21 <= 1'b0; reg22 <= 1'b0; reg23 <= 1'b0; reg24 <= 1'b0; reg25 <= 1'b0; reg26 <= 1'b0; reg27 <= 1'b0; reg28 <= 1'b0; reg29 <= 1'b0; reg30 <= 1'b0; reg31 <= 1'b0;\n        end else begin\n            reg0 <= ~in[0] & (~reg0 | in[0]);\n            reg1 <= ~in[1] & (~reg1 | in[1]);\n            reg2 <= ~in[2] & (~reg2 | in[2]);\n            reg3 <= ~in[3] & (~reg3 | in[3]);\n            reg4 <= ~in[4] & (~reg4 | in[4]);\n            reg5 <= ~in[5] & (~reg5 | in[5]);\n            reg6 <= ~in[6] & (~reg6 | in[6]);\n            reg7 <= ~in[7] & (~reg7 | in[7]);\n            reg8 <= ~in[8] & (~reg8 | in[8]);\n            reg9 <= ~in[9] & (~reg9 | in[9]);\n            reg10 <= ~in[10] & (~reg10 | in[10]);\n            reg11 <= ~in[11] & (~reg11 | in[11]);\n            reg12 <= ~in[12] & (~reg12 | in[12]);\n            reg13 <= ~in[13] & (~reg13 | in[13]);\n            reg14 <= ~in[14] & (~reg14 | in[14]);\n            reg15 <= ~in[15] & (~reg15 | in[15]);\n            reg16 <= ~in[16",
+      "raw_completion_raw_sha256": "e68f06a410dff49cd276c0e7f5c2e886b9fff284ab3c23b22a8a079e8aa11fbc",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] reg0, reg1, reg2, reg3, reg4, reg5, reg6, reg7, reg8, reg9, reg10, reg11, reg12, reg13, reg14, reg15, reg16, reg17, reg18, reg19, reg20, reg21, reg22, reg23, reg24, reg25, reg26, reg27, reg28, reg29, reg30, reg31;\n    wire [31:0] q = {reg31, reg30, reg29, reg28, reg27, reg26, reg25, reg24, reg23, reg22, reg21, reg20, reg19, reg18, reg17, reg16, reg15, reg14, reg13, reg12, reg11, reg10, reg9, reg8, reg7, reg6, reg5, reg4, reg3, reg2, reg1, reg0};\n    always @(posedge clk) begin\n        if (reset) begin\n            reg0 <= 1'b0; reg1 <= 1'b0; reg2 <= 1'b0; reg3 <= 1'b0; reg4 <= 1'b0; reg5 <= 1'b0; reg6 <= 1'b0; reg7 <= 1'b0; reg8 <= 1'b0; reg9 <= 1'b0; reg10 <= 1'b0; reg11 <= 1'b0; reg12 <= 1'b0; reg13 <= 1'b0; reg14 <= 1'b0; reg15 <= 1'b0; reg16 <= 1'b0; reg17 <= 1'b0; reg18 <= 1'b0; reg19 <= 1'b0; reg20 <= 1'b0; reg21 <= 1'b0; reg22 <= 1'b0; reg23 <= 1'b0; reg24 <= 1'b0; reg25 <= 1'b0; reg26 <= 1'b0; reg27 <= 1'b0; reg28 <= 1'b0; reg29 <= 1'b0; reg30 <= 1'b0; reg31 <= 1'b0;\n        end else begin\n            reg0 <= ~in[0] & (~reg0 | in[0]);\n            reg1 <= ~in[1] & (~reg1 | in[1]);\n            reg2 <= ~in[2] & (~reg2 | in[2]);\n            reg3 <= ~in[3] & (~reg3 | in[3]);\n            reg4 <= ~in[4] & (~reg4 | in[4]);\n            reg5 <= ~in[5] & (~reg5 | in[5]);\n            reg6 <= ~in[6] & (~reg6 | in[6]);\n            reg7 <= ~in[7] & (~reg7 | in[7]);\n            reg8 <= ~in[8] & (~reg8 | in[8]);\n            reg9 <= ~in[9] & (~reg9 | in[9]);\n            reg10 <= ~in[10] & (~reg10 | in[10]);\n            reg11 <= ~in[11] & (~reg11 | in[11]);\n            reg12 <= ~in[12] & (~reg12 | in[12]);\n            reg13 <= ~in[13] & (~reg13 | in[13]);\n            reg14 <= ~in[14] & (~reg14 | in[14]);\n            reg15 <= ~in[15] & (~reg15 | in[15]);\n            reg16 <= ~in[16",
+      "rtl_raw_sha256": "b6b0a87a08f29aa7f6cb2f1dd2fa1a60009fb44922696f8ceac025b8f5969cd3",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: Unknown module type: FDPE",
+      "raw_completion": "// Same name as the module\nmodule TopModule(input clk, input reset, input [31:0] in, output [31:0] out);\n    reg [31:0] q, r;\n    wire [31:0] d;\n    genvar i;\n    generate\n        for (i = 0; i < 32; i = i + 1) begin : g\n            always @(posedge clk) begin\n                if (reset) q[i] <= 1'b0;\n                else       q[i] <= r[i];\n            end\n            assign d[i] = in[i] & ~q[i];\n            FDPE #(.INIT(1)) p (.Q(r[i]), .D(d[i]), .PRE(reset));\n        end\n    endgenerate\n    assign out = q;\nendmodule",
+      "raw_completion_raw_sha256": "ced4e61c61c8efd7a47a7ded59754812866da96aa4edf208568e023b3f6168ef",
+      "rtl": "module TopModule(input clk, input reset, input [31:0] in, output [31:0] out);\n    reg [31:0] q, r;\n    wire [31:0] d;\n    genvar i;\n    generate\n        for (i = 0; i < 32; i = i + 1) begin : g\n            always @(posedge clk) begin\n                if (reset) q[i] <= 1'b0;\n                else       q[i] <= r[i];\n            end\n            assign d[i] = in[i] & ~q[i];\n            FDPE #(.INIT(1)) p (.Q(r[i]), .D(d[i]), .PRE(reset));\n        end\n    endgenerate\n    assign out = q;\nendmodule",
+      "rtl_raw_sha256": "b9e8252865e39b6ba0e150543134bc0c0d52414256b5c231d28469b282247d49",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob066_edgecapture_test.sv:138: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit register with synchronous reset, active high\nmodule capture_one_bit (\n    input clk, reset, d,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 1'b0;\n        else       q <= d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "37c8840c16bab994138f99b11cdf40ad40c94f1b01885def0d6202a1fd7640be",
+      "rtl": "module capture_one_bit (\n    input clk, reset, d,\n    output reg q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 1'b0;\n        else       q <= d;\n    end\nendmodule",
+      "rtl_raw_sha256": "badb3f46339a435e0f3923e85adec34172c5ab686b85868c01462c26e2fce709",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob066_edgecapture_test.sv:138: error: Unknown module type: TopModule",
+      "raw_completion": "// One-shot capture: trigger on a single clock cycle when the input changes\n// from 1 to 0. The output stays high for one clock cycle.\nmodule EdgeCapture (\n    input  clk,\n    input  reset,\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] capture;\n    wire [31:0] next_capture;\n    genvar i;\n    generate\n        for (i = 0; i < 32; i = i + 1) begin : CAPTURE_BIT\n            always @(posedge clk) begin\n                if (reset) capture[i] <= 1'b0;\n                else capture[i] <= next_capture[i];\n            end\n            assign next_capture[i] = in[i] & ~(capture[i]);\n        end\n    endgenerate\n    assign out = capture;\nendmodule",
+      "raw_completion_raw_sha256": "95f46580763a64156ae0da60dcb39109f29859aa24d4ccac65f1a748e08bef4b",
+      "rtl": "module EdgeCapture (\n    input  clk,\n    input  reset,\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] capture;\n    wire [31:0] next_capture;\n    genvar i;\n    generate\n        for (i = 0; i < 32; i = i + 1) begin : CAPTURE_BIT\n            always @(posedge clk) begin\n                if (reset) capture[i] <= 1'b0;\n                else capture[i] <= next_capture[i];\n            end\n            assign next_capture[i] = in[i] & ~(capture[i]);\n        end\n    endgenerate\n    assign out = capture;\nendmodule",
+      "rtl_raw_sha256": "a4e85e93a56af770597ffee786b1956d486513316bd48c91c5cbfdd58263d6c8",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob066_edgecapture_test.sv:138: error: Unknown module type: TopModule",
+      "raw_completion": "// One-shot capture: goes high for one clock cycle, then goes low.\nmodule EdgeCapture (\n    input  clk,\n    input  reset,\n    input  in,\n    output reg out\n);\n    reg last_in;\n    always @(posedge clk) begin\n        if (reset) begin\n            out <= 0;\n            last_in <= 0;\n        end else begin\n            out <= in & ~last_in;\n            last_in <= in;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "ed3ddf256dfc637d4f9d58f7fade5928fa568100f03c145d6b4ac9257ddd01a0",
+      "rtl": "module EdgeCapture (\n    input  clk,\n    input  reset,\n    input  in,\n    output reg out\n);\n    reg last_in;\n    always @(posedge clk) begin\n        if (reset) begin\n            out <= 0;\n            last_in <= 0;\n        end else begin\n            out <= in & ~last_in;\n            last_in <= in;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "d4416b4cac0731d209700cc7a9fb72b88ab077a4c85a229a7d6faf5a49174632",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "241/266 mismatches",
+      "raw_completion": "// One-shot pulse for each bit of the input: go from 0 to 1 when the input\n// goes from 1 to 0. Register the result to get a stable long-pulse on the\n// output when the input goes from 1 to 0.\nmodule TopModule(input clk, input reset, input [31:0] in, output [31:0] out);\n    reg [31:0] one_shot;\n    reg [31:0] out_reg;\n    always @(posedge clk) begin\n        if (reset) begin\n            one_shot <= 32'b0;\n            out_reg <= 32'b0;\n        end else begin\n            one_shot <= {1'b0, one_shot[31:1]} | (~in & {31'b0, 1'b1});\n            out_reg <= one_shot;\n        end\n    end\n    assign out = out_reg;\nendmodule",
+      "raw_completion_raw_sha256": "3f94261e98a36c12c2e8a4402ac68ce1ade8417ca57102e3f3a9343a758545af",
+      "rtl": "module TopModule(input clk, input reset, input [31:0] in, output [31:0] out);\n    reg [31:0] one_shot;\n    reg [31:0] out_reg;\n    always @(posedge clk) begin\n        if (reset) begin\n            one_shot <= 32'b0;\n            out_reg <= 32'b0;\n        end else begin\n            one_shot <= {1'b0, one_shot[31:1]} | (~in & {31'b0, 1'b1});\n            out_reg <= one_shot;\n        end\n    end\n    assign out = out_reg;\nendmodule",
+      "rtl_raw_sha256": "1f3961ae750dc7ee0a5e6fe8bb81835ed92ba3ec20dc7a07afb0d57dd536b9c8",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: syntax error",
+      "raw_completion": "// One-bit edge-triggered register, ANDed with the delayed input bit to\n// capture the transition from 1 to 0.\nmodule EdgeCaptureReg (\n    input  reg  clk,\n    input  reg  reset,\n    input  reg  in,\n    output reg  out\n);\n    reg  in_d1;\n    wire edge = in & ~in_d1;\n    always @(posedge clk) begin\n        if (reset) begin\n            out <= 1'b0;\n        end else begin\n            out <= out | edge;\n        end\n        in_d1 <= in;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "d8eecaf1bc4b5dbf72223ed9728c6eff3cd9665ed9843843cef91fbe1b7ce79f",
+      "rtl": "module EdgeCaptureReg (\n    input  reg  clk,\n    input  reg  reset,\n    input  reg  in,\n    output reg  out\n);\n    reg  in_d1;\n    wire edge = in & ~in_d1;\n    always @(posedge clk) begin\n        if (reset) begin\n            out <= 1'b0;\n        end else begin\n            out <= out | edge;\n        end\n        in_d1 <= in;\n    end\nendmodule",
+      "rtl_raw_sha256": "5addb2b5400a2afe2cf8ceb6715edb6738aa16c77692ec15dad98437c1665f18",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:19: error: out is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-shot capture, registers the transition.\nmodule TopModule(\n    input  clk,\n    input  reset,\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] q;\n    reg [31:0] q2;\n    wire [31:0] edges;\n    reg [31:0] r;\n    always @(posedge clk) begin\n        q <= in;\n        q2 <= q;\n        r <= (reset ? 32'd0 : r + 32'd1);\n    end\n    assign edges = q & ~q2;\n    always @(posedge clk) begin\n        if (reset) begin\n            out <= 32'd0;\n        end else begin\n            out <= (r == 32'd1) ? (out | edges) : out;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a7a2766c17b2bab832f9443b8fb35d5ca11167876a8ce983d0e392f77de89ce5",
+      "rtl": "module TopModule(\n    input  clk,\n    input  reset,\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] q;\n    reg [31:0] q2;\n    wire [31:0] edges;\n    reg [31:0] r;\n    always @(posedge clk) begin\n        q <= in;\n        q2 <= q;\n        r <= (reset ? 32'd0 : r + 32'd1);\n    end\n    assign edges = q & ~q2;\n    always @(posedge clk) begin\n        if (reset) begin\n            out <= 32'd0;\n        end else begin\n            out <= (r == 32'd1) ? (out | edges) : out;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "1ac059b59b74df9354e781efd60f937118f5d980b02e472fe1cf3058e7ce50c8",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob066_edgecapture_test.sv:138: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit edge-capturing register, shared between all 32 input bits\n// (registered again to delay the path by one clock cycle).\nmodule EdgeCaptureReg (\n    input  reg  clk,\n    input  reg  reset,\n    input  reg  in,\n    output reg  out\n);\n    reg  d1, d2;\n    wire q;\n    assign q = d1 & ~d2;\n    always @(posedge clk) begin\n        d1 <= in;\n        d2 <= d1;\n        if (reset) d1 <= 1'b1; d2 <= 1'b1;\n        out <= q;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "f03443c5931acf025986cfacb9f9645bda221d818a4ca6b5928a8a280eb111bb",
+      "rtl": "module EdgeCaptureReg (\n    input  reg  clk,\n    input  reg  reset,\n    input  reg  in,\n    output reg  out\n);\n    reg  d1, d2;\n    wire q;\n    assign q = d1 & ~d2;\n    always @(posedge clk) begin\n        d1 <= in;\n        d2 <= d1;\n        if (reset) d1 <= 1'b1; d2 <= 1'b1;\n        out <= q;\n    end\nendmodule",
+      "rtl_raw_sha256": "3f80a8567b7cf24a313a6b9da89eea83e3275899a5b879a3017d5ca0ef145da0",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:20: error: q is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Capture the rising edge of the input signal\nmodule TopModule(\n    input  clk,\n    input  reset,\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] d1, d2;\n    wire [31:0] q;\n    genvar i;\n    generate\n        for (i = 0; i < 32; i = i + 1) begin : g\n            always @(posedge clk) begin\n                d1[i] <= in[i];\n                d2[i] <= d1[i];\n            end\n            assign q[i] = d1[i] & ~d2[i];\n        end\n    endgenerate\n    always @(posedge clk) begin\n        if (reset) q <= 32'h0;\n    end\n    assign out = q;\nendmodule",
+      "raw_completion_raw_sha256": "198a00c5af2403bc9e57d549a3a3cc481b81a6030bd669e0a08bb937086aaf6e",
+      "rtl": "module TopModule(\n    input  clk,\n    input  reset,\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] d1, d2;\n    wire [31:0] q;\n    genvar i;\n    generate\n        for (i = 0; i < 32; i = i + 1) begin : g\n            always @(posedge clk) begin\n                d1[i] <= in[i];\n                d2[i] <= d1[i];\n            end\n            assign q[i] = d1[i] & ~d2[i];\n        end\n    endgenerate\n    always @(posedge clk) begin\n        if (reset) q <= 32'h0;\n    end\n    assign out = q;\nendmodule",
+      "rtl_raw_sha256": "012805a574145a222995d4096c6ff3cf41263f544b01e50a82ac61abb761ec8d",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob066_edgecapture_ref.sv:2: syntax error",
+      "raw_completion": "// One-bit register chain with register-to-register FF feedback, plus a\n// combinational multiplexer to select between the unregistered (fast)\n// output and the registered (slower, more predictable) output.\nmodule TopModule(input clk, input reset, input [31:0] in, output [31:0] out);\n  reg [31:0] reg0, reg1, reg2, reg3, reg4, reg5, reg6, reg7, reg8, reg9, reg10, reg11, reg12, reg13, reg14, reg15, reg16, reg17, reg18, reg19, reg20, reg21, reg22, reg23, reg24, reg25, reg26, reg27, reg28, reg29, reg30, reg31;\n  wire [31:0] unregistered;\n  wire [31:0] registered;\n  wire select;\n  reg [31:0] counter;\n  always @(posedge clk) begin\n    if (reset) begin\n      reg0 <= 1'b0; reg1 <= 1'b0; reg2 <= 1'b0; reg3 <= 1'b0; reg4 <= 1'b0; reg5 <= 1'b0; reg6 <= 1'b0; reg7 <= 1'b0; reg8 <= 1'b0; reg9 <= 1'b0; reg10 <= 1'b0; reg11 <= 1'b0; reg12 <= 1'b0; reg13 <= 1'b0; reg14 <= 1'b0; reg15 <= 1'b0; reg16 <= 1'b0; reg17 <= 1'b0; reg18 <= 1'b0; reg19 <= 1'b0; reg20 <= 1'b0; reg21 <= 1'b0; reg22 <= 1'b0; reg23 <= 1'b0; reg24 <= 1'b0; reg25 <= 1'b0; reg26 <= 1'b0; reg27 <= 1'b0; reg28 <= 1'b0; reg29 <= 1'b0; reg30 <= 1'b0; reg31 <= 1'b0;\n      counter <= 32'd0;\n    end else begin\n      reg0 <= in[0];\n      reg1 <= in[1] & ~reg0;\n      reg2 <= in[2] & ~reg1;\n      reg3 <= in[3] & ~reg2;\n      reg4 <= in[4] & ~reg3;\n      reg5 <= in[5] & ~reg4;\n      reg6 <= in[6] & ~reg5;\n      reg7 <= in[7] & ~reg6;\n      reg8 <= in[8] & ~reg7;\n      reg9 <= in[9] & ~reg8;\n      reg10 <= in[10] & ~reg9;\n      reg11 <= in[11] & ~reg10;\n      reg12 <= in[12] & ~reg11;\n      reg13 <= in[13] & ~reg12;\n      reg14 <= in[14] & ~reg13;\n      reg15 <= in[15] & ~reg14;\n      reg16 <= in[16] & ~reg15;\n      reg17 <= in[17] & ~reg16;\n      reg18 <= in[18] & ~reg17;\n      reg19 <= in[19] & ~reg18;\n      reg20 <= in[20] & ~reg19;\n      reg21 <= in[21] & ~reg20;\n      reg22 <= in[22] & ~reg21;\n      reg23 <= in[23] & ~reg22;\n      reg24 <= in[24] & ~reg23;\n      reg25 <= in[25] & ~reg24;\n      reg26 <= in[26] & ~reg25;\n      reg27 <= in[27] & ~reg26;\n      reg28 <= in[28] & ~reg27;\n      reg29 <=",
+      "raw_completion_raw_sha256": "65ba380f613a8f3520bbad2c1578e63a77a268a1253501e7d8beffbf8f96b70a",
+      "rtl": "module TopModule(input clk, input reset, input [31:0] in, output [31:0] out);\n  reg [31:0] reg0, reg1, reg2, reg3, reg4, reg5, reg6, reg7, reg8, reg9, reg10, reg11, reg12, reg13, reg14, reg15, reg16, reg17, reg18, reg19, reg20, reg21, reg22, reg23, reg24, reg25, reg26, reg27, reg28, reg29, reg30, reg31;\n  wire [31:0] unregistered;\n  wire [31:0] registered;\n  wire select;\n  reg [31:0] counter;\n  always @(posedge clk) begin\n    if (reset) begin\n      reg0 <= 1'b0; reg1 <= 1'b0; reg2 <= 1'b0; reg3 <= 1'b0; reg4 <= 1'b0; reg5 <= 1'b0; reg6 <= 1'b0; reg7 <= 1'b0; reg8 <= 1'b0; reg9 <= 1'b0; reg10 <= 1'b0; reg11 <= 1'b0; reg12 <= 1'b0; reg13 <= 1'b0; reg14 <= 1'b0; reg15 <= 1'b0; reg16 <= 1'b0; reg17 <= 1'b0; reg18 <= 1'b0; reg19 <= 1'b0; reg20 <= 1'b0; reg21 <= 1'b0; reg22 <= 1'b0; reg23 <= 1'b0; reg24 <= 1'b0; reg25 <= 1'b0; reg26 <= 1'b0; reg27 <= 1'b0; reg28 <= 1'b0; reg29 <= 1'b0; reg30 <= 1'b0; reg31 <= 1'b0;\n      counter <= 32'd0;\n    end else begin\n      reg0 <= in[0];\n      reg1 <= in[1] & ~reg0;\n      reg2 <= in[2] & ~reg1;\n      reg3 <= in[3] & ~reg2;\n      reg4 <= in[4] & ~reg3;\n      reg5 <= in[5] & ~reg4;\n      reg6 <= in[6] & ~reg5;\n      reg7 <= in[7] & ~reg6;\n      reg8 <= in[8] & ~reg7;\n      reg9 <= in[9] & ~reg8;\n      reg10 <= in[10] & ~reg9;\n      reg11 <= in[11] & ~reg10;\n      reg12 <= in[12] & ~reg11;\n      reg13 <= in[13] & ~reg12;\n      reg14 <= in[14] & ~reg13;\n      reg15 <= in[15] & ~reg14;\n      reg16 <= in[16] & ~reg15;\n      reg17 <= in[17] & ~reg16;\n      reg18 <= in[18] & ~reg17;\n      reg19 <= in[19] & ~reg18;\n      reg20 <= in[20] & ~reg19;\n      reg21 <= in[21] & ~reg20;\n      reg22 <= in[22] & ~reg21;\n      reg23 <= in[23] & ~reg22;\n      reg24 <= in[24] & ~reg23;\n      reg25 <= in[25] & ~reg24;\n      reg26 <= in[26] & ~reg25;\n      reg27 <= in[27] & ~reg26;\n      reg28 <= in[28] & ~reg27;\n      reg29 <=",
+      "rtl_raw_sha256": "c522c7e2c3e46264cb0f5c5a84c6a15527cc14d170c0d4587cd7b47a26e5e2d6",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:10: error: edges[i] is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-shot capture of input transitions\nmodule TopModule (\n    input  clk,\n    input  reset,\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] q, q_next;\n    wire [31:0] edges;\n    integer i;\n    always @(*) for (i = 0; i < 32; i = i + 1) edges[i] = in[i] & ~q[i];\n    always @(posedge clk) q <= q_next;\n    always @(*) begin\n        q_next = q;\n        q_next[0] = edges[0];\n        q_next[1] = edges[1] | q[0];\n        q_next[2] = edges[2] | q[1];\n        q_next[3] = edges[3] | q[2];\n        q_next[4] = edges[4] | q[3];\n        q_next[5] = edges[5] | q[4];\n        q_next[6] = edges[6] | q[5];\n        q_next[7] = edges[7] | q[6];\n        q_next[8] = edges[8] | q[7];\n        q_next[9] = edges[9] | q[8];\n        q_next[10] = edges[10] | q[9];\n        q_next[11] = edges[11] | q[10];\n        q_next[12] = edges[12] | q[11];\n        q_next[13] = edges[13] | q[12];\n        q_next[14] = edges[14] | q[13];\n        q_next[15] = edges[15] | q[14];\n        q_next[16] = edges[16] | q[15];\n        q_next[17] = edges[17] | q[16];\n        q_next[18] = edges[18] | q[17];\n        q_next[19] = edges[19] | q[18];\n        q_next[20] = edges[20] | q[19];\n        q_next[21] = edges[21] | q[20];\n        q_next[22] = edges[22] | q[21];\n        q_next[23] = edges[23] | q[22];\n        q_next[24] = edges[24] | q[23];\n        q_next[25] = edges[25] | q[24];\n        q_next[26] = edges[26] | q[25];\n        q_next[27] = edges[27] | q[26];\n        q_next[28] = edges[28] | q[27];\n        q_next[29] = edges[29] | q[28];\n        q_next[30] = edges[30] | q[29];\n        q_next[31] = edges[31] | q[30];\n        if (reset) q_next = 0;\n    end\n    assign out = ~q;\nendmodule",
+      "raw_completion_raw_sha256": "b518e05244b9e1de9971c5b40b736a0230cafdd05b15dd49396d54ef963d4342",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] q, q_next;\n    wire [31:0] edges;\n    integer i;\n    always @(*) for (i = 0; i < 32; i = i + 1) edges[i] = in[i] & ~q[i];\n    always @(posedge clk) q <= q_next;\n    always @(*) begin\n        q_next = q;\n        q_next[0] = edges[0];\n        q_next[1] = edges[1] | q[0];\n        q_next[2] = edges[2] | q[1];\n        q_next[3] = edges[3] | q[2];\n        q_next[4] = edges[4] | q[3];\n        q_next[5] = edges[5] | q[4];\n        q_next[6] = edges[6] | q[5];\n        q_next[7] = edges[7] | q[6];\n        q_next[8] = edges[8] | q[7];\n        q_next[9] = edges[9] | q[8];\n        q_next[10] = edges[10] | q[9];\n        q_next[11] = edges[11] | q[10];\n        q_next[12] = edges[12] | q[11];\n        q_next[13] = edges[13] | q[12];\n        q_next[14] = edges[14] | q[13];\n        q_next[15] = edges[15] | q[14];\n        q_next[16] = edges[16] | q[15];\n        q_next[17] = edges[17] | q[16];\n        q_next[18] = edges[18] | q[17];\n        q_next[19] = edges[19] | q[18];\n        q_next[20] = edges[20] | q[19];\n        q_next[21] = edges[21] | q[20];\n        q_next[22] = edges[22] | q[21];\n        q_next[23] = edges[23] | q[22];\n        q_next[24] = edges[24] | q[23];\n        q_next[25] = edges[25] | q[24];\n        q_next[26] = edges[26] | q[25];\n        q_next[27] = edges[27] | q[26];\n        q_next[28] = edges[28] | q[27];\n        q_next[29] = edges[29] | q[28];\n        q_next[30] = edges[30] | q[29];\n        q_next[31] = edges[31] | q[30];\n        if (reset) q_next = 0;\n    end\n    assign out = ~q;\nendmodule",
+      "rtl_raw_sha256": "7b6088d3a7727b25c1ea5b2aae828898bfb14007cd71cc6450d6dd706c2a3b04",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "249/266 mismatches",
+      "raw_completion": "// One-shot capture, active-high, synchronous reset\nmodule TopModule (\n    input  clk,\n    input  reset,\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] q, q2;\n    wire [31:0] edges;\n    assign edges = ~(q & ~q2);\n    always @(posedge clk) begin\n        if (reset) begin\n            q <= 32'b0;\n            q2 <= 32'b0;\n        end else begin\n            q <= in;\n            q2 <= q;\n        end\n    end\n    assign out = edges & in;\nendmodule",
+      "raw_completion_raw_sha256": "df5cbcffa124505f410f6665f51a6625e858701421588908b63cc855dde05c0f",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    input  [31:0] in,\n    output [31:0] out\n);\n    reg [31:0] q, q2;\n    wire [31:0] edges;\n    assign edges = ~(q & ~q2);\n    always @(posedge clk) begin\n        if (reset) begin\n            q <= 32'b0;\n            q2 <= 32'b0;\n        end else begin\n            q <= in;\n            q2 <= q;\n        end\n    end\n    assign out = edges & in;\nendmodule",
+      "rtl_raw_sha256": "25bb7792cc13512b1d28ef9d463c7a156e759d8f626f6002dd05a04c0e7c0e09",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 16,
+    "fail": 4
+  },
+  "testbench_raw_sha256": "26b8419de40ce26cf4e4be19d1292fe55a1d9f1b0ee9fe6d3a5a5194a39af006",
+  "training_seed": 1
+}

@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob098_circuit7",
+  "problem_seed": 1502894294340306909,
+  "prompt_raw_sha256": "5517b6703a7ba94254122245a3a98740a79265f9ddf67193eb4a2532cf3a3aea",
+  "reference_raw_sha256": "cb38f9b572a019c4e5925cf2065d2dd6173dde23c7b8101ebf48ddcaca421ef9",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "120/123 mismatches",
+      "raw_completion": "// Sequential circuit with exactly the same behaviour as in the simulation\n// waveform: the output is the same as the input at t=0, and toggles at the\n// same time as the input, but with a 5ns delay.\nmodule TopModule(input clk, input a, output reg q);\n    always @(posedge clk) begin\n        q <= #5 a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "2c54a77b0b5cc2e3900cb001d25041cbe1876f6c3212533556dcef7a67c114d8",
+      "rtl": "module TopModule(input clk, input a, output reg q);\n    always @(posedge clk) begin\n        q <= #5 a;\n    end\nendmodule",
+      "rtl_raw_sha256": "4d4aaab4c1297a120fdd2e5a7dc40497b35e71a85f872beba4f10c9b649e41ce",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "120/123 mismatches",
+      "raw_completion": "// Sequential circuit as described in the problem description.\nmodule TopModule(input clk, input a, output reg q);\n    always @(posedge clk) begin\n        q <= a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "8ce550c963a4c34eb9bcd05dbeae66d096ce7a36770f2dafef7d16fa18ddb531",
+      "rtl": "module TopModule(input clk, input a, output reg q);\n    always @(posedge clk) begin\n        q <= a;\n    end\nendmodule",
+      "rtl_raw_sha256": "fe698a75da95025439bb17226a74c9cd0320a7a14420e60c21a451ac243b40dc",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "120/123 mismatches",
+      "raw_completion": "// Sequential circuit, read the simulation waveforms to determine what the\n// circuit does, then implement it.\nmodule TopModule (\n    input  clk,\n    input  a,\n    output reg q\n);\n    always @(posedge clk) begin\n        q <= a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "af643662df8d93f52912790daf9cfb4063f0bf4f499d06d36b89bdec0122dd1f",
+      "rtl": "module TopModule (\n    input  clk,\n    input  a,\n    output reg q\n);\n    always @(posedge clk) begin\n        q <= a;\n    end\nendmodule",
+      "rtl_raw_sha256": "04fec073abcbef7c449dd6b6e7bde91257fbd56f65b21d0b63e21efe17416a95",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "120/123 mismatches",
+      "raw_completion": "// One-bit sequential circuit. The time-dependent response determines the\n// operation of the circuit.\nmodule TopModule(input clk, input a, output reg q);\n  always @(posedge clk) begin\n    case ({a, q})\n      2'b00: q <= 1'b0;\n      2'b01: q <= 1'b0;\n      2'b10: q <= 1'b1;\n      2'b11: q <= 1'b1;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "f0e0bbc67337f18927df93db591aba85027ccc25f2b9af65450ce951558c05fd",
+      "rtl": "module TopModule(input clk, input a, output reg q);\n  always @(posedge clk) begin\n    case ({a, q})\n      2'b00: q <= 1'b0;\n      2'b01: q <= 1'b0;\n      2'b10: q <= 1'b1;\n      2'b11: q <= 1'b1;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "a84c29513ec0ab0073e87d9f162559727eb8c30305512ae3ca0a45a12b36894c",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "74/123 mismatches",
+      "raw_completion": "// Sequential circuit. Same as the reference circuit, but the register is\n// explicitly named and the next-state expression is split onto multiple\n// lines for better readability.\nmodule TopModule (\n    input  clk,\n    input  a,\n    output reg q\n);\n    reg next_q;\n    always @(posedge clk) begin\n        next_q = a ? 1 : q;\n    end\n    always @(posedge clk) begin\n        q <= next_q;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "8f33bab08e0f8bc3478d3f42e85c6ef407715fa06c3b1e45e6e86a435b9124f6",
+      "rtl": "module TopModule (\n    input  clk,\n    input  a,\n    output reg q\n);\n    reg next_q;\n    always @(posedge clk) begin\n        next_q = a ? 1 : q;\n    end\n    always @(posedge clk) begin\n        q <= next_q;\n    end\nendmodule",
+      "rtl_raw_sha256": "e8f6228474701d17e4e12d34fc0ee21289fb78dc1351529d7a7390a57a7c6f30",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:6: error: q_comb is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// Sequential circuit from the simulation waveforms. Same as the reference\n// circuit, but the register is explicitly named, and the combinational\n// path through the register has been broken up into a separate wire.\nmodule TopModule(input clk, input a, output reg q);\n  reg [1:0] r_next, r;\n  wire q_comb;\n  always @(posedge clk) begin\n    r <= r_next;\n    q_comb <= r[0];\n  end\n  always @(*) begin\n    case(r)\n      2'b00: r_next = 2'b01;\n      2'b01: r_next = a ? 2'b10 : 2'b01;\n      2'b10: r_next = a ? 2'b01 : 2'b11;\n      2'b11: r_next = 2'b10;\n    endcase\n  end\n  assign q = q_comb;\nendmodule",
+      "raw_completion_raw_sha256": "6bd489ce9fdfba37833f9e2c8f6535a48c00e1ac5dbea7a797a0a7841cded23b",
+      "rtl": "module TopModule(input clk, input a, output reg q);\n  reg [1:0] r_next, r;\n  wire q_comb;\n  always @(posedge clk) begin\n    r <= r_next;\n    q_comb <= r[0];\n  end\n  always @(*) begin\n    case(r)\n      2'b00: r_next = 2'b01;\n      2'b01: r_next = a ? 2'b10 : 2'b01;\n      2'b10: r_next = a ? 2'b01 : 2'b11;\n      2'b11: r_next = 2'b10;\n    endcase\n  end\n  assign q = q_comb;\nendmodule",
+      "rtl_raw_sha256": "e027fdc8f381a14ee9bf355701e6bd84de4b8ceabff5efd8fea57674c3bb1601",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "120/123 mismatches",
+      "raw_completion": "// Sequential circuit, register-based\nmodule TopModule (\n    input  clk,\n    input  a,\n    output reg q\n);\n    always @(posedge clk) begin\n        q <= a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "f4474d453b321caf1c1e2c3fa49c53c41a796fcbeaf7aca72a4ddc3bc3314fbd",
+      "rtl": "module TopModule (\n    input  clk,\n    input  a,\n    output reg q\n);\n    always @(posedge clk) begin\n        q <= a;\n    end\nendmodule",
+      "rtl_raw_sha256": "04fec073abcbef7c449dd6b6e7bde91257fbd56f65b21d0b63e21efe17416a95",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "120/123 mismatches",
+      "raw_completion": "// A one-bit sequential circuit, as described in the problem description. The\n// time-sequence of the input stimuli and the output waveforms are given, so\n// this is a regression test.\nmodule TopModule(input clk, input a, output reg q);\n  always @(posedge clk) begin\n    case ({a, q})\n      2'b00: q <= 1'b0;\n      2'b01: q <= 1'b1;\n      2'b10: q <= 1'b1;\n      2'b11: q <= 1'b0;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "727b47f6d1f0f55f680bf96c4fa00621dfea43f75379bef83eb7438213a7d43d",
+      "rtl": "module TopModule(input clk, input a, output reg q);\n  always @(posedge clk) begin\n    case ({a, q})\n      2'b00: q <= 1'b0;\n      2'b01: q <= 1'b1;\n      2'b10: q <= 1'b1;\n      2'b11: q <= 1'b0;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "152038e42477aeb133ee5d565e5af7d7b81977d4efd2f3f0a01a4a3128777bd8",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "120/123 mismatches",
+      "raw_completion": "// Sequential circuit, time-resolved: determine the circuit by reading the\n// simulation waveforms, then implement it.\nmodule TopModule(input clk, input a, output reg q);\n    always @(posedge clk) begin\n        case ({a, q})\n            2'b00: q <= 1'b1;\n            2'b01: q <= 1'b1;\n            2'b10: q <= 1'b0;\n            2'b11: q <= 1'b0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "933b8e5a4c71c44a7e7e60f2ed65dcc49f859b27527df905f45d4c837631123c",
+      "rtl": "module TopModule(input clk, input a, output reg q);\n    always @(posedge clk) begin\n        case ({a, q})\n            2'b00: q <= 1'b1;\n            2'b01: q <= 1'b1;\n            2'b10: q <= 1'b0;\n            2'b11: q <= 1'b0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "1e4d383d045d5e13a740fa450a10ced32b476c53cdea4c17f74e3c46c804c3f0",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "120/123 mismatches",
+      "raw_completion": "// Sequential circuit, triggered on the positive edge of the clock. Same\n// function as the reference circuit, implemented in a different way.\nmodule TopModule(input clk, input a, output reg q);\n  always @(posedge clk) begin\n    case ({a, q})\n      2'b00: q <= 1'b0;\n      2'b01: q <= 1'b1;\n      2'b10: q <= 1'b1;\n      2'b11: q <= 1'b0;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "5234ce0799e8a70c027dccadb4edc3153af61817f4dd5096388ab036e3100221",
+      "rtl": "module TopModule(input clk, input a, output reg q);\n  always @(posedge clk) begin\n    case ({a, q})\n      2'b00: q <= 1'b0;\n      2'b01: q <= 1'b1;\n      2'b10: q <= 1'b1;\n      2'b11: q <= 1'b0;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "152038e42477aeb133ee5d565e5af7d7b81977d4efd2f3f0a01a4a3128777bd8",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "120/123 mismatches",
+      "raw_completion": "// Sequential circuit with register, combinational logic inside the register\n// (register + F combinational -> register + F delayed -> register). Same\n// thing as a short path F-D chain (same as the long path).\nmodule TopModule(input clk, input a, output reg q);\n    always @(posedge clk) begin\n        q <= #1 (a & ~q) | (~a & q);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "f8f231d88982e3b48d6c104b920b66500bd04ba76bede03e0da62bb7cd50cbb1",
+      "rtl": "module TopModule(input clk, input a, output reg q);\n    always @(posedge clk) begin\n        q <= #1 (a & ~q) | (~a & q);\n    end\nendmodule",
+      "rtl_raw_sha256": "71b8d44301b7645b936a231e9b5e16fc65692db64800887c6c9e93c56329a034",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "120/123 mismatches",
+      "raw_completion": "// Sequential circuit. Triggered on the positive edge of the clock.\nmodule TopModule (\n    input  clk,\n    input  a,\n    output reg q\n);\n    always @(posedge clk) begin\n        q <= a;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "3e2878f0c70366ad14e3e17f945c4eb22417d3fdcfe402ed250609bce0373980",
+      "rtl": "module TopModule (\n    input  clk,\n    input  a,\n    output reg q\n);\n    always @(posedge clk) begin\n        q <= a;\n    end\nendmodule",
+      "rtl_raw_sha256": "04fec073abcbef7c449dd6b6e7bde91257fbd56f65b21d0b63e21efe17416a95",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob098_circuit7_test.sv:85: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit register, with synchronous reset to go back to the uninitialized\n// state.\nmodule Reg1 (input clk, input reset, input [0:0] d, output reg [0:0] q);\n  always @(posedge clk) begin\n    if (reset) q <= 1'bX;\n    else       q <= d;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "e0adaf59eb037534ad0ad26440f5e6a3a3027e3860f349a7ca2c3775c592f4cf",
+      "rtl": "module Reg1 (input clk, input reset, input [0:0] d, output reg [0:0] q);\n  always @(posedge clk) begin\n    if (reset) q <= 1'bX;\n    else       q <= d;\n  end\nendmodule",
+      "rtl_raw_sha256": "274d9dd71fa693a63b5e949a47d94a6e9e7fb68ab10c0106369e6c406d006663",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "120/123 mismatches",
+      "raw_completion": "// Sequential circuit: register (same as SR latch with all s=0 and r=0)\nmodule TopModule(input clk, input a, output reg q);\n  always @(posedge clk) begin\n    q <= a;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "dba3c3f2234d364bd0d63bda903ba7cfe550678e5db9d466b36f93a0a988e872",
+      "rtl": "module TopModule(input clk, input a, output reg q);\n  always @(posedge clk) begin\n    q <= a;\n  end\nendmodule",
+      "rtl_raw_sha256": "1f8a900351dff3c22ad34578eebfc2f61f6273f1b119cb3a49f8f89e10b6ebc5",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "120/123 mismatches",
+      "raw_completion": "// Sequential circuit, triggered on the positive edge of the clock.\nmodule TopModule(input clk, input a, output reg q);\n    always @(posedge clk) begin\n        case ({a, q})\n            2'b00: q <= 1'b0;\n            2'b01: q <= 1'b0;\n            2'b10: q <= 1'b1;\n            2'b11: q <= 1'b1;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "20d06c13d9080a9e893e7cbf6a3cfff56f71feafa4681c8ae3244ee9f3160c29",
+      "rtl": "module TopModule(input clk, input a, output reg q);\n    always @(posedge clk) begin\n        case ({a, q})\n            2'b00: q <= 1'b0;\n            2'b01: q <= 1'b0;\n            2'b10: q <= 1'b1;\n            2'b11: q <= 1'b1;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "179c0ef4aa98e5c76fba5a88788171b5d13f0444c0a514aaae27bb4497514202",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "120/123 mismatches",
+      "raw_completion": "// Sequential circuit: register-based\nmodule TopModule(input clk, input a, output reg q);\n  always @(posedge clk) begin\n    case ({a, q})\n      2'b00: q <= 1'b0;\n      2'b01: q <= 1'b1;\n      2'b10: q <= 1'b1;\n      2'b11: q <= 1'b0;\n    endcase\n  end\nendmodule",
+      "raw_completion_raw_sha256": "b68079c8871069b9da65f522e653e10709509b2a191e69c3cfa65bddbae467ba",
+      "rtl": "module TopModule(input clk, input a, output reg q);\n  always @(posedge clk) begin\n    case ({a, q})\n      2'b00: q <= 1'b0;\n      2'b01: q <= 1'b1;\n      2'b10: q <= 1'b1;\n      2'b11: q <= 1'b0;\n    endcase\n  end\nendmodule",
+      "rtl_raw_sha256": "152038e42477aeb133ee5d565e5af7d7b81977d4efd2f3f0a01a4a3128777bd8",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "120/123 mismatches",
+      "raw_completion": "// One-bit register-based sequential circuit. Same function as the reference\n// circuit, but implemented as a one-bit register, not a chain of registers.\n// (Register-to-register propagation delay is the same as the chain -> same\n// performance)\nmodule TopModule(input clk, input a, output reg q);\n  always @(posedge clk) begin\n    q <= a;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "231b0244c0c7a5cb3de7d67acd97a124c6824092c17aabc61c539a55227a1bd4",
+      "rtl": "module TopModule(input clk, input a, output reg q);\n  always @(posedge clk) begin\n    q <= a;\n  end\nendmodule",
+      "rtl_raw_sha256": "1f8a900351dff3c22ad34578eebfc2f61f6273f1b119cb3a49f8f89e10b6ebc5",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "120/123 mismatches",
+      "raw_completion": "// Sequential circuit, triggered on the positive edge of the clock. Same\n// function as the reference circuit.\nmodule TopModule(input clk, input a, output reg q);\n    always @(posedge clk) begin\n        case ({a, q})\n            2'b00: q <= 1'b0;\n            2'b01: q <= 1'b1;\n            2'b10: q <= 1'b1;\n            2'b11: q <= 1'b0;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b7df3a4090a64753b487cbe5b31bd87c890e16ed3c23ebf792ce9d6e497df4cb",
+      "rtl": "module TopModule(input clk, input a, output reg q);\n    always @(posedge clk) begin\n        case ({a, q})\n            2'b00: q <= 1'b0;\n            2'b01: q <= 1'b1;\n            2'b10: q <= 1'b1;\n            2'b11: q <= 1'b0;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "dd54c486549aed95c9f2fa4a9436584f7a6ebb30f5e0561940a9969be83379d6",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "120/123 mismatches",
+      "raw_completion": "// Sequential circuit, triggered on the positive edge of the clock. The\n// output is the same as the input, delayed by one clock cycle.\nmodule TopModule (\n  input  clk,\n  input  a,\n  output reg q\n);\n  always @(posedge clk) begin\n    q <= a;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "34ebf5dfb51f8efb4d032db315c8a72df43ae27353f20d135e04e7a172bdbcf2",
+      "rtl": "module TopModule (\n  input  clk,\n  input  a,\n  output reg q\n);\n  always @(posedge clk) begin\n    q <= a;\n  end\nendmodule",
+      "rtl_raw_sha256": "fdb6d0f57ccdee70c522ec83f2b0bb8377e291f6fe5ce65dc0a67841ae6d4b62",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "120/123 mismatches",
+      "raw_completion": "// Sequential circuit, inferred as a register, plus a combinational path\n// through the register output to the output Q. Same function as the\n// reference circuit.\nmodule TopModule(input clk, input a, output reg q);\n  always @(posedge clk) begin\n    q <= a;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "877e0b21f2f0baa6de157d8b92a1eb057b9d65553247d6ce227c4ccd43b4922b",
+      "rtl": "module TopModule(input clk, input a, output reg q);\n  always @(posedge clk) begin\n    q <= a;\n  end\nendmodule",
+      "rtl_raw_sha256": "1f8a900351dff3c22ad34578eebfc2f61f6273f1b119cb3a49f8f89e10b6ebc5",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 2,
+    "fail": 18
+  },
+  "testbench_raw_sha256": "e8e4f8e7fbf6138f4a80cdb35790aeef8590ddd77ca71ef6f7c9fc73009d586a",
+  "training_seed": 1
+}

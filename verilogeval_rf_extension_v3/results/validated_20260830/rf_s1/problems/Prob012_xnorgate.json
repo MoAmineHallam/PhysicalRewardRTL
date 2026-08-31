@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob012_xnorgate",
+  "problem_seed": 8584250959879851746,
+  "prompt_raw_sha256": "2f1da6ec61eb0f6a0bf3e27bb7f430d933f7ba05efcb570021d9de423785b337",
+  "reference_raw_sha256": "736544bb20a35ff13647fb0029f4b06cacd5279614e6ff977758cfadb114ce8d",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "// One-bit XNOR gate\nmodule TopModule(input a, b, output out);\n    assign out = ~(a ^ b);\nendmodule",
+      "raw_completion_raw_sha256": "b2df4f39a2fa44610a47a9dd1b1ce07a31554825c1eeb3a76af96cb67aa3b3e9",
+      "rtl": "module TopModule(input a, b, output out);\n    assign out = ~(a ^ b);\nendmodule",
+      "rtl_raw_sha256": "5621ac6c2ad5c8a2d27022a30b71eb173c88832b5a63c7aabf58700c94a96c62",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit XNOR gate\nmodule TopModule(input a, b, output out);\n    assign out = ~(a ^ b);\nendmodule",
+      "raw_completion_raw_sha256": "b2df4f39a2fa44610a47a9dd1b1ce07a31554825c1eeb3a76af96cb67aa3b3e9",
+      "rtl": "module TopModule(input a, b, output out);\n    assign out = ~(a ^ b);\nendmodule",
+      "rtl_raw_sha256": "5621ac6c2ad5c8a2d27022a30b71eb173c88832b5a63c7aabf58700c94a96c62",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit XNOR gate\nmodule TopModule (\n    input  a,\n    input  b,\n    output out\n);\n    assign out = ~(a ^ b);\nendmodule",
+      "raw_completion_raw_sha256": "b8aac92af877dc5c00a4ebe44ab01f2e3d18f024f2057175550d0cd84685d114",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out\n);\n    assign out = ~(a ^ b);\nendmodule",
+      "rtl_raw_sha256": "b0311f34a7589942eb23923d46532cd2a944dff99eea51a12d49cf5c5516a7b6",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:9: error: Unknown module type: NAND2_X1",
+      "raw_completion": "// One-bit XNOR gate\nmodule TopModule (\n    input  a,\n    input  b,\n    output out\n);\n    wire nand0_out;\n    wire nand1_out;\n    wire inv0_out;\n    NAND2_X1 u0 ( .A(a), .B(b), .Z(nand0_out) );\n    NAND2_X1 u1 ( .A(nand0_out), .B(nand0_out), .Z(nand1_out) );\n    INV_X1 u2 ( .A(nand1_out), .Z(inv0_out) );\n    assign out = inv0_out;\nendmodule",
+      "raw_completion_raw_sha256": "b8f6472cc32fedb3c129ed1e6a4491179788bca7a7692923873a05550422b5b1",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out\n);\n    wire nand0_out;\n    wire nand1_out;\n    wire inv0_out;\n    NAND2_X1 u0 ( .A(a), .B(b), .Z(nand0_out) );\n    NAND2_X1 u1 ( .A(nand0_out), .B(nand0_out), .Z(nand1_out) );\n    INV_X1 u2 ( .A(nand1_out), .Z(inv0_out) );\n    assign out = inv0_out;\nendmodule",
+      "rtl_raw_sha256": "2e427abff97276badb5b9b22e52e57ce487b9305b51f011f096e8ac4399ec3d7",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob012_xnorgate_test.sv:89: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit XNOR gate\nmodule XNOR_1(input a, b, output out);\n    wire w1 = a ^ b;\n    assign out = ~w1;\nendmodule",
+      "raw_completion_raw_sha256": "ca3d27702984c89e9e6d28086d66c1d2a8ddab3f8cd8191bc10b9b181fa07388",
+      "rtl": "module XNOR_1(input a, b, output out);\n    wire w1 = a ^ b;\n    assign out = ~w1;\nendmodule",
+      "rtl_raw_sha256": "881ae8761a88956cb37703fab6eb779800f146eaf40556d688d0a2301ff7a906",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit XNOR gate\nmodule TopModule(input a, b, output out);\n  wire w1 = a ^ b;\n  assign out = ~w1;\nendmodule",
+      "raw_completion_raw_sha256": "71498fa8e73f2d69ca62883d5cde83ea24bbe8bc5c16735b9a65589fa37aa83c",
+      "rtl": "module TopModule(input a, b, output out);\n  wire w1 = a ^ b;\n  assign out = ~w1;\nendmodule",
+      "rtl_raw_sha256": "b99b52b92b482ac22b4bf1ab630540797f31febae0a2ed4e9b9dc8e5e0dd868d",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit XNOR gate\nmodule TopModule (\n    input  a,\n    input  b,\n    output out\n);\n    assign out = ~(a ^ b);\nendmodule",
+      "raw_completion_raw_sha256": "b8aac92af877dc5c00a4ebe44ab01f2e3d18f024f2057175550d0cd84685d114",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out\n);\n    assign out = ~(a ^ b);\nendmodule",
+      "rtl_raw_sha256": "b0311f34a7589942eb23923d46532cd2a944dff99eea51a12d49cf5c5516a7b6",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:5: error: Unknown module type: AND",
+      "raw_completion": "// One-bit XNOR gate\nmodule XNOR_1 (input a, b, output out);\n  wire w1;\n  wire w2;\n  wire w3;\n  AND #(1) AND1 (w1, a, ~b);\n  AND #(1) AND2 (w2, ~a, b);\n  OR  #(1) OR1  (w3, w1, w2);\n  NOT #(1) NOT1 (out, w3);\nendmodule",
+      "raw_completion_raw_sha256": "79cf530ce102a6542085e60ad7c22b66d3fd79ff183889fc00e7d82a78ff34dc",
+      "rtl": "module XNOR_1 (input a, b, output out);\n  wire w1;\n  wire w2;\n  wire w3;\n  AND #(1) AND1 (w1, a, ~b);\n  AND #(1) AND2 (w2, ~a, b);\n  OR  #(1) OR1  (w3, w1, w2);\n  NOT #(1) NOT1 (out, w3);\nendmodule",
+      "rtl_raw_sha256": "2e4238c569481ddda45b648debc2e363ec48dde243f614b2e64a8987625722cd",
+      "sample_index": 7,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "219/219 mismatches",
+      "raw_completion": "// One-bit XNOR gate\nmodule TopModule (\n    input a,\n    input b,\n    output out\n);\n    wire xnor0_out;\n    xnor xnor0 (xnor0_out, a, b);\n    not not0 (out, xnor0_out);\nendmodule",
+      "raw_completion_raw_sha256": "eac2bece77f4997d1061ab726de2f3f978facf6ce336221db0a0aae908340d86",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    output out\n);\n    wire xnor0_out;\n    xnor xnor0 (xnor0_out, a, b);\n    not not0 (out, xnor0_out);\nendmodule",
+      "rtl_raw_sha256": "56b732785a6c06c4cb72ed91730a4772ef1349c5a3d5867cd83c15ecd193d4eb",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob012_xnorgate_test.sv:89: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit XNOR gate\nmodule XNOR(input a, b, output out);\n    wire w1 = a ^ b;\n    assign out = ~w1;\nendmodule",
+      "raw_completion_raw_sha256": "91f0479a26c4c12386a225a832b16d38c709864bec24c17ef0fa22a56e338295",
+      "rtl": "module XNOR(input a, b, output out);\n    wire w1 = a ^ b;\n    assign out = ~w1;\nendmodule",
+      "rtl_raw_sha256": "4864fd5535bd8dd32faab71a31a2d9c108975be1be1be7e9ee4e68b499ca296d",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input a,\n    input b,\n    output out\n);\n    wire w1;\n    assign w1 = ~(a ^ b);\n    assign out = w1;\nendmodule",
+      "raw_completion_raw_sha256": "0c1395c69f961cb415a7c494091120bd124a05dde8f21e466bc6c0f373214c0a",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    output out\n);\n    wire w1;\n    assign w1 = ~(a ^ b);\n    assign out = w1;\nendmodule",
+      "rtl_raw_sha256": "0c1395c69f961cb415a7c494091120bd124a05dde8f21e466bc6c0f373214c0a",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit XNOR gate\nmodule TopModule (\n    input  a,\n    input  b,\n    output out\n);\n    assign out = ~(a ^ b);\nendmodule",
+      "raw_completion_raw_sha256": "b8aac92af877dc5c00a4ebe44ab01f2e3d18f024f2057175550d0cd84685d114",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out\n);\n    assign out = ~(a ^ b);\nendmodule",
+      "rtl_raw_sha256": "b0311f34a7589942eb23923d46532cd2a944dff99eea51a12d49cf5c5516a7b6",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit XNOR gate\nmodule TopModule(input a, input b, output out);\n    assign out = ~(a ^ b);\nendmodule",
+      "raw_completion_raw_sha256": "e1f1b166e2424cb9c31327015cef089bdcba6e7a2be94c63a7be45e14c621151",
+      "rtl": "module TopModule(input a, input b, output out);\n    assign out = ~(a ^ b);\nendmodule",
+      "rtl_raw_sha256": "b520677cb66d4acb12b0d1b845805ccc2b15a00a4341e2d19ffa185d616602d9",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob012_xnorgate_test.sv:89: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit XNOR gate\nmodule XNOR(input a, b, output out);\n    wire w1 = a ^ b;\n    assign out = ~w1;\nendmodule",
+      "raw_completion_raw_sha256": "91f0479a26c4c12386a225a832b16d38c709864bec24c17ef0fa22a56e338295",
+      "rtl": "module XNOR(input a, b, output out);\n    wire w1 = a ^ b;\n    assign out = ~w1;\nendmodule",
+      "rtl_raw_sha256": "4864fd5535bd8dd32faab71a31a2d9c108975be1be1be7e9ee4e68b499ca296d",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob012_xnorgate_test.sv:89: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit XNOR gate\nmodule XNOR (input a, b, output out);\n    wire tmp = a ^ b;\n    assign out = ~tmp;\nendmodule",
+      "raw_completion_raw_sha256": "4a3b938e11a267515dbd4dee4dc06648ac1114b2a4a7017e68756d1dcc387932",
+      "rtl": "module XNOR (input a, b, output out);\n    wire tmp = a ^ b;\n    assign out = ~tmp;\nendmodule",
+      "rtl_raw_sha256": "ee370c0fa8137a898964fa81d91c20fc2bf325c7e2a20979a48edb92b6906e09",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input a,\n    input b,\n    output out\n);\n    assign out = ~(a ^ b);\nendmodule",
+      "raw_completion_raw_sha256": "0c74d3def96660cfd7ea903ee9721dc429d0037207ccffa15779996054d3795f",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    output out\n);\n    assign out = ~(a ^ b);\nendmodule",
+      "rtl_raw_sha256": "0c74d3def96660cfd7ea903ee9721dc429d0037207ccffa15779996054d3795f",
+      "sample_index": 15,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit XNOR gate\nmodule TopModule (\n    input  a,\n    input  b,\n    output out\n);\n    assign out = ~(a ^ b);\nendmodule",
+      "raw_completion_raw_sha256": "b8aac92af877dc5c00a4ebe44ab01f2e3d18f024f2057175550d0cd84685d114",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out\n);\n    assign out = ~(a ^ b);\nendmodule",
+      "rtl_raw_sha256": "b0311f34a7589942eb23923d46532cd2a944dff99eea51a12d49cf5c5516a7b6",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:5: error: Unknown module type: AND",
+      "raw_completion": "// One-bit XNOR gate\nmodule XNOR1 (input a, b, output out);\n    wire w1;\n    wire w2;\n    wire w3;\n    AND #(1) AND1 (a, b, w1);\n    NOT #(1) NOT1 (w1, w2);\n    BUF #(1) BUF1 (w2, w3);\n    OR #(1) OR1 (a, b, w1);\n    NOT #(1) NOT2 (w1, out);\n    BUF #(1) BUF2 (out, out);\nendmodule",
+      "raw_completion_raw_sha256": "c88902613bc74453cceb21adc6e21622d4a4f661ddb0aa0543d5651ad46996a8",
+      "rtl": "module XNOR1 (input a, b, output out);\n    wire w1;\n    wire w2;\n    wire w3;\n    AND #(1) AND1 (a, b, w1);\n    NOT #(1) NOT1 (w1, w2);\n    BUF #(1) BUF1 (w2, w3);\n    OR #(1) OR1 (a, b, w1);\n    NOT #(1) NOT2 (w1, out);\n    BUF #(1) BUF2 (out, out);\nendmodule",
+      "rtl_raw_sha256": "62db7463dc80704ff33df00d79c8d6dbf135f405a0ce9ef2cc6ff068147d0b6a",
+      "sample_index": 17,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:3: error: Unknown module type: AND",
+      "raw_completion": "// One-bit XNOR gate\nmodule XNOR_1(input a, b, output out);\n    wire w1;\n    AND #(1) and1(a, ~b, w1);\n    AND #(1) and2(~a, b, out);\n    OR #(1) or1(w1, out, out);\nendmodule",
+      "raw_completion_raw_sha256": "d957dc795d42652a988559b078b5897c805f4d34920e681912f712c8ddefaa8c",
+      "rtl": "module XNOR_1(input a, b, output out);\n    wire w1;\n    AND #(1) and1(a, ~b, w1);\n    AND #(1) and2(~a, b, out);\n    OR #(1) or1(w1, out, out);\nendmodule",
+      "rtl_raw_sha256": "e8eadc3c026fff135c31f9e639f6fd65d6b9410d8128ff1e34994a3dd19bda4b",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit XNOR gate\nmodule TopModule (\n    input  a,\n    input  b,\n    output out\n);\n    assign out = ~(a ^ b);\nendmodule",
+      "raw_completion_raw_sha256": "b8aac92af877dc5c00a4ebe44ab01f2e3d18f024f2057175550d0cd84685d114",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out\n);\n    assign out = ~(a ^ b);\nendmodule",
+      "rtl_raw_sha256": "b0311f34a7589942eb23923d46532cd2a944dff99eea51a12d49cf5c5516a7b6",
+      "sample_index": 19,
+      "status": "PASS"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 11,
+    "compile_fail": 8,
+    "fail": 1
+  },
+  "testbench_raw_sha256": "514f5de79ec59fad94ed1e2e2f348953ee36010265affdd7de7cf736982ce2e6",
+  "training_seed": 1
+}

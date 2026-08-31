@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob051_gates4",
+  "problem_seed": 1835139639177121292,
+  "prompt_raw_sha256": "2650ecfed130b0fd0327fbf46548961301c532827eb2db7d4c949910ef8bca1b",
+  "reference_raw_sha256": "6a1464e8f8d123092f0f437595d66df72e182f1b9d01405c623613d409fc20b6",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "// Combinational circuit with 4 inputs (in[3:0]) and 3 outputs (AND, OR, XOR)\nmodule TopModule(\n    input [3:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    assign out_and = &in;\n    assign out_or  = |in;\n    assign out_xor = ^in;\nendmodule",
+      "raw_completion_raw_sha256": "71e9e0dba15f82b6fe9082d33cfbacde7909aca16b64d9dc4b4bf9a92cb2d367",
+      "rtl": "module TopModule(\n    input [3:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    assign out_and = &in;\n    assign out_or  = |in;\n    assign out_xor = ^in;\nendmodule",
+      "rtl_raw_sha256": "a7946a6b0142ea999a751452b47304e1daaa7c0801e0c121c6198d93c4355c46",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: error: No function named `AND' found in this context (tb.top_module1).",
+      "raw_completion": "// 4-input AND gate\nfunction [3:0] AND;\n  input [3:0] in;\n  AND = in[0] & in[1] & in[2] & in[3];\nendfunction\n\n// 4-input OR gate\nfunction [3:0] OR;\n  input [3:0] in;\n  OR = in[0] | in[1] | in[2] | in[3];\nendfunction\n\n// 4-input XOR gate\nfunction [3:0] XOR;\n  input [3:0] in;\n  XOR = in[0] ^ in[1] ^ in[2] ^ in[3];\nendfunction\n\nmodule TopModule (\n  input  [3:0] in,\n  output        out_and,\n  output        out_or,\n  output        out_xor\n);\n  assign out_and = AND(in);\n  assign out_or  = OR(in);\n  assign out_xor = XOR(in);\nendmodule",
+      "raw_completion_raw_sha256": "cf627c5514343fbd17e9dacdffe96dbfd02c926afe9a19f7a395e7ee9e59cc79",
+      "rtl": "module TopModule (\n  input  [3:0] in,\n  output        out_and,\n  output        out_or,\n  output        out_xor\n);\n  assign out_and = AND(in);\n  assign out_or  = OR(in);\n  assign out_xor = XOR(in);\nendmodule",
+      "rtl_raw_sha256": "42a7acf35c7f72246af803e71f3079046d077285f67f397259a54d03fb151744",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational circuit with 4 inputs (in[3:0]) and 3 outputs: AND, OR, XOR\nmodule TopModule (\n    input  [3:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire and0 = in[0] & in[1];\n    wire and1 = in[2] & in[3];\n    wire or0  = in[0] | in[1] | in[2] | in[3];\n    wire xor0 = in[0] ^ in[1] ^ in[2] ^ in[3];\n    assign out_and = and0 & and1;\n    assign out_or  = or0;\n    assign out_xor = xor0;\nendmodule",
+      "raw_completion_raw_sha256": "63a55c5f7633ae66e3c2d13cb69c37079548b53edf32931e4ede1371459b6c42",
+      "rtl": "module TopModule (\n    input  [3:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire and0 = in[0] & in[1];\n    wire and1 = in[2] & in[3];\n    wire or0  = in[0] | in[1] | in[2] | in[3];\n    wire xor0 = in[0] ^ in[1] ^ in[2] ^ in[3];\n    assign out_and = and0 & and1;\n    assign out_or  = or0;\n    assign out_xor = xor0;\nendmodule",
+      "rtl_raw_sha256": "4b9b95cc5ac3b9fac2728f8155c6c28950657ccc271c5ad2f82d441c8491ba3d",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "122/234 mismatches",
+      "raw_completion": "// Combinational 4-input gate circuit\nmodule TopModule(\n    input [3:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire w1, w2, w3;\n    assign w1 = in[0] & in[1];\n    assign w2 = in[2] & in[3];\n    assign w3 = in[0] ^ in[1] ^ in[2] ^ in[3];\n    assign out_and = w1 & w2;\n    assign out_or = w1 | w2;\n    assign out_xor = w3;\nendmodule",
+      "raw_completion_raw_sha256": "53c5c1b0fa71be7ecdc31996bcb966b6c782dad6a4e5eaeeb653ad97f8a169ac",
+      "rtl": "module TopModule(\n    input [3:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire w1, w2, w3;\n    assign w1 = in[0] & in[1];\n    assign w2 = in[2] & in[3];\n    assign w3 = in[0] ^ in[1] ^ in[2] ^ in[3];\n    assign out_and = w1 & w2;\n    assign out_or = w1 | w2;\n    assign out_xor = w3;\nendmodule",
+      "rtl_raw_sha256": "2c7108df9d3d72741224e582456dac866a1bfb6607a1e6dabe7e2c2ee02b0904",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 4-input AND gate\n// (out_and = in[0] & in[1] & in[2] & in[3])\n// 4-input OR  gate\n// (out_or  = in[0] | in[1] | in[2] | in[3])\n// 4-input XOR gate\n// (out_xor = in[0] ^ in[1] ^ in[2] ^ in[3])\nmodule TopModule(\n  input  [3:0] in,\n  output       out_and,\n  output       out_or,\n  output       out_xor\n);\n  wire and0, and1, and2, or0, or1, xor0, xor1;\n  assign and0 = in[0] & in[1];\n  assign and1 = in[2] & in[3];\n  assign and2 = and0 & and1;\n  assign or0  = in[0] | in[1];\n  assign or1  = in[2] | in[3];\n  assign or_out = or0 | or1;\n  assign xor0 = in[0] ^ in[1];\n  assign xor1 = in[2] ^ in[3];\n  assign xor_out = xor0 ^ xor1;\n  assign out_and = and2;\n  assign out_or  = or_out;\n  assign out_xor = xor_out;\nendmodule",
+      "raw_completion_raw_sha256": "790c68c3e8dcddbaf347fb97c473c0e4aa58cbaa999d6847d95fd02564902495",
+      "rtl": "module TopModule(\n  input  [3:0] in,\n  output       out_and,\n  output       out_or,\n  output       out_xor\n);\n  wire and0, and1, and2, or0, or1, xor0, xor1;\n  assign and0 = in[0] & in[1];\n  assign and1 = in[2] & in[3];\n  assign and2 = and0 & and1;\n  assign or0  = in[0] | in[1];\n  assign or1  = in[2] | in[3];\n  assign or_out = or0 | or1;\n  assign xor0 = in[0] ^ in[1];\n  assign xor1 = in[2] ^ in[3];\n  assign xor_out = xor0 ^ xor1;\n  assign out_and = and2;\n  assign out_or  = or_out;\n  assign out_xor = xor_out;\nendmodule",
+      "rtl_raw_sha256": "d18baaeb0356d99aa490c82eeb4d8b94fd518eb860b466cd57ac66ea555a422c",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational 4-input gate (AND, OR, XOR)\nmodule TopModule(\n    input  [3:0] in,\n    output       out_and,\n    output       out_or,\n    output       out_xor\n);\n    wire a1, a2, a3;\n    assign a1 = in[0] & in[1];\n    assign a2 = in[2] & in[3];\n    assign a3 = a1 & a2;\n    assign out_and = a3;\n    assign out_or  = in[0] | in[1] | in[2] | in[3];\n    assign out_xor = in[0] ^ in[1] ^ in[2] ^ in[3];\nendmodule",
+      "raw_completion_raw_sha256": "b772a65108770be1eb726f91c4fd5d429549b9a6fdc57ca3fd125de2777933fb",
+      "rtl": "module TopModule(\n    input  [3:0] in,\n    output       out_and,\n    output       out_or,\n    output       out_xor\n);\n    wire a1, a2, a3;\n    assign a1 = in[0] & in[1];\n    assign a2 = in[2] & in[3];\n    assign a3 = a1 & a2;\n    assign out_and = a3;\n    assign out_or  = in[0] | in[1] | in[2] | in[3];\n    assign out_xor = in[0] ^ in[1] ^ in[2] ^ in[3];\nendmodule",
+      "rtl_raw_sha256": "6332f11a6002322d03d8b3d5de1ee6abd48fecc5eb9c69b3199ae4d56caefb79",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 4-input combinational circuit\nmodule TopModule(\n    input [3:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire w_and, w_or, w_xor;\n    assign w_and = &in;\n    assign w_or  = |in;\n    assign w_xor = ^in;\n    assign out_and = w_and;\n    assign out_or  = w_or;\n    assign out_xor = w_xor;\nendmodule",
+      "raw_completion_raw_sha256": "608830c7905b57647c94c0e039518b70707a8ecc9ecc89eb98a47b9905d1a4b0",
+      "rtl": "module TopModule(\n    input [3:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire w_and, w_or, w_xor;\n    assign w_and = &in;\n    assign w_or  = |in;\n    assign w_xor = ^in;\n    assign out_and = w_and;\n    assign out_or  = w_or;\n    assign out_xor = w_xor;\nendmodule",
+      "rtl_raw_sha256": "c28ebdd7b16300aca298606cbd49e5f9cf1c8aa13bc5bcb8e09cb62033625a7c",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational circuit with 4 inputs (in[3:0]) and 3 outputs\n// (out_and, out_or, out_xor).\nmodule TopModule(\n    input  [3:0] in,\n    output       out_and,\n    output       out_or,\n    output       out_xor\n);\n    wire and0 = in[0] & in[1];\n    wire and1 = in[2] & in[3];\n    wire or0  = in[0] | in[1];\n    wire or1  = in[2] | in[3];\n    wire xor0 = in[0] ^ in[1];\n    wire xor1 = in[2] ^ in[3];\n    wire and2 = and0 & and1;\n    wire or2  = or0  | or1;\n    wire xor2 = xor0 ^ xor1;\n    assign out_and = and2;\n    assign out_or  = or2;\n    assign out_xor = xor2;\nendmodule",
+      "raw_completion_raw_sha256": "3f637533213c94b9e5e45fa081b8c3ee09dfe9b10da10a8a18a4b24bee61d945",
+      "rtl": "module TopModule(\n    input  [3:0] in,\n    output       out_and,\n    output       out_or,\n    output       out_xor\n);\n    wire and0 = in[0] & in[1];\n    wire and1 = in[2] & in[3];\n    wire or0  = in[0] | in[1];\n    wire or1  = in[2] | in[3];\n    wire xor0 = in[0] ^ in[1];\n    wire xor1 = in[2] ^ in[3];\n    wire and2 = and0 & and1;\n    wire or2  = or0  | or1;\n    wire xor2 = xor0 ^ xor1;\n    assign out_and = and2;\n    assign out_or  = or2;\n    assign out_xor = xor2;\nendmodule",
+      "rtl_raw_sha256": "8fa5b8337d5c77f04a925ca9c95cd234e9a031f7e6415174737dd078bdfbe837",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:7: error: No function named `and4' found in this context (tb.top_module1).",
+      "raw_completion": "// 4-input AND gate\nfunction automatic [3:0] and4;\n    input [3:0] in;\n    and4 = in[0] & in[1] & in[2] & in[3];\nendfunction\n\n// 4-input OR gate\nfunction automatic [3:0] or4;\n    input [3:0] in;\n    or4 = in[0] | in[1] | in[2] | in[3];\nendfunction\n\n// 4-input XOR gate\nfunction automatic [3:0] xor4;\n    input [3:0] in;\n    xor4 = in[0] ^ in[1] ^ in[2] ^ in[3];\nendfunction\n\n// TopModule\nmodule TopModule (\n    input  [3:0] in,\n    output        out_and,\n    output        out_or,\n    output        out_xor\n);\n    wire and_out = and4(in);\n    wire or_out  = or4(in);\n    wire xor_out = xor4(in);\n    assign out_and = and_out;\n    assign out_or  = or_out;\n    assign out_xor = xor_out;\nendmodule",
+      "raw_completion_raw_sha256": "f9d2d40862db072f0362ea086f45084fe022ce843cca00158a4700ae5e1578e0",
+      "rtl": "module TopModule (\n    input  [3:0] in,\n    output        out_and,\n    output        out_or,\n    output        out_xor\n);\n    wire and_out = and4(in);\n    wire or_out  = or4(in);\n    wire xor_out = xor4(in);\n    assign out_and = and_out;\n    assign out_or  = or_out;\n    assign out_xor = xor_out;\nendmodule",
+      "rtl_raw_sha256": "a9b6c9051417950ca3f6afe0faae1c75152bdc4b349e1e0eb6ad88d3b63ef48b",
+      "sample_index": 8,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "234/234 mismatches",
+      "raw_completion": "// Combinational circuit with 4 inputs, 3 outputs: AND, OR, XOR\nmodule TopModule(\n    input  [3:0] in,\n    output        out_and,\n    output        out_or,\n    output        out_xor\n);\n    wire and0, and1, and2, and3;\n    wire or0, or1, or2, or3;\n    wire xor0, xor1, xor2, xor3;\n    and #(1) and0_inst (in[0], in[1], in[2], in[3], and0);\n    and #(1) and1_inst (in[0], in[1], in[2], in[3], and1);\n    and #(1) and2_inst (in[0], in[1], in[2], in[3], and2);\n    and #(1) and3_inst (in[0], in[1], in[2], in[3], and3);\n    or  #(1) or0_inst  (in[0], in[1], in[2], in[3], or0);\n    or  #(1) or1_inst  (in[0], in[1], in[2], in[3], or1);\n    or  #(1) or2_inst  (in[0], in[1], in[2], in[3], or2);\n    or  #(1) or3_inst  (in[0], in[1], in[2], in[3], or3);\n    xor #(1) xor0_inst (in[0], in[1], in[2], in[3], xor0);\n    xor #(1) xor1_inst (in[0], in[1], in[2], in[3], xor1);\n    xor #(1) xor2_inst (in[0], in[1], in[2], in[3], xor2);\n    xor #(1) xor3_inst (in[0], in[1], in[2], in[3], xor3);\n    assign out_and = and0 & and1 & and2 & and3;\n    assign out_or  = or0 | or1 | or2 | or3;\n    assign out_xor = xor0 ^ xor1 ^ xor2 ^ xor3;\nendmodule",
+      "raw_completion_raw_sha256": "fe6526b769d0fc2c56eaee4af48f223e2aabfcaaf3d69fbd9583f4e72c99dc0d",
+      "rtl": "module TopModule(\n    input  [3:0] in,\n    output        out_and,\n    output        out_or,\n    output        out_xor\n);\n    wire and0, and1, and2, and3;\n    wire or0, or1, or2, or3;\n    wire xor0, xor1, xor2, xor3;\n    and #(1) and0_inst (in[0], in[1], in[2], in[3], and0);\n    and #(1) and1_inst (in[0], in[1], in[2], in[3], and1);\n    and #(1) and2_inst (in[0], in[1], in[2], in[3], and2);\n    and #(1) and3_inst (in[0], in[1], in[2], in[3], and3);\n    or  #(1) or0_inst  (in[0], in[1], in[2], in[3], or0);\n    or  #(1) or1_inst  (in[0], in[1], in[2], in[3], or1);\n    or  #(1) or2_inst  (in[0], in[1], in[2], in[3], or2);\n    or  #(1) or3_inst  (in[0], in[1], in[2], in[3], or3);\n    xor #(1) xor0_inst (in[0], in[1], in[2], in[3], xor0);\n    xor #(1) xor1_inst (in[0], in[1], in[2], in[3], xor1);\n    xor #(1) xor2_inst (in[0], in[1], in[2], in[3], xor2);\n    xor #(1) xor3_inst (in[0], in[1], in[2], in[3], xor3);\n    assign out_and = and0 & and1 & and2 & and3;\n    assign out_or  = or0 | or1 | or2 | or3;\n    assign out_xor = xor0 ^ xor1 ^ xor2 ^ xor3;\nendmodule",
+      "rtl_raw_sha256": "ca9b2b4b9665de3d1927965cf98e8153549f6b9b557327fd4b46ff85030d3fca",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit combinational circuit with four inputs\nmodule TopModule(\n    input  [3:0] in,\n    output        out_and,\n    output        out_or,\n    output        out_xor\n);\n    wire and0 = in[0] & in[1];\n    wire and1 = in[2] & in[3];\n    wire and2 = and0 & and1;\n    wire or0  = in[0] | in[1];\n    wire or1  = in[2] | in[3];\n    wire or2  = or0 | or1;\n    wire xor0 = in[0] ^ in[1];\n    wire xor1 = in[2] ^ in[3];\n    wire xor2 = xor0 ^ xor1;\n    assign out_and = and2;\n    assign out_or  = or2;\n    assign out_xor = xor2;\nendmodule",
+      "raw_completion_raw_sha256": "df55ae3f6ef6e7d55375643eb21917991ae5b499c1010242d85cfbc75cd04d6d",
+      "rtl": "module TopModule(\n    input  [3:0] in,\n    output        out_and,\n    output        out_or,\n    output        out_xor\n);\n    wire and0 = in[0] & in[1];\n    wire and1 = in[2] & in[3];\n    wire and2 = and0 & and1;\n    wire or0  = in[0] | in[1];\n    wire or1  = in[2] | in[3];\n    wire or2  = or0 | or1;\n    wire xor0 = in[0] ^ in[1];\n    wire xor1 = in[2] ^ in[3];\n    wire xor2 = xor0 ^ xor1;\n    assign out_and = and2;\n    assign out_or  = or2;\n    assign out_xor = xor2;\nendmodule",
+      "rtl_raw_sha256": "58f5a2c581adc02cc872efe24c875f9d522446b41dad8e03471cf92e06150b34",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational circuit with 4 inputs, one AND, one OR, one XOR gate\nmodule TopModule(\n    input  [3:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    assign out_and = &in;\n    assign out_or  = |in;\n    assign out_xor = ^in;\nendmodule",
+      "raw_completion_raw_sha256": "10eda29c3cad00dc4319645cbe2568308177b8e2859cceb39716cc5c3f5e5491",
+      "rtl": "module TopModule(\n    input  [3:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    assign out_and = &in;\n    assign out_or  = |in;\n    assign out_xor = ^in;\nendmodule",
+      "rtl_raw_sha256": "815fb53853a42b4be714ffb0bfb0351ac53488f9137143a9dc5d660ca9d9b5d8",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "167/234 mismatches",
+      "raw_completion": "// 4-input combinational circuit\nmodule TopModule(\n    input  [3:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire [3:0] and_l;\n    wire [3:0] or_l;\n    wire [3:0] xor_l;\n    assign and_l[0] = in[0] & in[1] & in[2] & in[3];\n    assign and_l[1] = in[0] & in[1] & in[2];\n    assign and_l[2] = in[0] & in[1] & in[3];\n    assign and_l[3] = in[0] & in[2] & in[3];\n    assign or_l[0] = in[0] | in[1] | in[2] | in[3];\n    assign or_l[1] = in[0] | in[1] | in[2];\n    assign or_l[2] = in[0] | in[1] | in[3];\n    assign or_l[3] = in[0] | in[2] | in[3];\n    assign xor_l[0] = in[0] ^ in[1] ^ in[2] ^ in[3];\n    assign xor_l[1] = in[0] ^ in[1] ^ in[2];\n    assign xor_l[2] = in[0] ^ in[1] ^ in[3];\n    assign xor_l[3] = in[0] ^ in[2] ^ in[3];\n    assign out_and = and_l[0] | and_l[1] | and_l[2] | and_l[3];\n    assign out_or = or_l[0] | or_l[1] | or_l[2] | or_l[3];\n    assign out_xor = xor_l[0] | xor_l[1] | xor_l[2] | xor_l[3];\nendmodule",
+      "raw_completion_raw_sha256": "4e4c8ed28dc6b8920c7b488ae412ff39b2ef74980ac2a82b402afc342c8fdde7",
+      "rtl": "module TopModule(\n    input  [3:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire [3:0] and_l;\n    wire [3:0] or_l;\n    wire [3:0] xor_l;\n    assign and_l[0] = in[0] & in[1] & in[2] & in[3];\n    assign and_l[1] = in[0] & in[1] & in[2];\n    assign and_l[2] = in[0] & in[1] & in[3];\n    assign and_l[3] = in[0] & in[2] & in[3];\n    assign or_l[0] = in[0] | in[1] | in[2] | in[3];\n    assign or_l[1] = in[0] | in[1] | in[2];\n    assign or_l[2] = in[0] | in[1] | in[3];\n    assign or_l[3] = in[0] | in[2] | in[3];\n    assign xor_l[0] = in[0] ^ in[1] ^ in[2] ^ in[3];\n    assign xor_l[1] = in[0] ^ in[1] ^ in[2];\n    assign xor_l[2] = in[0] ^ in[1] ^ in[3];\n    assign xor_l[3] = in[0] ^ in[2] ^ in[3];\n    assign out_and = and_l[0] | and_l[1] | and_l[2] | and_l[3];\n    assign out_or = or_l[0] | or_l[1] | or_l[2] | or_l[3];\n    assign out_xor = xor_l[0] | xor_l[1] | xor_l[2] | xor_l[3];\nendmodule",
+      "rtl_raw_sha256": "a95a129dd591c355059e41a1255fdb8858bb4ee90c23cb5787a9e5eb85a99de0",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "102/234 mismatches",
+      "raw_completion": "// Combinational circuit with 4 inputs: AND, OR, XOR\nmodule TopModule(\n    input [3:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire and0, and1, and2, and3;\n    wire or0, or1, or2, or3;\n    wire xor0, xor1, xor2, xor3;\n    assign and0 = in[0] & in[1];\n    assign and1 = in[2] & in[3];\n    assign and2 = and0 & and1;\n    assign and3 = and2 & in[0] & in[1] & in[2] & in[3];\n    assign or0 = in[0] | in[1];\n    assign or1 = in[2] | in[3];\n    assign or2 = or0 | or1;\n    assign or3 = or2 | in[0] | in[1] | in[2] | in[3];\n    assign xor0 = in[0] ^ in[1];\n    assign xor1 = in[2] ^ in[3];\n    assign xor2 = xor0 ^ xor1;\n    assign xor3 = xor2 ^ in[0] ^ in[1] ^ in[2] ^ in[3];\n    assign out_and = and3;\n    assign out_or = or3;\n    assign out_xor = xor3;\nendmodule",
+      "raw_completion_raw_sha256": "55f390ea8f03be0e4a94e896d3222aa88b1b2ba3e6d2e5e1355ff82f174c0399",
+      "rtl": "module TopModule(\n    input [3:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire and0, and1, and2, and3;\n    wire or0, or1, or2, or3;\n    wire xor0, xor1, xor2, xor3;\n    assign and0 = in[0] & in[1];\n    assign and1 = in[2] & in[3];\n    assign and2 = and0 & and1;\n    assign and3 = and2 & in[0] & in[1] & in[2] & in[3];\n    assign or0 = in[0] | in[1];\n    assign or1 = in[2] | in[3];\n    assign or2 = or0 | or1;\n    assign or3 = or2 | in[0] | in[1] | in[2] | in[3];\n    assign xor0 = in[0] ^ in[1];\n    assign xor1 = in[2] ^ in[3];\n    assign xor2 = xor0 ^ xor1;\n    assign xor3 = xor2 ^ in[0] ^ in[1] ^ in[2] ^ in[3];\n    assign out_and = and3;\n    assign out_or = or3;\n    assign out_xor = xor3;\nendmodule",
+      "rtl_raw_sha256": "1452e62186e5673d98c0764545025eb0637fdc46e31e7037a569ba5af0065490",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "234/234 mismatches",
+      "raw_completion": "// Combinational circuit with 4 inputs (in[3:0]) and 3 outputs: AND, OR,\n// XOR. The module name is TopModule.\nmodule TopModule(\n    input [3:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire and0, and1, and2, and3;\n    wire or0, or1, or2, or3;\n    wire xor0, xor1, xor2, xor3;\n    and #1 a0 (and0, in[0], in[1], in[2], in[3]);\n    and #1 a1 (and1, in[0], in[1], in[2]);\n    and #1 a2 (and2, in[0], in[1], in[3]);\n    and #1 a3 (and3, in[0], in[2], in[3]);\n    or  #1 o0 (or0 , in[0], in[1], in[2], in[3]);\n    or  #1 o1 (or1 , in[0], in[1], in[2]);\n    or  #1 o2 (or2 , in[0], in[1], in[3]);\n    or  #1 o3 (or3 , in[0], in[2], in[3]);\n    xor #1 x0 (xor0, in[0], in[1], in[2], in[3]);\n    xor #1 x1 (xor1, in[0], in[1], in[2]);\n    xor #1 x2 (xor2, in[0], in[1], in[3]);\n    xor #1 x3 (xor3, in[0], in[2], in[3]);\n    assign out_and = and0;\n    assign out_or = or0;\n    assign out_xor = xor0;\nendmodule",
+      "raw_completion_raw_sha256": "0f57682698bf7443ee19a501e23f244736fd8aaa18e17710898c9a3339cafbcb",
+      "rtl": "module TopModule(\n    input [3:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire and0, and1, and2, and3;\n    wire or0, or1, or2, or3;\n    wire xor0, xor1, xor2, xor3;\n    and #1 a0 (and0, in[0], in[1], in[2], in[3]);\n    and #1 a1 (and1, in[0], in[1], in[2]);\n    and #1 a2 (and2, in[0], in[1], in[3]);\n    and #1 a3 (and3, in[0], in[2], in[3]);\n    or  #1 o0 (or0 , in[0], in[1], in[2], in[3]);\n    or  #1 o1 (or1 , in[0], in[1], in[2]);\n    or  #1 o2 (or2 , in[0], in[1], in[3]);\n    or  #1 o3 (or3 , in[0], in[2], in[3]);\n    xor #1 x0 (xor0, in[0], in[1], in[2], in[3]);\n    xor #1 x1 (xor1, in[0], in[1], in[2]);\n    xor #1 x2 (xor2, in[0], in[1], in[3]);\n    xor #1 x3 (xor3, in[0], in[2], in[3]);\n    assign out_and = and0;\n    assign out_or = or0;\n    assign out_xor = xor0;\nendmodule",
+      "rtl_raw_sha256": "97774971ba173268fe66a995dcdcdb842a99041d5086bc0abf5af853b2ab7388",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 4-input AND gate\n// (1,2,3,4 -> AND -> out_and)\n// (1,2,3,4 -> OR  -> out_or)\n// (1,2,3,4 -> XOR -> out_xor) forms the same critical path as the\n// combinational circuit, so the registerless version is faster.\nmodule TopModule(\n    input  [3:0] in,\n    output        out_and,\n    output        out_or,\n    output        out_xor\n);\n    wire and0 = in[0] & in[1];\n    wire and1 = in[2] & in[3];\n    wire and2 = and0 & and1;\n    wire or0  = in[0] | in[1];\n    wire or1  = in[2] | in[3];\n    wire or2  = or0 | or1;\n    wire xor0 = in[0] ^ in[1];\n    wire xor1 = in[2] ^ in[3];\n    wire xor2 = xor0 ^ xor1;\n    assign out_and = and2;\n    assign out_or  = or2;\n    assign out_xor = xor2;\nendmodule",
+      "raw_completion_raw_sha256": "1ecb286dbf4cb04180bb1b3bd3968347645c55f35092eeb8c466c7272b37f73f",
+      "rtl": "module TopModule(\n    input  [3:0] in,\n    output        out_and,\n    output        out_or,\n    output        out_xor\n);\n    wire and0 = in[0] & in[1];\n    wire and1 = in[2] & in[3];\n    wire and2 = and0 & and1;\n    wire or0  = in[0] | in[1];\n    wire or1  = in[2] | in[3];\n    wire or2  = or0 | or1;\n    wire xor0 = in[0] ^ in[1];\n    wire xor1 = in[2] ^ in[3];\n    wire xor2 = xor0 ^ xor1;\n    assign out_and = and2;\n    assign out_or  = or2;\n    assign out_xor = xor2;\nendmodule",
+      "rtl_raw_sha256": "58f5a2c581adc02cc872efe24c875f9d522446b41dad8e03471cf92e06150b34",
+      "sample_index": 15,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 4-input AND gate\n// (1) out_and : output of a 4-input AND gate\n// (2) out_or  : output of a 4-input OR  gate\n// (3) out_xor : output of a 4-input XOR gate\nmodule TopModule(\n    input  [3:0] in,\n    output       out_and,\n    output       out_or,\n    output       out_xor\n);\n    wire and0 = in[0] & in[1];\n    wire and1 = in[2] & in[3];\n    wire and2 = and0 & and1;\n    wire or0 = in[0] | in[1];\n    wire or1 = in[2] | in[3];\n    wire or2 = or0 | or1;\n    wire xor0 = in[0] ^ in[1];\n    wire xor1 = in[2] ^ in[3];\n    wire xor2 = xor0 ^ xor1;\n    assign out_and = and2;\n    assign out_or  = or2;\n    assign out_xor = xor2;\nendmodule",
+      "raw_completion_raw_sha256": "bd48a51b94ff668e5bad3bbff39ce5b437ee4178c4f4bc521bacfb69f6a2219d",
+      "rtl": "module TopModule(\n    input  [3:0] in,\n    output       out_and,\n    output       out_or,\n    output       out_xor\n);\n    wire and0 = in[0] & in[1];\n    wire and1 = in[2] & in[3];\n    wire and2 = and0 & and1;\n    wire or0 = in[0] | in[1];\n    wire or1 = in[2] | in[3];\n    wire or2 = or0 | or1;\n    wire xor0 = in[0] ^ in[1];\n    wire xor1 = in[2] ^ in[3];\n    wire xor2 = xor0 ^ xor1;\n    assign out_and = and2;\n    assign out_or  = or2;\n    assign out_xor = xor2;\nendmodule",
+      "rtl_raw_sha256": "c46a4fb41043a66d2e431be02825bfa6eda050b77dcad3b6bd7fd1b8e1e0399d",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational circuit with 4 inputs, AND, OR, XOR in a single stage\nmodule TopModule(\n    input  [3:0] in,\n    output       out_and,\n    output       out_or,\n    output       out_xor\n);\n    wire and0 = in[0] & in[1];\n    wire and1 = in[2] & in[3];\n    wire or0  = in[0] | in[1];\n    wire or1  = in[2] | in[3];\n    wire xor0 = in[0] ^ in[1];\n    wire xor1 = in[2] ^ in[3];\n    wire and2 = and0 & and1;\n    wire or2  = or0  | or1;\n    wire xor2 = xor0 ^ xor1;\n    assign out_and = and2;\n    assign out_or  = or2;\n    assign out_xor = xor2;\nendmodule",
+      "raw_completion_raw_sha256": "fd99cfbad35e85df5a0dfd26ef36572f693a8ae50d8690e2ea31da289e33a0fa",
+      "rtl": "module TopModule(\n    input  [3:0] in,\n    output       out_and,\n    output       out_or,\n    output       out_xor\n);\n    wire and0 = in[0] & in[1];\n    wire and1 = in[2] & in[3];\n    wire or0  = in[0] | in[1];\n    wire or1  = in[2] | in[3];\n    wire xor0 = in[0] ^ in[1];\n    wire xor1 = in[2] ^ in[3];\n    wire and2 = and0 & and1;\n    wire or2  = or0  | or1;\n    wire xor2 = xor0 ^ xor1;\n    assign out_and = and2;\n    assign out_or  = or2;\n    assign out_xor = xor2;\nendmodule",
+      "rtl_raw_sha256": "8fa5b8337d5c77f04a925ca9c95cd234e9a031f7e6415174737dd078bdfbe837",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 4-input combinational circuit, AND, OR, XOR\nmodule TopModule (\n    input  [3:0] in,\n    output        out_and,\n    output        out_or,\n    output        out_xor\n);\n    wire a1 = in[0] & in[1];\n    wire a2 = in[2] & in[3];\n    wire o1 = in[0] | in[1];\n    wire o2 = in[2] | in[3];\n    wire x1 = in[0] ^ in[1];\n    wire x2 = in[2] ^ in[3];\n    wire and_gate = a1 & a2;\n    wire or_gate  = o1 | o2;\n    wire xor_gate = x1 ^ x2;\n    assign out_and = and_gate;\n    assign out_or  = or_gate;\n    assign out_xor = xor_gate;\nendmodule",
+      "raw_completion_raw_sha256": "1b97da49d88ab393f54912bc68af88b5a4b3c19abccd65ce3c7241115ca60fc6",
+      "rtl": "module TopModule (\n    input  [3:0] in,\n    output        out_and,\n    output        out_or,\n    output        out_xor\n);\n    wire a1 = in[0] & in[1];\n    wire a2 = in[2] & in[3];\n    wire o1 = in[0] | in[1];\n    wire o2 = in[2] | in[3];\n    wire x1 = in[0] ^ in[1];\n    wire x2 = in[2] ^ in[3];\n    wire and_gate = a1 & a2;\n    wire or_gate  = o1 | o2;\n    wire xor_gate = x1 ^ x2;\n    assign out_and = and_gate;\n    assign out_or  = or_gate;\n    assign out_xor = xor_gate;\nendmodule",
+      "rtl_raw_sha256": "35357b6f3deb492718181103fbc08ef0c6fd154bd089143da5688ce4703d3428",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob051_gates4_test.sv:93: error: Unknown module type: TopModule",
+      "raw_completion": "// 4-input AND gate\n// (1) out : output of the AND gate\n// (2) in  : inputs to the AND gate\nmodule and4 (\n  output out,\n  input [3:0] in\n);\n  assign out = in[0] & in[1] & in[2] & in[3];\nendmodule",
+      "raw_completion_raw_sha256": "634ad8519be6ce6965790bae48dab75049e313f3b9db9f6751414fc20c580951",
+      "rtl": "module and4 (\n  output out,\n  input [3:0] in\n);\n  assign out = in[0] & in[1] & in[2] & in[3];\nendmodule",
+      "rtl_raw_sha256": "41d82b8460d5517e521afdc8659de5a8eef9469a9e72fdd2147b97667ef763e3",
+      "sample_index": 19,
+      "status": "compile_fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 12,
+    "compile_fail": 3,
+    "fail": 5
+  },
+  "testbench_raw_sha256": "432f173f89c799c92fd9c17abfae20591ab365b8136e504016989bf9919d9bae",
+  "training_seed": 1
+}

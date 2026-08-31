@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob052_gates100",
+  "problem_seed": 990443907528048571,
+  "prompt_raw_sha256": "404059e1c630eb135328a25713f0e41f2e4273b06ff4d3a0d247d920650bceb7",
+  "reference_raw_sha256": "dcf314f2a0e23b9b47ec355193bf79d8b113cf0999883f712bb95a7335fd3e14",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "// 100-input combinational circuit (AND, OR, XOR in a single module)\nmodule TopModule (\n    input [99:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire [99:0] and_chain;\n    wire [99:0] or_chain;\n    wire [99:0] xor_chain;\n    assign and_chain[0] = in[0];\n    assign or_chain[0] = in[0];\n    assign xor_chain[0] = in[0];\n    genvar i;\n    for (i = 1; i < 100; i = i + 1) begin\n        assign and_chain[i] = in[i] & and_chain[i-1];\n        assign or_chain[i] = in[i] | or_chain[i-1];\n        assign xor_chain[i] = in[i] ^ xor_chain[i-1];\n    end\n    assign out_and = and_chain[99];\n    assign out_or = or_chain[99];\n    assign out_xor = xor_chain[99];\nendmodule",
+      "raw_completion_raw_sha256": "5e3d9cd50d650b673be9b0d476817c5167be709658d8490fd52373d6a64c415b",
+      "rtl": "module TopModule (\n    input [99:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire [99:0] and_chain;\n    wire [99:0] or_chain;\n    wire [99:0] xor_chain;\n    assign and_chain[0] = in[0];\n    assign or_chain[0] = in[0];\n    assign xor_chain[0] = in[0];\n    genvar i;\n    for (i = 1; i < 100; i = i + 1) begin\n        assign and_chain[i] = in[i] & and_chain[i-1];\n        assign or_chain[i] = in[i] | or_chain[i-1];\n        assign xor_chain[i] = in[i] ^ xor_chain[i-1];\n    end\n    assign out_and = and_chain[99];\n    assign out_or = or_chain[99];\n    assign out_xor = xor_chain[99];\nendmodule",
+      "rtl_raw_sha256": "1bbefaf40b993179e495e710385747ec723608d93ca5172db7ae94fcbedd5717",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  [99:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire [99:0] and_chain;\n    wire [99:0] or_chain;\n    wire [99:0] xor_chain;\n    assign and_chain[0] = in[0];\n    assign or_chain[0] = in[0];\n    assign xor_chain[0] = in[0];\n    genvar i;\n    for (i = 1; i < 100; i = i + 1) begin\n        assign and_chain[i] = in[i] & and_chain[i-1];\n        assign or_chain[i] = in[i] | or_chain[i-1];\n        assign xor_chain[i] = in[i] ^ xor_chain[i-1];\n    end\n    assign out_and = and_chain[99];\n    assign out_or = or_chain[99];\n    assign out_xor = xor_chain[99];\nendmodule",
+      "raw_completion_raw_sha256": "3645ff0c0ae8418fa8c8256f4284441179276c5fd3a2b194045ba5582ebba54c",
+      "rtl": "module TopModule (\n    input  [99:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire [99:0] and_chain;\n    wire [99:0] or_chain;\n    wire [99:0] xor_chain;\n    assign and_chain[0] = in[0];\n    assign or_chain[0] = in[0];\n    assign xor_chain[0] = in[0];\n    genvar i;\n    for (i = 1; i < 100; i = i + 1) begin\n        assign and_chain[i] = in[i] & and_chain[i-1];\n        assign or_chain[i] = in[i] | or_chain[i-1];\n        assign xor_chain[i] = in[i] ^ xor_chain[i-1];\n    end\n    assign out_and = and_chain[99];\n    assign out_or = or_chain[99];\n    assign out_xor = xor_chain[99];\nendmodule",
+      "rtl_raw_sha256": "3645ff0c0ae8418fa8c8256f4284441179276c5fd3a2b194045ba5582ebba54c",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:3: error: No function named `and_gate' found in this context (tb.top_module1).",
+      "raw_completion": "// 100-input AND gate\nfunction [0:0] and_gate;\n    input [0:99] in;\n    integer i;\n    begin\n        and_gate = 1'b1;\n        for (i = 0; i < 100; i = i + 1)\n            and_gate = and_gate & in[i];\n    end\nendfunction\n\n// 100-input OR gate\nfunction [0:0] or_gate;\n    input [0:99] in;\n    integer i;\n    begin\n        or_gate = 1'b0;\n        for (i = 0; i < 100; i = i + 1)\n            or_gate = or_gate | in[i];\n    end\nendfunction\n\n// 100-input XOR gate\nfunction [0:0] xor_gate;\n    input [0:99] in;\n    integer i;\n    begin\n        xor_gate = in[0];\n        for (i = 1; i < 100; i = i + 1)\n            xor_gate = xor_gate ^ in[i];\n    end\nendfunction\n\n// Top module\nmodule TopModule(input [0:99] in, output reg out_and, output reg out_or, output reg out_xor);\n    always @(*) begin\n        out_and = and_gate(in);\n        out_or = or_gate(in);\n        out_xor = xor_gate(in);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "23c4c1cd1e634cb9d633dac5e185befcd143bd5d5b566ec9a1d9b32b44dcc239",
+      "rtl": "module TopModule(input [0:99] in, output reg out_and, output reg out_or, output reg out_xor);\n    always @(*) begin\n        out_and = and_gate(in);\n        out_or = or_gate(in);\n        out_xor = xor_gate(in);\n    end\nendmodule",
+      "rtl_raw_sha256": "5d7e483a03373dc08b1417a5e7e4d8918f6d8a8f05046837ad8561517d577de3",
+      "sample_index": 2,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(input [99:0] in, output reg out_and, output reg out_or, output reg out_xor);\n    always @(*) begin\n        out_and = 1'b1;\n        out_or = 1'b0;\n        out_xor = 1'b0;\n        for (int i = 0; i < 100; i = i + 1) begin\n            out_and = out_and & in[i];\n            out_or = out_or | in[i];\n            out_xor = out_xor ^ in[i];\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "82a9d261ee7c33f238ebeef2857762fe127d154ec203c20ebbb6a6c358d6d99e",
+      "rtl": "module TopModule(input [99:0] in, output reg out_and, output reg out_or, output reg out_xor);\n    always @(*) begin\n        out_and = 1'b1;\n        out_or = 1'b0;\n        out_xor = 1'b0;\n        for (int i = 0; i < 100; i = i + 1) begin\n            out_and = out_and & in[i];\n            out_or = out_or | in[i];\n            out_xor = out_xor ^ in[i];\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "82a9d261ee7c33f238ebeef2857762fe127d154ec203c20ebbb6a6c358d6d99e",
+      "sample_index": 3,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational 100-input AND, OR, XOR gate\nmodule TopModule (\n    input [99:0] in,\n    output reg out_and,\n    output reg out_or,\n    output reg out_xor\n);\n    integer i;\n    always @* begin\n        out_and = 1'b1;\n        out_or = 1'b0;\n        out_xor = 1'b0;\n        for (i = 0; i < 100; i = i + 1) begin\n            out_and = out_and & in[i];\n            out_or = out_or | in[i];\n            out_xor = out_xor ^ in[i];\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a6dd94558d87150f6284f7999ff66e838b6b0599dc35b76534832a013fce6f68",
+      "rtl": "module TopModule (\n    input [99:0] in,\n    output reg out_and,\n    output reg out_or,\n    output reg out_xor\n);\n    integer i;\n    always @* begin\n        out_and = 1'b1;\n        out_or = 1'b0;\n        out_xor = 1'b0;\n        for (i = 0; i < 100; i = i + 1) begin\n            out_and = out_and & in[i];\n            out_or = out_or | in[i];\n            out_xor = out_xor ^ in[i];\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "3a9d43c24e03eba70cbddec84ad76c0e76430d2e1620460c91832a66fa84d727",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational circuit with 100 inputs (in[99:0]) AND, OR, XOR gates\nmodule TopModule(input [99:0] in, output out_and, output out_or, output out_xor);\n    wire [99:0] and_chain;\n    wire [99:0] or_chain;\n    wire [99:0] xor_chain;\n    assign and_chain[0] = in[0];\n    assign or_chain[0] = in[0];\n    assign xor_chain[0] = in[0];\n    genvar i;\n    for (i = 1; i < 100; i = i + 1) begin\n        assign and_chain[i] = in[i] & and_chain[i - 1];\n        assign or_chain[i] = in[i] | or_chain[i - 1];\n        assign xor_chain[i] = in[i] ^ xor_chain[i - 1];\n    end\n    assign out_and = and_chain[99];\n    assign out_or = or_chain[99];\n    assign out_xor = xor_chain[99];\nendmodule",
+      "raw_completion_raw_sha256": "e1f8a30aeecefb303652c0fe0d88dad2733916c0c08088cf1457bc2319b9561e",
+      "rtl": "module TopModule(input [99:0] in, output out_and, output out_or, output out_xor);\n    wire [99:0] and_chain;\n    wire [99:0] or_chain;\n    wire [99:0] xor_chain;\n    assign and_chain[0] = in[0];\n    assign or_chain[0] = in[0];\n    assign xor_chain[0] = in[0];\n    genvar i;\n    for (i = 1; i < 100; i = i + 1) begin\n        assign and_chain[i] = in[i] & and_chain[i - 1];\n        assign or_chain[i] = in[i] | or_chain[i - 1];\n        assign xor_chain[i] = in[i] ^ xor_chain[i - 1];\n    end\n    assign out_and = and_chain[99];\n    assign out_or = or_chain[99];\n    assign out_xor = xor_chain[99];\nendmodule",
+      "rtl_raw_sha256": "44ac8614d7340c946449b6d15b87dd83bceed317befb078ada389aff40d661d6",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 100-input combinational circuit (AND, OR, XOR in parallel)\nmodule TopModule(input [99:0] in, output reg out_and, output reg out_or, output reg out_xor);\n    always @* begin\n        out_and = &in;\n        out_or  = |in;\n        out_xor = ^in;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "83979bef6ff66d385f6acc85c2e4aed9361caf4e8506e13d3e9a54786dffdd9b",
+      "rtl": "module TopModule(input [99:0] in, output reg out_and, output reg out_or, output reg out_xor);\n    always @* begin\n        out_and = &in;\n        out_or  = |in;\n        out_xor = ^in;\n    end\nendmodule",
+      "rtl_raw_sha256": "1821d51b32d65b9d9730828c6e69b1cf303e8d9298dc1dc8238a258988e3efa0",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [99:0] in,\n    output reg       out_and,\n    output reg       out_or,\n    output reg       out_xor\n);\n    always @(*) begin\n        out_and = 1'b1;\n        out_or = 1'b0;\n        out_xor = 1'b0;\n        for (int i = 0; i < 100; i = i + 1) begin\n            out_and = out_and & in[i];\n            out_or = out_or | in[i];\n            out_xor = out_xor ^ in[i];\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "b52bd9f2f9cbe89f7484270f51b76478ff2814651e63f70621e7ababc7285e8f",
+      "rtl": "module TopModule(\n    input  [99:0] in,\n    output reg       out_and,\n    output reg       out_or,\n    output reg       out_xor\n);\n    always @(*) begin\n        out_and = 1'b1;\n        out_or = 1'b0;\n        out_xor = 1'b0;\n        for (int i = 0; i < 100; i = i + 1) begin\n            out_and = out_and & in[i];\n            out_or = out_or | in[i];\n            out_xor = out_xor ^ in[i];\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "b52bd9f2f9cbe89f7484270f51b76478ff2814651e63f70621e7ababc7285e8f",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 100-input combinational circuit (AND, OR, XOR)\nmodule TopModule(\n    input [99:0] in,\n    output reg out_and,\n    output reg out_or,\n    output reg out_xor\n);\n    integer i;\n    always @* begin\n        out_and = 1'b1;\n        out_or = 1'b0;\n        out_xor = 1'b0;\n        for (i = 0; i < 100; i = i + 1) begin\n            out_and = out_and & in[i];\n            out_or = out_or | in[i];\n            out_xor = out_xor ^ in[i];\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "87c3eccde5b485f87ed834a1a543a7be2692f2ca0df1378d524474539a2a1c59",
+      "rtl": "module TopModule(\n    input [99:0] in,\n    output reg out_and,\n    output reg out_or,\n    output reg out_xor\n);\n    integer i;\n    always @* begin\n        out_and = 1'b1;\n        out_or = 1'b0;\n        out_xor = 1'b0;\n        for (i = 0; i < 100; i = i + 1) begin\n            out_and = out_and & in[i];\n            out_or = out_or | in[i];\n            out_xor = out_xor ^ in[i];\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "9e01651f5041b7fc0bb35fc16607fc0e19df965b169bfac050c7f9a41395d523",
+      "sample_index": 8,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational circuit with 100 inputs, all in one module\nmodule TopModule(\n    input  [99:0] in,\n    output        out_and,\n    output        out_or,\n    output        out_xor\n);\n    wire [99:0] andchain;\n    wire [99:0] orchain;\n    wire [99:0] xorchain;\n    assign andchain[0] = in[0];\n    assign orchain[0] = in[0];\n    assign xorchain[0] = in[0];\n    genvar i;\n    for (i = 1; i < 100; i = i + 1) begin\n        assign andchain[i] = in[i] & andchain[i-1];\n        assign orchain[i] = in[i] | orchain[i-1];\n        assign xorchain[i] = in[i] ^ xorchain[i-1];\n    end\n    assign out_and = andchain[99];\n    assign out_or = orchain[99];\n    assign out_xor = xorchain[99];\nendmodule",
+      "raw_completion_raw_sha256": "4d263be1da33ea8c2a4ba6e0033ba09a65311cbb1b7d0e2e9cd8869323bb697d",
+      "rtl": "module TopModule(\n    input  [99:0] in,\n    output        out_and,\n    output        out_or,\n    output        out_xor\n);\n    wire [99:0] andchain;\n    wire [99:0] orchain;\n    wire [99:0] xorchain;\n    assign andchain[0] = in[0];\n    assign orchain[0] = in[0];\n    assign xorchain[0] = in[0];\n    genvar i;\n    for (i = 1; i < 100; i = i + 1) begin\n        assign andchain[i] = in[i] & andchain[i-1];\n        assign orchain[i] = in[i] | orchain[i-1];\n        assign xorchain[i] = in[i] ^ xorchain[i-1];\n    end\n    assign out_and = andchain[99];\n    assign out_or = orchain[99];\n    assign out_xor = xorchain[99];\nendmodule",
+      "rtl_raw_sha256": "ef521f254070557ea9b5b85809c5c4c4304124fb2b6eac97d8a31d34fc5f480c",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:15: error: and_latch['sd0] is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 100-input combinational circuit, AND, OR, XOR\nmodule TopModule(\n    input  [99:0] in,\n    output        out_and,\n    output        out_or,\n    output        out_xor\n);\n    wire [99:0] and_latch;\n    wire [99:0] or_latch;\n    wire [99:0] xor_latch;\n    integer     i;\n    assign out_and = and_latch[99];\n    assign out_or  = or_latch[99];\n    assign out_xor = xor_latch[99];\n    always @* begin\n        and_latch[0] = in[0];\n        or_latch[0]  = in[0];\n        xor_latch[0] = in[0];\n        for (i = 1; i < 100; i = i + 1) begin\n            and_latch[i] = and_latch[i-1] & in[i];\n            or_latch[i]  = or_latch[i-1]  | in[i];\n            xor_latch[i] = xor_latch[i-1] ^ in[i];\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "65c1cd2f5710ee49efe058c5e2c0a51fe1a6e4514d1b6798c93f6f887ee04f5c",
+      "rtl": "module TopModule(\n    input  [99:0] in,\n    output        out_and,\n    output        out_or,\n    output        out_xor\n);\n    wire [99:0] and_latch;\n    wire [99:0] or_latch;\n    wire [99:0] xor_latch;\n    integer     i;\n    assign out_and = and_latch[99];\n    assign out_or  = or_latch[99];\n    assign out_xor = xor_latch[99];\n    always @* begin\n        and_latch[0] = in[0];\n        or_latch[0]  = in[0];\n        xor_latch[0] = in[0];\n        for (i = 1; i < 100; i = i + 1) begin\n            and_latch[i] = and_latch[i-1] & in[i];\n            or_latch[i]  = or_latch[i-1]  | in[i];\n            xor_latch[i] = xor_latch[i-1] ^ in[i];\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "d0b9eb1ef5cf77ef8fd0d52581722742238d14317b8f1471411fa3d2fba8cded",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob052_gates100_test.sv:121: error: Unknown module type: TopModule",
+      "raw_completion": "// 100-input AND gate\nmodule and100 (input [99:0] in, output reg out);\n  integer i;\n  always @* begin\n    out = 1;\n    for (i = 0; i < 100; i = i + 1) out = out & in[i];\n  end\nendmodule",
+      "raw_completion_raw_sha256": "8011e5d8d20ac1411738fd9fa0f0877d18ed988ed47c7fb9c489e9219e7150c0",
+      "rtl": "module and100 (input [99:0] in, output reg out);\n  integer i;\n  always @* begin\n    out = 1;\n    for (i = 0; i < 100; i = i + 1) out = out & in[i];\n  end\nendmodule",
+      "rtl_raw_sha256": "b25e81fe751f04cd60424da62ddd7feb8b34f2d205327ec0fba97ef44500d62f",
+      "sample_index": 11,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob052_gates100_ref.sv:2: syntax error",
+      "raw_completion": "// Combinational circuit with 100 inputs, one per register stage\nmodule TopModule(\n    input [99:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire [99:0] stage0, stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8, stage9, stage10, stage11, stage12, stage13, stage14, stage15, stage16, stage17, stage18, stage19, stage20, stage21, stage22, stage23, stage24, stage25, stage26, stage27, stage28, stage29, stage30, stage31, stage32, stage33, stage34, stage35, stage36, stage37, stage38, stage39, stage40, stage41, stage42, stage43, stage44, stage45, stage46, stage47, stage48, stage49, stage50, stage51, stage52, stage53, stage54, stage55, stage56, stage57, stage58, stage59, stage60, stage61, stage62, stage63, stage64, stage65, stage66, stage67, stage68, stage69, stage70, stage71, stage72, stage73, stage74, stage75, stage76, stage77, stage78, stage79, stage80, stage81, stage82, stage83, stage84, stage85, stage86, stage87, stage88, stage89, stage90, stage91, stage92, stage93, stage94, stage95, stage96, stage97, stage98, stage99;\n    assign out_and = stage99;\n    assign out_or  = |stage99;\n    assign out_xor = ^stage99;\n    assign stage0 = in;\n    assign stage1 = stage0;\n    assign stage2 = stage1;\n    assign stage3 = stage2;\n    assign stage4 = stage3;\n    assign stage5 = stage4;\n    assign stage6 = stage5;\n    assign stage7 = stage6;\n    assign stage8 = stage7;\n    assign stage9 = stage8;\n    assign stage10 = stage9;\n    assign stage11 = stage10;\n    assign stage12 = stage11;\n    assign stage13 = stage12;\n    assign stage14 = stage13;\n    assign stage15 = stage14;\n    assign stage16 = stage15;\n    assign stage17 = stage16;\n    assign stage18 = stage17;\n    assign stage19 = stage18;\n    assign stage20 = stage19;\n    assign stage21 = stage20;\n    assign stage22 = stage21;\n    assign stage23 = stage22;\n    assign stage24 = stage23;\n    assign stage25 = stage24;\n    assign stage26 = stage25;\n    assign stage27 = stage26;\n    assign stage28 = stage27;\n    assign stage29 = stage28;\n    assign stage30 = stage29;\n    assign stage31 = stage30;\n    assign stage32 = stage31;\n    assign stage33 = stage32;\n    assign stage34 = stage33;\n    assign stage35 = stage34;\n    assign stage36 = stage35;\n    assign stage37 = stage36;\n    assign stage38 = stage37;\n    assign stage39 = stage38;\n    assign stage40 = stage39;\n    assign stage41 = stage40;\n    assign stage42 = stage41;\n    assign stage43 = stage42;\n    assign stage44 = stage43;\n    assign stage45 = stage44;\n    assign stage46 = stage45;\n    assign stage47 = stage46;\n    assign stage48 = stage47;\n    assign stage49 = stage48;\n    assign stage50",
+      "raw_completion_raw_sha256": "1130e8e9879c6e4352e5bbb3536094e6195e3d99196c4344f4654969593d26b8",
+      "rtl": "module TopModule(\n    input [99:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire [99:0] stage0, stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8, stage9, stage10, stage11, stage12, stage13, stage14, stage15, stage16, stage17, stage18, stage19, stage20, stage21, stage22, stage23, stage24, stage25, stage26, stage27, stage28, stage29, stage30, stage31, stage32, stage33, stage34, stage35, stage36, stage37, stage38, stage39, stage40, stage41, stage42, stage43, stage44, stage45, stage46, stage47, stage48, stage49, stage50, stage51, stage52, stage53, stage54, stage55, stage56, stage57, stage58, stage59, stage60, stage61, stage62, stage63, stage64, stage65, stage66, stage67, stage68, stage69, stage70, stage71, stage72, stage73, stage74, stage75, stage76, stage77, stage78, stage79, stage80, stage81, stage82, stage83, stage84, stage85, stage86, stage87, stage88, stage89, stage90, stage91, stage92, stage93, stage94, stage95, stage96, stage97, stage98, stage99;\n    assign out_and = stage99;\n    assign out_or  = |stage99;\n    assign out_xor = ^stage99;\n    assign stage0 = in;\n    assign stage1 = stage0;\n    assign stage2 = stage1;\n    assign stage3 = stage2;\n    assign stage4 = stage3;\n    assign stage5 = stage4;\n    assign stage6 = stage5;\n    assign stage7 = stage6;\n    assign stage8 = stage7;\n    assign stage9 = stage8;\n    assign stage10 = stage9;\n    assign stage11 = stage10;\n    assign stage12 = stage11;\n    assign stage13 = stage12;\n    assign stage14 = stage13;\n    assign stage15 = stage14;\n    assign stage16 = stage15;\n    assign stage17 = stage16;\n    assign stage18 = stage17;\n    assign stage19 = stage18;\n    assign stage20 = stage19;\n    assign stage21 = stage20;\n    assign stage22 = stage21;\n    assign stage23 = stage22;\n    assign stage24 = stage23;\n    assign stage25 = stage24;\n    assign stage26 = stage25;\n    assign stage27 = stage26;\n    assign stage28 = stage27;\n    assign stage29 = stage28;\n    assign stage30 = stage29;\n    assign stage31 = stage30;\n    assign stage32 = stage31;\n    assign stage33 = stage32;\n    assign stage34 = stage33;\n    assign stage35 = stage34;\n    assign stage36 = stage35;\n    assign stage37 = stage36;\n    assign stage38 = stage37;\n    assign stage39 = stage38;\n    assign stage40 = stage39;\n    assign stage41 = stage40;\n    assign stage42 = stage41;\n    assign stage43 = stage42;\n    assign stage44 = stage43;\n    assign stage45 = stage44;\n    assign stage46 = stage45;\n    assign stage47 = stage46;\n    assign stage48 = stage47;\n    assign stage49 = stage48;\n    assign stage50",
+      "rtl_raw_sha256": "492f412e047369099a4f7260c7485d767bf2ffea87a8ecb6dbf2b8b32f15d530",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob052_gates100_test.sv:121: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit AND gate, implemented as a chain of AND-gates\nmodule and_gate_chain (\n    input [99:0] in,\n    output out\n);\n    wire [99:0] wires;\n    assign wires[0] = in[0];\n    genvar i;\n    for (i = 1; i < 100; i = i + 1) begin\n        assign wires[i] = wires[i-1] & in[i];\n    end\n    assign out = wires[99];\nendmodule",
+      "raw_completion_raw_sha256": "f273c766f9f3acb31ced4d78f35e802848a4ce8ecdf2413c1f0da59980a13327",
+      "rtl": "module and_gate_chain (\n    input [99:0] in,\n    output out\n);\n    wire [99:0] wires;\n    assign wires[0] = in[0];\n    genvar i;\n    for (i = 1; i < 100; i = i + 1) begin\n        assign wires[i] = wires[i-1] & in[i];\n    end\n    assign out = wires[99];\nendmodule",
+      "rtl_raw_sha256": "168a9f59e73aa45b46c09044483d8db06a8757550304270df3af8ae23db96e59",
+      "sample_index": 13,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 100-input combinational circuit, AND, OR, XOR\nmodule TopModule (\n    input [99:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire [99:0] g;\n    assign g[0] = in[0];\n    genvar i;\n    for (i = 1; i < 100; i = i + 1) begin\n        assign g[i] = in[i] & g[i-1];\n    end\n    assign out_and = g[99];\n    assign out_or  = |in;\n    assign out_xor = ^in;\nendmodule",
+      "raw_completion_raw_sha256": "7c04c4ab4ddf9fd46c791e5e7c98e8f0bbac4536b2f5b7b24c376dab12019ba0",
+      "rtl": "module TopModule (\n    input [99:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire [99:0] g;\n    assign g[0] = in[0];\n    genvar i;\n    for (i = 1; i < 100; i = i + 1) begin\n        assign g[i] = in[i] & g[i-1];\n    end\n    assign out_and = g[99];\n    assign out_or  = |in;\n    assign out_xor = ^in;\nendmodule",
+      "rtl_raw_sha256": "6b5e0996b2fd6b3ab3b98173743ca90f8e24a805d685bcc1c2cd6af35ffb2301",
+      "sample_index": 14,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:15: syntax error",
+      "raw_completion": "// Combinational circuit with 100 inputs, one per AND, OR, and XOR gate.\nmodule TopModule(\n    input [99:0] in,\n    output       out_and,\n    output       out_or,\n    output       out_xor\n);\n    wire [99:0] and_chain;\n    wire [99:0] or_chain;\n    wire [99:0] xor_chain;\n    assign and_chain[0] = in[0];\n    assign or_chain[0] = in[0];\n    assign xor_chain[0] = in[0];\n    genvar i;\n    for (i = 1; i < 100; i = i + 1) begin\n        and_chain[i] = in[i] & and_chain[i-1];\n        or_chain[i] = in[i] | or_chain[i-1];\n        xor_chain[i] = in[i] ^ xor_chain[i-1];\n    end\n    assign out_and = and_chain[99];\n    assign out_or = or_chain[99];\n    assign out_xor = xor_chain[99];\nendmodule",
+      "raw_completion_raw_sha256": "961c3f02e55e0974f8a3fdeb6806d489834d0f76a1af1a4b568bf4015ad31342",
+      "rtl": "module TopModule(\n    input [99:0] in,\n    output       out_and,\n    output       out_or,\n    output       out_xor\n);\n    wire [99:0] and_chain;\n    wire [99:0] or_chain;\n    wire [99:0] xor_chain;\n    assign and_chain[0] = in[0];\n    assign or_chain[0] = in[0];\n    assign xor_chain[0] = in[0];\n    genvar i;\n    for (i = 1; i < 100; i = i + 1) begin\n        and_chain[i] = in[i] & and_chain[i-1];\n        or_chain[i] = in[i] | or_chain[i-1];\n        xor_chain[i] = in[i] ^ xor_chain[i-1];\n    end\n    assign out_and = and_chain[99];\n    assign out_or = or_chain[99];\n    assign out_xor = xor_chain[99];\nendmodule",
+      "rtl_raw_sha256": "53c3554eed1640c9ce7e6c187f7abfcf2a3a6e2d43cca2d1e7dac7778f42fb74",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:15: error: and_latch[i] is not a valid l-value in tb.top_module1.genblk1[0].",
+      "raw_completion": "// 100-input AND, OR, XOR gate (combinational, no registers)\nmodule TopModule(\n    input [99:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire [99:0] and_latch;\n    wire [99:0] or_latch;\n    wire [99:0] xor_latch;\n    genvar i;\n    assign out_and = &and_latch;\n    assign out_or  = |or_latch;\n    assign out_xor = ^xor_latch;\n    for (i = 0; i < 100; i = i + 1) begin\n        always @(in[i]) and_latch[i] = 1;\n        always @(in[i]) or_latch[i] = 1;\n        always @(in[i]) xor_latch[i] = 1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "ba0c7e42e8b87f9b9886e9ddb46dc6b37be0eb6b02d41263d87b9b39ee0d7888",
+      "rtl": "module TopModule(\n    input [99:0] in,\n    output out_and,\n    output out_or,\n    output out_xor\n);\n    wire [99:0] and_latch;\n    wire [99:0] or_latch;\n    wire [99:0] xor_latch;\n    genvar i;\n    assign out_and = &and_latch;\n    assign out_or  = |or_latch;\n    assign out_xor = ^xor_latch;\n    for (i = 0; i < 100; i = i + 1) begin\n        always @(in[i]) and_latch[i] = 1;\n        always @(in[i]) or_latch[i] = 1;\n        always @(in[i]) xor_latch[i] = 1;\n    end\nendmodule",
+      "rtl_raw_sha256": "7e4408d528ace67c3f8bc1ef09ce2034693cb9194c4cf9fee2a5edb923b3ee91",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [99:0] in,\n    output reg out_and,\n    output reg out_or,\n    output reg out_xor\n);\n    always @(*) begin\n        out_and = 1'b1;\n        out_or = 1'b0;\n        out_xor = 1'b0;\n        for (int i = 0; i < 100; i = i + 1) begin\n            out_and = out_and & in[i];\n            out_or = out_or | in[i];\n            out_xor = out_xor ^ in[i];\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "9fc69fb0703f8e567e221410409a13e13315b98acf709e2e4c83f3465ed03edc",
+      "rtl": "module TopModule(\n    input [99:0] in,\n    output reg out_and,\n    output reg out_or,\n    output reg out_xor\n);\n    always @(*) begin\n        out_and = 1'b1;\n        out_or = 1'b0;\n        out_xor = 1'b0;\n        for (int i = 0; i < 100; i = i + 1) begin\n            out_and = out_and & in[i];\n            out_or = out_or | in[i];\n            out_xor = out_xor ^ in[i];\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "9fc69fb0703f8e567e221410409a13e13315b98acf709e2e4c83f3465ed03edc",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:2: error: No function named `and_gate' found in this context (tb.top_module1).",
+      "raw_completion": "// 100-input AND gate\nfunction bit and_gate;\n    input [99:0] in;\n    begin\n        and_gate = in[0];\n        for (int i = 1; i < 100; i = i + 1)\n            and_gate = and_gate & in[i];\n    end\nendfunction\n\n// 100-input OR gate\nfunction bit or_gate;\n    input [99:0] in;\n    begin\n        or_gate = in[0];\n        for (int i = 1; i < 100; i = i + 1)\n            or_gate = or_gate | in[i];\n    end\nendfunction\n\n// 100-input XOR gate\nfunction bit xor_gate;\n    input [99:0] in;\n    begin\n        xor_gate = in[0];\n        for (int i = 1; i < 100; i = i + 1)\n            xor_gate = xor_gate ^ in[i];\n    end\nendfunction\n\n// Top module\nmodule TopModule(input [99:0] in, output out_and, output out_or, output out_xor);\n    assign out_and = and_gate(in);\n    assign out_or = or_gate(in);\n    assign out_xor = xor_gate(in);\nendmodule",
+      "raw_completion_raw_sha256": "68ce95c1b03b18727813c0a97457d49e9f426dd101d2b227efd914687d6109ea",
+      "rtl": "module TopModule(input [99:0] in, output out_and, output out_or, output out_xor);\n    assign out_and = and_gate(in);\n    assign out_or = or_gate(in);\n    assign out_xor = xor_gate(in);\nendmodule",
+      "rtl_raw_sha256": "d162e75b67d83bb8150de1e2ae60afdc3d38f664844bd277174564efe4b4c9de",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// 100-input AND, OR, XOR gate\nmodule TopModule (\n    input  [99:0] in,\n    output        out_and,\n    output        out_or,\n    output        out_xor\n);\n    wire [99:0] and_chain;\n    wire [99:0] or_chain;\n    wire [99:0] xor_chain;\n    assign and_chain[0] = in[0];\n    assign or_chain[0] = in[0];\n    assign xor_chain[0] = in[0];\n    genvar i;\n    for (i = 1; i < 100; i = i + 1) begin\n        assign and_chain[i] = in[i] & and_chain[i-1];\n        assign or_chain[i] = in[i] | or_chain[i-1];\n        assign xor_chain[i] = in[i] ^ xor_chain[i-1];\n    end\n    assign out_and = and_chain[99];\n    assign out_or = or_chain[99];\n    assign out_xor = xor_chain[99];\nendmodule",
+      "raw_completion_raw_sha256": "70c78d287a676baa916cbbad8c3826cc06f9dbde4a59377762775948f67c5aa7",
+      "rtl": "module TopModule (\n    input  [99:0] in,\n    output        out_and,\n    output        out_or,\n    output        out_xor\n);\n    wire [99:0] and_chain;\n    wire [99:0] or_chain;\n    wire [99:0] xor_chain;\n    assign and_chain[0] = in[0];\n    assign or_chain[0] = in[0];\n    assign xor_chain[0] = in[0];\n    genvar i;\n    for (i = 1; i < 100; i = i + 1) begin\n        assign and_chain[i] = in[i] & and_chain[i-1];\n        assign or_chain[i] = in[i] | or_chain[i-1];\n        assign xor_chain[i] = in[i] ^ xor_chain[i-1];\n    end\n    assign out_and = and_chain[99];\n    assign out_or = or_chain[99];\n    assign out_xor = xor_chain[99];\nendmodule",
+      "rtl_raw_sha256": "4df9166cbbfc61bad6b187a360355cdac3714cf53c7937435145319a5bd0bbc4",
+      "sample_index": 19,
+      "status": "PASS"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 12,
+    "compile_fail": 8
+  },
+  "testbench_raw_sha256": "0643c8d9dc397379597e7ae07b2168c82b3457f66a198c9256491cdfda904ee4",
+  "training_seed": 1
+}

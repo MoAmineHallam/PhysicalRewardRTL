@@ -1,0 +1,200 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob061_2014_q4a",
+  "problem_seed": 6750879226685471036,
+  "prompt_raw_sha256": "5bec95fe4931a860854e68be23eae36095df5f6dd978b116ae50f15a0248cfbd",
+  "reference_raw_sha256": "e3a96e912df4645f611ffbc8f596e7506af1bce98806dcdfd8ebb449a26cc583",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "// One-stage stage of a shift register (shift register pipeline).\nmodule TopModule (\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output Q\n);\n    reg q;\n    always @(posedge clk) begin\n        if (L) q <= R;\n        else if (E) q <= w;\n    end\n    assign Q = q;\nendmodule",
+      "raw_completion_raw_sha256": "3edbdd7fe71dd854a284931519a3f50610d744c4366ee6b42a794cf6b4c80781",
+      "rtl": "module TopModule (\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output Q\n);\n    reg q;\n    always @(posedge clk) begin\n        if (L) q <= R;\n        else if (E) q <= w;\n    end\n    assign Q = q;\nendmodule",
+      "rtl_raw_sha256": "5122144eadaf961eaf2e9e24f1345df6486f089b97628c561ac6a7a73b43ae5e",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One stage in a shift register chain, with independent enable for each\n// stage. The register itself has no enable (REG without REG_EN).\nmodule TopModule(\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output Q\n);\n    reg q;\n    always @(posedge clk) begin\n        if (L) q <= R;\n        else if (E) q <= w;\n    end\n    assign Q = q;\nendmodule",
+      "raw_completion_raw_sha256": "2a9ced658dda18accc53293e3c994499ec44c940e39f078cfc874bc70d595d9c",
+      "rtl": "module TopModule(\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output Q\n);\n    reg q;\n    always @(posedge clk) begin\n        if (L) q <= R;\n        else if (E) q <= w;\n    end\n    assign Q = q;\nendmodule",
+      "rtl_raw_sha256": "945f053e424112df4270117249015348807a6bf2b25fb2dc5a4df265c4650d00",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "79/200 mismatches",
+      "raw_completion": "// One stage of a shift register (synchronous, register-transfer-level\n// form, named \"register-transfer-level\" FULLY-SYNTHESIZED combinational\n// chain, with independent registers for each stage -> short AND flat\n// register-transfer-level PIPELINE, equal to the long register-level\n// form with one register stage per register-transfer-level stage,\n// UNROLLED).\nmodule TopModule(input  clk,\n                 input  w,\n                 input  R,\n                 input  E,\n                 input  L,\n                 output reg Q);\n    reg [1:0] r0;\n    always @(posedge clk) begin\n        if (L) r0 <= 2'b01;\n        else if (E) r0 <= {r0[0], w};\n    end\n    reg [1:0] r1;\n    always @(posedge clk) begin\n        if (L) r1 <= 2'b01;\n        else if (E) r1 <= r0;\n    end\n    reg [1:0] r2;\n    always @(posedge clk) begin\n        if (L) r2 <= 2'b01;\n        else if (E) r2 <= r1;\n    end\n    reg [1:0] r3;\n    always @(posedge clk) begin\n        if (L) r3 <= 2'b01;\n        else if (E) r3 <= r2;\n    end\n    reg [1:0] r4;\n    always @(posedge clk) begin\n        if (L) r4 <= 2'b01;\n        else if (E) r4 <= r3;\n    end\n    reg [1:0] r5;\n    always @(posedge clk) begin\n        if (L) r5 <= 2'b01;\n        else if (E) r5 <= r4;\n    end\n    reg [1:0] r6;\n    always @(posedge clk) begin\n        if (L) r6 <= 2'b01;\n        else if (E) r6 <= r5;\n    end\n    reg [1:0] r7;\n    always @(posedge clk) begin\n        if (L) r7 <= 2'b01;\n        else if (E) r7 <= r6;\n    end\n    always @(posedge clk) begin\n        if (L) Q <= 1'b1;\n        else if (E) Q <= r7[0];\n    end\n    always @(posedge clk) begin\n        if (R) Q <= 1'b1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "6b6e5e70bc2dd341fea9a379d01094af01fc159649b07a04580090ac5270524a",
+      "rtl": "module TopModule(input  clk,\n                 input  w,\n                 input  R,\n                 input  E,\n                 input  L,\n                 output reg Q);\n    reg [1:0] r0;\n    always @(posedge clk) begin\n        if (L) r0 <= 2'b01;\n        else if (E) r0 <= {r0[0], w};\n    end\n    reg [1:0] r1;\n    always @(posedge clk) begin\n        if (L) r1 <= 2'b01;\n        else if (E) r1 <= r0;\n    end\n    reg [1:0] r2;\n    always @(posedge clk) begin\n        if (L) r2 <= 2'b01;\n        else if (E) r2 <= r1;\n    end\n    reg [1:0] r3;\n    always @(posedge clk) begin\n        if (L) r3 <= 2'b01;\n        else if (E) r3 <= r2;\n    end\n    reg [1:0] r4;\n    always @(posedge clk) begin\n        if (L) r4 <= 2'b01;\n        else if (E) r4 <= r3;\n    end\n    reg [1:0] r5;\n    always @(posedge clk) begin\n        if (L) r5 <= 2'b01;\n        else if (E) r5 <= r4;\n    end\n    reg [1:0] r6;\n    always @(posedge clk) begin\n        if (L) r6 <= 2'b01;\n        else if (E) r6 <= r5;\n    end\n    reg [1:0] r7;\n    always @(posedge clk) begin\n        if (L) r7 <= 2'b01;\n        else if (E) r7 <= r6;\n    end\n    always @(posedge clk) begin\n        if (L) Q <= 1'b1;\n        else if (E) Q <= r7[0];\n    end\n    always @(posedge clk) begin\n        if (R) Q <= 1'b1;\n    end\nendmodule",
+      "rtl_raw_sha256": "268a0251ff506183e3f074245b83009abf1c83a3d7a2b69b1fe63ecb3c2a7cc8",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "104/200 mismatches",
+      "raw_completion": "// One-stage stage of a shift register, with the ability to load a new value\n// on the same clock cycle.\nmodule TopModule (\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output reg Q\n);\n    reg [1:0] stage1_Q;\n    always @(posedge clk) begin\n        if (L) stage1_Q <= R;\n        else if (E) stage1_Q <= {stage1_Q[0], w};\n    end\n    always @(posedge clk) Q <= stage1_Q[1];\nendmodule",
+      "raw_completion_raw_sha256": "c6ffa61da6364a8bf39f6c02a7e6d3678d5b372530b6fb35a5ac10a4c178447b",
+      "rtl": "module TopModule (\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output reg Q\n);\n    reg [1:0] stage1_Q;\n    always @(posedge clk) begin\n        if (L) stage1_Q <= R;\n        else if (E) stage1_Q <= {stage1_Q[0], w};\n    end\n    always @(posedge clk) Q <= stage1_Q[1];\nendmodule",
+      "rtl_raw_sha256": "668a1c7bf9f20334ce2e6c5c832a2ed82de723e2791374db90014dbd2daa8206",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob061_2014_q4a_test.sv:127: syntax error",
+      "raw_completion": "// One-stage shift register stage, with load (L) and enable (E) registers.\nmodule TopModule(\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output reg Q\n);\n    reg [1:0] stage1_Q;\n    reg [1:0] stage2_Q;\n    wire stage1_E = E;\n    wire stage1_L = L;\n    wire stage2_E = stage1_E;\n    wire stage2_L = stage1_L;\n    reg [1:0] stage2_R;\n    reg [1:0] stage3_Q;\n    reg [1:0] stage4_Q;\n    reg [1:0] stage5_Q;\n    reg [1:0] stage6_Q;\n    reg [1:0] stage7_Q;\n    reg [1:0] stage8_Q;\n    reg [1:0] stage9_Q;\n    reg [1:0] stage10_Q;\n    reg [1:0] stage11_Q;\n    reg [1:0] stage12_Q;\n    reg [1:0] stage13_Q;\n    reg [1:0] stage14_Q;\n    reg [1:0] stage15_Q;\n    reg [1:0] stage16_Q;\n    reg [1:0] stage17_Q;\n    reg [1:0] stage18_Q;\n    reg [1:0] stage19_Q;\n    reg [1:0] stage20_Q;\n    reg [1:0] stage21_Q;\n    reg [1:0] stage22_Q;\n    reg [1:0] stage23_Q;\n    reg [1:0] stage24_Q;\n    reg [1:0] stage25_Q;\n    reg [1:0] stage26_Q;\n    reg [1:0] stage27_Q;\n    reg [1:0] stage28_Q;\n    reg [1:0] stage29_Q;\n    reg [1:0] stage30_Q;\n    reg [1:0] stage31_Q;\n    reg [1:0] stage32_Q;\n    reg [1:0] stage33_Q;\n    reg [1:0] stage34_Q;\n    reg [1:0] stage35_Q;\n    reg [1:0] stage36_Q;\n    reg [1:0] stage37_Q;\n    reg [1:0] stage38_Q;\n    reg [1:0] stage39_Q;\n    reg [1:0] stage40_Q;\n    reg [1:0] stage41_Q;\n    reg [1:0] stage42_Q;\n    reg [1:0] stage43_Q;\n    reg [1:0] stage44_Q;\n    reg [1:0] stage45_Q;\n    reg [1:0] stage46_Q;\n    reg [1:0] stage47_Q;\n    reg [1:0] stage48_Q;\n    reg [1:0] stage49_Q;\n    reg [1:0] stage50_Q;\n    reg [1:0] stage51_Q;\n    reg [1:0] stage52_Q;\n    reg [1:0] stage53_Q;\n    reg [1:0] stage54_Q;\n    reg [1:0] stage55_Q;\n    reg [1:0] stage56_Q;\n    reg [1:0] stage57_Q;\n    reg [1:0] stage58_Q;\n    reg [1:0] stage59_Q;\n    reg [1:0] stage60_Q;\n    reg [1:0] stage61_Q;\n    reg [1:0] stage62_Q;\n    reg [1:0] stage63_Q;\n    reg [1:0] stage64_Q;\n    reg [1:0] stage65_Q;\n",
+      "raw_completion_raw_sha256": "5eadc83ad71317eed78b359967be54604056af2212c14259a5f44afba13bfade",
+      "rtl": "module TopModule(\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output reg Q\n);\n    reg [1:0] stage1_Q;\n    reg [1:0] stage2_Q;\n    wire stage1_E = E;\n    wire stage1_L = L;\n    wire stage2_E = stage1_E;\n    wire stage2_L = stage1_L;\n    reg [1:0] stage2_R;\n    reg [1:0] stage3_Q;\n    reg [1:0] stage4_Q;\n    reg [1:0] stage5_Q;\n    reg [1:0] stage6_Q;\n    reg [1:0] stage7_Q;\n    reg [1:0] stage8_Q;\n    reg [1:0] stage9_Q;\n    reg [1:0] stage10_Q;\n    reg [1:0] stage11_Q;\n    reg [1:0] stage12_Q;\n    reg [1:0] stage13_Q;\n    reg [1:0] stage14_Q;\n    reg [1:0] stage15_Q;\n    reg [1:0] stage16_Q;\n    reg [1:0] stage17_Q;\n    reg [1:0] stage18_Q;\n    reg [1:0] stage19_Q;\n    reg [1:0] stage20_Q;\n    reg [1:0] stage21_Q;\n    reg [1:0] stage22_Q;\n    reg [1:0] stage23_Q;\n    reg [1:0] stage24_Q;\n    reg [1:0] stage25_Q;\n    reg [1:0] stage26_Q;\n    reg [1:0] stage27_Q;\n    reg [1:0] stage28_Q;\n    reg [1:0] stage29_Q;\n    reg [1:0] stage30_Q;\n    reg [1:0] stage31_Q;\n    reg [1:0] stage32_Q;\n    reg [1:0] stage33_Q;\n    reg [1:0] stage34_Q;\n    reg [1:0] stage35_Q;\n    reg [1:0] stage36_Q;\n    reg [1:0] stage37_Q;\n    reg [1:0] stage38_Q;\n    reg [1:0] stage39_Q;\n    reg [1:0] stage40_Q;\n    reg [1:0] stage41_Q;\n    reg [1:0] stage42_Q;\n    reg [1:0] stage43_Q;\n    reg [1:0] stage44_Q;\n    reg [1:0] stage45_Q;\n    reg [1:0] stage46_Q;\n    reg [1:0] stage47_Q;\n    reg [1:0] stage48_Q;\n    reg [1:0] stage49_Q;\n    reg [1:0] stage50_Q;\n    reg [1:0] stage51_Q;\n    reg [1:0] stage52_Q;\n    reg [1:0] stage53_Q;\n    reg [1:0] stage54_Q;\n    reg [1:0] stage55_Q;\n    reg [1:0] stage56_Q;\n    reg [1:0] stage57_Q;\n    reg [1:0] stage58_Q;\n    reg [1:0] stage59_Q;\n    reg [1:0] stage60_Q;\n    reg [1:0] stage61_Q;\n    reg [1:0] stage62_Q;\n    reg [1:0] stage63_Q;\n    reg [1:0] stage64_Q;\n    reg [1:0] stage65_Q;",
+      "rtl_raw_sha256": "8552e78702cb0d25d46d6ab4088600a427c9de1107af337993bdd59f74a67b31",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob061_2014_q4a_ref.sv:2: syntax error",
+      "raw_completion": "// One stage of a shift register, with enable and load signals.\nmodule TopModule (\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output reg Q\n);\n    reg [1:0] stage1;\n    reg [1:0] stage2;\n    reg [1:0] stage3;\n    reg [1:0] stage4;\n    reg [1:0] stage5;\n    reg [1:0] stage6;\n    reg [1:0] stage7;\n    reg [1:0] stage8;\n    reg [1:0] stage9;\n    reg [1:0] stage10;\n    reg [1:0] stage11;\n    reg [1:0] stage12;\n    reg [1:0] stage13;\n    reg [1:0] stage14;\n    reg [1:0] stage15;\n    reg [1:0] stage16;\n    reg [1:0] stage17;\n    reg [1:0] stage18;\n    reg [1:0] stage19;\n    reg [1:0] stage20;\n    reg [1:0] stage21;\n    reg [1:0] stage22;\n    reg [1:0] stage23;\n    reg [1:0] stage24;\n    reg [1:0] stage25;\n    reg [1:0] stage26;\n    reg [1:0] stage27;\n    reg [1:0] stage28;\n    reg [1:0] stage29;\n    reg [1:0] stage30;\n    reg [1:0] stage31;\n    reg [1:0] stage32;\n    reg [1:0] stage33;\n    reg [1:0] stage34;\n    reg [1:0] stage35;\n    reg [1:0] stage36;\n    reg [1:0] stage37;\n    reg [1:0] stage38;\n    reg [1:0] stage39;\n    reg [1:0] stage40;\n    reg [1:0] stage41;\n    reg [1:0] stage42;\n    reg [1:0] stage43;\n    reg [1:0] stage44;\n    reg [1:0] stage45;\n    reg [1:0] stage46;\n    reg [1:0] stage47;\n    reg [1:0] stage48;\n    reg [1:0] stage49;\n    reg [1:0] stage50;\n    reg [1:0] stage51;\n    reg [1:0] stage52;\n    reg [1:0] stage53;\n    reg [1:0] stage54;\n    reg [1:0] stage55;\n    reg [1:0] stage56;\n    reg [1:0] stage57;\n    reg [1:0] stage58;\n    reg [1:0] stage59;\n    reg [1:0] stage60;\n    reg [1:0] stage61;\n    reg [1:0] stage62;\n    reg [1:0] stage63;\n    reg [1:0] stage64;\n    reg [1:0] stage65;\n    reg [1:0] stage66;\n    reg [1:0] stage67;\n    reg [1:0] stage68;\n    reg [1:0] stage69;\n    reg [1:0] stage70;\n    reg [1:0] stage71;\n    reg [1:0] stage72;\n    reg [1:0] stage73;\n    reg [1:0] stage74;\n    reg [1:0] stage75;\n    reg [1:0] stage76;\n    reg [1:0] stage77;\n    reg [1:0] stage78;\n    reg [1:0] stage79;\n    reg [1:0] stage80;\n    reg [1:0] stage81;\n    reg [",
+      "raw_completion_raw_sha256": "9713f70b254a533b3fb2f77ff3fc9bb7c47f44e91d7d21a7f1541de73e790881",
+      "rtl": "module TopModule (\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output reg Q\n);\n    reg [1:0] stage1;\n    reg [1:0] stage2;\n    reg [1:0] stage3;\n    reg [1:0] stage4;\n    reg [1:0] stage5;\n    reg [1:0] stage6;\n    reg [1:0] stage7;\n    reg [1:0] stage8;\n    reg [1:0] stage9;\n    reg [1:0] stage10;\n    reg [1:0] stage11;\n    reg [1:0] stage12;\n    reg [1:0] stage13;\n    reg [1:0] stage14;\n    reg [1:0] stage15;\n    reg [1:0] stage16;\n    reg [1:0] stage17;\n    reg [1:0] stage18;\n    reg [1:0] stage19;\n    reg [1:0] stage20;\n    reg [1:0] stage21;\n    reg [1:0] stage22;\n    reg [1:0] stage23;\n    reg [1:0] stage24;\n    reg [1:0] stage25;\n    reg [1:0] stage26;\n    reg [1:0] stage27;\n    reg [1:0] stage28;\n    reg [1:0] stage29;\n    reg [1:0] stage30;\n    reg [1:0] stage31;\n    reg [1:0] stage32;\n    reg [1:0] stage33;\n    reg [1:0] stage34;\n    reg [1:0] stage35;\n    reg [1:0] stage36;\n    reg [1:0] stage37;\n    reg [1:0] stage38;\n    reg [1:0] stage39;\n    reg [1:0] stage40;\n    reg [1:0] stage41;\n    reg [1:0] stage42;\n    reg [1:0] stage43;\n    reg [1:0] stage44;\n    reg [1:0] stage45;\n    reg [1:0] stage46;\n    reg [1:0] stage47;\n    reg [1:0] stage48;\n    reg [1:0] stage49;\n    reg [1:0] stage50;\n    reg [1:0] stage51;\n    reg [1:0] stage52;\n    reg [1:0] stage53;\n    reg [1:0] stage54;\n    reg [1:0] stage55;\n    reg [1:0] stage56;\n    reg [1:0] stage57;\n    reg [1:0] stage58;\n    reg [1:0] stage59;\n    reg [1:0] stage60;\n    reg [1:0] stage61;\n    reg [1:0] stage62;\n    reg [1:0] stage63;\n    reg [1:0] stage64;\n    reg [1:0] stage65;\n    reg [1:0] stage66;\n    reg [1:0] stage67;\n    reg [1:0] stage68;\n    reg [1:0] stage69;\n    reg [1:0] stage70;\n    reg [1:0] stage71;\n    reg [1:0] stage72;\n    reg [1:0] stage73;\n    reg [1:0] stage74;\n    reg [1:0] stage75;\n    reg [1:0] stage76;\n    reg [1:0] stage77;\n    reg [1:0] stage78;\n    reg [1:0] stage79;\n    reg [1:0] stage80;\n    reg [1:0] stage81;\n    reg [",
+      "rtl_raw_sha256": "aaae73eb8a0ac44dbdb594d268a6e9eeea5cde0cd8fae209bcd3e47e0a23203d",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "197/200 mismatches",
+      "raw_completion": "// One-stage stage of the shift register. Same as a register (no shift)\n// plus an AND gate feeding back into the register.\nmodule TopModule(input  clk,\n                 input  w,\n                 input  R,\n                 input  E,\n                 input  L,\n                 output Q);\n    reg [1:0] D;\n    wire Q_next;\n    reg [1:0] D_next;\n    assign Q_next = D[0];\n    always @(*) begin\n        D_next[0] = Q_next;\n        D_next[1] = D[0] & E;\n    end\n    always @(posedge clk) begin\n        if (L) D <= {1'b0, R};\n        else D <= D_next;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "67d393be03a29a8b5a31f95963265543ee94821fd679d2f989217d90f9be7b2c",
+      "rtl": "module TopModule(input  clk,\n                 input  w,\n                 input  R,\n                 input  E,\n                 input  L,\n                 output Q);\n    reg [1:0] D;\n    wire Q_next;\n    reg [1:0] D_next;\n    assign Q_next = D[0];\n    always @(*) begin\n        D_next[0] = Q_next;\n        D_next[1] = D[0] & E;\n    end\n    always @(posedge clk) begin\n        if (L) D <= {1'b0, R};\n        else D <= D_next;\n    end\nendmodule",
+      "rtl_raw_sha256": "c6ee9b6dc59247c91224e1a69a693d04304b17064fb580effd032b41dec0e945",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One stage in a larger n-bit shift register.\nmodule TopModule(\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output Q\n);\n    reg q;\n    always @(posedge clk) begin\n        if (L) q <= R;\n        else if (E) q <= w;\n    end\n    assign Q = q;\nendmodule",
+      "raw_completion_raw_sha256": "16d363573d4fb66f08bff023407ebc94955b9815de9a342d265facd21faa4a40",
+      "rtl": "module TopModule(\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output Q\n);\n    reg q;\n    always @(posedge clk) begin\n        if (L) q <= R;\n        else if (E) q <= w;\n    end\n    assign Q = q;\nendmodule",
+      "rtl_raw_sha256": "945f053e424112df4270117249015348807a6bf2b25fb2dc5a4df265c4650d00",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "52/200 mismatches",
+      "raw_completion": "// One stage in a larger n-bit shift register, with independent enable per\n// stage (the long-standing register + the GI register = TLR + GI = SR T1 + SR\n// T2, independently timed register chains). The register chain is a parameter\n// of the module, independent of the individual stage registers.\nmodule TopModule (\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output reg Q\n);\n    reg [1:0] sr_t1;\n    reg sr_t2;\n    always @(posedge clk) begin\n        if (L) begin\n            sr_t1 <= 2'b01;\n            sr_t2 <= 1'b0;\n            Q <= R;\n        end else if (E) begin\n            sr_t1 <= {sr_t1[0], w};\n            sr_t2 <= sr_t1[1];\n            Q <= sr_t2;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "e99babaa592821792f1551362a5f893277c510770f6f6e4cffac8e90c6a0c5fd",
+      "rtl": "module TopModule (\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output reg Q\n);\n    reg [1:0] sr_t1;\n    reg sr_t2;\n    always @(posedge clk) begin\n        if (L) begin\n            sr_t1 <= 2'b01;\n            sr_t2 <= 1'b0;\n            Q <= R;\n        end else if (E) begin\n            sr_t1 <= {sr_t1[0], w};\n            sr_t2 <= sr_t1[1];\n            Q <= sr_t2;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "22a0f0bd224ac3449b62e82d387a39b36899300381b4a0e55ef50a9081011171",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "72/200 mismatches",
+      "raw_completion": "// One-stage shift register stage.\nmodule TopModule (\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output reg Q\n);\n    reg [1:0] stage1_Q;\n    always @(posedge clk) begin\n        stage1_Q <= {w, Q};\n        if (L) stage1_Q <= {1'b0, R};\n        if (E) Q <= stage1_Q[0];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "c42f67e9973ba3869bfb919c843c1f1c158cb53abb67013d772eec5f4cfe0df0",
+      "rtl": "module TopModule (\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output reg Q\n);\n    reg [1:0] stage1_Q;\n    always @(posedge clk) begin\n        stage1_Q <= {w, Q};\n        if (L) stage1_Q <= {1'b0, R};\n        if (E) Q <= stage1_Q[0];\n    end\nendmodule",
+      "rtl_raw_sha256": "edefef70b6c3e5e8e0b5e7383f2b31d5004bf9faf589c719dff3589ca86f2ea2",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:18: error: w0 is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-stage shift register stage, with register, AND, and a chain of\n// three combinational logic stages (the critical path is roughly the\n// same as the register itself; pipeline the registers to go faster).\nmodule TopModule(\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output Q\n);\n    reg q0, q1, q2;\n    wire w0, w1, w2;\n    wire E0, E1, E2;\n    wire [1:0] G;\n    assign G = {E2, E1};\n    assign Q = q2;\n    // Stage 0: register + AND\n    always @(posedge clk) begin\n        q0 <= E ? R : w;\n        w0 <= q0 & L;\n    end\n    // Stage 1: register + AND\n    always @(posedge clk) begin\n        q1 <= E0 ? R : w0;\n        w1 <= q1 & L;\n    end\n    // Stage 2: register\n    always @(posedge clk) begin\n        q2 <= E1 ? R : w1;\n        w2 <= q2 & L;\n    end\n    // Gate choice combinational logic\n    always @(*) begin\n        E0 = G[0];\n        E1 = G[1] & w0;\n        E2 = G[1] & w1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "1f7d3eca4a03bb632bfa2454c2ca0ea739666cef19bb36634915267c81be5072",
+      "rtl": "module TopModule(\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output Q\n);\n    reg q0, q1, q2;\n    wire w0, w1, w2;\n    wire E0, E1, E2;\n    wire [1:0] G;\n    assign G = {E2, E1};\n    assign Q = q2;\n    // Stage 0: register + AND\n    always @(posedge clk) begin\n        q0 <= E ? R : w;\n        w0 <= q0 & L;\n    end\n    // Stage 1: register + AND\n    always @(posedge clk) begin\n        q1 <= E0 ? R : w0;\n        w1 <= q1 & L;\n    end\n    // Stage 2: register\n    always @(posedge clk) begin\n        q2 <= E1 ? R : w1;\n        w2 <= q2 & L;\n    end\n    // Gate choice combinational logic\n    always @(*) begin\n        E0 = G[0];\n        E1 = G[1] & w0;\n        E2 = G[1] & w1;\n    end\nendmodule",
+      "rtl_raw_sha256": "3740df00295d01c38684e77d9a3edbe4f5016bc924b16d6a6faf241dd3db3de5",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "108/200 mismatches",
+      "raw_completion": "// One-stage shift register stage.\nmodule TopModule(\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output reg Q\n);\n    reg [1:0] stage1_Q;\n    always @(posedge clk) begin\n        stage1_Q <= {w, R};\n        if (L) stage1_Q <= {1'b0, 1'b0};\n        if (E) Q <= stage1_Q[0];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "0d34fc3549cd05504a786278611aeda0a538efbcbc4b2ed52af458935ff0e47f",
+      "rtl": "module TopModule(\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output reg Q\n);\n    reg [1:0] stage1_Q;\n    always @(posedge clk) begin\n        stage1_Q <= {w, R};\n        if (L) stage1_Q <= {1'b0, 1'b0};\n        if (E) Q <= stage1_Q[0];\n    end\nendmodule",
+      "rtl_raw_sha256": "f1e0345f45961de0e922c5ca1458ed91ba0a936ecd4a26972315d46abe0725d0",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "90/200 mismatches",
+      "raw_completion": "// One-stage shift register, with register stage 0 explicitly named.\nmodule TopModule (\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output Q\n);\n    reg [0:0] stage0;\n    wire [0:0] next_stage0;\n    assign next_stage0 = E ? (L ? R : stage0[0]) : w;\n    always @(posedge clk) stage0 <= next_stage0;\n    assign Q = stage0;\nendmodule",
+      "raw_completion_raw_sha256": "717b0769f632c7ee886a69aa72448e66352cccde56df84b08b3700a0163acdd3",
+      "rtl": "module TopModule (\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output Q\n);\n    reg [0:0] stage0;\n    wire [0:0] next_stage0;\n    assign next_stage0 = E ? (L ? R : stage0[0]) : w;\n    always @(posedge clk) stage0 <= next_stage0;\n    assign Q = stage0;\nendmodule",
+      "rtl_raw_sha256": "668c3988dc3dc67378c3a8600976d40aab0104b7df0766ddd84f2c3844c27b01",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/simulation.out: Program not runnable, 1 errors.",
+      "raw_completion": "// One stage in a shift register, with the shift/load control separate (no\n// register-to-register delay).\nmodule TopModule(input  clk,\n                 input  w,\n                 input  R,\n                 input  E,\n                 input  L,\n                 output Q);\n    reg q;\n    always @(posedge clk) begin\n        if (E) q <= (L) ? R : $past(q, 1);\n        else   q <= (L) ? R : w;\n    end\n    assign Q = q;\nendmodule",
+      "raw_completion_raw_sha256": "4f1bba461597ed05f7043078302b2eb51b81d364b06a7756c1130b236358ead0",
+      "rtl": "module TopModule(input  clk,\n                 input  w,\n                 input  R,\n                 input  E,\n                 input  L,\n                 output Q);\n    reg q;\n    always @(posedge clk) begin\n        if (E) q <= (L) ? R : $past(q, 1);\n        else   q <= (L) ? R : w;\n    end\n    assign Q = q;\nendmodule",
+      "rtl_raw_sha256": "4f32fffd8311cb28bc64f61b687baae4f9525167555ad488c3436fa83e84dbc5",
+      "sample_index": 13,
+      "status": "simulator_error"
+    },
+    {
+      "detail": "86/200 mismatches",
+      "raw_completion": "// One-stage shift register stage.\nmodule TopModule (\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output reg Q\n);\n    reg [1:0] s;\n    always @(posedge clk) begin\n        if (L) s <= {1'b0, R};\n        else if (E) s <= {s[0], w};\n    end\n    assign Q = s[1];\nendmodule",
+      "raw_completion_raw_sha256": "bf5f6e10f9c0133c883c28d96c993304f4896aa3b816212bb1384e5899e73212",
+      "rtl": "module TopModule (\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output reg Q\n);\n    reg [1:0] s;\n    always @(posedge clk) begin\n        if (L) s <= {1'b0, R};\n        else if (E) s <= {s[0], w};\n    end\n    assign Q = s[1];\nendmodule",
+      "rtl_raw_sha256": "c7c4ca4f6b40332404b379617c67c04568b58023adc5ce4d8b8609f20bdee807",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "30/200 mismatches",
+      "raw_completion": "// One-stage shift register stage.\nmodule TopModule (\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output reg Q\n);\n    reg [1:0] stage1_Q;\n    always @(posedge clk) begin\n        stage1_Q[0] <= w;\n        stage1_Q[1] <= stage1_Q[0];\n        if (L) Q <= R;\n        else if (E) Q <= stage1_Q[1];\n    end\nendmodule",
+      "raw_completion_raw_sha256": "ac5096a8e1a4fda2e9db429f559d1ae5e572b78f44442fd3942968607991c994",
+      "rtl": "module TopModule (\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output reg Q\n);\n    reg [1:0] stage1_Q;\n    always @(posedge clk) begin\n        stage1_Q[0] <= w;\n        stage1_Q[1] <= stage1_Q[0];\n        if (L) Q <= R;\n        else if (E) Q <= stage1_Q[1];\n    end\nendmodule",
+      "rtl_raw_sha256": "e9ed87347834acb30914b31d26959f2647b8cc2640a383366729299714857429",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob061_2014_q4a_ref.sv:2: syntax error",
+      "raw_completion": "// One stage of a shift register, with separate registers for the shift and the\n// combinational logic (the register stage is explicitly named to allow it to be\n// replaced with a FF when the register stage pipeline is disabled).\nmodule TopModule(input  clk,\n                 input  w,\n                 input  R,\n                 input  E,\n                 input  L,\n                 output reg Q);\n    reg [1:0] stage0_Q;\n    reg [1:0] stage1_Q;\n    reg [1:0] stage2_Q;\n    reg [1:0] stage3_Q;\n    reg [1:0] stage4_Q;\n    reg [1:0] stage5_Q;\n    reg [1:0] stage6_Q;\n    reg [1:0] stage7_Q;\n    reg [1:0] stage8_Q;\n    reg [1:0] stage9_Q;\n    reg [1:0] stage10_Q;\n    reg [1:0] stage11_Q;\n    reg [1:0] stage12_Q;\n    reg [1:0] stage13_Q;\n    reg [1:0] stage14_Q;\n    reg [1:0] stage15_Q;\n    reg [1:0] stage16_Q;\n    reg [1:0] stage17_Q;\n    reg [1:0] stage18_Q;\n    reg [1:0] stage19_Q;\n    reg [1:0] stage20_Q;\n    reg [1:0] stage21_Q;\n    reg [1:0] stage22_Q;\n    reg [1:0] stage23_Q;\n    reg [1:0] stage24_Q;\n    reg [1:0] stage25_Q;\n    reg [1:0] stage26_Q;\n    reg [1:0] stage27_Q;\n    reg [1:0] stage28_Q;\n    reg [1:0] stage29_Q;\n    reg [1:0] stage30_Q;\n    reg [1:0] stage31_Q;\n    reg [1:0] stage32_Q;\n    reg [1:0] stage33_Q;\n    reg [1:0] stage34_Q;\n    reg [1:0] stage35_Q;\n    reg [1:0] stage36_Q;\n    reg [1:0] stage37_Q;\n    reg [1:0] stage38_Q;\n    reg [1:0] stage39_Q;\n    reg [1:0] stage40_Q;\n    reg [1:0] stage41_Q;\n    reg [1:0] stage42_Q;\n    reg [1:0] stage43_Q;\n    reg [1:0] stage44_Q;\n    reg [1:0] stage45_Q;\n    reg [1:0] stage46_Q;\n    reg [1:0] stage47_Q;\n    reg [1:0] stage48_Q;\n    reg [1:0] stage49_Q;\n    reg [1:0] stage50_Q;\n    reg [1:0] stage51_Q;\n    reg [1:0] stage52_Q;\n    reg [1:0] stage53_Q;\n    reg [1:0] stage54_Q;\n    reg [1:0] stage55_Q;\n    reg [1:0] stage56_Q;\n    reg [1:0] stage57_Q;\n    reg [1:0] stage58_Q;\n    reg [1:0] stage59_Q;\n    reg [1:0] stage60_Q;\n    reg [1:0] stage61_Q;\n    reg [1:0] stage62_Q;\n    reg [1:0] stage63_Q;\n    reg [1:0] stage64_Q;\n    reg [1:0] stage65_Q;\n    reg [1:0] stage66_Q;\n    reg [1:0]",
+      "raw_completion_raw_sha256": "24f9b1ef83992a9bbb16484066e6f6e936d9babe1be16f048a5299a0c4de11dd",
+      "rtl": "module TopModule(input  clk,\n                 input  w,\n                 input  R,\n                 input  E,\n                 input  L,\n                 output reg Q);\n    reg [1:0] stage0_Q;\n    reg [1:0] stage1_Q;\n    reg [1:0] stage2_Q;\n    reg [1:0] stage3_Q;\n    reg [1:0] stage4_Q;\n    reg [1:0] stage5_Q;\n    reg [1:0] stage6_Q;\n    reg [1:0] stage7_Q;\n    reg [1:0] stage8_Q;\n    reg [1:0] stage9_Q;\n    reg [1:0] stage10_Q;\n    reg [1:0] stage11_Q;\n    reg [1:0] stage12_Q;\n    reg [1:0] stage13_Q;\n    reg [1:0] stage14_Q;\n    reg [1:0] stage15_Q;\n    reg [1:0] stage16_Q;\n    reg [1:0] stage17_Q;\n    reg [1:0] stage18_Q;\n    reg [1:0] stage19_Q;\n    reg [1:0] stage20_Q;\n    reg [1:0] stage21_Q;\n    reg [1:0] stage22_Q;\n    reg [1:0] stage23_Q;\n    reg [1:0] stage24_Q;\n    reg [1:0] stage25_Q;\n    reg [1:0] stage26_Q;\n    reg [1:0] stage27_Q;\n    reg [1:0] stage28_Q;\n    reg [1:0] stage29_Q;\n    reg [1:0] stage30_Q;\n    reg [1:0] stage31_Q;\n    reg [1:0] stage32_Q;\n    reg [1:0] stage33_Q;\n    reg [1:0] stage34_Q;\n    reg [1:0] stage35_Q;\n    reg [1:0] stage36_Q;\n    reg [1:0] stage37_Q;\n    reg [1:0] stage38_Q;\n    reg [1:0] stage39_Q;\n    reg [1:0] stage40_Q;\n    reg [1:0] stage41_Q;\n    reg [1:0] stage42_Q;\n    reg [1:0] stage43_Q;\n    reg [1:0] stage44_Q;\n    reg [1:0] stage45_Q;\n    reg [1:0] stage46_Q;\n    reg [1:0] stage47_Q;\n    reg [1:0] stage48_Q;\n    reg [1:0] stage49_Q;\n    reg [1:0] stage50_Q;\n    reg [1:0] stage51_Q;\n    reg [1:0] stage52_Q;\n    reg [1:0] stage53_Q;\n    reg [1:0] stage54_Q;\n    reg [1:0] stage55_Q;\n    reg [1:0] stage56_Q;\n    reg [1:0] stage57_Q;\n    reg [1:0] stage58_Q;\n    reg [1:0] stage59_Q;\n    reg [1:0] stage60_Q;\n    reg [1:0] stage61_Q;\n    reg [1:0] stage62_Q;\n    reg [1:0] stage63_Q;\n    reg [1:0] stage64_Q;\n    reg [1:0] stage65_Q;\n    reg [1:0] stage66_Q;\n    reg [1:0]",
+      "rtl_raw_sha256": "43f204423036f64aa07b010721bcd36b556513ed9a4c306e7710cdd22e695213",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-stage FF shift register, with input enable.\nmodule TopModule(input  clk,\n                 input  w,\n                 input  R,\n                 input  E,\n                 input  L,\n                 output reg Q);\n    always @(posedge clk) begin\n        if (L) Q <= R;\n        else if (E) Q <= w;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "3a0034a53e589bd24edb7b40f120fc86b6dcb489390caa3b13671ad68ae288c6",
+      "rtl": "module TopModule(input  clk,\n                 input  w,\n                 input  R,\n                 input  E,\n                 input  L,\n                 output reg Q);\n    always @(posedge clk) begin\n        if (L) Q <= R;\n        else if (E) Q <= w;\n    end\nendmodule",
+      "rtl_raw_sha256": "3469971790cfd2eb680581622cdc60dc69861f57e0c21312df3c2585343f0348",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob061_2014_q4a_ref.sv:2: syntax error",
+      "raw_completion": "// One-stage shift register stage, with register (Q explicitly named) and\n// combinational logic (the latching stage) interleaved. Same function as the\n// reference up to a global delay, allowing for shorter, pipelined\n// register-stage-register chain (the long path -> lower Fmax; pipeline the\n// registers to go faster).\nmodule TopModule(\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output reg Q\n);\n    reg q0;\n    wire q1;\n    reg q2;\n    reg q3;\n    reg q4;\n    reg q5;\n    reg q6;\n    reg q7;\n    reg q8;\n    reg q9;\n    reg q10;\n    reg q11;\n    reg q12;\n    reg q13;\n    reg q14;\n    reg q15;\n    reg q16;\n    reg q17;\n    reg q18;\n    reg q19;\n    reg q20;\n    reg q21;\n    reg q22;\n    reg q23;\n    reg q24;\n    reg q25;\n    reg q26;\n    reg q27;\n    reg q28;\n    reg q29;\n    reg q30;\n    reg q31;\n    reg q32;\n    reg q33;\n    reg q34;\n    reg q35;\n    reg q36;\n    reg q37;\n    reg q38;\n    reg q39;\n    reg q40;\n    reg q41;\n    reg q42;\n    reg q43;\n    reg q44;\n    reg q45;\n    reg q46;\n    reg q47;\n    reg q48;\n    reg q49;\n    reg q50;\n    reg q51;\n    reg q52;\n    reg q53;\n    reg q54;\n    reg q55;\n    reg q56;\n    reg q57;\n    reg q58;\n    reg q59;\n    reg q60;\n    reg q61;\n    reg q62;\n    reg q63;\n    wire latch_Q;\n    always @(posedge clk) begin\n        q0 <= (E) ? ((L) ? R : q1) : Q;\n        q1 <= (E) ? ((L) ? R : q2) : q0;\n        q2 <= (E) ? ((L) ? R : q3) : q1;\n        q3 <= (E) ? ((L) ? R : q4) : q2;\n        q4 <= (E) ? ((L) ? R : q5) : q3;\n        q5 <= (E) ? ((L) ? R : q6) : q4;\n        q6 <= (E) ? ((L) ? R : q7) : q5;\n        q7 <= (E) ? ((L) ? R : q8) : q6;\n        q8 <= (E) ? ((L) ? R : q9) : q7;\n        q9 <= (E) ? ((L) ? R : q10) : q8;\n        q10 <= (E) ? ((L) ? R : q11) : q9;\n        q11 <= (E) ? ((L) ? R : q12) : q10;\n        q12 <= (E) ? ((L) ? R : q13) : q11;\n        q13 <= (E) ? ((L) ? R : q14) : q12;\n        q14 <= (E) ? ((L) ? R : q15) : q13;\n        q15 <= (E) ? ((L) ? R : q16) : q14;\n        q16 <= (E) ? ((L) ? R : q17) : q15;\n        q17 <= (E) ? ((L) ? R : q18) : q16;\n        q18 <= (E) ? ((L) ? R : q19) : q17;\n",
+      "raw_completion_raw_sha256": "5cc92b3000b70cbc9c6e23bb840203c8c5321b2801c9dc9b18cee9319bdf1ec0",
+      "rtl": "module TopModule(\n    input  clk,\n    input  w,\n    input  R,\n    input  E,\n    input  L,\n    output reg Q\n);\n    reg q0;\n    wire q1;\n    reg q2;\n    reg q3;\n    reg q4;\n    reg q5;\n    reg q6;\n    reg q7;\n    reg q8;\n    reg q9;\n    reg q10;\n    reg q11;\n    reg q12;\n    reg q13;\n    reg q14;\n    reg q15;\n    reg q16;\n    reg q17;\n    reg q18;\n    reg q19;\n    reg q20;\n    reg q21;\n    reg q22;\n    reg q23;\n    reg q24;\n    reg q25;\n    reg q26;\n    reg q27;\n    reg q28;\n    reg q29;\n    reg q30;\n    reg q31;\n    reg q32;\n    reg q33;\n    reg q34;\n    reg q35;\n    reg q36;\n    reg q37;\n    reg q38;\n    reg q39;\n    reg q40;\n    reg q41;\n    reg q42;\n    reg q43;\n    reg q44;\n    reg q45;\n    reg q46;\n    reg q47;\n    reg q48;\n    reg q49;\n    reg q50;\n    reg q51;\n    reg q52;\n    reg q53;\n    reg q54;\n    reg q55;\n    reg q56;\n    reg q57;\n    reg q58;\n    reg q59;\n    reg q60;\n    reg q61;\n    reg q62;\n    reg q63;\n    wire latch_Q;\n    always @(posedge clk) begin\n        q0 <= (E) ? ((L) ? R : q1) : Q;\n        q1 <= (E) ? ((L) ? R : q2) : q0;\n        q2 <= (E) ? ((L) ? R : q3) : q1;\n        q3 <= (E) ? ((L) ? R : q4) : q2;\n        q4 <= (E) ? ((L) ? R : q5) : q3;\n        q5 <= (E) ? ((L) ? R : q6) : q4;\n        q6 <= (E) ? ((L) ? R : q7) : q5;\n        q7 <= (E) ? ((L) ? R : q8) : q6;\n        q8 <= (E) ? ((L) ? R : q9) : q7;\n        q9 <= (E) ? ((L) ? R : q10) : q8;\n        q10 <= (E) ? ((L) ? R : q11) : q9;\n        q11 <= (E) ? ((L) ? R : q12) : q10;\n        q12 <= (E) ? ((L) ? R : q13) : q11;\n        q13 <= (E) ? ((L) ? R : q14) : q12;\n        q14 <= (E) ? ((L) ? R : q15) : q13;\n        q15 <= (E) ? ((L) ? R : q16) : q14;\n        q16 <= (E) ? ((L) ? R : q17) : q15;\n        q17 <= (E) ? ((L) ? R : q18) : q16;\n        q18 <= (E) ? ((L) ? R : q19) : q17;",
+      "rtl_raw_sha256": "c93fb3473cb41c2a44ab8c4ad186a77046c0ade58291541ddc87cfd23eb4af85",
+      "sample_index": 18,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "66/200 mismatches",
+      "raw_completion": "// One-stage shift register stage. Same function as a register (no shift)\n// plus an ANDed input, promoted to a combinational stage.\nmodule TopModule(input  clk,\n                 input  w,\n                 input  R,\n                 input  E,\n                 input  L,\n                 output Q);\n    reg [1:0] pipe [0:1];\n    always @(posedge clk) begin\n        if (L) pipe[0] <= R;\n        else if (E) pipe[0] <= w;\n        pipe[1] <= pipe[0] & w;\n    end\n    assign Q = pipe[1];\nendmodule",
+      "raw_completion_raw_sha256": "4d3a26f2b65b0faf9a33fca3639dba03e87dbef1afd0ca81ae125e65bab363a6",
+      "rtl": "module TopModule(input  clk,\n                 input  w,\n                 input  R,\n                 input  E,\n                 input  L,\n                 output Q);\n    reg [1:0] pipe [0:1];\n    always @(posedge clk) begin\n        if (L) pipe[0] <= R;\n        else if (E) pipe[0] <= w;\n        pipe[1] <= pipe[0] & w;\n    end\n    assign Q = pipe[1];\nendmodule",
+      "rtl_raw_sha256": "f20207bd509ec6ecac21467882d98eb1d4b8c555d292a396e20cc5d67e51d160",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 4,
+    "compile_fail": 5,
+    "fail": 10,
+    "simulator_error": 1
+  },
+  "testbench_raw_sha256": "bd5b959d19634cf0187be70cd6a6d7d3ac5afec41133c7ed5dd97eb66ce8400b",
+  "training_seed": 0
+}

@@ -1,0 +1,197 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob085_shift4",
+  "problem_seed": 3225353913865736177,
+  "prompt_raw_sha256": "3a52419d4e26618db46f28eac7b6a9d72a42aa7d7bb74c390ad0dfa86a0301af",
+  "reference_raw_sha256": "35074d1c6ac73241a4acdcc48712e78e83f571f4016949c7de33c0f6ed3c4564",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "73/427 mismatches",
+      "raw_completion": "// 4-bit right-shift register, async areset, sync load/ena.\nmodule TopModule(input clk, input areset, input load, input ena, input [3:0] data, output reg [3:0] q);\n    always @(posedge clk) begin\n        if (areset) q <= 4'd0;\n        else if (load) q <= data;\n        else if (ena) q <= {q[2:0], 1'b0};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "14e560ee58f1d4d75e5d842db326dfca3a8856ef3f562172d7be84357af1e4fa",
+      "rtl": "module TopModule(input clk, input areset, input load, input ena, input [3:0] data, output reg [3:0] q);\n    always @(posedge clk) begin\n        if (areset) q <= 4'd0;\n        else if (load) q <= data;\n        else if (ena) q <= {q[2:0], 1'b0};\n    end\nendmodule",
+      "rtl_raw_sha256": "28362d73d9d7e888e287e5ffaa0e0a77e5fdcad85f98e0233e4411f07c8ef24f",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "73/427 mismatches",
+      "raw_completion": "// 4-bit right-shift register, async reset, load, enable.\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  load,\n    input  ena,\n    input  [3:0] data,\n    output [3:0] q\n);\n    reg [3:0] r;\n    always @(posedge clk) begin\n        if (areset) r <= 4'd0;\n        else if (load) r <= data;\n        else if (ena) r <= {r[2:0], 1'b0};\n    end\n    assign q = r;\nendmodule",
+      "raw_completion_raw_sha256": "93aeb658d575e83fdc43763116482c61ae61cef50398abbb153f18c0ef97f86d",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  load,\n    input  ena,\n    input  [3:0] data,\n    output [3:0] q\n);\n    reg [3:0] r;\n    always @(posedge clk) begin\n        if (areset) r <= 4'd0;\n        else if (load) r <= data;\n        else if (ena) r <= {r[2:0], 1'b0};\n    end\n    assign q = r;\nendmodule",
+      "rtl_raw_sha256": "a76dda6c3dd2a4dc2c2e296dba47f3598fe8a4a7b7b414a53df9160c7aa91400",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "73/427 mismatches",
+      "raw_completion": "// 4-bit shift register, positive-edge triggered register access,\n// asynchronous active-high reset, and independent load/enable.\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  load,\n    input  ena,\n    input  [3:0] data,\n    output [3:0] q\n);\n    reg [3:0] r;\n    always @(posedge clk) begin\n        if (areset) r <= 4'd0;\n        else if (load) r <= data;\n        else if (ena) r <= {r[2:0], 1'b0};\n    end\n    assign q = r;\nendmodule",
+      "raw_completion_raw_sha256": "c9eb6a77e267a3050b5bfbaa7b151e6e9543b68d12fa2ef7bf1e0f10e39240cd",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  load,\n    input  ena,\n    input  [3:0] data,\n    output [3:0] q\n);\n    reg [3:0] r;\n    always @(posedge clk) begin\n        if (areset) r <= 4'd0;\n        else if (load) r <= data;\n        else if (ena) r <= {r[2:0], 1'b0};\n    end\n    assign q = r;\nendmodule",
+      "rtl_raw_sha256": "a76dda6c3dd2a4dc2c2e296dba47f3598fe8a4a7b7b414a53df9160c7aa91400",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "75/427 mismatches",
+      "raw_completion": "// 4-bit shift register, positive edge triggered register reset (areset),\n// synchronous load (load) and enable (ena). Functionally identical to the\n// latched register plus a register delay (register stage), Fmax ~ 1.45 GHz\n// (no multiplexers, no ANDs, ..., the long path -> long pipeline -> low\n// Fmax). Same function as the latch+delay (register) + the combinational\n// path (register + register inline, the long path -> long pipeline -> low\n// Fmax).\nmodule TopModule(input clk, input areset, input load, input ena, input [3:0] data, output reg [3:0] q);\n    reg [3:0] r0, r1, r2, r3;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 4'b0; r1 <= 4'b0; r2 <= 4'b0; r3 <= 4'b0;\n        end else begin\n            r0 <= (load) ? data[3:0] : ((ena) ? r1 : r0);\n            r1 <= (load) ? data[3:0] : ((ena) ? r2 : r1);\n            r2 <= (load) ? data[3:0] : ((ena) ? r3 : r2);\n            r3 <= (load) ? data[3:0] : ((ena) ? 1'b0 : r3);\n        end\n    end\n    always @(*) q <= r0;\nendmodule",
+      "raw_completion_raw_sha256": "5709caa2c189e1501121a9596c40c3d1e30f699422ccb441208cc2f82dc6a75d",
+      "rtl": "module TopModule(input clk, input areset, input load, input ena, input [3:0] data, output reg [3:0] q);\n    reg [3:0] r0, r1, r2, r3;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 4'b0; r1 <= 4'b0; r2 <= 4'b0; r3 <= 4'b0;\n        end else begin\n            r0 <= (load) ? data[3:0] : ((ena) ? r1 : r0);\n            r1 <= (load) ? data[3:0] : ((ena) ? r2 : r1);\n            r2 <= (load) ? data[3:0] : ((ena) ? r3 : r2);\n            r3 <= (load) ? data[3:0] : ((ena) ? 1'b0 : r3);\n        end\n    end\n    always @(*) q <= r0;\nendmodule",
+      "rtl_raw_sha256": "a5b98e56e2405fa3ea53fc4133a80fc6d119c605207c0a263b5993ac6e2517a8",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "73/427 mismatches",
+      "raw_completion": "// 4-bit right-shift register, async. areset, sync. load/ena.\nmodule TopModule (\n    input  clk,\n    input  areset,\n    input  load,\n    input  ena,\n    input  [3:0] data,\n    output reg [3:0] q\n);\n    reg [3:0] r;\n    always @(posedge clk) begin\n        if (areset) r <= 4'b0;\n        else if (load) r <= data;\n        else if (ena) r <= {r[2:0], 1'b0};\n    end\n    assign q = r;\nendmodule",
+      "raw_completion_raw_sha256": "2bd701fc457135eaf4840af558e94c61622341ec43dd0c147c9a18554e26d3b9",
+      "rtl": "module TopModule (\n    input  clk,\n    input  areset,\n    input  load,\n    input  ena,\n    input  [3:0] data,\n    output reg [3:0] q\n);\n    reg [3:0] r;\n    always @(posedge clk) begin\n        if (areset) r <= 4'b0;\n        else if (load) r <= data;\n        else if (ena) r <= {r[2:0], 1'b0};\n    end\n    assign q = r;\nendmodule",
+      "rtl_raw_sha256": "5c1031cf79a5a3878eb442ca6eaacf4b805913488a1ecf2233f4cae494fe478c",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "87/427 mismatches",
+      "raw_completion": "// 4-bit right-shift register, async areset, load, enable. Same as the\n// register itself (register-to-register FF chain, the long way).\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  load,\n    input  ena,\n    input  [3:0] data,\n    output reg [3:0] q\n);\n    reg [3:0] r0, r1, r2, r3;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 4'd0; r1 <= 4'd0; r2 <= 4'd0; r3 <= 4'd0;\n        end else begin\n            if (load) begin\n                r0 <= data; r1 <= r0; r2 <= r1; r3 <= r2;\n            end else if (ena) begin\n                r0 <= r1; r1 <= r2; r2 <= r3; r3 <= 4'd0;\n            end\n        end\n    end\n    assign q = load ? data : (ena ? r0 : q);\nendmodule",
+      "raw_completion_raw_sha256": "7a235ba52e4edacb39845d91b1a7d5e33bbce69713c73b1f1f10710b4717c530",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  load,\n    input  ena,\n    input  [3:0] data,\n    output reg [3:0] q\n);\n    reg [3:0] r0, r1, r2, r3;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 4'd0; r1 <= 4'd0; r2 <= 4'd0; r3 <= 4'd0;\n        end else begin\n            if (load) begin\n                r0 <= data; r1 <= r0; r2 <= r1; r3 <= r2;\n            end else if (ena) begin\n                r0 <= r1; r1 <= r2; r2 <= r3; r3 <= 4'd0;\n            end\n        end\n    end\n    assign q = load ? data : (ena ? r0 : q);\nendmodule",
+      "rtl_raw_sha256": "a15a7719af2b65fe011eaa454e7c37a7250fc3be865673d02faae4b01d2c661c",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "73/427 mismatches",
+      "raw_completion": "// 4-bit right-shift register, areset, load, enable.\nmodule TopModule (\n    input  clk,\n    input  areset,\n    input  load,\n    input  ena,\n    input  [3:0] data,\n    output [3:0] q\n);\n    reg [3:0] reg0;\n    always @(posedge clk) begin\n        if (areset) reg0 <= 4'b0;\n        else if (load) reg0 <= data;\n        else if (ena) reg0 <= {reg0[2:0], 1'b0};\n    end\n    assign q = reg0;\nendmodule",
+      "raw_completion_raw_sha256": "63d5f8f6405ebf51762d7a11296012b9eb9de8c7c2b81ddf1f4ead8b31989fc5",
+      "rtl": "module TopModule (\n    input  clk,\n    input  areset,\n    input  load,\n    input  ena,\n    input  [3:0] data,\n    output [3:0] q\n);\n    reg [3:0] reg0;\n    always @(posedge clk) begin\n        if (areset) reg0 <= 4'b0;\n        else if (load) reg0 <= data;\n        else if (ena) reg0 <= {reg0[2:0], 1'b0};\n    end\n    assign q = reg0;\nendmodule",
+      "rtl_raw_sha256": "ab7175f26765c621b509c310bb566b6ddc937c702d934c0e778225594a2ad3b2",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "75/427 mismatches",
+      "raw_completion": "// 4-bit shift register, positive-edge-triggered register-to-register\n// chain (the long path -> lower Fmax; register stage per register ->\n// lower long-path-related Fmax).\nmodule TopModule(input clk, input areset, input load, input ena, input [3:0] data, output reg [3:0] q);\n    reg [3:0] r0, r1, r2, r3;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 4'd0; r1 <= 4'd0; r2 <= 4'd0; r3 <= 4'd0;\n        end else if (load) begin\n            r0 <= data; r1 <= r0; r2 <= r1; r3 <= r2;\n        end else if (ena) begin\n            r0 <= r1; r1 <= r2; r2 <= r3; r3 <= 4'd0;\n        end\n        q <= (load && ena) ? data : r0;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "6f23deb19a4bd71a1943135edd32ae889a80aef276fe8fb106324c9ec4c9778b",
+      "rtl": "module TopModule(input clk, input areset, input load, input ena, input [3:0] data, output reg [3:0] q);\n    reg [3:0] r0, r1, r2, r3;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 4'd0; r1 <= 4'd0; r2 <= 4'd0; r3 <= 4'd0;\n        end else if (load) begin\n            r0 <= data; r1 <= r0; r2 <= r1; r3 <= r2;\n        end else if (ena) begin\n            r0 <= r1; r1 <= r2; r2 <= r3; r3 <= 4'd0;\n        end\n        q <= (load && ena) ? data : r0;\n    end\nendmodule",
+      "rtl_raw_sha256": "83747a3b87795d92d12a4aca953efb8897574dd4251a3553b9ffbac5d25a5e44",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "108/427 mismatches",
+      "raw_completion": "// 4-bit right-shift register, areset, load, enable. Same as the\n// register+register+register+register FAMILY (product of independent\n// registers, in parallel, with independent register-to-register\n// connections).\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  load,\n    input  ena,\n    input  [3:0] data,\n    output reg [3:0] q\n);\n    reg [3:0] r0, r1, r2, r3;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 4'd0; r1 <= 4'd0; r2 <= 4'd0; r3 <= 4'd0;\n        end else if (load) begin\n            r0 <= data; r1 <= r0; r2 <= r1; r3 <= r2;\n        end else if (ena) begin\n            r0 <= r1; r1 <= r2; r2 <= r3; r3 <= 1'b0;\n        end\n    end\n    assign q = load ? data : (ena ? r3 : r2);\nendmodule",
+      "raw_completion_raw_sha256": "62acb2075bc02caa3013295440020695d0fc2661e7671e171d76ff5fb1910094",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  load,\n    input  ena,\n    input  [3:0] data,\n    output reg [3:0] q\n);\n    reg [3:0] r0, r1, r2, r3;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 4'd0; r1 <= 4'd0; r2 <= 4'd0; r3 <= 4'd0;\n        end else if (load) begin\n            r0 <= data; r1 <= r0; r2 <= r1; r3 <= r2;\n        end else if (ena) begin\n            r0 <= r1; r1 <= r2; r2 <= r3; r3 <= 1'b0;\n        end\n    end\n    assign q = load ? data : (ena ? r3 : r2);\nendmodule",
+      "rtl_raw_sha256": "9e8d1b4862bede638d7d669cfb0a6b8da9210c5877634a08f7df484f4f6960df",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "73/427 mismatches",
+      "raw_completion": "// 4-bit shift register, positive-edge triggered register, async areset,\n// sync load, enable: right shift, register feeds itself.\nmodule TopModule(input clk, input areset, input load, input ena, input [3:0] data, output reg [3:0] q);\n    reg [3:0] next_q;\n    always @(posedge clk) begin\n        if (areset) next_q <= 4'd0;\n        else if (load) next_q <= data;\n        else if (ena) next_q <= {q[2:0], 1'b0};\n    end\n    always @(*) q = next_q;\nendmodule",
+      "raw_completion_raw_sha256": "793b7667f6e97afdeba9bd85496d748d6d58481a1444bfa99e28c0edc2cf2964",
+      "rtl": "module TopModule(input clk, input areset, input load, input ena, input [3:0] data, output reg [3:0] q);\n    reg [3:0] next_q;\n    always @(posedge clk) begin\n        if (areset) next_q <= 4'd0;\n        else if (load) next_q <= data;\n        else if (ena) next_q <= {q[2:0], 1'b0};\n    end\n    always @(*) q = next_q;\nendmodule",
+      "rtl_raw_sha256": "a537e5653cdc1d6b453f50b37263f7dc7b8514e7a10b944625e2925e6dded7bb",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "73/427 mismatches",
+      "raw_completion": "// 4-bit right-shift register, async areset, sync load/ena.\nmodule TopModule(input clk, input areset, input load, input ena, input [3:0] data, output reg [3:0] q);\n    always @(posedge clk) begin\n        if (areset) q <= 4'd0;\n        else if (load) q <= data;\n        else if (ena) q <= {q[2:0], 1'b0};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "14e560ee58f1d4d75e5d842db326dfca3a8856ef3f562172d7be84357af1e4fa",
+      "rtl": "module TopModule(input clk, input areset, input load, input ena, input [3:0] data, output reg [3:0] q);\n    always @(posedge clk) begin\n        if (areset) q <= 4'd0;\n        else if (load) q <= data;\n        else if (ena) q <= {q[2:0], 1'b0};\n    end\nendmodule",
+      "rtl_raw_sha256": "28362d73d9d7e888e287e5ffaa0e0a77e5fdcad85f98e0233e4411f07c8ef24f",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "99/427 mismatches",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  areset,\n    input  load,\n    input  ena,\n    input  [3:0] data,\n    output reg [3:0] q\n);\n    reg [3:0] r;\n    always @(posedge clk) begin\n        if (areset) r <= 4'd0;\n        else if (load) r <= data;\n        else if (ena) r <= {r[2:0], 1'b0};\n    end\n    assign q = load ? data : r;\nendmodule",
+      "raw_completion_raw_sha256": "9f23db2b4be85ddb38e3b1147fca7df0dbc35c01cdb2a7e7360630843c18dacf",
+      "rtl": "module TopModule (\n    input  clk,\n    input  areset,\n    input  load,\n    input  ena,\n    input  [3:0] data,\n    output reg [3:0] q\n);\n    reg [3:0] r;\n    always @(posedge clk) begin\n        if (areset) r <= 4'd0;\n        else if (load) r <= data;\n        else if (ena) r <= {r[2:0], 1'b0};\n    end\n    assign q = load ? data : r;\nendmodule",
+      "rtl_raw_sha256": "9f23db2b4be85ddb38e3b1147fca7df0dbc35c01cdb2a7e7360630843c18dacf",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "73/427 mismatches",
+      "raw_completion": "// 4-bit right-shift register with areset, load, ena\nmodule TopModule(input clk, input areset, input load, input ena, input [3:0] data, output reg [3:0] q);\n    always @(posedge clk) begin\n        if (areset) q <= 4'b0;\n        else if (load) q <= data;\n        else if (ena) q <= {q[2:0], 1'b0};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "048cc0b1f3eb1a8a170977e2b148692491ff3cf996d0d7f46096bb175717b51a",
+      "rtl": "module TopModule(input clk, input areset, input load, input ena, input [3:0] data, output reg [3:0] q);\n    always @(posedge clk) begin\n        if (areset) q <= 4'b0;\n        else if (load) q <= data;\n        else if (ena) q <= {q[2:0], 1'b0};\n    end\nendmodule",
+      "rtl_raw_sha256": "d3a3e40879931fcfcc677b012eb608e2f1c996860181a7d5b3e928f606d9b6cb",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "73/427 mismatches",
+      "raw_completion": "// 4-bit right-shift register, areset, load, ena.\nmodule TopModule(input  clk, input  areset, input  load, input  ena, input [3:0] data, output [3:0] q);\n  reg [3:0] r;\n  always @(posedge clk) begin\n    if (areset) r <= 4'b0;\n    else if (load) r <= data;\n    else if (ena) r <= {r[2:0], 1'b0};\n  end\n  assign q = r;\nendmodule",
+      "raw_completion_raw_sha256": "f020198ef62baa9871793e16cf774e8b6215adba503315bf1356be329eedecbd",
+      "rtl": "module TopModule(input  clk, input  areset, input  load, input  ena, input [3:0] data, output [3:0] q);\n  reg [3:0] r;\n  always @(posedge clk) begin\n    if (areset) r <= 4'b0;\n    else if (load) r <= data;\n    else if (ena) r <= {r[2:0], 1'b0};\n  end\n  assign q = r;\nendmodule",
+      "rtl_raw_sha256": "6336a16b5ea7afaef2e82f8eb51afb350b796fdf9e2399ba26867872c7e24d29",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "73/427 mismatches",
+      "raw_completion": "// 4-bit right-shift register, areset, load, enable.\nmodule TopModule(input clk, input areset, input load, input ena, input [3:0] data, output reg [3:0] q);\n    always @(posedge clk) begin\n        if (areset) q <= 4'd0;\n        else if (load) q <= data;\n        else if (ena) q <= {q[2:0], 1'b0};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "54f6ace638f407fe8d69696b935bb04c0e8b9bca1ca65a21e7cdefe394527ca0",
+      "rtl": "module TopModule(input clk, input areset, input load, input ena, input [3:0] data, output reg [3:0] q);\n    always @(posedge clk) begin\n        if (areset) q <= 4'd0;\n        else if (load) q <= data;\n        else if (ena) q <= {q[2:0], 1'b0};\n    end\nendmodule",
+      "rtl_raw_sha256": "28362d73d9d7e888e287e5ffaa0e0a77e5fdcad85f98e0233e4411f07c8ef24f",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "73/427 mismatches",
+      "raw_completion": "// 4-bit shift register, right-shift, areset, load, enable.\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  load,\n    input  ena,\n    input  [3:0] data,\n    output [3:0] q\n);\n    reg [3:0] r;\n    always @(posedge clk) begin\n        if (areset) r <= 4'd0;\n        else if (load) r <= data;\n        else if (ena) r <= {r[2:0], 1'b0};\n    end\n    assign q = r;\nendmodule",
+      "raw_completion_raw_sha256": "1919c0e64b623e0103957c8dc80e2f31c210c6c285fa0dd72b1725a9fc56a770",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  load,\n    input  ena,\n    input  [3:0] data,\n    output [3:0] q\n);\n    reg [3:0] r;\n    always @(posedge clk) begin\n        if (areset) r <= 4'd0;\n        else if (load) r <= data;\n        else if (ena) r <= {r[2:0], 1'b0};\n    end\n    assign q = r;\nendmodule",
+      "rtl_raw_sha256": "a76dda6c3dd2a4dc2c2e296dba47f3598fe8a4a7b7b414a53df9160c7aa91400",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "73/427 mismatches",
+      "raw_completion": "// 4-bit shift register, positive-edge-triggered register reset (areset),\n// synchronous load and enable (ena). See the accompanying FASM for a detailed\n// description of the operations performed.\nmodule TopModule(input clk, input areset, input load, input ena, input [3:0] data, output reg [3:0] q);\n    always @(posedge clk) begin\n        if (areset) q <= 4'd0;\n        else if (load) q <= data;\n        else if (ena) q <= {q[2:0], 1'b0};\n    end\nendmodule",
+      "raw_completion_raw_sha256": "5363055aed6e1616efa1a5ca0371a832ea46ea0d1f0315453afb02cf91e86660",
+      "rtl": "module TopModule(input clk, input areset, input load, input ena, input [3:0] data, output reg [3:0] q);\n    always @(posedge clk) begin\n        if (areset) q <= 4'd0;\n        else if (load) q <= data;\n        else if (ena) q <= {q[2:0], 1'b0};\n    end\nendmodule",
+      "rtl_raw_sha256": "28362d73d9d7e888e287e5ffaa0e0a77e5fdcad85f98e0233e4411f07c8ef24f",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "99/427 mismatches",
+      "raw_completion": "// 4-bit shift register, positive edge triggered clock, areset, load, ena.\nmodule TopModule(clk, areset, load, ena, data, q);\n  input clk, areset, load, ena;\n  input [3:0] data;\n  output reg [3:0] q;\n  reg [3:0] next_q;\n  always @(posedge clk) begin\n    if (areset) next_q <= 4'd0;\n    else if (load) next_q <= data;\n    else if (ena) next_q <= {q[2:0], 1'b0};\n  end\n  always @(*) q = load ? data : next_q;\nendmodule",
+      "raw_completion_raw_sha256": "a5df80ea87f5538ff17cc4db7411c4e4a1c1072cab76f1902e34463c2eca0044",
+      "rtl": "module TopModule(clk, areset, load, ena, data, q);\n  input clk, areset, load, ena;\n  input [3:0] data;\n  output reg [3:0] q;\n  reg [3:0] next_q;\n  always @(posedge clk) begin\n    if (areset) next_q <= 4'd0;\n    else if (load) next_q <= data;\n    else if (ena) next_q <= {q[2:0], 1'b0};\n  end\n  always @(*) q = load ? data : next_q;\nendmodule",
+      "rtl_raw_sha256": "55fd0ea978c3614050f17f296eebab4bb4c004eed7294bad30c8bd91ee092537",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "73/427 mismatches",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  areset,\n    input  load,\n    input  ena,\n    input  [3:0] data,\n    output [3:0] q\n);\n    reg [3:0] r;\n    always @(posedge clk) begin\n        if (areset) r <= 4'd0;\n        else if (load) r <= data;\n        else if (ena) r <= {r[2:0], 1'b0};\n    end\n    assign q = r;\nendmodule",
+      "raw_completion_raw_sha256": "77b5eda57c512268971c83347b185a07ad552d4c11c64ca94bbf554ce7fdb784",
+      "rtl": "module TopModule (\n    input  clk,\n    input  areset,\n    input  load,\n    input  ena,\n    input  [3:0] data,\n    output [3:0] q\n);\n    reg [3:0] r;\n    always @(posedge clk) begin\n        if (areset) r <= 4'd0;\n        else if (load) r <= data;\n        else if (ena) r <= {r[2:0], 1'b0};\n    end\n    assign q = r;\nendmodule",
+      "rtl_raw_sha256": "77b5eda57c512268971c83347b185a07ad552d4c11c64ca94bbf554ce7fdb784",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "88/427 mismatches",
+      "raw_completion": "// 4-bit shift register, positive-edge-triggered register-to-register\n// chain (higher Fmax; register to register time ~= 1 ns). Same function\n// as the one-bit shift register repeated 4 times, concatenated together.\nmodule TopModule(input clk, input areset, input load, input ena, input [3:0] data, output reg [3:0] q);\n    reg [3:0] r0, r1, r2, r3;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 4'b0; r1 <= 4'b0; r2 <= 4'b0; r3 <= 4'b0;\n        end else if (load) begin\n            r0 <= data; r1 <= r0; r2 <= r1; r3 <= r2;\n        end else if (ena) begin\n            r0 <= r1; r1 <= r2; r2 <= r3; r3 <= 1'b0;\n        end\n    end\n    assign q = load ? data : (ena ? {r3, r2, r1, r0} : {r3, r2, r1, r0});\nendmodule",
+      "raw_completion_raw_sha256": "bce49ca9dc021e00ba6281085679875d24e2579233117b6916cfa18b7df8b44e",
+      "rtl": "module TopModule(input clk, input areset, input load, input ena, input [3:0] data, output reg [3:0] q);\n    reg [3:0] r0, r1, r2, r3;\n    always @(posedge clk) begin\n        if (areset) begin\n            r0 <= 4'b0; r1 <= 4'b0; r2 <= 4'b0; r3 <= 4'b0;\n        end else if (load) begin\n            r0 <= data; r1 <= r0; r2 <= r1; r3 <= r2;\n        end else if (ena) begin\n            r0 <= r1; r1 <= r2; r2 <= r3; r3 <= 1'b0;\n        end\n    end\n    assign q = load ? data : (ena ? {r3, r2, r1, r0} : {r3, r2, r1, r0});\nendmodule",
+      "rtl_raw_sha256": "3b122c02e719f55a93b726b9a01db65df5f59b0b79256c119e20a089421b9230",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "fail": 20
+  },
+  "testbench_raw_sha256": "2fc7f7077688eefa5c27026c348b6b22d25d5f23f79fec3610fd358c9ce344f6",
+  "training_seed": 1
+}

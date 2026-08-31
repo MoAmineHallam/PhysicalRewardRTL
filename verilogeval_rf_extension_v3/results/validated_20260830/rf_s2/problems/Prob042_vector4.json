@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob042_vector4",
+  "problem_seed": 4491317686448426094,
+  "prompt_raw_sha256": "8d2ef1d00ecc693bcf3b1438fb20676ed098d3dd52660618f78a0a02a225d7da",
+  "reference_raw_sha256": "5408b5220777f5a212a7678a353718e6374fa967530895182c22ca7b346f7c3a",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n  input  [7:0]  in,\n  output [31:0] out\n);\n  wire [23:0] replicated_sign = {24{in[7]}};\n  assign out = {replicated_sign, in};\nendmodule",
+      "raw_completion_raw_sha256": "fe19ca4918d4dc8fadb0953f0de8c36917903d34602a3772f858ba5b912d7dee",
+      "rtl": "module TopModule (\n  input  [7:0]  in,\n  output [31:0] out\n);\n  wire [23:0] replicated_sign = {24{in[7]}};\n  assign out = {replicated_sign, in};\nendmodule",
+      "rtl_raw_sha256": "fe19ca4918d4dc8fadb0953f0de8c36917903d34602a3772f858ba5b912d7dee",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Sign-extends an 8-bit number to 32 bits, as described in the function docstring.\nmodule TopModule(input [7:0] in, output [31:0] out);\n  wire [23:0] sign_extended = {24{in[7]}};\n  assign out = {sign_extended, in};\nendmodule",
+      "raw_completion_raw_sha256": "9d3e4d38ebb342f158d4ba670160d678f697ab8e31c7f24438d26a6bcbf271f3",
+      "rtl": "module TopModule(input [7:0] in, output [31:0] out);\n  wire [23:0] sign_extended = {24{in[7]}};\n  assign out = {sign_extended, in};\nendmodule",
+      "rtl_raw_sha256": "82ece114215098baf937cf42f0be91e8455ef13f1f1c5be28514d44d56c42726",
+      "sample_index": 1,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n  input [7:0] in,\n  output [31:0] out\n);\n  wire [23:0] sgn_ext;\n  assign sgn_ext = {24{in[7]}};\n  assign out = {sgn_ext, in};\nendmodule",
+      "raw_completion_raw_sha256": "7297114fb79518c9db2d0ccd0f751552d2be73ee22a4900839f4c3573cb84166",
+      "rtl": "module TopModule(\n  input [7:0] in,\n  output [31:0] out\n);\n  wire [23:0] sgn_ext;\n  assign sgn_ext = {24{in[7]}};\n  assign out = {sgn_ext, in};\nendmodule",
+      "rtl_raw_sha256": "7297114fb79518c9db2d0ccd0f751552d2be73ee22a4900839f4c3573cb84166",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n  input  [7:0]  in,\n  output [31:0] out\n);\n  wire [23:0] sign_ext;\n  assign sign_ext = {24{in[7]}};\n  assign out = {sign_ext, in};\nendmodule",
+      "raw_completion_raw_sha256": "c3b239c098d57396f2239c151b16cf6570ec6c74cbff7266c05e8c1dcc6e00d0",
+      "rtl": "module TopModule(\n  input  [7:0]  in,\n  output [31:0] out\n);\n  wire [23:0] sign_ext;\n  assign sign_ext = {24{in[7]}};\n  assign out = {sign_ext, in};\nendmodule",
+      "rtl_raw_sha256": "c3b239c098d57396f2239c151b16cf6570ec6c74cbff7266c05e8c1dcc6e00d0",
+      "sample_index": 3,
+      "status": "PASS"
+    },
+    {
+      "detail": "99/100 mismatches",
+      "raw_completion": "module TopModule(input [7:0] in, output [31:0] out);\n  wire [31:0] sign_extended = {24'b0, in[7]};\n  assign out = sign_extended;\nendmodule",
+      "raw_completion_raw_sha256": "069921740752aff33b3e5c07f33720007d82a665e02b6b75cc9ca26dd149f532",
+      "rtl": "module TopModule(input [7:0] in, output [31:0] out);\n  wire [31:0] sign_extended = {24'b0, in[7]};\n  assign out = sign_extended;\nendmodule",
+      "rtl_raw_sha256": "069921740752aff33b3e5c07f33720007d82a665e02b6b75cc9ca26dd149f532",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Sign-extends an 8-bit number to 32 bits, as described in the problem\n// description.\nmodule TopModule (\n  input  [7:0]  in,\n  output [31:0] out\n);\n  wire [23:0] sign_ext = {24{in[7]}};\n  assign out = {sign_ext, in};\nendmodule",
+      "raw_completion_raw_sha256": "b314eab8c750bde300bf9617914d3583833bf165e36c56bebc679cad49fad79f",
+      "rtl": "module TopModule (\n  input  [7:0]  in,\n  output [31:0] out\n);\n  wire [23:0] sign_ext = {24{in[7]}};\n  assign out = {sign_ext, in};\nendmodule",
+      "rtl_raw_sha256": "186ab6c6059feec569c9c7e3805f67c4c8aeb7f5cd813eeb3487f8f761280ed9",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n  input  [7:0]  in,\n  output [31:0] out\n);\n  wire [23:0] sign_ext = {24{in[7]}};\n  assign out = {sign_ext, in};\nendmodule",
+      "raw_completion_raw_sha256": "186ab6c6059feec569c9c7e3805f67c4c8aeb7f5cd813eeb3487f8f761280ed9",
+      "rtl": "module TopModule (\n  input  [7:0]  in,\n  output [31:0] out\n);\n  wire [23:0] sign_ext = {24{in[7]}};\n  assign out = {sign_ext, in};\nendmodule",
+      "rtl_raw_sha256": "186ab6c6059feec569c9c7e3805f67c4c8aeb7f5cd813eeb3487f8f761280ed9",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input [7:0] in,\n    output [31:0] out\n);\n    wire [23:0] sign_extended = {24{in[7]}};\n    assign out = {sign_extended, in};\nendmodule",
+      "raw_completion_raw_sha256": "6c45a579bed484af31fb479d73a83533ff662df752db79078bd104607b8b21e1",
+      "rtl": "module TopModule(\n    input [7:0] in,\n    output [31:0] out\n);\n    wire [23:0] sign_extended = {24{in[7]}};\n    assign out = {sign_extended, in};\nendmodule",
+      "rtl_raw_sha256": "6c45a579bed484af31fb479d73a83533ff662df752db79078bd104607b8b21e1",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "48/100 mismatches",
+      "raw_completion": "// Sign-extends an 8-bit number to 32 bits, achieved by replicating the sign\n// bit 24 times followed by the number.\nmodule TopModule(input [7:0] in, output [31:0] out);\n  wire [31:0] ext;\n  assign ext = {24'b0, in};\n  assign out = ext;\nendmodule",
+      "raw_completion_raw_sha256": "05a49cdb4a7500e79097afc2a64e65440ba34802cda8891d5df4351a87c3041b",
+      "rtl": "module TopModule(input [7:0] in, output [31:0] out);\n  wire [31:0] ext;\n  assign ext = {24'b0, in};\n  assign out = ext;\nendmodule",
+      "rtl_raw_sha256": "9ffacc18014a2884384de115ae12ce88ec921184edf948e8aebde491e37b6387",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  [7:0]  in,\n    output [31:0] out\n);\n    wire [23:0] replicated_sign = {24{in[7]}};\n    assign out = {replicated_sign, in};\nendmodule",
+      "raw_completion_raw_sha256": "31d57806b980be3ce17e4fc083216cb12fc4842bf04ad8304965bf7bf9f2208a",
+      "rtl": "module TopModule(\n    input  [7:0]  in,\n    output [31:0] out\n);\n    wire [23:0] replicated_sign = {24{in[7]}};\n    assign out = {replicated_sign, in};\nendmodule",
+      "rtl_raw_sha256": "31d57806b980be3ce17e4fc083216cb12fc4842bf04ad8304965bf7bf9f2208a",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Sign-extends an 8-bit number to 32 bits, as described in the problem\n// description. The result is a 32-bit number with the same sign as the input,\n// and value equal to the input, but extended to 32 bits.\nmodule TopModule(input [7:0] in, output [31:0] out);\n  wire [23:0] sign_ext = $unsigned({24{in[7]}});\n  assign out = $unsigned({sign_ext, in});\nendmodule",
+      "raw_completion_raw_sha256": "6408dfc2c3803c2d1416a3214cb38759ed0980a94138d68e46dc94604b74fd28",
+      "rtl": "module TopModule(input [7:0] in, output [31:0] out);\n  wire [23:0] sign_ext = $unsigned({24{in[7]}});\n  assign out = $unsigned({sign_ext, in});\nendmodule",
+      "rtl_raw_sha256": "019115c21d46a0abe40a622df11b36742a06cec5a7aad33dbdf8db69a1e05f06",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Sign-extending an 8-bit number to 32 bits, as described in the problem\n// description. The name of this module is TopModule, as requested.\nmodule TopModule(\n    input  [7:0]  in,\n    output [31:0] out\n);\n    wire [23:0] sign_ext;\n    assign sign_ext = {24{in[7]}};\n    assign out = {sign_ext, in};\nendmodule",
+      "raw_completion_raw_sha256": "c5ac13c60cb7cf00b217add9eca563dd63c0f951957a8b31f5e24db6009e1ef5",
+      "rtl": "module TopModule(\n    input  [7:0]  in,\n    output [31:0] out\n);\n    wire [23:0] sign_ext;\n    assign sign_ext = {24{in[7]}};\n    assign out = {sign_ext, in};\nendmodule",
+      "rtl_raw_sha256": "276f7ebacb65c7ee162ceb3ab6cb41eb571a29655352d69167e2e9fd4e1dc3f0",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n  input  [ 7:0] in,\n  output [31:0] out\n);\n  wire [31:0] sign_extended = { {24{in[7]}}, in };\n  assign out = sign_extended;\nendmodule",
+      "raw_completion_raw_sha256": "cd85c01c9a5cc0653b6264a180e90ba01d4eabeeb0f3e474ee358d5f33229fae",
+      "rtl": "module TopModule(\n  input  [ 7:0] in,\n  output [31:0] out\n);\n  wire [31:0] sign_extended = { {24{in[7]}}, in };\n  assign out = sign_extended;\nendmodule",
+      "rtl_raw_sha256": "cd85c01c9a5cc0653b6264a180e90ba01d4eabeeb0f3e474ee358d5f33229fae",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(input [7:0] in, output [31:0] out);\n    wire [23:0] sign_ext;\n    assign sign_ext = {24{in[7]}};\n    assign out = {sign_ext, in};\nendmodule",
+      "raw_completion_raw_sha256": "8474a840a9ff7792256cba1145a762ed7509cb9aeb1e1a64d148303608206672",
+      "rtl": "module TopModule(input [7:0] in, output [31:0] out);\n    wire [23:0] sign_ext;\n    assign sign_ext = {24{in[7]}};\n    assign out = {sign_ext, in};\nendmodule",
+      "rtl_raw_sha256": "8474a840a9ff7792256cba1145a762ed7509cb9aeb1e1a64d148303608206672",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "48/100 mismatches",
+      "raw_completion": "// Sign-extends an 8-bit number to 32 bits. The sign-extended number has the\n// same value as the input, but its bit[31:8] is all the same as bit[7].\nmodule TopModule(input [7:0] in, output [31:0] out);\n    wire [7:0] replicated = {8{in[7]}};\n    assign out = {replicated, in};\nendmodule",
+      "raw_completion_raw_sha256": "75496c7cbcf95811a39c9d59be0af794498dad9db8d29583af4736ec70e9a6eb",
+      "rtl": "module TopModule(input [7:0] in, output [31:0] out);\n    wire [7:0] replicated = {8{in[7]}};\n    assign out = {replicated, in};\nendmodule",
+      "rtl_raw_sha256": "873ca10fdb8177298bf39683cccd92f7d24f567aa18831f68c6a34f78f7cafd9",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob042_vector4_test.sv:62: error: Unknown module type: TopModule",
+      "raw_completion": "// Sign-extends an 8-bit number to a 32-bit one.\nmodule SignExtend8To32(\n    input  [7:0]  in,\n    output [31:0] out\n);\n    wire [23:0] sign_ext = {24{in[7]}};\n    assign out = {sign_ext, in};\nendmodule",
+      "raw_completion_raw_sha256": "3ed946192af900bb275fb0bd64b67b3f82ba79a424d331b859f0ba12990ad020",
+      "rtl": "module SignExtend8To32(\n    input  [7:0]  in,\n    output [31:0] out\n);\n    wire [23:0] sign_ext = {24{in[7]}};\n    assign out = {sign_ext, in};\nendmodule",
+      "rtl_raw_sha256": "1d80744f729930c4202c67550bcc9c2b0a470f4b60a56898bbb2799bfb0598c0",
+      "sample_index": 15,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "48/100 mismatches",
+      "raw_completion": "module TopModule(\n    input  [7:0]  in,\n    output [31:0] out\n);\n    wire [31:0] sign_extended = {24'b0, in[7], in};\n    assign out = sign_extended;\nendmodule",
+      "raw_completion_raw_sha256": "4ce49018cdef5adadc9ba81304c0bdca038298a9036a60ba482fb13421eba081",
+      "rtl": "module TopModule(\n    input  [7:0]  in,\n    output [31:0] out\n);\n    wire [31:0] sign_extended = {24'b0, in[7], in};\n    assign out = sign_extended;\nendmodule",
+      "rtl_raw_sha256": "4ce49018cdef5adadc9ba81304c0bdca038298a9036a60ba482fb13421eba081",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "48/100 mismatches",
+      "raw_completion": "// Sign-extends an 8-bit number to 32 bits, implemented as a single\n// stage of a pipeline.\nmodule TopModule(input [7:0] in, output [31:0] out);\n    wire [23:0] s0_stage;\n    wire [31:0] s1_stage;\n    assign s0_stage = {24{in[7]}} | in;\n    assign s1_stage = {16'b0, s0_stage};\n    assign out = s1_stage;\nendmodule",
+      "raw_completion_raw_sha256": "ffe101b2c02c11c3408176c4bb63f8aa944a842c7116a4e556d3a14b28d3e83f",
+      "rtl": "module TopModule(input [7:0] in, output [31:0] out);\n    wire [23:0] s0_stage;\n    wire [31:0] s1_stage;\n    assign s0_stage = {24{in[7]}} | in;\n    assign s1_stage = {16'b0, s0_stage};\n    assign out = s1_stage;\nendmodule",
+      "rtl_raw_sha256": "bcfaf32457e9503a5762bf247eac9d0280f06b3fbdfb3cae430cb90642baf4c5",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "48/100 mismatches",
+      "raw_completion": "module TopModule (\n  input  [7:0]  in,\n  output [31:0] out\n);\n  wire [31:0] s_ext = {24'b0, in[7], in};\n  assign out = s_ext;\nendmodule",
+      "raw_completion_raw_sha256": "c26bb7f299dc2c5b1486998791f6564a6d77d94e4ea1d90a7c559d5fbac14cf6",
+      "rtl": "module TopModule (\n  input  [7:0]  in,\n  output [31:0] out\n);\n  wire [31:0] s_ext = {24'b0, in[7], in};\n  assign out = s_ext;\nendmodule",
+      "rtl_raw_sha256": "c26bb7f299dc2c5b1486998791f6564a6d77d94e4ea1d90a7c559d5fbac14cf6",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "48/100 mismatches",
+      "raw_completion": "module TopModule(input [7:0] in, output [31:0] out);\n  wire [7:0] replicated_sign = {8 {in[7]}};\n  assign out = {replicated_sign, in};\nendmodule",
+      "raw_completion_raw_sha256": "184696d53a93d669392c0027fcda833c31b990bbc618584bb413889b727416b8",
+      "rtl": "module TopModule(input [7:0] in, output [31:0] out);\n  wire [7:0] replicated_sign = {8 {in[7]}};\n  assign out = {replicated_sign, in};\nendmodule",
+      "rtl_raw_sha256": "184696d53a93d669392c0027fcda833c31b990bbc618584bb413889b727416b8",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 12,
+    "compile_fail": 1,
+    "fail": 7
+  },
+  "testbench_raw_sha256": "2f1f4163ca980459502becbafcc48212f920a7d4dcf217d2ebc4369390ad3134",
+  "training_seed": 2
+}

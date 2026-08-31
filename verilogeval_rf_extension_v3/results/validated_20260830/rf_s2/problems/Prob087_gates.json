@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob087_gates",
+  "problem_seed": 8588929413705467585,
+  "prompt_raw_sha256": "db35b613e2e9800fd53faf14c717fc053fa723f4a97a7eecfbc459f18fa54f9d",
+  "reference_raw_sha256": "fd05947bb790cc30fbc348bd272053377e718611affdd86892a1922edec454f2",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    assign out_and  = a & b;\n    assign out_or   = a | b;\n    assign out_xor  = a ^ b;\n    assign out_nand = ~(a & b);\n    assign out_nor  = ~(a | b);\n    assign out_xnor = ~(a ^ b);\n    assign out_anotb = a & ~b;\nendmodule",
+      "raw_completion_raw_sha256": "ae0ae3c917629c50dcc6a10e7c7f65359069d3a77accb6b33a34c0f272f597b6",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    assign out_and  = a & b;\n    assign out_or   = a | b;\n    assign out_xor  = a ^ b;\n    assign out_nand = ~(a & b);\n    assign out_nor  = ~(a | b);\n    assign out_xnor = ~(a ^ b);\n    assign out_anotb = a & ~b;\nendmodule",
+      "rtl_raw_sha256": "ae0ae3c917629c50dcc6a10e7c7f65359069d3a77accb6b33a34c0f272f597b6",
+      "sample_index": 0,
+      "status": "PASS"
+    },
+    {
+      "detail": "62/210 mismatches",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1, w2, w3, w4, w5, w6;\n    and (out_and, a, b);\n    or  (out_or, a, b);\n    xor (out_xor, a, b);\n    nand (out_nand, a, b);\n    nor (out_nor, a, b);\n    xnor (out_xnor, a, b);\n    and (w1, a, b);\n    not (w2, b);\n    and (out_anotb, w1, w2);\nendmodule",
+      "raw_completion_raw_sha256": "5c5181279ee604f8b450a3320b2f1db1fa2193e199e44d8612b30a1296ec2867",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1, w2, w3, w4, w5, w6;\n    and (out_and, a, b);\n    or  (out_or, a, b);\n    xor (out_xor, a, b);\n    nand (out_nand, a, b);\n    nor (out_nor, a, b);\n    xnor (out_xnor, a, b);\n    and (w1, a, b);\n    not (w2, b);\n    and (out_anotb, w1, w2);\nendmodule",
+      "rtl_raw_sha256": "5c5181279ee604f8b450a3320b2f1db1fa2193e199e44d8612b30a1296ec2867",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit combinational circuit with two inputs, a and b. The 7 outputs are\n// gates (AND, OR, XOR, NAND, NOR, XNOR, A-NOT-B) applied to (a, b)\nmodule TopModule (\n    input a,\n    input b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1, w2, w3, w4, w5, w6;\n    and(out_and, a, b);\n    or(out_or, a, b);\n    xor(out_xor, a, b);\n    nand(out_nand, a, b);\n    nor(out_nor, a, b);\n    xnor(out_xnor, a, b);\n    and(w1, a, ~b);\n    assign out_anotb = w1;\nendmodule",
+      "raw_completion_raw_sha256": "3d08e40821eb9d4621435e3ce9058029bdf5f7dd3a984629b009b3e2b10eb60e",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1, w2, w3, w4, w5, w6;\n    and(out_and, a, b);\n    or(out_or, a, b);\n    xor(out_xor, a, b);\n    nand(out_nand, a, b);\n    nor(out_nor, a, b);\n    xnor(out_xnor, a, b);\n    and(w1, a, ~b);\n    assign out_anotb = w1;\nendmodule",
+      "rtl_raw_sha256": "c19b0f4d01429567dce5ec425a60afdd9e89a705e892c133a4bf92a2160d2f91",
+      "sample_index": 2,
+      "status": "PASS"
+    },
+    {
+      "detail": "62/210 mismatches",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1, w2, w3, w4, w5, w6;\n    and (out_and, a, b);\n    or (out_or, a, b);\n    xor (out_xor, a, b);\n    nand (out_nand, a, b);\n    nor (out_nor, a, b);\n    xnor (out_xnor, a, b);\n    and (w1, a, ~b);\n    and (out_anotb, w1, w2);\nendmodule",
+      "raw_completion_raw_sha256": "0110aca1056f25f71a0b9713f955d081b01bb72bbfa77067220819d64a8096b6",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1, w2, w3, w4, w5, w6;\n    and (out_and, a, b);\n    or (out_or, a, b);\n    xor (out_xor, a, b);\n    nand (out_nand, a, b);\n    nor (out_nor, a, b);\n    xnor (out_xnor, a, b);\n    and (w1, a, ~b);\n    and (out_anotb, w1, w2);\nendmodule",
+      "rtl_raw_sha256": "0110aca1056f25f71a0b9713f955d081b01bb72bbfa77067220819d64a8096b6",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input a,\n    input b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1, w2, w3, w4, w5, w6, w7;\n    and (w1, a, b);\n    or (w2, a, b);\n    xor (w3, a, b);\n    nand (w4, a, b);\n    nor (w5, a, b);\n    xnor (w6, a, b);\n    and (w7, a, ~b);\n    assign out_and = w1;\n    assign out_or = w2;\n    assign out_xor = w3;\n    assign out_nand = w4;\n    assign out_nor = w5;\n    assign out_xnor = w6;\n    assign out_anotb = w7;\nendmodule",
+      "raw_completion_raw_sha256": "7d4496c3bc0f3b4f60d490cb6f6df235d5d758bfea7a292a69497afead3cff96",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1, w2, w3, w4, w5, w6, w7;\n    and (w1, a, b);\n    or (w2, a, b);\n    xor (w3, a, b);\n    nand (w4, a, b);\n    nor (w5, a, b);\n    xnor (w6, a, b);\n    and (w7, a, ~b);\n    assign out_and = w1;\n    assign out_or = w2;\n    assign out_xor = w3;\n    assign out_nand = w4;\n    assign out_nor = w5;\n    assign out_xnor = w6;\n    assign out_anotb = w7;\nendmodule",
+      "rtl_raw_sha256": "7d4496c3bc0f3b4f60d490cb6f6df235d5d758bfea7a292a69497afead3cff96",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1 = a & b;\n    wire w2 = a | b;\n    wire w3 = a ^ b;\n    wire w4 = ~(a & b);\n    wire w5 = ~(a | b);\n    wire w6 = ~(a ^ b);\n    wire w7 = a & ~b;\n    assign out_and = w1;\n    assign out_or = w2;\n    assign out_xor = w3;\n    assign out_nand = w4;\n    assign out_nor = w5;\n    assign out_xnor = w6;\n    assign out_anotb = w7;\nendmodule",
+      "raw_completion_raw_sha256": "d2a941b096ae5f05d4c79ee476fc696f4baa11a0a26c5140284c5a0947a96f91",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1 = a & b;\n    wire w2 = a | b;\n    wire w3 = a ^ b;\n    wire w4 = ~(a & b);\n    wire w5 = ~(a | b);\n    wire w6 = ~(a ^ b);\n    wire w7 = a & ~b;\n    assign out_and = w1;\n    assign out_or = w2;\n    assign out_xor = w3;\n    assign out_nand = w4;\n    assign out_nor = w5;\n    assign out_xnor = w6;\n    assign out_anotb = w7;\nendmodule",
+      "rtl_raw_sha256": "d2a941b096ae5f05d4c79ee476fc696f4baa11a0a26c5140284c5a0947a96f91",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input a,\n    input b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1 = a & b;\n    wire w2 = a | b;\n    wire w3 = a ^ b;\n    wire w4 = ~(a & b);\n    wire w5 = ~(a | b);\n    wire w6 = ~(a ^ b);\n    wire w7 = a & ~b;\n    assign out_and = w1;\n    assign out_or = w2;\n    assign out_xor = w3;\n    assign out_nand = w4;\n    assign out_nor = w5;\n    assign out_xnor = w6;\n    assign out_anotb = w7;\nendmodule",
+      "raw_completion_raw_sha256": "efbe1852e6f54fe0718a6f748ef75c10bfbc2153199ce05d192b2abae4a0114c",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1 = a & b;\n    wire w2 = a | b;\n    wire w3 = a ^ b;\n    wire w4 = ~(a & b);\n    wire w5 = ~(a | b);\n    wire w6 = ~(a ^ b);\n    wire w7 = a & ~b;\n    assign out_and = w1;\n    assign out_or = w2;\n    assign out_xor = w3;\n    assign out_nand = w4;\n    assign out_nor = w5;\n    assign out_xnor = w6;\n    assign out_anotb = w7;\nendmodule",
+      "rtl_raw_sha256": "efbe1852e6f54fe0718a6f748ef75c10bfbc2153199ce05d192b2abae4a0114c",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "62/210 mismatches",
+      "raw_completion": "// Combinational circuit with two inputs, a and b, and six functional\n// forms (AND, OR, XOR, NAND, NOR, XNOR) plus a custom functional form.\nmodule TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1, w2, w3, w4, w5, w6, w7;\n    and (out_and, a, b);\n    or  (out_or, a, b);\n    xor (out_xor, a, b);\n    nand (out_nand, a, b);\n    nor (out_nor, a, b);\n    xnor (out_xnor, a, b);\n    and (w1, a, ~b);\n    and (out_anotb, w1, w2);\nendmodule",
+      "raw_completion_raw_sha256": "2a78d9627a750f8ad60cba4f69a57425e6db4bc5534b7683de11839e3e7debce",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1, w2, w3, w4, w5, w6, w7;\n    and (out_and, a, b);\n    or  (out_or, a, b);\n    xor (out_xor, a, b);\n    nand (out_nand, a, b);\n    nor (out_nor, a, b);\n    xnor (out_xnor, a, b);\n    and (w1, a, ~b);\n    and (out_anotb, w1, w2);\nendmodule",
+      "rtl_raw_sha256": "13d2db0c078b43c9898bd79d730a742ee5c2bdbb73fbf0bf133f8990707196cf",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "208/210 mismatches",
+      "raw_completion": "// Combinational circuit with two inputs, a and b, and 7 logic gates,\n// connected in a specific order (the critical path is the shortest, so\n// the fastest overall time per stage is achieved).\nmodule TopModule(\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire a_and_b = a & b;\n    wire a_or_b = a | b;\n    wire a_xor_b = a ^ b;\n    wire a_nand_b = a & ~b;\n    wire a_nor_b = a | ~b;\n    wire a_xnor_b = a ^ ~b;\n    wire a_andnot_b = a & ~b;\n    assign out_and = a_and_b;\n    assign out_or = a_or_b;\n    assign out_xor = a_xor_b;\n    assign out_nand = a_nand_b;\n    assign out_nor = a_nor_b;\n    assign out_xnor = a_xnor_b;\n    assign out_anotb = a_andnot_b;\nendmodule",
+      "raw_completion_raw_sha256": "8346c05e84fbd7ef17f9e3639a329222cf9a7ed86035fe964c2929f5915370b7",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire a_and_b = a & b;\n    wire a_or_b = a | b;\n    wire a_xor_b = a ^ b;\n    wire a_nand_b = a & ~b;\n    wire a_nor_b = a | ~b;\n    wire a_xnor_b = a ^ ~b;\n    wire a_andnot_b = a & ~b;\n    assign out_and = a_and_b;\n    assign out_or = a_or_b;\n    assign out_xor = a_xor_b;\n    assign out_nand = a_nand_b;\n    assign out_nor = a_nor_b;\n    assign out_xnor = a_xnor_b;\n    assign out_anotb = a_andnot_b;\nendmodule",
+      "rtl_raw_sha256": "87dd0f79f6fb6f04fb51710614a90f5b7d010e1e0425a25ac43b560494a44028",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational circuit with two inputs, a and b, and seven logic gates.\nmodule TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1, w2, w3, w4, w5, w6, w7;\n    and (w1, a, b);\n    or  (w2, a, b);\n    xor (w3, a, b);\n    nand (w4, a, b);\n    nor (w5, a, b);\n    xnor (w6, a, b);\n    and (w7, a, ~b);\n    assign out_and = w1;\n    assign out_or = w2;\n    assign out_xor = w3;\n    assign out_nand = w4;\n    assign out_nor = w5;\n    assign out_xnor = w6;\n    assign out_anotb = w7;\nendmodule",
+      "raw_completion_raw_sha256": "8c01eae20fa7dd293fc3bc73bb57a06f4e131883b3193f6af0d8f12ba3c81441",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1, w2, w3, w4, w5, w6, w7;\n    and (w1, a, b);\n    or  (w2, a, b);\n    xor (w3, a, b);\n    nand (w4, a, b);\n    nor (w5, a, b);\n    xnor (w6, a, b);\n    and (w7, a, ~b);\n    assign out_and = w1;\n    assign out_or = w2;\n    assign out_xor = w3;\n    assign out_nand = w4;\n    assign out_nor = w5;\n    assign out_xnor = w6;\n    assign out_anotb = w7;\nendmodule",
+      "rtl_raw_sha256": "f52dddd4febbf4bf31d5cf0a4edfeeb0b3f51d2002eaaca5dc2760f30e2a1b53",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational circuit with two inputs (a and b) and 7 logic gates (AND, OR,\n// XOR, NAND, NOR, XNOR, A-NOT-B)\nmodule TopModule(\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1 = a & b;\n    wire w2 = a | b;\n    wire w3 = a ^ b;\n    wire w4 = ~(a & b);\n    wire w5 = ~(a | b);\n    wire w6 = ~(a ^ b);\n    wire w7 = a & ~b;\n    assign out_and = w1;\n    assign out_or = w2;\n    assign out_xor = w3;\n    assign out_nand = w4;\n    assign out_nor = w5;\n    assign out_xnor = w6;\n    assign out_anotb = w7;\nendmodule",
+      "raw_completion_raw_sha256": "0f6be94f02901863c1849e7f24d58a0662acb23eaeca87e571407d72dfb0857e",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1 = a & b;\n    wire w2 = a | b;\n    wire w3 = a ^ b;\n    wire w4 = ~(a & b);\n    wire w5 = ~(a | b);\n    wire w6 = ~(a ^ b);\n    wire w7 = a & ~b;\n    assign out_and = w1;\n    assign out_or = w2;\n    assign out_xor = w3;\n    assign out_nand = w4;\n    assign out_nor = w5;\n    assign out_xnor = w6;\n    assign out_anotb = w7;\nendmodule",
+      "rtl_raw_sha256": "d1c634269405b199eebf2ac096faaa4ea79518a57cbc86b7702f0da6582b02eb",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    assign out_and = a & b;\n    assign out_or = a | b;\n    assign out_xor = a ^ b;\n    assign out_nand = ~(a & b);\n    assign out_nor = ~(a | b);\n    assign out_xnor = ~(a ^ b);\n    assign out_anotb = a & ~b;\nendmodule",
+      "raw_completion_raw_sha256": "5c429e7e54ada3021f518413b049d0bb950505fe437903f20c4f6e943397b69f",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    assign out_and = a & b;\n    assign out_or = a | b;\n    assign out_xor = a ^ b;\n    assign out_nand = ~(a & b);\n    assign out_nor = ~(a | b);\n    assign out_xnor = ~(a ^ b);\n    assign out_anotb = a & ~b;\nendmodule",
+      "rtl_raw_sha256": "5c429e7e54ada3021f518413b049d0bb950505fe437903f20c4f6e943397b69f",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational circuit with 2 inputs and 7 logic gates (AND, OR, XOR, NAND,\n// NOR, XNOR, AND-NOT)\nmodule TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1 = a & b;\n    wire w2 = a | b;\n    wire w3 = a ^ b;\n    wire w4 = ~(a & b);\n    wire w5 = ~(a | b);\n    wire w6 = ~(a ^ b);\n    wire w7 = a & ~b;\n    assign out_and = w1;\n    assign out_or = w2;\n    assign out_xor = w3;\n    assign out_nand = w4;\n    assign out_nor = w5;\n    assign out_xnor = w6;\n    assign out_anotb = w7;\nendmodule",
+      "raw_completion_raw_sha256": "5cacf7bc7a88c3a317dd7968a8806692d22c7b9f3937aa0780dcaf5abc816673",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1 = a & b;\n    wire w2 = a | b;\n    wire w3 = a ^ b;\n    wire w4 = ~(a & b);\n    wire w5 = ~(a | b);\n    wire w6 = ~(a ^ b);\n    wire w7 = a & ~b;\n    assign out_and = w1;\n    assign out_or = w2;\n    assign out_xor = w3;\n    assign out_nand = w4;\n    assign out_nor = w5;\n    assign out_xnor = w6;\n    assign out_anotb = w7;\nendmodule",
+      "rtl_raw_sha256": "d2a941b096ae5f05d4c79ee476fc696f4baa11a0a26c5140284c5a0947a96f91",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w_and = a & b;\n    wire w_or = a | b;\n    wire w_xor = a ^ b;\n    wire w_nand = ~(a & b);\n    wire w_nor = ~(a | b);\n    wire w_xnor = ~(a ^ b);\n    wire w_anotb = a & ~b;\n    assign out_and = w_and;\n    assign out_or = w_or;\n    assign out_xor = w_xor;\n    assign out_nand = w_nand;\n    assign out_nor = w_nor;\n    assign out_xnor = w_xnor;\n    assign out_anotb = w_anotb;\nendmodule",
+      "raw_completion_raw_sha256": "da788ff2e69728d4ee2d69226948650a4703640fb5e9c3b579b4f98f7e0f854d",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w_and = a & b;\n    wire w_or = a | b;\n    wire w_xor = a ^ b;\n    wire w_nand = ~(a & b);\n    wire w_nor = ~(a | b);\n    wire w_xnor = ~(a ^ b);\n    wire w_anotb = a & ~b;\n    assign out_and = w_and;\n    assign out_or = w_or;\n    assign out_xor = w_xor;\n    assign out_nand = w_nand;\n    assign out_nor = w_nor;\n    assign out_xnor = w_xnor;\n    assign out_anotb = w_anotb;\nendmodule",
+      "rtl_raw_sha256": "da788ff2e69728d4ee2d69226948650a4703640fb5e9c3b579b4f98f7e0f854d",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational circuit with two inputs, a and b, and 7 logic gates.\nmodule TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire and_out = a & b;\n    wire or_out = a | b;\n    wire xor_out = a ^ b;\n    wire nand_out = ~(a & b);\n    wire nor_out = ~(a | b);\n    wire xnor_out = ~(a ^ b);\n    wire anotb_out = a & ~b;\n    assign out_and = and_out;\n    assign out_or = or_out;\n    assign out_xor = xor_out;\n    assign out_nand = nand_out;\n    assign out_nor = nor_out;\n    assign out_xnor = xnor_out;\n    assign out_anotb = anotb_out;\nendmodule",
+      "raw_completion_raw_sha256": "5b94bf37213617e09c6595c7a4d53e48bb198890ef73d8bd0fad7d7a750e32b5",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire and_out = a & b;\n    wire or_out = a | b;\n    wire xor_out = a ^ b;\n    wire nand_out = ~(a & b);\n    wire nor_out = ~(a | b);\n    wire xnor_out = ~(a ^ b);\n    wire anotb_out = a & ~b;\n    assign out_and = and_out;\n    assign out_or = or_out;\n    assign out_xor = xor_out;\n    assign out_nand = nand_out;\n    assign out_nor = nor_out;\n    assign out_xnor = xnor_out;\n    assign out_anotb = anotb_out;\nendmodule",
+      "rtl_raw_sha256": "b553d99a511642b8e8e705cad40c3d2ded1fe5bcbf396dc4e527aaceac9ff03a",
+      "sample_index": 14,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit combinational circuit with 7 outputs, one per gate type.\nmodule TopModule(\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire a_and_b = a & b;\n    wire a_or_b = a | b;\n    wire a_xor_b = a ^ b;\n    wire a_nand_b = ~(a & b);\n    wire a_nor_b = ~(a | b);\n    wire a_xnor_b = ~(a ^ b);\n    wire a_andnot_b = a & ~b;\n    assign out_and = a_and_b;\n    assign out_or = a_or_b;\n    assign out_xor = a_xor_b;\n    assign out_nand = a_nand_b;\n    assign out_nor = a_nor_b;\n    assign out_xnor = a_xnor_b;\n    assign out_anotb = a_andnot_b;\nendmodule",
+      "raw_completion_raw_sha256": "32af8bf60e2d80ee08f3e60aa0187c38d46290488016a326af47ba7306b99a23",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire a_and_b = a & b;\n    wire a_or_b = a | b;\n    wire a_xor_b = a ^ b;\n    wire a_nand_b = ~(a & b);\n    wire a_nor_b = ~(a | b);\n    wire a_xnor_b = ~(a ^ b);\n    wire a_andnot_b = a & ~b;\n    assign out_and = a_and_b;\n    assign out_or = a_or_b;\n    assign out_xor = a_xor_b;\n    assign out_nand = a_nand_b;\n    assign out_nor = a_nor_b;\n    assign out_xnor = a_xnor_b;\n    assign out_anotb = a_andnot_b;\nendmodule",
+      "rtl_raw_sha256": "71b2ca5b5dee55c2126f1a86e251d75a16fe82e11016cf5d1bbbb85abf51c174",
+      "sample_index": 15,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// Combinational circuit with two inputs, a and b, and 7 logic gates (AND, OR,\n// XOR, NAND, NOR, XNOR, A-N-B).\nmodule TopModule(\n    input a,\n    input b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1 = a & b;\n    wire w2 = a | b;\n    wire w3 = a ^ b;\n    wire w4 = ~(a & b);\n    wire w5 = ~(a | b);\n    wire w6 = ~(a ^ b);\n    wire w7 = a & ~b;\n    assign out_and = w1;\n    assign out_or = w2;\n    assign out_xor = w3;\n    assign out_nand = w4;\n    assign out_nor = w5;\n    assign out_xnor = w6;\n    assign out_anotb = w7;\nendmodule",
+      "raw_completion_raw_sha256": "3a2faff8eb3fd30c7476eb6a077f2be7f61826d1e38fbe5fdccdae91f3d4d112",
+      "rtl": "module TopModule(\n    input a,\n    input b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1 = a & b;\n    wire w2 = a | b;\n    wire w3 = a ^ b;\n    wire w4 = ~(a & b);\n    wire w5 = ~(a | b);\n    wire w6 = ~(a ^ b);\n    wire w7 = a & ~b;\n    assign out_and = w1;\n    assign out_or = w2;\n    assign out_xor = w3;\n    assign out_nand = w4;\n    assign out_nor = w5;\n    assign out_xnor = w6;\n    assign out_anotb = w7;\nendmodule",
+      "rtl_raw_sha256": "1dd3ad057fe6b850a98a593c76f1a7b817fb794b8bbe8e4e40b82c0de2f7a703",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "208/210 mismatches",
+      "raw_completion": "// One-bit combinational circuit with two inputs: a and b, followed by 7\n// independent logic gates, all driven by the same combinational circuit.\nmodule TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire a_and_b = a & b;\n    wire a_or_b = a | b;\n    wire a_xor_b = a ^ b;\n    wire a_nand_b = a & ~b;\n    wire a_nor_b = a | ~b;\n    wire a_xnor_b = a ^ ~b;\n    wire a_anotb = a & ~b;\n    assign out_and = a_and_b;\n    assign out_or = a_or_b;\n    assign out_xor = a_xor_b;\n    assign out_nand = a_nand_b;\n    assign out_nor = a_nor_b;\n    assign out_xnor = a_xnor_b;\n    assign out_anotb = a_anotb;\nendmodule",
+      "raw_completion_raw_sha256": "cf83bee9a57e7bcc377be87d47b0824de5bc329603113aebf3db9408dd6b3941",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire a_and_b = a & b;\n    wire a_or_b = a | b;\n    wire a_xor_b = a ^ b;\n    wire a_nand_b = a & ~b;\n    wire a_nor_b = a | ~b;\n    wire a_xnor_b = a ^ ~b;\n    wire a_anotb = a & ~b;\n    assign out_and = a_and_b;\n    assign out_or = a_or_b;\n    assign out_xor = a_xor_b;\n    assign out_nand = a_nand_b;\n    assign out_nor = a_nor_b;\n    assign out_xnor = a_xnor_b;\n    assign out_anotb = a_anotb;\nendmodule",
+      "rtl_raw_sha256": "13e0986c84c4f757ee8a9b614ace677fcf683cc329a0ae260ee1b2b4f2308298",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire and_gate = a & b;\n    wire or_gate = a | b;\n    wire xor_gate = a ^ b;\n    wire nand_gate = ~(a & b);\n    wire nor_gate = ~(a | b);\n    wire xnor_gate = ~(a ^ b);\n    wire anotb_gate = a & ~b;\n    assign out_and = and_gate;\n    assign out_or = or_gate;\n    assign out_xor = xor_gate;\n    assign out_nand = nand_gate;\n    assign out_nor = nor_gate;\n    assign out_xnor = xnor_gate;\n    assign out_anotb = anotb_gate;\nendmodule",
+      "raw_completion_raw_sha256": "d3fba60d646e454fba46ec082de72ba052466fae2365eb4095668db205de91b5",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire and_gate = a & b;\n    wire or_gate = a | b;\n    wire xor_gate = a ^ b;\n    wire nand_gate = ~(a & b);\n    wire nor_gate = ~(a | b);\n    wire xnor_gate = ~(a ^ b);\n    wire anotb_gate = a & ~b;\n    assign out_and = and_gate;\n    assign out_or = or_gate;\n    assign out_xor = xor_gate;\n    assign out_nand = nand_gate;\n    assign out_nor = nor_gate;\n    assign out_xnor = xnor_gate;\n    assign out_anotb = anotb_gate;\nendmodule",
+      "rtl_raw_sha256": "d3fba60d646e454fba46ec082de72ba052466fae2365eb4095668db205de91b5",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1, w2, w3, w4, w5, w6;\n    and (out_and, a, b);\n    or  (out_or, a, b);\n    xor (out_xor, a, b);\n    nand(out_nand, a, b);\n    nor (out_nor, a, b);\n    xnor(out_xnor, a, b);\n    and (w1, a, ~b);\n    and (out_anotb, w1);\nendmodule",
+      "raw_completion_raw_sha256": "9bb176f265bb853a56566f10a75e19e777d8b573160c3a10e0ff469d317e455b",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    output out_and,\n    output out_or,\n    output out_xor,\n    output out_nand,\n    output out_nor,\n    output out_xnor,\n    output out_anotb\n);\n    wire w1, w2, w3, w4, w5, w6;\n    and (out_and, a, b);\n    or  (out_or, a, b);\n    xor (out_xor, a, b);\n    nand(out_nand, a, b);\n    nor (out_nor, a, b);\n    xnor(out_xnor, a, b);\n    and (w1, a, ~b);\n    and (out_anotb, w1);\nendmodule",
+      "rtl_raw_sha256": "9bb176f265bb853a56566f10a75e19e777d8b573160c3a10e0ff469d317e455b",
+      "sample_index": 19,
+      "status": "PASS"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 15,
+    "fail": 5
+  },
+  "testbench_raw_sha256": "cf35d2299705395fa53f59d3f1a18f8de39bb6dadbdac6bdc55a221d7883e8a7",
+  "training_seed": 2
+}

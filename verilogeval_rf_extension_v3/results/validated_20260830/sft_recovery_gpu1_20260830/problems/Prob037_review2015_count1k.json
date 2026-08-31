@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob037_review2015_count1k",
+  "problem_seed": 8783804888011213501,
+  "prompt_raw_sha256": "d1fd8dc7f283ecd625b9966bc0c8022538813261a762e45f04ad20cd74de994a",
+  "reference_raw_sha256": "bedfffe16c74a3b58ff1021594cefc719320bc14422e7b74d12e80fe1952644e",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "8026/8027 mismatches",
+      "raw_completion": "// Counter from 0 to 999 with period 1000, one-hot encoded as a 10-bit\n// register. The register is updated on the positive edge of the clock.\nmodule TopModule(input clk, input reset, output reg [9:0] q);\n  always @(posedge clk) begin\n    if (reset) q <= 10'b0000000001;\n    else q <= (q == 10'b1000000000) ? 10'b0000000001 : q + 1;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "bfa07126a2da5ffca05da0a7772e666ca23663d38aed359b65248f8bd1bceae5",
+      "rtl": "module TopModule(input clk, input reset, output reg [9:0] q);\n  always @(posedge clk) begin\n    if (reset) q <= 10'b0000000001;\n    else q <= (q == 10'b1000000000) ? 10'b0000000001 : q + 1;\n  end\nendmodule",
+      "rtl_raw_sha256": "f2883e78786a044f43e794dbe5ae61b238a2213e2c84b4e4fcc6f23e2008d3cc",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "2298/8027 mismatches",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  reset,\n    output [9:0] q\n);\n    reg [9:0] count;\n    always @(posedge clk) begin\n        if (reset) count <= 10'd0;\n        else count <= count + 10'd1;\n    end\n    assign q = count;\nendmodule",
+      "raw_completion_raw_sha256": "8290c7429a9425f79b4058fd243f56953feaf0481eb786f136a89663c4556572",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    output [9:0] q\n);\n    reg [9:0] count;\n    always @(posedge clk) begin\n        if (reset) count <= 10'd0;\n        else count <= count + 10'd1;\n    end\n    assign q = count;\nendmodule",
+      "rtl_raw_sha256": "8290c7429a9425f79b4058fd243f56953feaf0481eb786f136a89663c4556572",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "8018/8027 mismatches",
+      "raw_completion": "// One-hot encoded counter. Translates to a 10-bit binary counter with a\n// period of 1000 cycles, equivalent to a periodic signal with the same\n// period.\nmodule TopModule(input clk, input reset, output reg [9:0] q);\n    reg [2:0] cnt;\n    always @(posedge clk) begin\n        if (reset) begin\n            cnt <= 0;\n            q <= 10'b0000000001;\n        end else begin\n            case (cnt)\n                0: begin cnt <= 1; q <= 10'b0000000010; end\n                1: begin cnt <= 2; q <= 10'b0000000100; end\n                2: begin cnt <= 3; q <= 10'b0000001000; end\n                3: begin cnt <= 4; q <= 10'b0000010000; end\n                4: begin cnt <= 5; q <= 10'b0000100000; end\n                5: begin cnt <= 6; q <= 10'b0001000000; end\n                6: begin cnt <= 7; q <= 10'b0010000000; end\n                7: begin cnt <= 8; q <= 10'b0100000000; end\n                8: begin cnt <= 9; q <= 10'b1000000000; end\n                9: begin cnt <= 0; q <= 10'b0000000001; end\n            endcase\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "2ddeb75fd6866b29107cff3c92c91cf257cd898855c05c06aeb14c7b7b17bf6c",
+      "rtl": "module TopModule(input clk, input reset, output reg [9:0] q);\n    reg [2:0] cnt;\n    always @(posedge clk) begin\n        if (reset) begin\n            cnt <= 0;\n            q <= 10'b0000000001;\n        end else begin\n            case (cnt)\n                0: begin cnt <= 1; q <= 10'b0000000010; end\n                1: begin cnt <= 2; q <= 10'b0000000100; end\n                2: begin cnt <= 3; q <= 10'b0000001000; end\n                3: begin cnt <= 4; q <= 10'b0000010000; end\n                4: begin cnt <= 5; q <= 10'b0000100000; end\n                5: begin cnt <= 6; q <= 10'b0001000000; end\n                6: begin cnt <= 7; q <= 10'b0010000000; end\n                7: begin cnt <= 8; q <= 10'b0100000000; end\n                8: begin cnt <= 9; q <= 10'b1000000000; end\n                9: begin cnt <= 0; q <= 10'b0000000001; end\n            endcase\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "f138da433c79d9362bfb9ea1d2ef35c7939e9bea93bb1c3cbd1bfb42f128b519",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "2298/8027 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  reset,\n    output reg [9:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 10'd0;\n        else       q <= q + 10'd1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "33566bf95842e4481aebbaad1076a9317f2ed9368d9eee4a79db55cca1c54a78",
+      "rtl": "module TopModule(\n    input  clk,\n    input  reset,\n    output reg [9:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 10'd0;\n        else       q <= q + 10'd1;\n    end\nendmodule",
+      "rtl_raw_sha256": "33566bf95842e4481aebbaad1076a9317f2ed9368d9eee4a79db55cca1c54a78",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "2298/8027 mismatches",
+      "raw_completion": "// Counter with period 1000 (same as 1 kHz)\nmodule TopModule(\n    input  clk,\n    input  reset,\n    output [9:0] q\n);\n    reg [9:0] count;\n    always @(posedge clk) begin\n        if (reset) count <= 10'd0;\n        else count <= count + 10'd1;\n    end\n    assign q = count;\nendmodule",
+      "raw_completion_raw_sha256": "faa70303a6eafe1dcd50e467821c01d0a1bf688b1709da2cd7b920d69740cde0",
+      "rtl": "module TopModule(\n    input  clk,\n    input  reset,\n    output [9:0] q\n);\n    reg [9:0] count;\n    always @(posedge clk) begin\n        if (reset) count <= 10'd0;\n        else count <= count + 10'd1;\n    end\n    assign q = count;\nendmodule",
+      "rtl_raw_sha256": "d9b717e87013442e599a3bf099038bb4fd4051a21b13b7b89f2187870c68a8ca",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "2298/8027 mismatches",
+      "raw_completion": "// Counter that counts from 0 to 999 (inclusive), with a period of 1000\n// cycles. The reset input is active high and synchronous, and resets the\n// counter to 0.\nmodule TopModule (\n    input  clk,\n    input  reset,\n    output reg [9:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 10'd0;\n        else       q <= q + 1'd1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "625669a7494bb961bd7d9c0118cc851aa013acb5d3f40f2041d5bb18d9d51cfc",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    output reg [9:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 10'd0;\n        else       q <= q + 1'd1;\n    end\nendmodule",
+      "rtl_raw_sha256": "90dcd881955a5479fdb8c5f9ce5d12153eff5c9967f6037005dd5686e15bb1b3",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "2298/8027 mismatches",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  reset,\n    output reg [9:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 10'd0;\n        else       q <= q + 10'd1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "5263d0ea33fda8629a49a8523d8d78f8e771f3fae7cc553896120f062064fe58",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    output reg [9:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 10'd0;\n        else       q <= q + 10'd1;\n    end\nendmodule",
+      "rtl_raw_sha256": "5263d0ea33fda8629a49a8523d8d78f8e771f3fae7cc553896120f062064fe58",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "2298/8027 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  reset,\n    output [9:0] q\n);\n    reg [9:0] cnt;\n    always @(posedge clk) begin\n        if (reset) cnt <= 10'd0;\n        else cnt <= cnt + 10'd1;\n    end\n    assign q = cnt;\nendmodule",
+      "raw_completion_raw_sha256": "20e2d4205598e6b45c1fc0dce517b117c9e41038f467a93afcc3513afdd18496",
+      "rtl": "module TopModule(\n    input  clk,\n    input  reset,\n    output [9:0] q\n);\n    reg [9:0] cnt;\n    always @(posedge clk) begin\n        if (reset) cnt <= 10'd0;\n        else cnt <= cnt + 10'd1;\n    end\n    assign q = cnt;\nendmodule",
+      "rtl_raw_sha256": "20e2d4205598e6b45c1fc0dce517b117c9e41038f467a93afcc3513afdd18496",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  reset,\n    output reg [9:0] q\n);\n    always @(posedge clk) begin\n        if (reset) begin\n            q <= 10'd0;\n        end else begin\n            q <= q + 10'd1;\n            if (q == 10'd999) begin\n                q <= 10'd0;\n            end\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "96834a7c71014e56e26535389989421be0e5b4ffbd2e7a399d4b2aaf60f78231",
+      "rtl": "module TopModule(\n    input  clk,\n    input  reset,\n    output reg [9:0] q\n);\n    always @(posedge clk) begin\n        if (reset) begin\n            q <= 10'd0;\n        end else begin\n            q <= q + 10'd1;\n            if (q == 10'd999) begin\n                q <= 10'd0;\n            end\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "96834a7c71014e56e26535389989421be0e5b4ffbd2e7a399d4b2aaf60f78231",
+      "sample_index": 8,
+      "status": "PASS"
+    },
+    {
+      "detail": "2298/8027 mismatches",
+      "raw_completion": "// A simple counter that wraps around at 1000.\nmodule TopModule(input clk, input reset, output [9:0] q);\n  reg [9:0] count;\n  always @(posedge clk) begin\n    if (reset) count <= 10'd0;\n    else count <= count + 10'd1;\n  end\n  assign q = count;\nendmodule",
+      "raw_completion_raw_sha256": "84c79d4a3cd6110fc73562e4994454edca507989d3cb3af206112c66eecd1d57",
+      "rtl": "module TopModule(input clk, input reset, output [9:0] q);\n  reg [9:0] count;\n  always @(posedge clk) begin\n    if (reset) count <= 10'd0;\n    else count <= count + 10'd1;\n  end\n  assign q = count;\nendmodule",
+      "rtl_raw_sha256": "dc9043853f371f23d6985ad60ad9735942e2c2e8522242ad4809c315ad22250b",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "2298/8027 mismatches",
+      "raw_completion": "// A simple 10-bit counter, with a period of 1000 cycles.\nmodule TopModule (\n    input  clk,\n    input  reset,\n    output [9:0] q\n);\n    reg [9:0] count;\n    always @(posedge clk) begin\n        if (reset) count <= 10'd0;\n        else count <= count + 10'd1;\n    end\n    assign q = count;\nendmodule",
+      "raw_completion_raw_sha256": "61b364f9c73b8f9b3d282be32ae65e7c42ebbb3c3f8c129ffed63881c857dcd5",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    output [9:0] q\n);\n    reg [9:0] count;\n    always @(posedge clk) begin\n        if (reset) count <= 10'd0;\n        else count <= count + 10'd1;\n    end\n    assign q = count;\nendmodule",
+      "rtl_raw_sha256": "8290c7429a9425f79b4058fd243f56953feaf0481eb786f136a89663c4556572",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "2298/8027 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  reset,\n    output reg [9:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 10'd0;\n        else       q <= q + 10'd1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "33566bf95842e4481aebbaad1076a9317f2ed9368d9eee4a79db55cca1c54a78",
+      "rtl": "module TopModule(\n    input  clk,\n    input  reset,\n    output reg [9:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 10'd0;\n        else       q <= q + 10'd1;\n    end\nendmodule",
+      "rtl_raw_sha256": "33566bf95842e4481aebbaad1076a9317f2ed9368d9eee4a79db55cca1c54a78",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "2298/8027 mismatches",
+      "raw_completion": "// Counter from 0 to 999, with a period of 1000 cycles\nmodule TopModule (\n    input  clk,\n    input  reset,\n    output [9:0] q\n);\n    reg [9:0] cnt;\n    always @(posedge clk) begin\n        if (reset) cnt <= 10'd0;\n        else cnt <= cnt + 10'd1;\n    end\n    assign q = cnt;\nendmodule",
+      "raw_completion_raw_sha256": "e6737f20b7edfad21f803d1238aecc392586d6395fefa2b28ccbfb6909723ba2",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    output [9:0] q\n);\n    reg [9:0] cnt;\n    always @(posedge clk) begin\n        if (reset) cnt <= 10'd0;\n        else cnt <= cnt + 10'd1;\n    end\n    assign q = cnt;\nendmodule",
+      "rtl_raw_sha256": "708811eccf63fac8d841bc0946fa7ea46c938d44e52cd408207efe34767d0135",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    input  clk,\n    input  reset,\n    output reg [9:0] q\n);\n    always @(posedge clk) begin\n        if (reset) begin\n            q <= 10'd0;\n        end else begin\n            q <= q + 10'd1;\n            if (q == 10'd999) begin\n                q <= 10'd0;\n            end\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "4649db94636e58fe04793c033722ec347ee4f5e73dad6c390b1c77f2e3b79d96",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    output reg [9:0] q\n);\n    always @(posedge clk) begin\n        if (reset) begin\n            q <= 10'd0;\n        end else begin\n            q <= q + 10'd1;\n            if (q == 10'd999) begin\n                q <= 10'd0;\n            end\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "4649db94636e58fe04793c033722ec347ee4f5e73dad6c390b1c77f2e3b79d96",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "2298/8027 mismatches",
+      "raw_completion": "module TopModule (\n  input  clk,\n  input  reset,\n  output reg [9:0] q\n);\n  always @(posedge clk) begin\n    if (reset) q <= 10'd0;\n    else       q <= q + 10'd1;\n  end\n  always @(posedge clk) begin\n    if (q == 10'd1000) q <= 10'd0;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "e2228982379db8138efd83bd0f7b5ec7e2ef9592a6d8f2ad49403938bdfd44ae",
+      "rtl": "module TopModule (\n  input  clk,\n  input  reset,\n  output reg [9:0] q\n);\n  always @(posedge clk) begin\n    if (reset) q <= 10'd0;\n    else       q <= q + 10'd1;\n  end\n  always @(posedge clk) begin\n    if (q == 10'd1000) q <= 10'd0;\n  end\nendmodule",
+      "rtl_raw_sha256": "e2228982379db8138efd83bd0f7b5ec7e2ef9592a6d8f2ad49403938bdfd44ae",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "2298/8027 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  reset,\n    output reg [9:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 10'd0;\n        else       q <= q + 1'd1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "bc4d6e90978bc652aa1ef0f5fc2752a57a64a70ded35031723f9f97ccca3b621",
+      "rtl": "module TopModule(\n    input  clk,\n    input  reset,\n    output reg [9:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 10'd0;\n        else       q <= q + 1'd1;\n    end\nendmodule",
+      "rtl_raw_sha256": "bc4d6e90978bc652aa1ef0f5fc2752a57a64a70ded35031723f9f97ccca3b621",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "2298/8027 mismatches",
+      "raw_completion": "// Counter from 0 to 999, with a period of 1000 cycles.\nmodule TopModule(input clk, input reset, output reg [9:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 10'd0;\n        else q <= q + 10'd1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "4a9af606758a4aef9f073d619c689e8328f0c82e49eeffc72ce0d291949adf7e",
+      "rtl": "module TopModule(input clk, input reset, output reg [9:0] q);\n    always @(posedge clk) begin\n        if (reset) q <= 10'd0;\n        else q <= q + 10'd1;\n    end\nendmodule",
+      "rtl_raw_sha256": "d5eb674ae3a4cdeb71cd4506d427f9a7d9626b84c3124c097ea894896ee5c958",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "2298/8027 mismatches",
+      "raw_completion": "module TopModule(\n    input  clk,\n    input  reset,\n    output reg [9:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 10'd0;\n        else       q <= q + 10'd1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "33566bf95842e4481aebbaad1076a9317f2ed9368d9eee4a79db55cca1c54a78",
+      "rtl": "module TopModule(\n    input  clk,\n    input  reset,\n    output reg [9:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 10'd0;\n        else       q <= q + 10'd1;\n    end\nendmodule",
+      "rtl_raw_sha256": "33566bf95842e4481aebbaad1076a9317f2ed9368d9eee4a79db55cca1c54a78",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "2298/8027 mismatches",
+      "raw_completion": "// 10-bit counter, period 1000\nmodule TopModule (\n    input  clk,\n    input  reset,\n    output [9:0] q\n);\n    reg [9:0] cnt;\n    always @(posedge clk) begin\n        if (reset) cnt <= 10'd0;\n        else       cnt <= cnt + 10'd1;\n    end\n    assign q = cnt;\nendmodule",
+      "raw_completion_raw_sha256": "cd06793c628f5d3a1531b2d4247cb449c0c7155d003b0ad59b08b4d4d45ffa83",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    output [9:0] q\n);\n    reg [9:0] cnt;\n    always @(posedge clk) begin\n        if (reset) cnt <= 10'd0;\n        else       cnt <= cnt + 10'd1;\n    end\n    assign q = cnt;\nendmodule",
+      "rtl_raw_sha256": "61f7843dcfca6bdc52abf60435a93fc0b6678ebc9de4156a6867b243e1fa53c7",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "2298/8027 mismatches",
+      "raw_completion": "// 10-bit counter, period 1000\nmodule TopModule (\n    input  clk,\n    input  reset,\n    output reg [9:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 10'd0;\n        else       q <= q + 10'd1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "f570b44f2cf815aa55b36a4854fbb2a91d0f33774869817fbfa32b0b06fffb1d",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    output reg [9:0] q\n);\n    always @(posedge clk) begin\n        if (reset) q <= 10'd0;\n        else       q <= q + 10'd1;\n    end\nendmodule",
+      "rtl_raw_sha256": "5263d0ea33fda8629a49a8523d8d78f8e771f3fae7cc553896120f062064fe58",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 2,
+    "fail": 18
+  },
+  "testbench_raw_sha256": "58236493db81e2c9b7d4abd649a3cd0bc50e61bf62fcabc5f7971555137ac21b",
+  "training_seed": 0
+}

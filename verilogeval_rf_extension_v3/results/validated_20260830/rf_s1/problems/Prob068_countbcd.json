@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s1",
+  "problem": "Prob068_countbcd",
+  "problem_seed": 839238241957016829,
+  "prompt_raw_sha256": "ae64942315bfdb8370969ba27e22057af9f28f35a4c0532e18fd0805ef1ebda4",
+  "reference_raw_sha256": "699702b0cbd8dead9301675e70fe23b847a58a81d5757e87af0abd26163f01ec",
+  "run_config_canonical_raw_sha256": "c53e35eb5c2dad9f51a60e7a17a079a81367374d298a90c64b2311c221c48a5a",
+  "samples": [
+    {
+      "detail": "<TMP>/candidate.sv:7: error: Unknown module type: BCDDigit",
+      "raw_completion": "// 4-digit BCD counter\nmodule TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [15:0] count;\n  wire [3:0] digits [0:3];\n  wire [2:0] inc;\n  generate\n    for (genvar i = 0; i < 4; i = i + 1) begin\n      BCDDigit #(.N(16'd10)) d(.clk(clk), .reset(reset), .ena(inc[i]), .d({count[4*i+3:4*i]}), .q(digits[i]));\n    end\n  endgenerate\n  assign q = count;\n  assign ena = inc[2:0];\n  always @(posedge clk) begin\n    if (reset) begin\n      count <= 16'd0;\n    end else begin\n      count <= count + 16'd1;\n      inc[0] <= 1;\n      inc[1] <= (count[3:0] == 4'd9);\n      inc[2] <= (count[7:4] == 4'd9);\n      inc[3] <= (count[11:8] == 4'd9);\n    end\n  end\nendmodule",
+      "raw_completion_raw_sha256": "36d33b90907bb0bb834b00b95dea42f69f61da7ede9ab6770583f277e586ca61",
+      "rtl": "module TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [15:0] count;\n  wire [3:0] digits [0:3];\n  wire [2:0] inc;\n  generate\n    for (genvar i = 0; i < 4; i = i + 1) begin\n      BCDDigit #(.N(16'd10)) d(.clk(clk), .reset(reset), .ena(inc[i]), .d({count[4*i+3:4*i]}), .q(digits[i]));\n    end\n  endgenerate\n  assign q = count;\n  assign ena = inc[2:0];\n  always @(posedge clk) begin\n    if (reset) begin\n      count <= 16'd0;\n    end else begin\n      count <= count + 16'd1;\n      inc[0] <= 1;\n      inc[1] <= (count[3:0] == 4'd9);\n      inc[2] <= (count[7:4] == 4'd9);\n      inc[3] <= (count[11:8] == 4'd9);\n    end\n  end\nendmodule",
+      "rtl_raw_sha256": "b0aac78e50eedb5a783e477495656f1ee836e18cfaf5269ae3e11cd323e4c501",
+      "sample_index": 0,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "39672/39805 mismatches",
+      "raw_completion": "// 4-digit BCD counter, with per-digit enable signals\nmodule TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n    reg [15:0] cnt;\n    wire [3:0] ones = cnt[3:0];\n    wire [3:0] tens = cnt[7:4];\n    wire [3:0] hundreds = cnt[11:8];\n    wire [3:0] thousands = cnt[15:12];\n    reg [2:0] ena2;\n    always @(posedge clk) begin\n        if (reset) begin\n            cnt <= 16'd0;\n            ena2 <= 3'b000;\n        end else begin\n            cnt <= cnt + 16'd1;\n            ena2 <= {ena2[1:0], ones == 4'd9};\n        end\n    end\n    assign ena = ena2;\n    assign q = cnt;\nendmodule",
+      "raw_completion_raw_sha256": "6e9b2b5d16d3774c954bfd933dd5b919fa2f8c13b83f3fb02e35220925a189a2",
+      "rtl": "module TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n    reg [15:0] cnt;\n    wire [3:0] ones = cnt[3:0];\n    wire [3:0] tens = cnt[7:4];\n    wire [3:0] hundreds = cnt[11:8];\n    wire [3:0] thousands = cnt[15:12];\n    reg [2:0] ena2;\n    always @(posedge clk) begin\n        if (reset) begin\n            cnt <= 16'd0;\n            ena2 <= 3'b000;\n        end else begin\n            cnt <= cnt + 16'd1;\n            ena2 <= {ena2[1:0], ones == 4'd9};\n        end\n    end\n    assign ena = ena2;\n    assign q = cnt;\nendmodule",
+      "rtl_raw_sha256": "c37981351c9787e0165ee2ec0f679255263926365a55ea775565c6174f9b690c",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "19092/39805 mismatches",
+      "raw_completion": "// 4-digit BCD counter\nmodule TopModule(input clk, input reset, output reg [2:0] ena, output reg [15:0] q);\n    always @(posedge clk) begin\n        if (reset) begin\n            q <= 16'd0;\n            ena <= 3'b111;\n        end else begin\n            q <= q + 16'd1;\n            if (q[3:0] == 4'd9) begin\n                q[3:0] <= 4'd0;\n                if (q[7:4] == 4'd9) begin\n                    q[7:4] <= 4'd0;\n                    if (q[11:8] == 4'd9) begin\n                        q[11:8] <= 4'd0;\n                        if (q[15:12] == 4'd9) q[15:12] <= 4'd0;\n                        else q[15:12] <= q[15:12] + 4'd1;\n                    end else q[11:8] <= q[11:8] + 4'd1;\n                end else q[7:4] <= q[7:4] + 4'd1;\n            end else q[3:0] <= q[3:0] + 4'd1;\n            ena[2] <= q[3];\n            ena[1] <= q[3] | q[7];\n            ena[0] <= q[3] | q[7] | q[11];\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "371271360a256bcb57785484597651a67c57e49e73bcf799328fcea9c6470f84",
+      "rtl": "module TopModule(input clk, input reset, output reg [2:0] ena, output reg [15:0] q);\n    always @(posedge clk) begin\n        if (reset) begin\n            q <= 16'd0;\n            ena <= 3'b111;\n        end else begin\n            q <= q + 16'd1;\n            if (q[3:0] == 4'd9) begin\n                q[3:0] <= 4'd0;\n                if (q[7:4] == 4'd9) begin\n                    q[7:4] <= 4'd0;\n                    if (q[11:8] == 4'd9) begin\n                        q[11:8] <= 4'd0;\n                        if (q[15:12] == 4'd9) q[15:12] <= 4'd0;\n                        else q[15:12] <= q[15:12] + 4'd1;\n                    end else q[11:8] <= q[11:8] + 4'd1;\n                end else q[7:4] <= q[7:4] + 4'd1;\n            end else q[3:0] <= q[3:0] + 4'd1;\n            ena[2] <= q[3];\n            ena[1] <= q[3] | q[7];\n            ena[0] <= q[3] | q[7] | q[11];\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "1f1923cf4789348e51ab8c513bc8e4329ccb0655f39417aca920f2d049e82c64",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: error: dig0 is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 4-digit BCD counter\nmodule TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [15:0] cnt;\n  wire [3:0] dig0, dig1, dig2, dig3;\n  reg [2:0] ena_reg;\n  wire [2:0] ena_next;\n  reg [15:0] cnt_next;\n  always @(*) begin\n    dig0 = cnt[3:0];\n    dig1 = cnt[7:4];\n    dig2 = cnt[11:8];\n    dig3 = cnt[15:12];\n    ena_next = {ena_reg[1:0], 1'b0};\n    if (dig0 == 4'd9) begin dig0 = 4'd0; ena_next[0] = 1'b1; end\n    if (dig1 == 4'd9) begin dig1 = 4'd0; ena_next[1] = 1'b1; end\n    if (dig2 == 4'd9) begin dig2 = 4'd0; ena_next[2] = 1'b1; end\n  end\n  always @(posedge clk) begin\n    if (reset) begin\n      cnt <= 16'd0;\n      ena_reg <= 3'b111;\n    end else begin\n      cnt <= cnt_next;\n      ena_reg <= ena_next;\n    end\n  end\n  always @(*) begin\n    cnt_next = cnt + 16'd1;\n    if (ena_reg[2]) cnt_next = cnt + 16'd1000;\n    if (ena_reg[1]) cnt_next = cnt + 16'd100;\n    if (ena_reg[0]) cnt_next = cnt + 16'd10;\n  end\n  assign q = cnt;\n  assign ena = ena_reg;\nendmodule",
+      "raw_completion_raw_sha256": "e0ea7ed566147904704ea612ac412911158c0f39517339992dad1be40863c051",
+      "rtl": "module TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [15:0] cnt;\n  wire [3:0] dig0, dig1, dig2, dig3;\n  reg [2:0] ena_reg;\n  wire [2:0] ena_next;\n  reg [15:0] cnt_next;\n  always @(*) begin\n    dig0 = cnt[3:0];\n    dig1 = cnt[7:4];\n    dig2 = cnt[11:8];\n    dig3 = cnt[15:12];\n    ena_next = {ena_reg[1:0], 1'b0};\n    if (dig0 == 4'd9) begin dig0 = 4'd0; ena_next[0] = 1'b1; end\n    if (dig1 == 4'd9) begin dig1 = 4'd0; ena_next[1] = 1'b1; end\n    if (dig2 == 4'd9) begin dig2 = 4'd0; ena_next[2] = 1'b1; end\n  end\n  always @(posedge clk) begin\n    if (reset) begin\n      cnt <= 16'd0;\n      ena_reg <= 3'b111;\n    end else begin\n      cnt <= cnt_next;\n      ena_reg <= ena_next;\n    end\n  end\n  always @(*) begin\n    cnt_next = cnt + 16'd1;\n    if (ena_reg[2]) cnt_next = cnt + 16'd1000;\n    if (ena_reg[1]) cnt_next = cnt + 16'd100;\n    if (ena_reg[0]) cnt_next = cnt + 16'd10;\n  end\n  assign q = cnt;\n  assign ena = ena_reg;\nendmodule",
+      "rtl_raw_sha256": "72cf5c599091dd2e33a1990208ec1b053e3a9c65e7a4cfa1c32f957a3a6926aa",
+      "sample_index": 3,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:8: syntax error",
+      "raw_completion": "// 4-digit BCD counter, with enable signals for the upper three digits\nmodule TopModule(input clk, input reset, output reg [2:0] ena, output reg [15:0] q);\n    always @(posedge clk) begin\n        if (reset) begin\n            q <= 16'h0000;\n            ena <= 3'b000;\n        end else begin\n            ena[0] <= 1;\n            if (q[3:0] == 4'h9) begin q[3:0] <= 4'h0; ena[1] <= 1; if (q[7:4] == 4'h9) begin q[7:4] <= 4'h0; ena[2] <= 1; if (q[11:8] == 4'h9) begin q[11:8] <= 4'h0; ena[0] <= 1; q[15:12] <= q[15:12] + 1; end else ena[0] <= 0; end else ena[1] <= 0; end else ena[0] <= 0; q[15:12] <= q[15:12]; end else q[15:12] <= q[15:12] + 1;\n            ena[1] <= 0;\n            ena[2] <= 0;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "f7bdd3efbc33d9eda5fd8cd797ae1a0f0704d29705c1bbf20bb96a149a6282ed",
+      "rtl": "module TopModule(input clk, input reset, output reg [2:0] ena, output reg [15:0] q);\n    always @(posedge clk) begin\n        if (reset) begin\n            q <= 16'h0000;\n            ena <= 3'b000;\n        end else begin\n            ena[0] <= 1;\n            if (q[3:0] == 4'h9) begin q[3:0] <= 4'h0; ena[1] <= 1; if (q[7:4] == 4'h9) begin q[7:4] <= 4'h0; ena[2] <= 1; if (q[11:8] == 4'h9) begin q[11:8] <= 4'h0; ena[0] <= 1; q[15:12] <= q[15:12] + 1; end else ena[0] <= 0; end else ena[1] <= 0; end else ena[0] <= 0; q[15:12] <= q[15:12]; end else q[15:12] <= q[15:12] + 1;\n            ena[1] <= 0;\n            ena[2] <= 0;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "4deefb1a0fa9074ed739f8faef95de63f78efe10f6fb94fa30caba3ee0505daf",
+      "sample_index": 4,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "39794/39805 mismatches",
+      "raw_completion": "// 4-digit BCD counter, with enable signals for each individual digit\nmodule TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [3:0] cnt1, cnt2, cnt3, cnt4;\n  reg [2:0] ena2, ena3, ena4;\n  wire [15:0] q2;\n  wire [15:0] q3;\n  wire [15:0] q4;\n  reg [15:0] qreg;\n  always @(posedge clk) begin\n    if (reset) begin\n      cnt1 <= 4'd0; ena2 <= 1; cnt2 <= 4'd0; ena3 <= 1; cnt3 <= 4'd0; ena4 <= 1; cnt4 <= 4'd0;\n    end else begin\n      if (ena2) cnt1 <= cnt1 + 1;\n      if (ena3) cnt2 <= cnt2 + 1;\n      if (ena4) cnt3 <= cnt3 + 1;\n      cnt4 <= cnt4 + 1;\n    end\n  end\n  always @(posedge clk) qreg <= {cnt4, cnt3, cnt2, cnt1};\n  assign q = qreg;\n  assign ena = {ena4, ena3, ena2};\n  assign q2 = {4'd0, cnt1, cnt2, cnt3};\n  assign q3 = {4'd0, cnt2, cnt3, cnt4};\n  assign q4 = {4'd0, cnt3, cnt4, cnt1};\n  always @(posedge clk) ena2 <= (q2 == 16'h099) ? 1 : 0;\n  always @(posedge clk) ena3 <= (q3 == 16'h0999) ? 1 : 0;\n  always @(posedge clk) ena4 <= (q4 == 16'h09999) ? 1 : 0;\nendmodule",
+      "raw_completion_raw_sha256": "5bafccbd2c887e8f50af5e5a077d905c6c6c811fff9c9e2dba78b9a5ea7618c7",
+      "rtl": "module TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [3:0] cnt1, cnt2, cnt3, cnt4;\n  reg [2:0] ena2, ena3, ena4;\n  wire [15:0] q2;\n  wire [15:0] q3;\n  wire [15:0] q4;\n  reg [15:0] qreg;\n  always @(posedge clk) begin\n    if (reset) begin\n      cnt1 <= 4'd0; ena2 <= 1; cnt2 <= 4'd0; ena3 <= 1; cnt3 <= 4'd0; ena4 <= 1; cnt4 <= 4'd0;\n    end else begin\n      if (ena2) cnt1 <= cnt1 + 1;\n      if (ena3) cnt2 <= cnt2 + 1;\n      if (ena4) cnt3 <= cnt3 + 1;\n      cnt4 <= cnt4 + 1;\n    end\n  end\n  always @(posedge clk) qreg <= {cnt4, cnt3, cnt2, cnt1};\n  assign q = qreg;\n  assign ena = {ena4, ena3, ena2};\n  assign q2 = {4'd0, cnt1, cnt2, cnt3};\n  assign q3 = {4'd0, cnt2, cnt3, cnt4};\n  assign q4 = {4'd0, cnt3, cnt4, cnt1};\n  always @(posedge clk) ena2 <= (q2 == 16'h099) ? 1 : 0;\n  always @(posedge clk) ena3 <= (q3 == 16'h0999) ? 1 : 0;\n  always @(posedge clk) ena4 <= (q4 == 16'h09999) ? 1 : 0;\nendmodule",
+      "rtl_raw_sha256": "67525872da27e2cf9066bc08e4bf8ea8082f31ed78149eaebd2dd4940490b6c7",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "39672/39805 mismatches",
+      "raw_completion": "// 4-digit BCD counter\nmodule TopModule(\n    input  clk,\n    input  reset,\n    output [2:0] ena,\n    output [15:0] q\n);\n    reg [15:0] cnt;\n    wire [3:0] ones = cnt[3:0];\n    wire [3:0] tens = cnt[7:4];\n    wire [3:0] hundreds = cnt[11:8];\n    wire [3:0] thousands = cnt[15:12];\n    reg [2:0] ena_reg;\n    always @(posedge clk) begin\n        if (reset) begin\n            cnt <= 16'd0;\n            ena_reg <= 3'b000;\n        end else begin\n            cnt <= cnt + 16'd1;\n            ena_reg <= {ena_reg[1:0], ones==4'd9};\n        end\n    end\n    assign ena = ena_reg;\n    assign q = cnt;\nendmodule",
+      "raw_completion_raw_sha256": "4149083e77424bb62874f2ced307636d7caee2054156360f4547478a7cbb133e",
+      "rtl": "module TopModule(\n    input  clk,\n    input  reset,\n    output [2:0] ena,\n    output [15:0] q\n);\n    reg [15:0] cnt;\n    wire [3:0] ones = cnt[3:0];\n    wire [3:0] tens = cnt[7:4];\n    wire [3:0] hundreds = cnt[11:8];\n    wire [3:0] thousands = cnt[15:12];\n    reg [2:0] ena_reg;\n    always @(posedge clk) begin\n        if (reset) begin\n            cnt <= 16'd0;\n            ena_reg <= 3'b000;\n        end else begin\n            cnt <= cnt + 16'd1;\n            ena_reg <= {ena_reg[1:0], ones==4'd9};\n        end\n    end\n    assign ena = ena_reg;\n    assign q = cnt;\nendmodule",
+      "rtl_raw_sha256": "0ffe821f4bf518a4f7a9d244f482136d24a7616e59e823bb2cbeabf09010bfc9",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "39672/39805 mismatches",
+      "raw_completion": "// 4-digit BCD counter\nmodule TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [15:0] count;\n  wire [3:0] ones = count[3:0];\n  wire [3:0] tens = count[7:4];\n  wire [3:0] hundreds = count[11:8];\n  wire [3:0] thousands = count[15:12];\n  reg [2:0] ena_reg;\n  always @(posedge clk) begin\n    if (reset) begin\n      count <= 16'd0;\n      ena_reg <= 3'b000;\n    end else begin\n      count <= count + 16'd1;\n      ena_reg <= {ena_reg[1:0], ones==4'd9};\n    end\n  end\n  assign ena = ena_reg;\n  assign q = count;\nendmodule",
+      "raw_completion_raw_sha256": "e1bd169fde2d7c8878cca68c665d6de4766aa71a03419570a96ec955b7381279",
+      "rtl": "module TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [15:0] count;\n  wire [3:0] ones = count[3:0];\n  wire [3:0] tens = count[7:4];\n  wire [3:0] hundreds = count[11:8];\n  wire [3:0] thousands = count[15:12];\n  reg [2:0] ena_reg;\n  always @(posedge clk) begin\n    if (reset) begin\n      count <= 16'd0;\n      ena_reg <= 3'b000;\n    end else begin\n      count <= count + 16'd1;\n      ena_reg <= {ena_reg[1:0], ones==4'd9};\n    end\n  end\n  assign ena = ena_reg;\n  assign q = count;\nendmodule",
+      "rtl_raw_sha256": "dbc48e05ca9152cab8d98ab0e42e981c282ac36a7e6bc232c95ddd572ad1c955",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "39764/39805 mismatches",
+      "raw_completion": "// 4-digit BCD counter\nmodule TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [15:0] cnt;\n  reg [2:0] ena2;\n  always @(posedge clk) begin\n    if (reset) begin\n      cnt <= 16'd0;\n      ena2 <= 3'b000;\n    end else begin\n      cnt <= cnt + 16'd1;\n      ena2 <= ena2 | 3'b001;\n      if (cnt[3:0] == 4'd9) begin\n        cnt <= cnt + 16'd6;\n        ena2 <= ena2 | 3'b010;\n        if (cnt[7:4] == 4'd9) begin\n          cnt <= cnt + 16'd6;\n          ena2 <= ena2 | 3'b100;\n          if (cnt[11:8] == 4'd9) begin\n            cnt <= 16'd0;\n            ena2 <= 3'b000;\n          end\n        end\n      end\n    end\n  end\n  assign ena = ena2;\n  assign q = cnt;\nendmodule",
+      "raw_completion_raw_sha256": "2fec538ff2ca11ab96b8203e7694188d9058b04396a9637ec0203904e9bac33e",
+      "rtl": "module TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [15:0] cnt;\n  reg [2:0] ena2;\n  always @(posedge clk) begin\n    if (reset) begin\n      cnt <= 16'd0;\n      ena2 <= 3'b000;\n    end else begin\n      cnt <= cnt + 16'd1;\n      ena2 <= ena2 | 3'b001;\n      if (cnt[3:0] == 4'd9) begin\n        cnt <= cnt + 16'd6;\n        ena2 <= ena2 | 3'b010;\n        if (cnt[7:4] == 4'd9) begin\n          cnt <= cnt + 16'd6;\n          ena2 <= ena2 | 3'b100;\n          if (cnt[11:8] == 4'd9) begin\n            cnt <= 16'd0;\n            ena2 <= 3'b000;\n          end\n        end\n      end\n    end\n  end\n  assign ena = ena2;\n  assign q = cnt;\nendmodule",
+      "rtl_raw_sha256": "3e7cdff78917f6cd03cfe7b887d9c79439fc4b69fec30b839529b301f7f5cda4",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "39804/39805 mismatches",
+      "raw_completion": "// 4-digit BCD counter\nmodule TopModule(input clk, input reset, output reg [2:0] ena, output reg [15:0] q);\n    always @(posedge clk) begin\n        if (reset) begin\n            ena <= 3'b111;\n            q <= 16'd0;\n        end else begin\n            ena <= {ena[1:0], 1'b0};\n            if (ena[2]) q[3:0] <= 4'd9;\n            if (ena[1]) q[7:4] <= q[7:4] + 1'b1;\n            if (ena[0]) q[11:8] <= (q[7:4] == 4'd9) ? 4'd0 : q[11:8] + 1'b1;\n            if (ena[2]) q[15:12] <= (q[11:8] == 4'd9) ? 4'd0 : (q[7:4] == 4'd9) ? 4'd1 : q[15:12] + 1'b1;\n        end\n    end\nendmodule",
+      "raw_completion_raw_sha256": "e6f5480e41d4ef733defc85eea570d97e8b733fbc77a493bc90b913fa5f734d2",
+      "rtl": "module TopModule(input clk, input reset, output reg [2:0] ena, output reg [15:0] q);\n    always @(posedge clk) begin\n        if (reset) begin\n            ena <= 3'b111;\n            q <= 16'd0;\n        end else begin\n            ena <= {ena[1:0], 1'b0};\n            if (ena[2]) q[3:0] <= 4'd9;\n            if (ena[1]) q[7:4] <= q[7:4] + 1'b1;\n            if (ena[0]) q[11:8] <= (q[7:4] == 4'd9) ? 4'd0 : q[11:8] + 1'b1;\n            if (ena[2]) q[15:12] <= (q[11:8] == 4'd9) ? 4'd0 : (q[7:4] == 4'd9) ? 4'd1 : q[15:12] + 1'b1;\n        end\n    end\nendmodule",
+      "rtl_raw_sha256": "f70c668fd1db796a823831bcd50131133896c37ce391933525d891f7f77bf93a",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:32: error: q is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 4-digit BCD counter\nmodule TopModule (\n    input  clk,\n    input  reset,\n    output [2:0] ena,\n    output [15:0] q\n);\n    reg [15:0] cnt;\n    wire [3:0] d0, d1, d2, d3;\n    reg [2:0] ena2;\n    wire [2:0] ena3;\n    reg [15:0] q2;\n    always @(posedge clk) begin\n        if (reset) begin\n            cnt <= 16'd0;\n            ena2 <= 3'b001;\n        end else begin\n            cnt <= cnt + 16'd1;\n            if (cnt == 16'd10) begin\n                cnt <= 16'd0;\n                ena2 <= {ena2[1:0], ena2[2]};\n            end\n        end\n    end\n    assign d0 = cnt[3:0];\n    assign d1 = cnt[7:4];\n    assign d2 = cnt[11:8];\n    assign d3 = cnt[15:12];\n    assign ena = ena2;\n    always @(posedge clk) q2 <= {d3, d2, d1, d0};\n    assign ena3 = {ena2[1:0], ena2[2]};\n    always @(posedge clk) begin\n        if (reset) q <= 16'd0;\n        else q <= q2;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "da06d368dc3b02d3d82b17b9fd8492c12d7a77b34dd78d1a694920eb6052d2cf",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    output [2:0] ena,\n    output [15:0] q\n);\n    reg [15:0] cnt;\n    wire [3:0] d0, d1, d2, d3;\n    reg [2:0] ena2;\n    wire [2:0] ena3;\n    reg [15:0] q2;\n    always @(posedge clk) begin\n        if (reset) begin\n            cnt <= 16'd0;\n            ena2 <= 3'b001;\n        end else begin\n            cnt <= cnt + 16'd1;\n            if (cnt == 16'd10) begin\n                cnt <= 16'd0;\n                ena2 <= {ena2[1:0], ena2[2]};\n            end\n        end\n    end\n    assign d0 = cnt[3:0];\n    assign d1 = cnt[7:4];\n    assign d2 = cnt[11:8];\n    assign d3 = cnt[15:12];\n    assign ena = ena2;\n    always @(posedge clk) q2 <= {d3, d2, d1, d0};\n    assign ena3 = {ena2[1:0], ena2[2]};\n    always @(posedge clk) begin\n        if (reset) q <= 16'd0;\n        else q <= q2;\n    end\nendmodule",
+      "rtl_raw_sha256": "8300ad8bccdc3cb2d11ebad111fd29fa4121e81f06c025453d1a3dd4aa23ed09",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "39672/39805 mismatches",
+      "raw_completion": "// 4-digit BCD counter\nmodule TopModule(\n    input clk,\n    input reset,\n    output [2:0] ena,\n    output [15:0] q\n);\n    reg [15:0] count;\n    wire [3:0] ones = count[3:0];\n    wire [3:0] tens = count[7:4];\n    wire [3:0] hundreds = count[11:8];\n    wire [3:0] thousands = count[15:12];\n    reg [2:0] ena2;\n    always @(posedge clk) begin\n        if (reset) begin\n            count <= 16'd0;\n            ena2 <= 3'b000;\n        end else begin\n            count <= count + 16'd1;\n            ena2 <= {ena2[1:0], ones==4'd9};\n        end\n    end\n    assign ena = ena2;\n    assign q = count;\nendmodule",
+      "raw_completion_raw_sha256": "c7624b784caa0cd4d1294058d093b2ff28cc3b94970320ebcce693c8bea5dacc",
+      "rtl": "module TopModule(\n    input clk,\n    input reset,\n    output [2:0] ena,\n    output [15:0] q\n);\n    reg [15:0] count;\n    wire [3:0] ones = count[3:0];\n    wire [3:0] tens = count[7:4];\n    wire [3:0] hundreds = count[11:8];\n    wire [3:0] thousands = count[15:12];\n    reg [2:0] ena2;\n    always @(posedge clk) begin\n        if (reset) begin\n            count <= 16'd0;\n            ena2 <= 3'b000;\n        end else begin\n            count <= count + 16'd1;\n            ena2 <= {ena2[1:0], ones==4'd9};\n        end\n    end\n    assign ena = ena2;\n    assign q = count;\nendmodule",
+      "rtl_raw_sha256": "ded17f35be4a430da99bc764591c9e07af8c6942b9bbc500ef46d04c557a644f",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:20: error: ena2['sd0] is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 4-digit BCD counter, with per-digit enable signals\nmodule TopModule (\n    input  clk,\n    input  reset,\n    output reg [2:0] ena,\n    output reg [15:0] q\n);\n    reg [3:0] cnt [0:3];\n    wire [3:0] d0, d1, d2, d3;\n    wire [2:0] ena2;\n    always @(posedge clk) begin\n        if (reset) begin\n            for (int i = 0; i < 4; i = i + 1) cnt[i] <= 4'd0;\n            ena <= 3'b111;\n            q <= 16'd0;\n        end else begin\n            if (ena[0]) cnt[0] <= cnt[0] + 1'd1;\n            if (ena[1]) cnt[1] <= cnt[1] + (cnt[0] == 4'd9);\n            if (ena[2]) cnt[2] <= cnt[2] + (cnt[1] == 4'd9);\n            cnt[3] <= cnt[3] + (cnt[2] == 4'd9);\n            ena2[0] <= (cnt[0] == 4'd9);\n            ena2[1] <= (cnt[1] == 4'd9);\n            ena2[2] <= (cnt[2] == 4'd9);\n            ena <= ena2;\n            q <= {cnt[3], cnt[2], cnt[1], cnt[0]};\n        end\n    end\n    assign d0 = cnt[0];\n    assign d1 = cnt[1];\n    assign d2 = cnt[2];\n    assign d3 = cnt[3];\nendmodule",
+      "raw_completion_raw_sha256": "7bef1ce7dbc3d2dc7ae80d1bd6874896e2f946b0ff72a41f3a7c71c4ca4025f2",
+      "rtl": "module TopModule (\n    input  clk,\n    input  reset,\n    output reg [2:0] ena,\n    output reg [15:0] q\n);\n    reg [3:0] cnt [0:3];\n    wire [3:0] d0, d1, d2, d3;\n    wire [2:0] ena2;\n    always @(posedge clk) begin\n        if (reset) begin\n            for (int i = 0; i < 4; i = i + 1) cnt[i] <= 4'd0;\n            ena <= 3'b111;\n            q <= 16'd0;\n        end else begin\n            if (ena[0]) cnt[0] <= cnt[0] + 1'd1;\n            if (ena[1]) cnt[1] <= cnt[1] + (cnt[0] == 4'd9);\n            if (ena[2]) cnt[2] <= cnt[2] + (cnt[1] == 4'd9);\n            cnt[3] <= cnt[3] + (cnt[2] == 4'd9);\n            ena2[0] <= (cnt[0] == 4'd9);\n            ena2[1] <= (cnt[1] == 4'd9);\n            ena2[2] <= (cnt[2] == 4'd9);\n            ena <= ena2;\n            q <= {cnt[3], cnt[2], cnt[1], cnt[0]};\n        end\n    end\n    assign d0 = cnt[0];\n    assign d1 = cnt[1];\n    assign d2 = cnt[2];\n    assign d3 = cnt[3];\nendmodule",
+      "rtl_raw_sha256": "86179b47bb55ec940becc165b70aa1601a49b8b3387b460f66f80525d4b882fe",
+      "sample_index": 12,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "39760/39805 mismatches",
+      "raw_completion": "// 4-digit BCD counter\nmodule TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [3:0] cnt [0:3];\n  wire [3:0] ena2;\n  reg [1:0] sel;\n  always @(posedge clk) begin\n    if (reset) begin\n      for (int i = 0; i < 4; i = i + 1) cnt[i] <= 4'd0;\n      sel <= 2'd0;\n    end else begin\n      if (sel == 2'd3) sel <= 2'd0;\n      else sel <= sel + 2'd1;\n      if (sel == 2'd0) cnt[0] <= cnt[0] + 4'd1;\n      if (ena2[sel]) cnt[sel] <= cnt[sel] + 4'd1;\n    end\n  end\n  assign ena = {ena2[3], ena2[2], ena2[1]};\n  assign q = {cnt[3], cnt[2], cnt[1], cnt[0]};\n  assign ena2[0] = 1;\n  assign ena2[1] = (cnt[0] == 4'd9);\n  assign ena2[2] = (cnt[1] == 4'd9) & ena2[1];\n  assign ena2[3] = (cnt[2] == 4'd9) & ena2[2];\nendmodule",
+      "raw_completion_raw_sha256": "f640b0d350a375c97b068735f28c30bb58f5d23e11887007fe9be43255081431",
+      "rtl": "module TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [3:0] cnt [0:3];\n  wire [3:0] ena2;\n  reg [1:0] sel;\n  always @(posedge clk) begin\n    if (reset) begin\n      for (int i = 0; i < 4; i = i + 1) cnt[i] <= 4'd0;\n      sel <= 2'd0;\n    end else begin\n      if (sel == 2'd3) sel <= 2'd0;\n      else sel <= sel + 2'd1;\n      if (sel == 2'd0) cnt[0] <= cnt[0] + 4'd1;\n      if (ena2[sel]) cnt[sel] <= cnt[sel] + 4'd1;\n    end\n  end\n  assign ena = {ena2[3], ena2[2], ena2[1]};\n  assign q = {cnt[3], cnt[2], cnt[1], cnt[0]};\n  assign ena2[0] = 1;\n  assign ena2[1] = (cnt[0] == 4'd9);\n  assign ena2[2] = (cnt[1] == 4'd9) & ena2[1];\n  assign ena2[3] = (cnt[2] == 4'd9) & ena2[2];\nendmodule",
+      "rtl_raw_sha256": "df437012ba38cec0d65a2e6cad73777cb2aad51ee1925772ee251b3ae6b05f51",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:17: error: ena['sd0] is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 4-digit BCD counter\nmodule TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [15:0] count;\n  wire [3:0] ones, tens, hundreds, thousands;\n  wire [2:0] ena2;\n  reg [2:0] ena_d1, ena_d2;\n  always @(posedge clk) begin\n    if (reset) count <= 16'd0;\n    else count <= count + 16'd1;\n  end\n  assign ones = count[3:0];\n  assign tens = count[7:4];\n  assign hundreds = count[11:8];\n  assign thousands = count[15:12];\n  assign ena2 = {ena_d2, ena_d1, 1'b1};\n  always @(posedge clk) ena_d1 <= ena[0];\n  always @(posedge clk) ena_d2 <= ena_d1;\n  always @(posedge clk) if (reset) ena[0] <= 1'b1;\n  else ena[0] <= ena2[0] & (ones == 4'd9);\n  always @(posedge clk) if (reset) ena[1] <= 1'b0;\n  else ena[1] <= ena[0] & (tens == 4'd9);\n  always @(posedge clk) if (reset) ena[2] <= 1'b0;\n  else ena[2] <= ena[1] & (hundreds == 4'd9);\n  always @(posedge clk) if (reset) q <= 16'd0;\n  else if (ena[0]) q[3:0] <= ones + 4'd1;\n  else if (ena[1]) q[7:4] <= tens + 4'd1;\n  else if (ena[2]) q[11:8] <= hundreds + 4'd1;\n  else q[15:12] <= thousands + 4'd1;\nendmodule",
+      "raw_completion_raw_sha256": "b179ba9a7814dfc2265e325915d2f3e8f1aa9aeb8e006aecf312497c9ca1a721",
+      "rtl": "module TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [15:0] count;\n  wire [3:0] ones, tens, hundreds, thousands;\n  wire [2:0] ena2;\n  reg [2:0] ena_d1, ena_d2;\n  always @(posedge clk) begin\n    if (reset) count <= 16'd0;\n    else count <= count + 16'd1;\n  end\n  assign ones = count[3:0];\n  assign tens = count[7:4];\n  assign hundreds = count[11:8];\n  assign thousands = count[15:12];\n  assign ena2 = {ena_d2, ena_d1, 1'b1};\n  always @(posedge clk) ena_d1 <= ena[0];\n  always @(posedge clk) ena_d2 <= ena_d1;\n  always @(posedge clk) if (reset) ena[0] <= 1'b1;\n  else ena[0] <= ena2[0] & (ones == 4'd9);\n  always @(posedge clk) if (reset) ena[1] <= 1'b0;\n  else ena[1] <= ena[0] & (tens == 4'd9);\n  always @(posedge clk) if (reset) ena[2] <= 1'b0;\n  else ena[2] <= ena[1] & (hundreds == 4'd9);\n  always @(posedge clk) if (reset) q <= 16'd0;\n  else if (ena[0]) q[3:0] <= ones + 4'd1;\n  else if (ena[1]) q[7:4] <= tens + 4'd1;\n  else if (ena[2]) q[11:8] <= hundreds + 4'd1;\n  else q[15:12] <= thousands + 4'd1;\nendmodule",
+      "rtl_raw_sha256": "eb729adff863b6e1beedf3160686b51fa78fa983f40c6a331701828ea621d910",
+      "sample_index": 14,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "39738/39805 mismatches",
+      "raw_completion": "// 4-digit BCD counter\nmodule TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [15:0] cnt;\n  wire [3:0] ones = cnt[3:0];\n  wire [3:0] tens = cnt[7:4];\n  wire [3:0] hundreds = cnt[11:8];\n  wire [3:0] thousands = cnt[15:12];\n  reg [2:0] ena2;\n  always @(posedge clk) begin\n    if (reset) cnt <= 16'd0;\n    else cnt <= cnt + 16'd1;\n  end\n  always @(posedge clk) ena2 <= {ena2[1:0], ~ones[3] & ones[2]};\n  assign ena = ena2;\n  assign q = cnt;\nendmodule",
+      "raw_completion_raw_sha256": "32412340ee06f5e94eee8202dd5bd4bfba486f87947a4407787acac7f45cd4fd",
+      "rtl": "module TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [15:0] cnt;\n  wire [3:0] ones = cnt[3:0];\n  wire [3:0] tens = cnt[7:4];\n  wire [3:0] hundreds = cnt[11:8];\n  wire [3:0] thousands = cnt[15:12];\n  reg [2:0] ena2;\n  always @(posedge clk) begin\n    if (reset) cnt <= 16'd0;\n    else cnt <= cnt + 16'd1;\n  end\n  always @(posedge clk) ena2 <= {ena2[1:0], ~ones[3] & ones[2]};\n  assign ena = ena2;\n  assign q = cnt;\nendmodule",
+      "rtl_raw_sha256": "8e322de05ee2434cf4acaecdd2e58806a9e71aa6f642af3c079f15865d46c349",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:17: error: ena['sd0] is not a valid l-value in tb.top_module1.",
+      "raw_completion": "module TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n    reg [3:0] cnt;\n    reg [3:0] cnt2;\n    reg [3:0] cnt3;\n    reg [3:0] cnt4;\n    wire [3:0] d0 = cnt;\n    wire [3:0] d1 = cnt2;\n    wire [3:0] d2 = cnt3;\n    wire [3:0] d3 = cnt4;\n    always @(posedge clk) begin\n        if (reset) begin\n            cnt <= 4'd0;\n            cnt2 <= 4'd0;\n            cnt3 <= 4'd0;\n            cnt4 <= 4'd0;\n        end else begin\n            if (cnt == 4'd9) begin cnt <= 4'd0; ena[0] <= 1; end else ena[0] <= 0;\n            if (cnt2 == 4'd9 && cnt == 4'd9) begin cnt2 <= 4'd0; ena[1] <= 1; end else ena[1] <= 0;\n            if (cnt3 == 4'd9 && cnt == 4'd9 && cnt2 == 4'd9) begin cnt3 <= 4'd0; ena[2] <= 1; end else ena[2] <= 0;\n            if (cnt4 == 4'd9 && cnt == 4'd9 && cnt2 == 4'd9 && cnt3 == 4'd9) begin cnt4 <= 4'd0; end else cnt4 <= cnt4 + 1'b1;\n            cnt <= cnt + 1'b1;\n        end\n    end\n    assign q = {d3, d2, d1, d0};\nendmodule",
+      "raw_completion_raw_sha256": "9ee49b999e2e8e3eca9058cfec3d4532d10847176e4eab248c9eeb73d144c200",
+      "rtl": "module TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n    reg [3:0] cnt;\n    reg [3:0] cnt2;\n    reg [3:0] cnt3;\n    reg [3:0] cnt4;\n    wire [3:0] d0 = cnt;\n    wire [3:0] d1 = cnt2;\n    wire [3:0] d2 = cnt3;\n    wire [3:0] d3 = cnt4;\n    always @(posedge clk) begin\n        if (reset) begin\n            cnt <= 4'd0;\n            cnt2 <= 4'd0;\n            cnt3 <= 4'd0;\n            cnt4 <= 4'd0;\n        end else begin\n            if (cnt == 4'd9) begin cnt <= 4'd0; ena[0] <= 1; end else ena[0] <= 0;\n            if (cnt2 == 4'd9 && cnt == 4'd9) begin cnt2 <= 4'd0; ena[1] <= 1; end else ena[1] <= 0;\n            if (cnt3 == 4'd9 && cnt == 4'd9 && cnt2 == 4'd9) begin cnt3 <= 4'd0; ena[2] <= 1; end else ena[2] <= 0;\n            if (cnt4 == 4'd9 && cnt == 4'd9 && cnt2 == 4'd9 && cnt3 == 4'd9) begin cnt4 <= 4'd0; end else cnt4 <= cnt4 + 1'b1;\n            cnt <= cnt + 1'b1;\n        end\n    end\n    assign q = {d3, d2, d1, d0};\nendmodule",
+      "rtl_raw_sha256": "9ee49b999e2e8e3eca9058cfec3d4532d10847176e4eab248c9eeb73d144c200",
+      "sample_index": 16,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "39772/39805 mismatches",
+      "raw_completion": "// 4-digit BCD counter\nmodule TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [15:0] count;\n  reg [2:0] ena2;\n  always @(posedge clk) begin\n    if (reset) begin\n      count <= 16'd0;\n      ena2 <= 3'b000;\n    end else begin\n      count <= count + 16'd1;\n      if (count[3:0] == 4'd9) begin\n        count[3:0] <= 4'd0;\n        if (count[7:4] == 4'd9) begin\n          count[7:4] <= 4'd0;\n          if (count[11:8] == 4'd9) begin\n            count[11:8] <= 4'd0;\n            count[15] <= ~count[15];\n          end else\n            count[11:8] <= count[11:8] + 4'd1;\n        end else\n          count[7:4] <= count[7:4] + 4'd1;\n      end else\n        count[3:0] <= count[3:0] + 4'd1;\n      ena2[2:0] <= {ena2[1:0], 1'b1};\n    end\n  end\n  assign ena = ena2;\n  assign q = count;\nendmodule",
+      "raw_completion_raw_sha256": "2814721d90a0c365f4ccc82ad74db158291c285e59cda8d65ab7a49db9358739",
+      "rtl": "module TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [15:0] count;\n  reg [2:0] ena2;\n  always @(posedge clk) begin\n    if (reset) begin\n      count <= 16'd0;\n      ena2 <= 3'b000;\n    end else begin\n      count <= count + 16'd1;\n      if (count[3:0] == 4'd9) begin\n        count[3:0] <= 4'd0;\n        if (count[7:4] == 4'd9) begin\n          count[7:4] <= 4'd0;\n          if (count[11:8] == 4'd9) begin\n            count[11:8] <= 4'd0;\n            count[15] <= ~count[15];\n          end else\n            count[11:8] <= count[11:8] + 4'd1;\n        end else\n          count[7:4] <= count[7:4] + 4'd1;\n      end else\n        count[3:0] <= count[3:0] + 4'd1;\n      ena2[2:0] <= {ena2[1:0], 1'b1};\n    end\n  end\n  assign ena = ena2;\n  assign q = count;\nendmodule",
+      "rtl_raw_sha256": "e28078dce5dfa6ace29ca463c8f02dd8f7fbcb782a5eddb27a1dc108906d6495",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "39804/39805 mismatches",
+      "raw_completion": "// 4-digit BCD counter, with per-digit enable signals\nmodule TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [3:0] cnt;\n  reg [3:0] cnt2;\n  reg [3:0] cnt3;\n  reg [3:0] cnt4;\n  wire [3:0] dig0 = cnt;\n  wire [3:0] dig1 = cnt2;\n  wire [3:0] dig2 = cnt3;\n  wire [3:0] dig3 = cnt4;\n  reg [15:0] qreg;\n  reg [2:0] enareg;\n  always @(posedge clk) begin\n    if (reset) begin\n      cnt <= 4'd0;\n      cnt2 <= 4'd0;\n      cnt3 <= 4'd0;\n      cnt4 <= 4'd0;\n      qreg <= 16'd0;\n      enareg <= 3'b111;\n    end else begin\n      if (cnt == 4'd9) begin\n        cnt <= 4'd0;\n        if (cnt2 == 4'd9) begin\n          cnt2 <= 4'd0;\n          if (cnt3 == 4'd9) begin\n            cnt3 <= 4'd0;\n            cnt4 <= cnt4 + 4'd1;\n          end else cnt3 <= cnt3 + 4'd1;\n        end else cnt2 <= cnt2 + 4'd1;\n      end else cnt <= cnt + 4'd1;\n      qreg <= {dig3, dig2, dig1, dig0};\n      enareg <= {ena[0], ena[1], ena[2] & (cnt2 != 4'd9)};\n    end\n  end\n  assign ena = enareg;\n  assign q = qreg;\nendmodule",
+      "raw_completion_raw_sha256": "9566414a35216500b039a7585a95e45c79bd23081262c42fff94517b1d91675f",
+      "rtl": "module TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n  reg [3:0] cnt;\n  reg [3:0] cnt2;\n  reg [3:0] cnt3;\n  reg [3:0] cnt4;\n  wire [3:0] dig0 = cnt;\n  wire [3:0] dig1 = cnt2;\n  wire [3:0] dig2 = cnt3;\n  wire [3:0] dig3 = cnt4;\n  reg [15:0] qreg;\n  reg [2:0] enareg;\n  always @(posedge clk) begin\n    if (reset) begin\n      cnt <= 4'd0;\n      cnt2 <= 4'd0;\n      cnt3 <= 4'd0;\n      cnt4 <= 4'd0;\n      qreg <= 16'd0;\n      enareg <= 3'b111;\n    end else begin\n      if (cnt == 4'd9) begin\n        cnt <= 4'd0;\n        if (cnt2 == 4'd9) begin\n          cnt2 <= 4'd0;\n          if (cnt3 == 4'd9) begin\n            cnt3 <= 4'd0;\n            cnt4 <= cnt4 + 4'd1;\n          end else cnt3 <= cnt3 + 4'd1;\n        end else cnt2 <= cnt2 + 4'd1;\n      end else cnt <= cnt + 4'd1;\n      qreg <= {dig3, dig2, dig1, dig0};\n      enareg <= {ena[0], ena[1], ena[2] & (cnt2 != 4'd9)};\n    end\n  end\n  assign ena = enareg;\n  assign q = qreg;\nendmodule",
+      "rtl_raw_sha256": "f200eadd7f5a4503d41e017a01e5934ab5f4e77e245593e94a2fb8f8904ac91a",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "39687/39805 mismatches",
+      "raw_completion": "// 4-digit BCD counter\nmodule TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n    reg [15:0] cnt;\n    reg [2:0] ena2;\n    wire [2:0] ena3 = ena2 & {3{cnt[3]}};\n    reg [2:0] ena4;\n    wire [2:0] ena5 = ena4 & {3{cnt[7]}};\n    always @(posedge clk) begin\n        if (reset) begin\n            cnt <= 16'd0;\n            ena2 <= 3'b001;\n            ena4 <= 3'b010;\n        end else begin\n            cnt <= cnt + 16'd1;\n            ena2 <= cnt[3] ? 3'b010 : 3'b001;\n            ena4 <= cnt[7] ? 3'b100 : ena3;\n        end\n    end\n    assign ena = reset ? 3'b001 : ena5;\n    assign q = cnt;\nendmodule",
+      "raw_completion_raw_sha256": "6b09b69a9ca787c8794af626af7d40c09475ff64c5031e1fd11346a65811c815",
+      "rtl": "module TopModule(input clk, input reset, output [2:0] ena, output [15:0] q);\n    reg [15:0] cnt;\n    reg [2:0] ena2;\n    wire [2:0] ena3 = ena2 & {3{cnt[3]}};\n    reg [2:0] ena4;\n    wire [2:0] ena5 = ena4 & {3{cnt[7]}};\n    always @(posedge clk) begin\n        if (reset) begin\n            cnt <= 16'd0;\n            ena2 <= 3'b001;\n            ena4 <= 3'b010;\n        end else begin\n            cnt <= cnt + 16'd1;\n            ena2 <= cnt[3] ? 3'b010 : 3'b001;\n            ena4 <= cnt[7] ? 3'b100 : ena3;\n        end\n    end\n    assign ena = reset ? 3'b001 : ena5;\n    assign q = cnt;\nendmodule",
+      "rtl_raw_sha256": "4da2433439ec063a3a9ee80853ab99fef5d3da60bdf6599eb2c96ba9d90fd861",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 7,
+    "fail": 13
+  },
+  "testbench_raw_sha256": "be9d522bc290acd8340576c843e517c797068c7092cd4a28454b637d71005c57",
+  "training_seed": 1
+}

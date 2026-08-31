@@ -1,0 +1,139 @@
+{
+  "ci_scope": "paired problem-level uncertainty conditional on these realized checkpoints; not an estimate of policy-training seed variance",
+  "environment": {
+    "iverilog_version_text": "Icarus Verilog version 12.0 (stable) ()",
+    "packages": {
+      "accelerate": "1.0.1",
+      "numpy": "2.2.6",
+      "peft": "0.13.2",
+      "torch": "2.4.1+cu121",
+      "transformers": "4.46.3"
+    },
+    "python": "3.10.20",
+    "required_environment": {
+      "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+      "HF_HUB_OFFLINE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "TOKENIZERS_PARALLELISM": "false",
+      "TRANSFORMERS_OFFLINE": "1"
+    },
+    "vvp_version_text": "Icarus Verilog runtime version 12.0 (stable) ()"
+  },
+  "frozen_inputs": {
+    "benchmark_raw_dir_sha256": "8a9a9aea974dfc96af0e31a9aab85aede8b11d5c3c8c4c5912b475a08b04e5e4",
+    "path": "/home/adam/mas/mas/verilogeval_rf_frozen_inputs_v3_20260829.json",
+    "raw_sha256": "915ec651acf350b97ea42c38e49a385ced8e0a6b2710d754d7b69b0b9896bada"
+  },
+  "generated_utc": "2026-08-30T15:36:37.735795+00:00",
+  "n_samples_per_policy_problem": 20,
+  "paired_pass_at_1": {
+    "rf_s1_minus_rf_s2": {
+      "bootstrap_draws": 10000,
+      "bootstrap_seed": 20260827,
+      "ci95": [
+        -0.012499999999999997,
+        0.01955128205128205
+      ],
+      "estimate": 0.003525641025641028,
+      "resampling_unit": "benchmark problem"
+    },
+    "rf_s1_minus_sft": {
+      "bootstrap_draws": 10000,
+      "bootstrap_seed": 20260827,
+      "ci95": [
+        -0.028205128205128202,
+        0.003846153846153841
+      ],
+      "estimate": -0.012179487179487181,
+      "resampling_unit": "benchmark problem"
+    },
+    "rf_s2_minus_sft": {
+      "bootstrap_draws": 10000,
+      "bootstrap_seed": 20260827,
+      "ci95": [
+        -0.030769230769230774,
+        -0.0009615384615384659
+      ],
+      "estimate": -0.015705128205128205,
+      "resampling_unit": "benchmark problem"
+    },
+    "rf_seed_mean_minus_sft": {
+      "bootstrap_draws": 10000,
+      "bootstrap_seed": 20260827,
+      "ci95": [
+        -0.026923076923076925,
+        -0.0009615384615384617
+      ],
+      "estimate": -0.013942307692307691,
+      "resampling_unit": "benchmark problem"
+    }
+  },
+  "policies": {
+    "rf_s1": {
+      "compile_and_verdict_rate": 0.6865384615384618,
+      "pass_at_1": 0.21121794871794874,
+      "pass_at_10": 0.4096544035071066,
+      "pass_at_20": 0.44871794871794873,
+      "pass_at_5": 0.3641950960546162,
+      "status_counts": {
+        "PASS": 659,
+        "compile_fail": 968,
+        "fail": 1483,
+        "sim_timeout": 1,
+        "simulator_error": 9
+      },
+      "training_seed": 1
+    },
+    "rf_s2": {
+      "compile_and_verdict_rate": 0.6618589743589742,
+      "pass_at_1": 0.2076923076923078,
+      "pass_at_10": 0.3890026679678978,
+      "pass_at_20": 0.4230769230769231,
+      "pass_at_5": 0.35058818567912986,
+      "status_counts": {
+        "PASS": 648,
+        "compile_fail": 1039,
+        "fail": 1417,
+        "sim_timeout": 3,
+        "simulator_error": 13
+      },
+      "training_seed": 2
+    },
+    "sft": {
+      "compile_and_verdict_rate": 0.6516025641025642,
+      "pass_at_1": 0.22339743589743596,
+      "pass_at_10": 0.428382222484985,
+      "pass_at_20": 0.46794871794871795,
+      "pass_at_5": 0.38282759122542404,
+      "status_counts": {
+        "PASS": 697,
+        "compile_fail": 1080,
+        "fail": 1336,
+        "simulator_error": 7
+      },
+      "training_seed": 0
+    }
+  },
+  "primary_metric": "pass_at_1",
+  "problem_count": 156,
+  "protocol_id": "verilogeval_rf_repaired_2026-08-29-v3",
+  "schema": "verilogeval_rf_comparison/1",
+  "source_results": {
+    "rf_s1": {
+      "complete_raw_sha256": "ac068ce9128946ec6c6ec6faa1f3da761869faa06ccac76c582634b643a954f1",
+      "directory": "/home/adam/mas/mas/verilogeval_rf_v3_20260829/rf_s1",
+      "summary_raw_sha256": "094354d9d7dd74fa72da8b6075461aab284b4fd803ad31f51510241107e61d38"
+    },
+    "rf_s2": {
+      "complete_raw_sha256": "4906daedfbc665cbf61e8b0c06e024a3c0fdac6abea8a382f5cc216796e40e05",
+      "directory": "/home/adam/mas/mas/verilogeval_rf_v3_20260829/rf_s2",
+      "summary_raw_sha256": "7443efdd1274fe3d5fd7c2b4517ca117db74d8cfae3601d782519e1fe765456b"
+    },
+    "sft": {
+      "complete_raw_sha256": "32f0328fd8200607948ced699465e4f552c88ed2e255a6a01c79e3534c03f75c",
+      "directory": "/home/adam/mas/mas/verilogeval_rf_v3_20260829/sft_recovery_gpu1_20260830",
+      "summary_raw_sha256": "834d289b200a8d4e02f722ccbdb180bf594b3c1e3be769a5ed50dd3efb93e4df"
+    }
+  },
+  "training_seed_aggregation": "each RF seed estimated separately; the RF mean averages the two per-problem estimates; raw draws are not pooled"
+}

@@ -1,0 +1,197 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob102_circuit3",
+  "problem_seed": 3505464098062575132,
+  "prompt_raw_sha256": "50330fa9da36ffe52c61c031957c0d609c743314c98ee002b0cac222c9164dd6",
+  "reference_raw_sha256": "d8104a89e278f4a7c4f3dc58401bcf8f1d30a24c3d09d26b43685044f43c6130",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "50/121 mismatches",
+      "raw_completion": "// Combinational circuit, see the simulation waveforms to determine the\n// function. Same as the reference.\nmodule TopModule (\n    input a,\n    input b,\n    input c,\n    input d,\n    output reg q\n);\n    always @(*) begin\n        q = a & b & ~c & d | a & b & c & ~d | ~a & b & c & d | ~a & b & ~c & ~d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "14102e253fbb2d65b3f457c20d8d9eff60f102cef68a084b7457324c6d59ef56",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    input c,\n    input d,\n    output reg q\n);\n    always @(*) begin\n        q = a & b & ~c & d | a & b & c & ~d | ~a & b & c & d | ~a & b & ~c & ~d;\n    end\nendmodule",
+      "rtl_raw_sha256": "852817b9a620bcf3e54ea3c747696fb6a992ba4b768ba76ef6be62c0a9a56e6f",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "72/121 mismatches",
+      "raw_completion": "// Combinational circuit described in the problem description.\nmodule TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b;\n    wire w2 = c & d;\n    wire w3 = w1 | w2;\n    assign q = ~w3;\nendmodule",
+      "raw_completion_raw_sha256": "3457b2caa547c1e2cf9f56c03b1fee62487f7bfa3fe68dcca3b46552819a5ccf",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b;\n    wire w2 = c & d;\n    wire w3 = w1 | w2;\n    assign q = ~w3;\nendmodule",
+      "rtl_raw_sha256": "2c1c4218eb0f151b75042945543aa324afb1e4e9d8da51abf1f3c7fd5963a489",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "17/121 mismatches",
+      "raw_completion": "// Combinational circuit, derived from the simulation waveforms.\nmodule TopModule (\n    input a,\n    input b,\n    input c,\n    input d,\n    output reg q\n);\n    always @(*) begin\n        case ({a, b, c, d})\n            4'b0000: q = 1'b0;\n            4'b0001: q = 1'b0;\n            4'b0010: q = 1'b0;\n            4'b0011: q = 1'b0;\n            4'b0100: q = 1'b0;\n            4'b0101: q = 1'b0;\n            4'b0110: q = 1'b0;\n            4'b0111: q = 1'b1;\n            4'b1000: q = 1'b0;\n            4'b1001: q = 1'b1;\n            4'b1010: q = 1'b1;\n            4'b1011: q = 1'b1;\n            4'b1100: q = 1'b0;\n            4'b1101: q = 1'b1;\n            4'b1110: q = 1'b1;\n            4'b1111: q = 1'b1;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "db82c40c040fcc9d0cfb19a9b34c12e05e5c662377c2a56f5a32f3ea46bbe81b",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    input c,\n    input d,\n    output reg q\n);\n    always @(*) begin\n        case ({a, b, c, d})\n            4'b0000: q = 1'b0;\n            4'b0001: q = 1'b0;\n            4'b0010: q = 1'b0;\n            4'b0011: q = 1'b0;\n            4'b0100: q = 1'b0;\n            4'b0101: q = 1'b0;\n            4'b0110: q = 1'b0;\n            4'b0111: q = 1'b1;\n            4'b1000: q = 1'b0;\n            4'b1001: q = 1'b1;\n            4'b1010: q = 1'b1;\n            4'b1011: q = 1'b1;\n            4'b1100: q = 1'b0;\n            4'b1101: q = 1'b1;\n            4'b1110: q = 1'b1;\n            4'b1111: q = 1'b1;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "0bf6f184c195aa8b3a3d0bd2092f6da8ed9f182a4f2cb1070655213a00ad347d",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "49/121 mismatches",
+      "raw_completion": "// Combinational circuit, derived from the simulation waveforms.\nmodule TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b;\n    wire w2 = c & d;\n    wire w3 = w1 | w2;\n    assign q = w3;\nendmodule",
+      "raw_completion_raw_sha256": "73d27c2ce1d4e266164c89518f439735941bcb3d1f089011564976d53c619ca3",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b;\n    wire w2 = c & d;\n    wire w3 = w1 | w2;\n    assign q = w3;\nendmodule",
+      "rtl_raw_sha256": "c390be248a72795a9fb31a3ac0751e85300038920b05b83b92bf5bb2079090bd",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "49/121 mismatches",
+      "raw_completion": "// Combinational circuit with the same function as the reference.\nmodule TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b & c & d;\n    wire w2 = ~(a | b | c | d);\n    wire w3 = a | b | c | d;\n    wire w4 = a & b & ~c & d;\n    wire w5 = a | b | ~c | d;\n    wire w6 = ~a & ~b & c & d;\n    wire w7 = ~(a | b | ~c | d);\n    wire w8 = a & b & c & ~d;\n    wire w9 = a | b | c | ~d;\n    wire w10 = ~a & ~b & ~c & d;\n    wire w11 = ~(a | b | ~c | ~d);\n    wire w12 = a & b & ~c & ~d;\n    wire w13 = a | b | ~c | ~d;\n    wire w14 = ~a & ~b & c & ~d;\n    wire w15 = ~(a | b | c | ~d);\n    wire w16 = a & b & ~c & d;\n    wire w17 = a | b | ~c | d;\n    wire w18 = ~a & ~b & c & ~d;\n    wire w19 = ~(a | b | c | ~d);\n    wire w20 = a & b & ~c & ~d;\n    wire w21 = a | b | ~c | ~d;\n    wire w22 = ~a & ~b & c & ~d;\n    wire w23 = ~(a | b | c | ~d);\n    wire w24 = a & b & d;\n    wire w25 = a | b | d;\n    wire w26 = ~a & ~b & d;\n    wire w27 = ~(a | b | d);\n    wire w28 = a & b & ~d;\n    wire w29 = a | b | ~d;\n    wire w30 = ~a & ~b & d;\n    wire w31 = ~(a | b | d);\n    wire w32 = a & b;\n    wire w33 = a | b;\n    wire w34 = ~a & ~b;\n    wire w35 = ~(a | b);\n    wire w36 = a & ~b;\n    wire w37 = a | ~b;\n    wire w38 = ~a & b;\n    wire w39 = ~(a | ~b);\n    wire w40 = a & d;\n    wire w41 = a | d;\n    wire w42 = ~a & d;\n    wire w43 = ~(a | d);\n    wire w44 = a & ~d;\n    wire w45 = a | ~d;\n    wire w46 = ~a & d;\n    wire w47 = ~(a | d);\n    wire w48 = a;\n    wire w49 = ~a;\n    wire w50 = 1'b1;\n    wire w51 = 1'b0;\n    assign q = w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12\n        | w13 | w14 | w15 | w16 | w17 | w18 | w19 | w20 | w21 | w22 | w23\n        | w24 | w25 | w26 | w27 | w28 | w29 | w30 | w31 | w32 | w33 | w34\n        | w35 | w36 | w37 | w38 | w39 | w40 | w41 | w42 | w43 | w44 | w45\n        | w46 | w47 | w48 | w49 | w50 | w51;\nendmodule",
+      "raw_completion_raw_sha256": "1a5d96df5508412cfecef7fd232263311fb36243b0d0638b0cf7bf9677302a7b",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b & c & d;\n    wire w2 = ~(a | b | c | d);\n    wire w3 = a | b | c | d;\n    wire w4 = a & b & ~c & d;\n    wire w5 = a | b | ~c | d;\n    wire w6 = ~a & ~b & c & d;\n    wire w7 = ~(a | b | ~c | d);\n    wire w8 = a & b & c & ~d;\n    wire w9 = a | b | c | ~d;\n    wire w10 = ~a & ~b & ~c & d;\n    wire w11 = ~(a | b | ~c | ~d);\n    wire w12 = a & b & ~c & ~d;\n    wire w13 = a | b | ~c | ~d;\n    wire w14 = ~a & ~b & c & ~d;\n    wire w15 = ~(a | b | c | ~d);\n    wire w16 = a & b & ~c & d;\n    wire w17 = a | b | ~c | d;\n    wire w18 = ~a & ~b & c & ~d;\n    wire w19 = ~(a | b | c | ~d);\n    wire w20 = a & b & ~c & ~d;\n    wire w21 = a | b | ~c | ~d;\n    wire w22 = ~a & ~b & c & ~d;\n    wire w23 = ~(a | b | c | ~d);\n    wire w24 = a & b & d;\n    wire w25 = a | b | d;\n    wire w26 = ~a & ~b & d;\n    wire w27 = ~(a | b | d);\n    wire w28 = a & b & ~d;\n    wire w29 = a | b | ~d;\n    wire w30 = ~a & ~b & d;\n    wire w31 = ~(a | b | d);\n    wire w32 = a & b;\n    wire w33 = a | b;\n    wire w34 = ~a & ~b;\n    wire w35 = ~(a | b);\n    wire w36 = a & ~b;\n    wire w37 = a | ~b;\n    wire w38 = ~a & b;\n    wire w39 = ~(a | ~b);\n    wire w40 = a & d;\n    wire w41 = a | d;\n    wire w42 = ~a & d;\n    wire w43 = ~(a | d);\n    wire w44 = a & ~d;\n    wire w45 = a | ~d;\n    wire w46 = ~a & d;\n    wire w47 = ~(a | d);\n    wire w48 = a;\n    wire w49 = ~a;\n    wire w50 = 1'b1;\n    wire w51 = 1'b0;\n    assign q = w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12\n        | w13 | w14 | w15 | w16 | w17 | w18 | w19 | w20 | w21 | w22 | w23\n        | w24 | w25 | w26 | w27 | w28 | w29 | w30 | w31 | w32 | w33 | w34\n        | w35 | w36 | w37 | w38 | w39 | w40 | w41 | w42 | w43 | w44 | w45\n        | w46 | w47 | w48 | w49 | w50 | w51;\nendmodule",
+      "rtl_raw_sha256": "90b46fca4ac9905375a1e147476989be2c252a8e9579d62a298cca8786b10b89",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "65/121 mismatches",
+      "raw_completion": "// Combinational circuit: combinational circuit is a circuit that has no\n// registers, no sequential circuits (like flip-flops) and no latches. In\n// other words, the output depends only on the inputs at the current time\n// (no memory of past inputs).\nmodule TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b & ~c & d;\n    wire w2 = ~a & b & c & ~d;\n    wire w3 = ~a & ~b & c & d;\n    wire w4 = a & ~b & ~c & ~d;\n    assign q = w1 | w2 | w3 | w4;\nendmodule",
+      "raw_completion_raw_sha256": "755a6818e90041a9599013ca2cd69c299f21b12ed799d84af818abc05a436217",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b & ~c & d;\n    wire w2 = ~a & b & c & ~d;\n    wire w3 = ~a & ~b & c & d;\n    wire w4 = a & ~b & ~c & ~d;\n    assign q = w1 | w2 | w3 | w4;\nendmodule",
+      "rtl_raw_sha256": "3e1e53e7239b437c377d2c9fb456822f5d4ccf1e7d810f488b117989e4e2ede6",
+      "sample_index": 5,
+      "status": "fail"
+    },
+    {
+      "detail": "36/121 mismatches",
+      "raw_completion": "// Combinational circuit described in the simulation waveforms\nmodule TopModule (\n    input a,\n    input b,\n    input c,\n    input d,\n    output reg q\n);\n    always @(*) begin\n        q = (a & ~b & ~c & ~d) | (a & ~b & ~c & d) | (a & ~b & c & ~d) | (a & ~b & c & d) | (a & b & ~c & ~d) | (a & b & ~c & d) | (a & b & c & ~d) | (a & b & c & d);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "a38c46f5d1c93a002a977850bb09e7b8232337f6c895ca9db310232f7ad76e30",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    input c,\n    input d,\n    output reg q\n);\n    always @(*) begin\n        q = (a & ~b & ~c & ~d) | (a & ~b & ~c & d) | (a & ~b & c & ~d) | (a & ~b & c & d) | (a & b & ~c & ~d) | (a & b & ~c & d) | (a & b & c & ~d) | (a & b & c & d);\n    end\nendmodule",
+      "rtl_raw_sha256": "b7bb15d74804231e1929f1b1aa3d111d140567ccddce6c86f97380b26e28e67a",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "72/121 mismatches",
+      "raw_completion": "// Combinational circuit described in the problem description.\nmodule TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b;\n    wire w2 = c & d;\n    wire w3 = w1 | w2;\n    assign q = ~w3;\nendmodule",
+      "raw_completion_raw_sha256": "7c57f906c10381f123f37ebcb65873ea7b7a8cecc94dcb5688e2105aa63f8a83",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b;\n    wire w2 = c & d;\n    wire w3 = w1 | w2;\n    assign q = ~w3;\nendmodule",
+      "rtl_raw_sha256": "550b10a6ead1b72b4f26edeca93b58ae3f7f0d3c2f8ed65b55bed5756b0229ce",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "34/121 mismatches",
+      "raw_completion": "// Combinational circuit with the same behaviour as the reference.\nmodule TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & ~b & ~c & ~d;\n    wire w2 = ~a & ~b & ~c & d;\n    wire w3 = ~a & ~b & c & ~d;\n    wire w4 = ~a & b & ~c & ~d;\n    wire w5 = ~a & b & ~c & d;\n    wire w6 = ~a & b & c & ~d;\n    wire w7 = ~a & b & c & d;\n    wire w8 = a & ~b & ~c & d;\n    wire w9 = a & ~b & c & ~d;\n    wire w10 = a & ~b & c & d;\n    wire w11 = a & b & ~c & ~d;\n    wire w12 = a & b & ~c & d;\n    wire w13 = a & b & c & ~d;\n    wire w14 = a & b & c & d;\n    assign q = w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12 | w13 | w14;\nendmodule",
+      "raw_completion_raw_sha256": "5842d86e00238b8592601cf7f3dbe5cb7d4824a38141c8cb9ddb42621354d0dd",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & ~b & ~c & ~d;\n    wire w2 = ~a & ~b & ~c & d;\n    wire w3 = ~a & ~b & c & ~d;\n    wire w4 = ~a & b & ~c & ~d;\n    wire w5 = ~a & b & ~c & d;\n    wire w6 = ~a & b & c & ~d;\n    wire w7 = ~a & b & c & d;\n    wire w8 = a & ~b & ~c & d;\n    wire w9 = a & ~b & c & ~d;\n    wire w10 = a & ~b & c & d;\n    wire w11 = a & b & ~c & ~d;\n    wire w12 = a & b & ~c & d;\n    wire w13 = a & b & c & ~d;\n    wire w14 = a & b & c & d;\n    assign q = w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12 | w13 | w14;\nendmodule",
+      "rtl_raw_sha256": "f0f45c7b20a296a7b069fa2d8f29b1451ad3197ec1afd5c1873c4b780ea65d8f",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "49/121 mismatches",
+      "raw_completion": "// One-bit combinational circuit, implemented as a Verilog combinational\n// function. The function is named \"comb\", and its inputs and output are named\n// according to the function's specification.\nmodule TopModule (\n    input a,\n    input b,\n    input c,\n    input d,\n    output reg q\n);\n    always @(*) begin\n        q = ~(a & b & c & d) & (a | b | c | d);\n    end\nendmodule",
+      "raw_completion_raw_sha256": "c644c1d0e5c8b48c5342c655f02eac485ced807e75ac83315cf5067ba1c5ad69",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    input c,\n    input d,\n    output reg q\n);\n    always @(*) begin\n        q = ~(a & b & c & d) & (a | b | c | d);\n    end\nendmodule",
+      "rtl_raw_sha256": "5b1b9dd715c1684847247a548d7cad1d65dfec039fd5473ee11efda6b549b51d",
+      "sample_index": 9,
+      "status": "fail"
+    },
+    {
+      "detail": "106/121 mismatches",
+      "raw_completion": "// Combinational circuit, derived from the simulation waveforms.\nmodule TopModule(input a, b, c, d, output q);\n    wire w1 = a & b;\n    wire w2 = a & c;\n    wire w3 = a & d;\n    wire w4 = b & c;\n    wire w5 = b & d;\n    wire w6 = c & d;\n    wire w7 = ~(w1 | w2 | w3 | w4 | w5 | w6);\n    assign q = w7;\nendmodule",
+      "raw_completion_raw_sha256": "e9503b4b8f1c4e0b56d4062f72c1f0bd3a288ee9c111bfcbc14e8742bb19e5f9",
+      "rtl": "module TopModule(input a, b, c, d, output q);\n    wire w1 = a & b;\n    wire w2 = a & c;\n    wire w3 = a & d;\n    wire w4 = b & c;\n    wire w5 = b & d;\n    wire w6 = c & d;\n    wire w7 = ~(w1 | w2 | w3 | w4 | w5 | w6);\n    assign q = w7;\nendmodule",
+      "rtl_raw_sha256": "7cb075bd713b70b792f1ebdef3f7003370b9860e501dc6571048d79a772c6007",
+      "sample_index": 10,
+      "status": "fail"
+    },
+    {
+      "detail": "49/121 mismatches",
+      "raw_completion": "// Combinational circuit that maps to the waveform from the prompt.\nmodule TopModule(input a, b, c, d, output q);\n  wire w1 = a & b & c & d;\n  wire w2 = a & b & c & ~d;\n  wire w3 = a & b & ~c & d;\n  wire w4 = a & b & ~c & ~d;\n  wire w5 = a & ~b & c & d;\n  wire w6 = a & ~b & c & ~d;\n  wire w7 = a & ~b & ~c & d;\n  wire w8 = a & ~b & ~c & ~d;\n  wire w9 = ~a & b & c & d;\n  wire w10 = ~a & b & c & ~d;\n  wire w11 = ~a & b & ~c & d;\n  wire w12 = ~a & b & ~c & ~d;\n  wire w13 = ~a & ~b & c & d;\n  wire w14 = ~a & ~b & c & ~d;\n  wire w15 = ~a & ~b & ~c & d;\n  wire w16 = ~a & ~b & ~c & ~d;\n  assign q = w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12 | w13 | w14 | w15 | w16;\nendmodule",
+      "raw_completion_raw_sha256": "236a9b28f2f2b52efa382b3aa34125abf456f3dc9676506e5021c03399f27dd4",
+      "rtl": "module TopModule(input a, b, c, d, output q);\n  wire w1 = a & b & c & d;\n  wire w2 = a & b & c & ~d;\n  wire w3 = a & b & ~c & d;\n  wire w4 = a & b & ~c & ~d;\n  wire w5 = a & ~b & c & d;\n  wire w6 = a & ~b & c & ~d;\n  wire w7 = a & ~b & ~c & d;\n  wire w8 = a & ~b & ~c & ~d;\n  wire w9 = ~a & b & c & d;\n  wire w10 = ~a & b & c & ~d;\n  wire w11 = ~a & b & ~c & d;\n  wire w12 = ~a & b & ~c & ~d;\n  wire w13 = ~a & ~b & c & d;\n  wire w14 = ~a & ~b & c & ~d;\n  wire w15 = ~a & ~b & ~c & d;\n  wire w16 = ~a & ~b & ~c & ~d;\n  assign q = w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12 | w13 | w14 | w15 | w16;\nendmodule",
+      "rtl_raw_sha256": "683f1ef483cbbb614bf8183fdc56115187193bcb7643bf63bb5e2b7ddc27b3cf",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "34/121 mismatches",
+      "raw_completion": "// Combinational circuit as per the simulation waveforms.\nmodule TopModule (\n    input a,\n    input b,\n    input c,\n    input d,\n    output reg q\n);\n    always @(*) begin\n        q = a & b & c | a & b & d | a & c & d | b & c & d;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "8b0075f761363d7eddde9089f7d8de36d9275320293b2cb8d69c6403a584dbe5",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    input c,\n    input d,\n    output reg q\n);\n    always @(*) begin\n        q = a & b & c | a & b & d | a & c & d | b & c & d;\n    end\nendmodule",
+      "rtl_raw_sha256": "a597134c9fd05966d665d478d4ce604813b91c75326712c1f4ae32840b3193f0",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "72/121 mismatches",
+      "raw_completion": "// Combinational circuit, as described in the question.\nmodule TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b & c & d;\n    wire w2 = a | b | c | d;\n    wire w3 = a ^ b ^ c ^ d;\n    assign q = w1 & w2 & w3;\nendmodule",
+      "raw_completion_raw_sha256": "90fff6d1ff841db85c17c56cc55c081d2b5528cfe689bffeb4b8b9bcf10a9e2b",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b & c & d;\n    wire w2 = a | b | c | d;\n    wire w3 = a ^ b ^ c ^ d;\n    assign q = w1 & w2 & w3;\nendmodule",
+      "rtl_raw_sha256": "9cd00a912a7935cc9e9c08824cdfc98ea8125e9839cffcd8d1070a51426cf8e5",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "49/121 mismatches",
+      "raw_completion": "// Combinational circuit with the same function as the reference\n// (schematic). Same combinational circuit, different Verilog\n// implementation.\nmodule TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b & ~c & d;\n    wire w2 = ~a & b & c & ~d;\n    wire w3 = a & ~b & ~c & d;\n    wire w4 = ~a & ~b & c & ~d;\n    wire w5 = a & b & c & d;\n    wire w6 = ~a & b & ~c & ~d;\n    wire w7 = a & ~b & c & d;\n    wire w8 = ~a & ~b & ~c & d;\n    wire w9 = a & b & ~c & ~d;\n    wire w10 = ~a & b & c & d;\n    wire w11 = a & ~b & ~c & ~d;\n    wire w12 = ~a & ~b & c & d;\n    wire w13 = a & b & c & ~d;\n    wire w14 = ~a & b & ~c & d;\n    wire w15 = a & ~b & c & ~d;\n    wire w16 = ~a & ~b & ~c & ~d;\n    assign q = w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12 | w13 | w14 | w15 | w16;\nendmodule",
+      "raw_completion_raw_sha256": "50b9d0c61a3bbe20e2461ebaffcbf2da67b9df3f75bf8a6684d62c98b6f8d663",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b & ~c & d;\n    wire w2 = ~a & b & c & ~d;\n    wire w3 = a & ~b & ~c & d;\n    wire w4 = ~a & ~b & c & ~d;\n    wire w5 = a & b & c & d;\n    wire w6 = ~a & b & ~c & ~d;\n    wire w7 = a & ~b & c & d;\n    wire w8 = ~a & ~b & ~c & d;\n    wire w9 = a & b & ~c & ~d;\n    wire w10 = ~a & b & c & d;\n    wire w11 = a & ~b & ~c & ~d;\n    wire w12 = ~a & ~b & c & d;\n    wire w13 = a & b & c & ~d;\n    wire w14 = ~a & b & ~c & d;\n    wire w15 = a & ~b & c & ~d;\n    wire w16 = ~a & ~b & ~c & ~d;\n    assign q = w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12 | w13 | w14 | w15 | w16;\nendmodule",
+      "rtl_raw_sha256": "8295ba58384a24c09b102f4168ab7474049af8f4cc0a6dbd17e073f75fbc70d3",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "72/121 mismatches",
+      "raw_completion": "// Combinational circuit as described in the time-domain simulation trace.\nmodule TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b & c & d;\n    wire w2 = a & b & c & ~d;\n    wire w3 = a & b & ~c & d;\n    wire w4 = a & b & ~c & ~d;\n    wire w5 = a & ~b & c & d;\n    wire w6 = a & ~b & c & ~d;\n    wire w7 = a & ~b & ~c & d;\n    wire w8 = a & ~b & ~c & ~d;\n    wire w9 = ~a & b & c & d;\n    wire w10 = ~a & b & c & ~d;\n    wire w11 = ~a & b & ~c & d;\n    wire w12 = ~a & b & ~c & ~d;\n    wire w13 = ~a & ~b & c & d;\n    wire w14 = ~a & ~b & c & ~d;\n    wire w15 = ~a & ~b & ~c & d;\n    wire w16 = ~a & ~b & ~c & ~d;\n    assign q = ~(w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12 | w13 | w14 | w15 | w16);\nendmodule",
+      "raw_completion_raw_sha256": "02eeb112df8ae5667656e6866581cf18e4099e2a8cb488e6723b78f61a98d8be",
+      "rtl": "module TopModule(\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b & c & d;\n    wire w2 = a & b & c & ~d;\n    wire w3 = a & b & ~c & d;\n    wire w4 = a & b & ~c & ~d;\n    wire w5 = a & ~b & c & d;\n    wire w6 = a & ~b & c & ~d;\n    wire w7 = a & ~b & ~c & d;\n    wire w8 = a & ~b & ~c & ~d;\n    wire w9 = ~a & b & c & d;\n    wire w10 = ~a & b & c & ~d;\n    wire w11 = ~a & b & ~c & d;\n    wire w12 = ~a & b & ~c & ~d;\n    wire w13 = ~a & ~b & c & d;\n    wire w14 = ~a & ~b & c & ~d;\n    wire w15 = ~a & ~b & ~c & d;\n    wire w16 = ~a & ~b & ~c & ~d;\n    assign q = ~(w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12 | w13 | w14 | w15 | w16);\nendmodule",
+      "rtl_raw_sha256": "dae7316ab043da03f6e26b5442adfe49ed198eb69c86c19ccadeecf1d8a4b49d",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "45/121 mismatches",
+      "raw_completion": "// combinational circuit, derived from simulation waveforms\nmodule TopModule (\n    input a,\n    input b,\n    input c,\n    input d,\n    output reg q\n);\n    always @(*) begin\n        case ({a, b, c, d})\n            4'b0000: q = 1'b0;\n            4'b0001: q = 1'b0;\n            4'b0010: q = 1'b0;\n            4'b0011: q = 1'b0;\n            4'b0100: q = 1'b0;\n            4'b0101: q = 1'b0;\n            4'b0110: q = 1'b0;\n            4'b0111: q = 1'b0;\n            4'b1000: q = 1'b0;\n            4'b1001: q = 1'b0;\n            4'b1010: q = 1'b0;\n            4'b1011: q = 1'b0;\n            4'b1100: q = 1'b0;\n            4'b1101: q = 1'b1;\n            4'b1110: q = 1'b1;\n            4'b1111: q = 1'b1;\n        endcase\n    end\nendmodule",
+      "raw_completion_raw_sha256": "e63f006cac785fdb60892d95a3efb3476f222c0e57fe7a26f2aa56702abace2b",
+      "rtl": "module TopModule (\n    input a,\n    input b,\n    input c,\n    input d,\n    output reg q\n);\n    always @(*) begin\n        case ({a, b, c, d})\n            4'b0000: q = 1'b0;\n            4'b0001: q = 1'b0;\n            4'b0010: q = 1'b0;\n            4'b0011: q = 1'b0;\n            4'b0100: q = 1'b0;\n            4'b0101: q = 1'b0;\n            4'b0110: q = 1'b0;\n            4'b0111: q = 1'b0;\n            4'b1000: q = 1'b0;\n            4'b1001: q = 1'b0;\n            4'b1010: q = 1'b0;\n            4'b1011: q = 1'b0;\n            4'b1100: q = 1'b0;\n            4'b1101: q = 1'b1;\n            4'b1110: q = 1'b1;\n            4'b1111: q = 1'b1;\n        endcase\n    end\nendmodule",
+      "rtl_raw_sha256": "3364e493ddb6e5da754b54ed2613ac3e2da1e59bfddf8a4bfff9f5560ac7df6b",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "79/121 mismatches",
+      "raw_completion": "// Combinational circuit, same as the one described in the problem\n// description.\nmodule TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b & c;\n    wire w2 = a & b & d;\n    wire w3 = a & c & d;\n    wire w4 = b & c & d;\n    wire w5 = a | b | c | d;\n    assign q = ~(w1 | w2 | w3 | w4) & w5;\nendmodule",
+      "raw_completion_raw_sha256": "849de5275198d00fce4952f73bd701ce8904f2edc2bbe4acb86ec35864bbe087",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b & c;\n    wire w2 = a & b & d;\n    wire w3 = a & c & d;\n    wire w4 = b & c & d;\n    wire w5 = a | b | c | d;\n    assign q = ~(w1 | w2 | w3 | w4) & w5;\nendmodule",
+      "rtl_raw_sha256": "7eb2e0166a55dddbe2836eb325a867b81ef391c0f32bb3534d36ec7c9459ccbe",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "98/121 mismatches",
+      "raw_completion": "// Combinational circuit with the same circuit as in the waveform diagram\n// (the long-hand truth table).\nmodule TopModule(input a, b, c, d, output q);\n    wire w1 = a & b;\n    wire w2 = a & c;\n    wire w3 = a & d;\n    wire w4 = b & c;\n    wire w5 = b & d;\n    wire w6 = c & d;\n    wire w7 = ~(w1 | w2 | w3 | w4 | w5 | w6);\n    wire w8 = ~(a & b & c);\n    wire w9 = ~(a & b & d);\n    wire w10 = ~(a & c & d);\n    wire w11 = ~(b & c & d);\n    wire w12 = ~(w8 | w9 | w10 | w11);\n    assign q = w7 | w12;\nendmodule",
+      "raw_completion_raw_sha256": "1e59b42c20a0e7395459ab3a8062f6be613c3c5c521e890acffdd306e08a1ad2",
+      "rtl": "module TopModule(input a, b, c, d, output q);\n    wire w1 = a & b;\n    wire w2 = a & c;\n    wire w3 = a & d;\n    wire w4 = b & c;\n    wire w5 = b & d;\n    wire w6 = c & d;\n    wire w7 = ~(w1 | w2 | w3 | w4 | w5 | w6);\n    wire w8 = ~(a & b & c);\n    wire w9 = ~(a & b & d);\n    wire w10 = ~(a & c & d);\n    wire w11 = ~(b & c & d);\n    wire w12 = ~(w8 | w9 | w10 | w11);\n    assign q = w7 | w12;\nendmodule",
+      "rtl_raw_sha256": "8065d58a19fb62b299051166bff26dc1b64272d232f7c1f47b149dd6e986bd1f",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "49/121 mismatches",
+      "raw_completion": "// Combinational circuit: the output is a function of all the inputs, in\n// exactly the same way as in the simulation waveform.\nmodule TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b & c & d;\n    wire w2 = a & b & c & ~d;\n    wire w3 = a & b & ~c & d;\n    wire w4 = a & b & ~c & ~d;\n    wire w5 = a & ~b & c & d;\n    wire w6 = a & ~b & c & ~d;\n    wire w7 = a & ~b & ~c & d;\n    wire w8 = a & ~b & ~c & ~d;\n    wire w9 = ~a & b & c & d;\n    wire w10 = ~a & b & c & ~d;\n    wire w11 = ~a & b & ~c & d;\n    wire w12 = ~a & b & ~c & ~d;\n    wire w13 = ~a & ~b & c & d;\n    wire w14 = ~a & ~b & c & ~d;\n    wire w15 = ~a & ~b & ~c & d;\n    wire w16 = ~a & ~b & ~c & ~d;\n    assign q = w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12 | w13 | w14 | w15 | w16;\nendmodule",
+      "raw_completion_raw_sha256": "08a236ce046516f3e7bac2e9b5ec2b9df1b398e2d25b93931a97c96ce73d2d5b",
+      "rtl": "module TopModule (\n    input  a,\n    input  b,\n    input  c,\n    input  d,\n    output q\n);\n    wire w1 = a & b & c & d;\n    wire w2 = a & b & c & ~d;\n    wire w3 = a & b & ~c & d;\n    wire w4 = a & b & ~c & ~d;\n    wire w5 = a & ~b & c & d;\n    wire w6 = a & ~b & c & ~d;\n    wire w7 = a & ~b & ~c & d;\n    wire w8 = a & ~b & ~c & ~d;\n    wire w9 = ~a & b & c & d;\n    wire w10 = ~a & b & c & ~d;\n    wire w11 = ~a & b & ~c & d;\n    wire w12 = ~a & b & ~c & ~d;\n    wire w13 = ~a & ~b & c & d;\n    wire w14 = ~a & ~b & c & ~d;\n    wire w15 = ~a & ~b & ~c & d;\n    wire w16 = ~a & ~b & ~c & ~d;\n    assign q = w1 | w2 | w3 | w4 | w5 | w6 | w7 | w8 | w9 | w10 | w11 | w12 | w13 | w14 | w15 | w16;\nendmodule",
+      "rtl_raw_sha256": "5ad40876f8a508e1bd6e4b036f3f9443e51ee9a6762b1f060d76b041ff53b537",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "fail": 20
+  },
+  "testbench_raw_sha256": "f58b01f599e757556ee9882f9467121a196be69ad6b755b2016c57ab6c844524",
+  "training_seed": 0
+}

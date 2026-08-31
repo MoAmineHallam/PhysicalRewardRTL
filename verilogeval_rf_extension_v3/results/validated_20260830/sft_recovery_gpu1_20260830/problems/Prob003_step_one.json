@@ -1,0 +1,199 @@
+{
+  "n_samples": 20,
+  "policy": "sft",
+  "problem": "Prob003_step_one",
+  "problem_seed": 8629410389034490448,
+  "prompt_raw_sha256": "0b60b00e2748af268e05949aefb42bd29a48dcc619896d83730f40c87b00da6d",
+  "reference_raw_sha256": "937aeed69765ee339ed853e0876bb2c5da178269e03870b9ed43da6f4dbb2dd3",
+  "run_config_canonical_raw_sha256": "eb0190a567a2a1576be5593cb86444e960b9afa428400cd556227afddee758cc",
+  "samples": [
+    {
+      "detail": "20/20 mismatches",
+      "raw_completion": "// One-bit combinational logic function: always outputs 1.\nmodule TopModule (\n    output reg one\n);\n    always @(*) one = 1;\nendmodule",
+      "raw_completion_raw_sha256": "79abd0eee35a88822f867181bcd9a7c3ffb3ca572d63362030f733b9bfc4755f",
+      "rtl": "module TopModule (\n    output reg one\n);\n    always @(*) one = 1;\nendmodule",
+      "rtl_raw_sha256": "6a8ccff59bb00f04f05b032c3cc424f0dca112e60b13e459e22248c5400c76d9",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "/home/adam/mas/mas/verilog-eval-v2-bundle/dataset_spec-to-rtl/Prob003_step_one_test.sv:75: error: Unknown module type: TopModule",
+      "raw_completion": "// One-bit combinational register, which drives its output to the same value as\n// its input, but with a delay of one clock cycle. This forms a kind of\n// combinational latch.\nmodule DelayedRegister (\n    input  reg  one,\n    output reg  one_delayed\n);\n    always @(posedge one) begin\n        one_delayed <= one;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "f8a9c0ff222935f9861e0529ae2a0bb84091ed0e7688995d9a072b8457b8a10c",
+      "rtl": "module DelayedRegister (\n    input  reg  one,\n    output reg  one_delayed\n);\n    always @(posedge one) begin\n        one_delayed <= one;\n    end\nendmodule",
+      "rtl_raw_sha256": "fab560662d83d4519dae307d4d567e4b62d6c54887dbba0c9f63c0e8799b1fe5",
+      "sample_index": 1,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "20/20 mismatches",
+      "raw_completion": "module TopModule (\n    output reg one\n);\n    always @(*) one = 1;\nendmodule",
+      "raw_completion_raw_sha256": "6a8ccff59bb00f04f05b032c3cc424f0dca112e60b13e459e22248c5400c76d9",
+      "rtl": "module TopModule (\n    output reg one\n);\n    always @(*) one = 1;\nendmodule",
+      "rtl_raw_sha256": "6a8ccff59bb00f04f05b032c3cc424f0dca112e60b13e459e22248c5400c76d9",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "20/20 mismatches",
+      "raw_completion": "module TopModule (\n    output reg one\n);\n    always @(*) begin\n        one = 1'b1;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "f133e1cb72ef775013641324ffb2b6900a06bcb133c1964630a512579ca94de0",
+      "rtl": "module TopModule (\n    output reg one\n);\n    always @(*) begin\n        one = 1'b1;\n    end\nendmodule",
+      "rtl_raw_sha256": "f133e1cb72ef775013641324ffb2b6900a06bcb133c1964630a512579ca94de0",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit combinational logic: always outputs 1\nmodule TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "raw_completion_raw_sha256": "82f0099d80c6fef1800a28eaa88ce05f1d81d29b6878af6e6970dbf6bc6b38bc",
+      "rtl": "module TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "rtl_raw_sha256": "6b1359083e8bf13d1d7f31593794bb578613773f8418378393f1098c909e5f7b",
+      "sample_index": 4,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "raw_completion_raw_sha256": "6b1359083e8bf13d1d7f31593794bb578613773f8418378393f1098c909e5f7b",
+      "rtl": "module TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "rtl_raw_sha256": "6b1359083e8bf13d1d7f31593794bb578613773f8418378393f1098c909e5f7b",
+      "sample_index": 5,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule(output one);\n    assign one = 1'b1;\nendmodule",
+      "raw_completion_raw_sha256": "36dade568c45b83005efca349961bd8c4b6c6ae520c7d80b0d05e8fc4dffa057",
+      "rtl": "module TopModule(output one);\n    assign one = 1'b1;\nendmodule",
+      "rtl_raw_sha256": "36dade568c45b83005efca349961bd8c4b6c6ae520c7d80b0d05e8fc4dffa057",
+      "sample_index": 6,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "raw_completion_raw_sha256": "6b1359083e8bf13d1d7f31593794bb578613773f8418378393f1098c909e5f7b",
+      "rtl": "module TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "rtl_raw_sha256": "6b1359083e8bf13d1d7f31593794bb578613773f8418378393f1098c909e5f7b",
+      "sample_index": 7,
+      "status": "PASS"
+    },
+    {
+      "detail": "20/20 mismatches",
+      "raw_completion": "// One-bit combinational register with an always @(*) block.\nmodule TopModule (\n    output reg one\n);\n    always @(*) one = 1;\nendmodule",
+      "raw_completion_raw_sha256": "1d64d98ec55e81424a7270e29eaa3df17f38b472ff38d7c2f57bfa9c05aa09ea",
+      "rtl": "module TopModule (\n    output reg one\n);\n    always @(*) one = 1;\nendmodule",
+      "rtl_raw_sha256": "6a8ccff59bb00f04f05b032c3cc424f0dca112e60b13e459e22248c5400c76d9",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit combinational logic: always drives 1.\nmodule TopModule (output one);\n    assign one = 1'b1;\nendmodule",
+      "raw_completion_raw_sha256": "564c4d10f349985c81955a8d00799b77314c8a138a972ffdc43b07ca9fa7f8fb",
+      "rtl": "module TopModule (output one);\n    assign one = 1'b1;\nendmodule",
+      "rtl_raw_sha256": "c08db5867b2fd6467db7fe195f0f4187d1c2c09942e73b9f423fc4dbd51318c7",
+      "sample_index": 9,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "raw_completion_raw_sha256": "6b1359083e8bf13d1d7f31593794bb578613773f8418378393f1098c909e5f7b",
+      "rtl": "module TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "rtl_raw_sha256": "6b1359083e8bf13d1d7f31593794bb578613773f8418378393f1098c909e5f7b",
+      "sample_index": 10,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "raw_completion_raw_sha256": "6b1359083e8bf13d1d7f31593794bb578613773f8418378393f1098c909e5f7b",
+      "rtl": "module TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "rtl_raw_sha256": "6b1359083e8bf13d1d7f31593794bb578613773f8418378393f1098c909e5f7b",
+      "sample_index": 11,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "raw_completion_raw_sha256": "6b1359083e8bf13d1d7f31593794bb578613773f8418378393f1098c909e5f7b",
+      "rtl": "module TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "rtl_raw_sha256": "6b1359083e8bf13d1d7f31593794bb578613773f8418378393f1098c909e5f7b",
+      "sample_index": 12,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit combinational always-1 function, named as the module\nmodule TopModule (output one);\n    assign one = 1'b1;\nendmodule",
+      "raw_completion_raw_sha256": "a9f779b294c111b2f1c7b27f26c7fbde6a16f46f83bf506d8dbf0a18004473d2",
+      "rtl": "module TopModule (output one);\n    assign one = 1'b1;\nendmodule",
+      "rtl_raw_sha256": "c08db5867b2fd6467db7fe195f0f4187d1c2c09942e73b9f423fc4dbd51318c7",
+      "sample_index": 13,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit always-1 module\nmodule TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "raw_completion_raw_sha256": "5a1979b5b6629361837969bc019533ba70dca56316d4e8e59c1de974358aecd6",
+      "rtl": "module TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "rtl_raw_sha256": "6b1359083e8bf13d1d7f31593794bb578613773f8418378393f1098c909e5f7b",
+      "sample_index": 14,
+      "status": "PASS"
+    },
+    {
+      "detail": "20/20 mismatches",
+      "raw_completion": "// One-bit combinational logic: always drives 1.\nmodule TopModule (\n    output reg one\n);\n    always @(*) one = 1;\nendmodule",
+      "raw_completion_raw_sha256": "6aa9e8de6520c4b32a99e228b9596dbfda313a83212ae7176ee375ab56d9f899",
+      "rtl": "module TopModule (\n    output reg one\n);\n    always @(*) one = 1;\nendmodule",
+      "rtl_raw_sha256": "6a8ccff59bb00f04f05b032c3cc424f0dca112e60b13e459e22248c5400c76d9",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit combinational always-high constant high.\nmodule TopModule (output one);\n    assign one = 1'b1;\nendmodule",
+      "raw_completion_raw_sha256": "0e358543a4a33a28a507d74a162c64611aeb646f5f8d686f826c48becb002074",
+      "rtl": "module TopModule (output one);\n    assign one = 1'b1;\nendmodule",
+      "rtl_raw_sha256": "c08db5867b2fd6467db7fe195f0f4187d1c2c09942e73b9f423fc4dbd51318c7",
+      "sample_index": 16,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "module TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "raw_completion_raw_sha256": "6b1359083e8bf13d1d7f31593794bb578613773f8418378393f1098c909e5f7b",
+      "rtl": "module TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "rtl_raw_sha256": "6b1359083e8bf13d1d7f31593794bb578613773f8418378393f1098c909e5f7b",
+      "sample_index": 17,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit always-1 module\nmodule TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "raw_completion_raw_sha256": "5a1979b5b6629361837969bc019533ba70dca56316d4e8e59c1de974358aecd6",
+      "rtl": "module TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "rtl_raw_sha256": "6b1359083e8bf13d1d7f31593794bb578613773f8418378393f1098c909e5f7b",
+      "sample_index": 18,
+      "status": "PASS"
+    },
+    {
+      "detail": "",
+      "raw_completion": "// One-bit combinational logic that drives 1.\nmodule TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "raw_completion_raw_sha256": "cbc8f8ec2fd57c45433f2a76e8241d7d20c8c2136f02fc9342b6268aa82fc453",
+      "rtl": "module TopModule (\n    output one\n);\n    assign one = 1'b1;\nendmodule",
+      "rtl_raw_sha256": "6b1359083e8bf13d1d7f31593794bb578613773f8418378393f1098c909e5f7b",
+      "sample_index": 19,
+      "status": "PASS"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "PASS": 14,
+    "compile_fail": 1,
+    "fail": 5
+  },
+  "testbench_raw_sha256": "04ba07d391d227c9577bbad2bda22fbf2494086b9a730b604585a79ad7ad7382",
+  "training_seed": 0
+}

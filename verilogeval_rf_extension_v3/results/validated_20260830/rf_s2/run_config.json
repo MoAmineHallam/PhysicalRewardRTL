@@ -1,0 +1,93 @@
+{
+  "adapter_legacy_study2_dir_sha256": "d151c4b3c42617ca1159412597ebb8d428d9fb895f5e2845437032356c8eff87",
+  "adapter_raw_dir_sha256": "d151c4b3c42617ca1159412597ebb8d428d9fb895f5e2845437032356c8eff87",
+  "base_legacy_study2_dir_sha256": "c29348b7a8ee7fbd73a31a215942d51d5490574d080305a15ca12f7fd396e256",
+  "base_raw_dir_sha256": "c29348b7a8ee7fbd73a31a215942d51d5490574d080305a15ca12f7fd396e256",
+  "benchmark_git_commit": "c498220d0a52248f8e3fdffe279075215bde2da6",
+  "benchmark_raw_dir_sha256": "8a9a9aea974dfc96af0e31a9aab85aede8b11d5c3c8c4c5912b475a08b04e5e4",
+  "environment": {
+    "cuda_visible_devices": "4",
+    "gpu_compute_capability": [
+      8,
+      9
+    ],
+    "gpu_name": "NVIDIA L40S",
+    "gpu_uuid": "GPU-1e6a028f-e263-1f6e-f42a-5c45f794f867",
+    "iverilog_version_text": "Icarus Verilog version 12.0 (stable) ()",
+    "nvidia_driver": "550.144.03",
+    "packages": {
+      "accelerate": "1.0.1",
+      "numpy": "2.2.6",
+      "peft": "0.13.2",
+      "torch": "2.4.1+cu121",
+      "transformers": "4.46.3"
+    },
+    "python": "3.10.20",
+    "required_environment": {
+      "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+      "HF_HUB_OFFLINE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "TOKENIZERS_PARALLELISM": "false",
+      "TRANSFORMERS_OFFLINE": "1"
+    },
+    "torch_cuda": "12.1",
+    "visible_gpu_count": 1,
+    "vvp_version_text": "Icarus Verilog runtime version 12.0 (stable) ()"
+  },
+  "frozen_inputs_path": "/home/adam/mas/mas/verilogeval_rf_frozen_inputs_v3_20260829.json",
+  "frozen_inputs_raw_sha256": "915ec651acf350b97ea42c38e49a385ced8e0a6b2710d754d7b69b0b9896bada",
+  "generation": {
+    "determinism_note": "Per-problem RNG reset, fixed chunking, a deterministic-algorithm request, TF32 disabled, and one visible GPU stabilize interruption/resume and ordering. Torch 2.4.1 lacks deterministic CUDA cumsum for top-p sampling, so that operation warns and proceeds. Bit-identical CUDA sampling is not claimed; the exact GPU, driver, packages, seeds, and chunking remain mandatory.",
+    "do_sample": true,
+    "dtype": "float16",
+    "generation_batch_size": 5,
+    "max_new_tokens": 1024,
+    "n_samples_per_problem": 20,
+    "num_beams": 1,
+    "repetition_penalty": 1.0,
+    "root_seed": 20260827,
+    "same_problem_seed_across_policies": true,
+    "seed_derivation": "lower 63 bits of SHA256('20260827\\0' + problem_id)",
+    "stop_strings": [
+      "endmodule"
+    ],
+    "system_prompt": "You are an expert Verilog RTL designer. Write synthesizable Verilog-2001. The module MUST be named TopModule with exactly the ports given in the prompt. Return only the Verilog module, no markdown, no explanation.",
+    "temperature": 0.85,
+    "top_k": 0,
+    "top_p": 0.95,
+    "typical_p": 1.0,
+    "unsupported_deterministic_cuda_ops": "warn_only"
+  },
+  "oracle": {
+    "compile_timeout_seconds": 60,
+    "compiler": "iverilog",
+    "compiler_arguments": [
+      "-g2012"
+    ],
+    "nonpass_policy": "compile errors, timeouts, missing verdicts, nonzero mismatches, and internal judge errors are retained as failures",
+    "pass_condition": "simulator return code == 0, parsed sample count > 0, and mismatch count == 0",
+    "simulation_timeout_seconds": 60,
+    "simulator": "vvp",
+    "verdict_regex": "Mismatches:\\s*(\\d+)\\s*in\\s*(\\d+)\\s*samples"
+  },
+  "output_dir": "/home/adam/mas/mas/verilogeval_rf_v3_20260829/rf_s2",
+  "package_raw_sha256": {
+    ".gitignore": "6feaded4e28ea86e001a6751b4e3d960e8b7c31b9616ff9936b79297086e809b",
+    "README.md": "8f20b68c3806d428673bb0e95cb8889e5ffbb3ba1772efa7f2bca7d75ee409ed",
+    "aggregate.py": "c37bbe8c5de0c3d275d47464adf0ef51d03f5027285be0c786f8e6d01f078ef3",
+    "common.py": "b63ad3b81644e9648740afcb874edefd2aa568968b0f307d73d38ee3cd9fe039",
+    "freeze_inputs.py": "55680bfabbbbd110e3da195877e2325ee390c65a30240524861f899cf7e3ccd0",
+    "launch_three.sh": "7d61b95356e0cfad6021e0fa7b13c055da5f4f5710323f9deaefd219f34714ff",
+    "protocol.json": "3babce1fcf7b9229ebd227c878d21657ee0d300750f1e972834c137471a363b8",
+    "requirements.lock.txt": "04d358d83e26e06893b67670ea1c81adef0ab708e0eabeb501d84113d6d9b22a",
+    "run_policy.py": "91920f074d581b900214efaf222229767119c5be7b46b69a1b87c9546cd9ad95",
+    "tests/test_protocol.py": "a945544b41d79b98946b2c10b678dafeb24a6a51275aa7448df8c3d82e855ff9",
+    "validate.py": "d325dcf36ce0614c1a9582e2cfe8f8e96b3937c523ee3d874dc51b6d48525fb1"
+  },
+  "physical_gpu_index": 4,
+  "policy": "rf_s2",
+  "protocol_id": "verilogeval_rf_repaired_2026-08-29-v3",
+  "protocol_raw_sha256": "3babce1fcf7b9229ebd227c878d21657ee0d300750f1e972834c137471a363b8",
+  "schema": "verilogeval_rf_policy_run/1",
+  "training_seed": 2
+}

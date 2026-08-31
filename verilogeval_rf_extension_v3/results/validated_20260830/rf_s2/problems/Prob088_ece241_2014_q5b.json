@@ -1,0 +1,198 @@
+{
+  "n_samples": 20,
+  "policy": "rf_s2",
+  "problem": "Prob088_ece241_2014_q5b",
+  "problem_seed": 2400092689390682968,
+  "prompt_raw_sha256": "57208b463127b6f4bb738bd56a923981f34151aebe567a6cb2c76124c58915b2",
+  "reference_raw_sha256": "bb9b731de5e52fabceb4649ec9e7808cba9decd96453c027261bf6bd2eb65aaa",
+  "run_config_canonical_raw_sha256": "995453438156b3d7f324a4e10e8bc99145183abb55e81ab35029a66cb1e75e4b",
+  "samples": [
+    {
+      "detail": "190/436 mismatches",
+      "raw_completion": "// One-hot encoded Mealy finite-state machine.\nmodule TopModule (\n    input  clk,\n    input  areset,\n    input  x,\n    output reg z\n);\n    reg [1:0] state, next_state;\n    always @(*) begin\n        case (state)\n            2'b00: begin z=1'b0; if (x) next_state=2'b01; else next_state=2'b00; end\n            2'b01: begin z=1'b1; if (x) next_state=2'b10; else next_state=2'b01; end\n            2'b10: begin z=1'b0; if (x) next_state=2'b11; else next_state=2'b10; end\n            2'b11: begin z=1'b1; if (x) next_state=2'b01; else next_state=2'b11; end\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) state <= 2'b00;\n        else state <= next_state;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "86aad6413ef172eb27c9cb01c1cadec3574e448a734dc1c76c0843a1eb9e03b7",
+      "rtl": "module TopModule (\n    input  clk,\n    input  areset,\n    input  x,\n    output reg z\n);\n    reg [1:0] state, next_state;\n    always @(*) begin\n        case (state)\n            2'b00: begin z=1'b0; if (x) next_state=2'b01; else next_state=2'b00; end\n            2'b01: begin z=1'b1; if (x) next_state=2'b10; else next_state=2'b01; end\n            2'b10: begin z=1'b0; if (x) next_state=2'b11; else next_state=2'b10; end\n            2'b11: begin z=1'b1; if (x) next_state=2'b01; else next_state=2'b11; end\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) state <= 2'b00;\n        else state <= next_state;\n    end\nendmodule",
+      "rtl_raw_sha256": "c2a1747b5802498c518d3ae7eb5c21ee1c95793a1f15ecde6a5766f2a3724ab7",
+      "sample_index": 0,
+      "status": "fail"
+    },
+    {
+      "detail": "231/436 mismatches",
+      "raw_completion": "// One-hot encoded Mealy finite-state machine. Same functionality as the 2's\n// complementer. Reset is active-high, asynchronous, and goes to state A\n// immediately.\nmodule TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z = 1'b0; if (x) next_state = 2'b01; else next_state = 2'b00; end\n      2'b01: begin z = 1'b1; if (x) next_state = 2'b11; else next_state = 2'b01; end\n      2'b10: begin z = 1'b1; if (x) next_state = 2'b11; else next_state = 2'b10; end\n      2'b11: begin z = 1'b0; if (x) next_state = 2'b01; else next_state = 2'b11; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "ee1f6489f9e5deebe3ff735a81ad2cf8bbfd66700373bc60e2effddbaf24c8c0",
+      "rtl": "module TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z = 1'b0; if (x) next_state = 2'b01; else next_state = 2'b00; end\n      2'b01: begin z = 1'b1; if (x) next_state = 2'b11; else next_state = 2'b01; end\n      2'b10: begin z = 1'b1; if (x) next_state = 2'b11; else next_state = 2'b10; end\n      2'b11: begin z = 1'b0; if (x) next_state = 2'b01; else next_state = 2'b11; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\nendmodule",
+      "rtl_raw_sha256": "68a6341335529a0335c0df9ed5b8d6bf39b8513a6df02ed83abee85814dad057",
+      "sample_index": 1,
+      "status": "fail"
+    },
+    {
+      "detail": "210/436 mismatches",
+      "raw_completion": "// One-hot encoded Mealy finite-state machine, 2's complementer\nmodule TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; if (x) next_state=2'b01; else next_state=2'b00; end\n      2'b01: begin z=1'b1; if (x) next_state=2'b10; else next_state=2'b01; end\n      2'b10: begin z=1'b0; if (x) next_state=2'b11; else next_state=2'b01; end\n      2'b11: begin z=1'b1; if (x) next_state=2'b10; else next_state=2'b11; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "55e40f865fdf72049832f9c827543071ca671d4a01849393d84fc396dc0d56b2",
+      "rtl": "module TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; if (x) next_state=2'b01; else next_state=2'b00; end\n      2'b01: begin z=1'b1; if (x) next_state=2'b10; else next_state=2'b01; end\n      2'b10: begin z=1'b0; if (x) next_state=2'b11; else next_state=2'b01; end\n      2'b11: begin z=1'b1; if (x) next_state=2'b10; else next_state=2'b11; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\nendmodule",
+      "rtl_raw_sha256": "15758705ecdb751e7a4fe6d2782fea160c21779f3f994361f2d6ce77230f3a5e",
+      "sample_index": 2,
+      "status": "fail"
+    },
+    {
+      "detail": "210/436 mismatches",
+      "raw_completion": "// One-hot encoded Mealy finite-state machine.\nmodule TopModule(input  clk, input  areset, input  x, output z);\n  reg [1:0] state, next_state;\n  reg        z_reg;\n  always @(*) begin\n    case (state)\n      2'b00: begin z_reg = 1'b0;\n              if (x) next_state = 2'b01;\n              else next_state = 2'b00;\n            end\n      2'b01: begin z_reg = 1'b1;\n              if (x) next_state = 2'b10;\n              else next_state = 2'b01;\n            end\n      2'b10: begin z_reg = 1'b0;\n              if (x) next_state = 2'b11;\n              else next_state = 2'b01;\n            end\n      2'b11: begin z_reg = 1'b1;\n              if (x) next_state = 2'b11;\n              else next_state = 2'b01;\n            end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\n  assign z = z_reg;\nendmodule",
+      "raw_completion_raw_sha256": "627eb22e6d15ef211cb481036f3e9fc9063f166c864d95ddd532debcd94803af",
+      "rtl": "module TopModule(input  clk, input  areset, input  x, output z);\n  reg [1:0] state, next_state;\n  reg        z_reg;\n  always @(*) begin\n    case (state)\n      2'b00: begin z_reg = 1'b0;\n              if (x) next_state = 2'b01;\n              else next_state = 2'b00;\n            end\n      2'b01: begin z_reg = 1'b1;\n              if (x) next_state = 2'b10;\n              else next_state = 2'b01;\n            end\n      2'b10: begin z_reg = 1'b0;\n              if (x) next_state = 2'b11;\n              else next_state = 2'b01;\n            end\n      2'b11: begin z_reg = 1'b1;\n              if (x) next_state = 2'b11;\n              else next_state = 2'b01;\n            end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\n  assign z = z_reg;\nendmodule",
+      "rtl_raw_sha256": "d63c725f0a68e644dac58e5394daefc6aaeb2acde86ccbd32df8c408dd4a203f",
+      "sample_index": 3,
+      "status": "fail"
+    },
+    {
+      "detail": "209/436 mismatches",
+      "raw_completion": "// One-hot encoded Mealy finite-state machine.\nmodule TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; if (x) next_state=2'b01; else next_state=2'b00; end\n      2'b01: begin z=1'b1; if (x) next_state=2'b11; else next_state=2'b01; end\n      2'b10: begin z=1'b1; if (x) next_state=2'b11; else next_state=2'b10; end\n      2'b11: begin z=1'b0; if (x) next_state=2'b11; else next_state=2'b00; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "5872118c30a71a1d0108386c098d1aca37a39859ea736d2cec569aff3990e932",
+      "rtl": "module TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; if (x) next_state=2'b01; else next_state=2'b00; end\n      2'b01: begin z=1'b1; if (x) next_state=2'b11; else next_state=2'b01; end\n      2'b10: begin z=1'b1; if (x) next_state=2'b11; else next_state=2'b10; end\n      2'b11: begin z=1'b0; if (x) next_state=2'b11; else next_state=2'b00; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\nendmodule",
+      "rtl_raw_sha256": "89ef8d7e7ec3c22cfc4d60d793bd84b8b0f0261fe8a50524f00b9826e14b2a39",
+      "sample_index": 4,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:5: error: z is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-hot encoding of the Mealy finite-state machine.\nmodule TopModule(input  clk, input  areset, input  x, output z);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; nextstate=2'b01; end\n      2'b01: begin z=1'b1; if (x) nextstate=2'b01; else nextstate=2'b10; end\n      2'b10: begin z=1'b1; if (x) nextstate=2'b10; else nextstate=2'b00; end\n      2'b11: begin z=1'b0; nextstate=2'b00; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= nextstate;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "6905a141d1f48bf094927f23977cc6372f62022a835e41eb779ccfcecd5912ad",
+      "rtl": "module TopModule(input  clk, input  areset, input  x, output z);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; nextstate=2'b01; end\n      2'b01: begin z=1'b1; if (x) nextstate=2'b01; else nextstate=2'b10; end\n      2'b10: begin z=1'b1; if (x) nextstate=2'b10; else nextstate=2'b00; end\n      2'b11: begin z=1'b0; nextstate=2'b00; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= nextstate;\n  end\nendmodule",
+      "rtl_raw_sha256": "11353b2b2c81f3e825eb469fe725b113f2b9d03175bb0b767f1ef351d2f269c5",
+      "sample_index": 5,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "219/436 mismatches",
+      "raw_completion": "// One-hot encoded Mealy finite-state machine.\nmodule TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z = 1'b0; if (x) next_state = 2'b01; else next_state = 2'b00; end\n      2'b01: begin z = 1'b1; if (x) next_state = 2'b10; else next_state = 2'b01; end\n      2'b10: begin z = 1'b1; if (x) next_state = 2'b11; else next_state = 2'b01; end\n      2'b11: begin z = 1'b0; if (x) next_state = 2'b10; else next_state = 2'b00; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "d204e34905e788b7a59c5f999884dd15b7cbc705658c6aa8aa5cd4a5a1688cc6",
+      "rtl": "module TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z = 1'b0; if (x) next_state = 2'b01; else next_state = 2'b00; end\n      2'b01: begin z = 1'b1; if (x) next_state = 2'b10; else next_state = 2'b01; end\n      2'b10: begin z = 1'b1; if (x) next_state = 2'b11; else next_state = 2'b01; end\n      2'b11: begin z = 1'b0; if (x) next_state = 2'b10; else next_state = 2'b00; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\nendmodule",
+      "rtl_raw_sha256": "341bedf6130b4672ed47f41e8246ed95bc100407fdc55aea1790ab6e5dfb2237",
+      "sample_index": 6,
+      "status": "fail"
+    },
+    {
+      "detail": "231/436 mismatches",
+      "raw_completion": "// Mealy finite-state machine, one-hot encoded\nmodule TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n     2'b00: begin z=1'b0; if (x) nextstate=2'b01; else nextstate=2'b00; end\n     2'b01: begin z=1'b1; if (x) nextstate=2'b11; else nextstate=2'b01; end\n     2'b10: begin z=1'b1; if (x) nextstate=2'b11; else nextstate=2'b01; end\n     2'b11: begin z=1'b0; if (x) nextstate=2'b10; else nextstate=2'b00; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= nextstate;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "92dfc9c970a2866c28822a4cd3307dd69bafaab99a700c900434fea54c3ced41",
+      "rtl": "module TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n     2'b00: begin z=1'b0; if (x) nextstate=2'b01; else nextstate=2'b00; end\n     2'b01: begin z=1'b1; if (x) nextstate=2'b11; else nextstate=2'b01; end\n     2'b10: begin z=1'b1; if (x) nextstate=2'b11; else nextstate=2'b01; end\n     2'b11: begin z=1'b0; if (x) nextstate=2'b10; else nextstate=2'b00; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= nextstate;\n  end\nendmodule",
+      "rtl_raw_sha256": "91acc2c247a3427e5955c0b9638d73b26f71763734b1f3dc0403446a2ee90c6b",
+      "sample_index": 7,
+      "status": "fail"
+    },
+    {
+      "detail": "219/436 mismatches",
+      "raw_completion": "// One-hot encoded Mealy finite-state machine\nmodule TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; if (x) next_state=2'b01; else next_state=2'b00; end\n      2'b01: begin z=1'b1; if (x) next_state=2'b11; else next_state=2'b00; end\n      2'b10: begin z=1'b1; if (x) next_state=2'b11; else next_state=2'b00; end\n      2'b11: begin z=1'b0; if (x) next_state=2'b11; else next_state=2'b00; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "945a8dd3b7f719a8773006ecfcf2cdadde795c5b520bdb2ca0f0ec8d486530ce",
+      "rtl": "module TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; if (x) next_state=2'b01; else next_state=2'b00; end\n      2'b01: begin z=1'b1; if (x) next_state=2'b11; else next_state=2'b00; end\n      2'b10: begin z=1'b1; if (x) next_state=2'b11; else next_state=2'b00; end\n      2'b11: begin z=1'b0; if (x) next_state=2'b11; else next_state=2'b00; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\nendmodule",
+      "rtl_raw_sha256": "0e129f8a4be04f5a56d952ffce9c0f0a8c2c875becb44c5ff014d20d2f1509d7",
+      "sample_index": 8,
+      "status": "fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:5: error: z is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// One-hot encoded Mealy finite-state machine.\nmodule TopModule(input  clk, input  areset, input  x, output z);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; nextstate = (x) ? 2'b01 : 2'b00; end\n      2'b01: begin z=1'b1; nextstate = (x) ? 2'b11 : 2'b01; end\n      2'b10: begin z=1'b1; nextstate = (x) ? 2'b10 : 2'b10; end\n      2'b11: begin z=1'b0; nextstate = (x) ? 2'b10 : 2'b11; end\n    endcase\n  end\n  always @(posedge clk) if (areset) state <= 2'b00; else state <= nextstate;\nendmodule",
+      "raw_completion_raw_sha256": "3ff97c64383dfb9bd4bd69207ffecc35af28195fe80c71daabca59cee14c39f1",
+      "rtl": "module TopModule(input  clk, input  areset, input  x, output z);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; nextstate = (x) ? 2'b01 : 2'b00; end\n      2'b01: begin z=1'b1; nextstate = (x) ? 2'b11 : 2'b01; end\n      2'b10: begin z=1'b1; nextstate = (x) ? 2'b10 : 2'b10; end\n      2'b11: begin z=1'b0; nextstate = (x) ? 2'b10 : 2'b11; end\n    endcase\n  end\n  always @(posedge clk) if (areset) state <= 2'b00; else state <= nextstate;\nendmodule",
+      "rtl_raw_sha256": "e9016a38b59b271fd9b8131e5c902bbd50ab7d76bdd2a47a597c397e13cf903a",
+      "sample_index": 9,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "<TMP>/candidate.sv:12: error: z is not a valid l-value in tb.top_module1.",
+      "raw_completion": "// 2's complementer Mealy FSM, one-hot encoding, asynchronous reset\nmodule TopModule (\n    input  clk,\n    input  areset,\n    input  x,\n    output z\n);\n    reg [1:0] state, next_state;\n    wire [1:0] y;\n    assign y = 2'b01;\n    always @(*) begin\n        case (state)\n            2'b00: begin next_state = 2'b01; z = 1'b0; end\n            2'b01: begin next_state = (x) ? 2'b11 : 2'b00; z = 1'b1; end\n            2'b10: begin next_state = (x) ? 2'b01 : 2'b10; z = 1'b1; end\n            2'b11: begin next_state = 2'b00; z = 1'b0; end\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) state <= 2'b00;\n        else state <= next_state;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "67cb79c72f10d841d89e5f307e291f5feb4ba68a965a1f714b3a7704539fb3f9",
+      "rtl": "module TopModule (\n    input  clk,\n    input  areset,\n    input  x,\n    output z\n);\n    reg [1:0] state, next_state;\n    wire [1:0] y;\n    assign y = 2'b01;\n    always @(*) begin\n        case (state)\n            2'b00: begin next_state = 2'b01; z = 1'b0; end\n            2'b01: begin next_state = (x) ? 2'b11 : 2'b00; z = 1'b1; end\n            2'b10: begin next_state = (x) ? 2'b01 : 2'b10; z = 1'b1; end\n            2'b11: begin next_state = 2'b00; z = 1'b0; end\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) state <= 2'b00;\n        else state <= next_state;\n    end\nendmodule",
+      "rtl_raw_sha256": "aa05f4fd1067f705be7e8ba0063268c80f4acf2247dd3cd24887f29b13c410b3",
+      "sample_index": 10,
+      "status": "compile_fail"
+    },
+    {
+      "detail": "206/436 mismatches",
+      "raw_completion": "// One-hot encoded Mealy finite-state machine.\nmodule TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; if (x) next_state=2'b01; else next_state=2'b00; end\n      2'b01: begin z=1'b1; if (x) next_state=2'b11; else next_state=2'b01; end\n      2'b10: begin z=1'b0; if (x) next_state=2'b11; else next_state=2'b10; end\n      2'b11: begin z=1'b1; if (x) next_state=2'b01; else next_state=2'b11; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "b8685440a90512162c760f2cc40411b81df3089683716f0367ab8cc26fed9da3",
+      "rtl": "module TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; if (x) next_state=2'b01; else next_state=2'b00; end\n      2'b01: begin z=1'b1; if (x) next_state=2'b11; else next_state=2'b01; end\n      2'b10: begin z=1'b0; if (x) next_state=2'b11; else next_state=2'b10; end\n      2'b11: begin z=1'b1; if (x) next_state=2'b01; else next_state=2'b11; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\nendmodule",
+      "rtl_raw_sha256": "9f68f16824f815c3f9d4028bac7efdd15462760379a6ca2856bc1c57b58534de",
+      "sample_index": 11,
+      "status": "fail"
+    },
+    {
+      "detail": "211/436 mismatches",
+      "raw_completion": "// One-hot encoded Mealy finite-state machine. Same functionality as the 2's\n// complementer. Resets to state A, async active-high reset.\nmodule TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; if (x) nextstate=2'b01; else nextstate=2'b00; end\n      2'b01: begin z=1'b1; if (x) nextstate=2'b10; else nextstate=2'b01; end\n      2'b10: begin z=1'b0; if (x) nextstate=2'b11; else nextstate=2'b10; end\n      2'b11: begin z=1'b1; if (x) nextstate=2'b11; else nextstate=2'b10; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= nextstate;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "52f039423f52881799fb723e5fa63a649cf68027718e5592bf955546cd39a74e",
+      "rtl": "module TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; if (x) nextstate=2'b01; else nextstate=2'b00; end\n      2'b01: begin z=1'b1; if (x) nextstate=2'b10; else nextstate=2'b01; end\n      2'b10: begin z=1'b0; if (x) nextstate=2'b11; else nextstate=2'b10; end\n      2'b11: begin z=1'b1; if (x) nextstate=2'b11; else nextstate=2'b10; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= nextstate;\n  end\nendmodule",
+      "rtl_raw_sha256": "1dc915a7787a09208ac13ec633b29ee40786ee5c2b54fdafe95189e3b4ac8b77",
+      "sample_index": 12,
+      "status": "fail"
+    },
+    {
+      "detail": "211/436 mismatches",
+      "raw_completion": "// One-hot encoded Mealy finite-state machine. Same functionality as the 2's\n// complementer. Reset is asynchronous active-high.\nmodule TopModule(\n    input  clk,\n    input  areset,\n    input  x,\n    output reg z\n);\n    reg [1:0] state, next_state;\n    always @(*) begin\n        case (state)\n            2'b00: begin z = 1'b0; if (x) next_state = 2'b01; else next_state = 2'b00; end\n            2'b01: begin z = 1'b1; if (x) next_state = 2'b10; else next_state = 2'b01; end\n            2'b10: begin z = 1'b0; if (x) next_state = 2'b11; else next_state = 2'b10; end\n            2'b11: begin z = 1'b1; if (x) next_state = 2'b11; else next_state = 2'b10; end\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) state <= 2'b00;\n        else state <= next_state;\n    end\nendmodule",
+      "raw_completion_raw_sha256": "470291a51a42e08d7bdf2c8b743b2f3a8ec513e0a8c5a8f072cb3024afbb83d5",
+      "rtl": "module TopModule(\n    input  clk,\n    input  areset,\n    input  x,\n    output reg z\n);\n    reg [1:0] state, next_state;\n    always @(*) begin\n        case (state)\n            2'b00: begin z = 1'b0; if (x) next_state = 2'b01; else next_state = 2'b00; end\n            2'b01: begin z = 1'b1; if (x) next_state = 2'b10; else next_state = 2'b01; end\n            2'b10: begin z = 1'b0; if (x) next_state = 2'b11; else next_state = 2'b10; end\n            2'b11: begin z = 1'b1; if (x) next_state = 2'b11; else next_state = 2'b10; end\n        endcase\n    end\n    always @(posedge clk) begin\n        if (areset) state <= 2'b00;\n        else state <= next_state;\n    end\nendmodule",
+      "rtl_raw_sha256": "4d74f69dd9390357a017f45d4e96e0397755b70b7667f019fc1333f61080b49f",
+      "sample_index": 13,
+      "status": "fail"
+    },
+    {
+      "detail": "221/436 mismatches",
+      "raw_completion": "// One-hot encoded Mealy finite-state machine. Same as the 2's complementer.\nmodule TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; if (x) nextstate=2'b01; else nextstate=2'b00; end\n      2'b01: begin z=1'b1; if (x) nextstate=2'b11; else nextstate=2'b00; end\n      2'b10: begin z=1'b0; if (x) nextstate=2'b11; else nextstate=2'b00; end\n      2'b11: begin z=1'b1; if (x) nextstate=2'b11; else nextstate=2'b00; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= nextstate;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "a821614b295786a46343431831741404db870d54c4fa4c725c17a84f96952bcc",
+      "rtl": "module TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; if (x) nextstate=2'b01; else nextstate=2'b00; end\n      2'b01: begin z=1'b1; if (x) nextstate=2'b11; else nextstate=2'b00; end\n      2'b10: begin z=1'b0; if (x) nextstate=2'b11; else nextstate=2'b00; end\n      2'b11: begin z=1'b1; if (x) nextstate=2'b11; else nextstate=2'b00; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= nextstate;\n  end\nendmodule",
+      "rtl_raw_sha256": "fa1e3c30fea1335771a2b5bb087fe9e2feaf43af50bd06081edc887a124f8e35",
+      "sample_index": 14,
+      "status": "fail"
+    },
+    {
+      "detail": "231/436 mismatches",
+      "raw_completion": "// One-hot encoded Mealy finite-state machine, as per the 2's complementer.\nmodule TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z = 1'b0; if (x) next_state = 2'b01; else next_state = 2'b00; end\n      2'b01: begin z = 1'b1; if (x) next_state = 2'b11; else next_state = 2'b01; end\n      2'b10: begin z = 1'b1; if (x) next_state = 2'b11; else next_state = 2'b10; end\n      2'b11: begin z = 1'b0; if (x) next_state = 2'b01; else next_state = 2'b11; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "a54ebf5a979512d2641d8da72b95b40956a1218de526b146a25dfa47bdefc0de",
+      "rtl": "module TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z = 1'b0; if (x) next_state = 2'b01; else next_state = 2'b00; end\n      2'b01: begin z = 1'b1; if (x) next_state = 2'b11; else next_state = 2'b01; end\n      2'b10: begin z = 1'b1; if (x) next_state = 2'b11; else next_state = 2'b10; end\n      2'b11: begin z = 1'b0; if (x) next_state = 2'b01; else next_state = 2'b11; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\nendmodule",
+      "rtl_raw_sha256": "68a6341335529a0335c0df9ed5b8d6bf39b8513a6df02ed83abee85814dad057",
+      "sample_index": 15,
+      "status": "fail"
+    },
+    {
+      "detail": "224/436 mismatches",
+      "raw_completion": "// Mealy finite-state machine, one-hot encoded (the 2's complementer).\n// Reset is asynchronous active-high.\nmodule TopModule(input  clk, input  areset, input  x, output reg z);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; nextstate = 2'b01; end\n      2'b01: begin z=1'b1; nextstate = 2'b10; end\n      2'b10: begin z=1'b0; nextstate = 2'b11; end\n      2'b11: begin z=1'b1; nextstate = 2'b00; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= nextstate;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "7916ce41ac903c05f4ae47453b90ecaee330fdaf864fe3f117909ae7e772d8d7",
+      "rtl": "module TopModule(input  clk, input  areset, input  x, output reg z);\n  reg [1:0] state, nextstate;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; nextstate = 2'b01; end\n      2'b01: begin z=1'b1; nextstate = 2'b10; end\n      2'b10: begin z=1'b0; nextstate = 2'b11; end\n      2'b11: begin z=1'b1; nextstate = 2'b00; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= nextstate;\n  end\nendmodule",
+      "rtl_raw_sha256": "8cdb2c019346a485277333db59ec4648dd74f92e7ba7f7d672fdd87c00bb0e39",
+      "sample_index": 16,
+      "status": "fail"
+    },
+    {
+      "detail": "219/436 mismatches",
+      "raw_completion": "// One-hot encoded Mealy finite-state machine.\nmodule TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=0; if (x) next_state=2'b01; else next_state=2'b00; end\n      2'b01: begin z=1; if (x) next_state=2'b11; else next_state=2'b00; end\n      2'b10: begin z=1; if (x) next_state=2'b11; else next_state=2'b00; end\n      2'b11: begin z=0; if (x) next_state=2'b11; else next_state=2'b00; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state<=2'b00;\n    else state<=next_state;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "2e35d63991090421e1e5bfd1988bd9754deea2b35aeb4e9e64cc2142c9f96ebd",
+      "rtl": "module TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=0; if (x) next_state=2'b01; else next_state=2'b00; end\n      2'b01: begin z=1; if (x) next_state=2'b11; else next_state=2'b00; end\n      2'b10: begin z=1; if (x) next_state=2'b11; else next_state=2'b00; end\n      2'b11: begin z=0; if (x) next_state=2'b11; else next_state=2'b00; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state<=2'b00;\n    else state<=next_state;\n  end\nendmodule",
+      "rtl_raw_sha256": "53ee2c9e87c078e3a8ba4895e9a7fa978f2f6d6070d40db3a7d652ff801364c1",
+      "sample_index": 17,
+      "status": "fail"
+    },
+    {
+      "detail": "223/436 mismatches",
+      "raw_completion": "// One-hot encoded Mealy finite-state machine.\nmodule TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; if (x) next_state = 2'b01; else next_state = 2'b00; end\n      2'b01: begin z=1'b1; if (x) next_state = 2'b10; else next_state = 2'b01; end\n      2'b10: begin z=1'b0; if (x) next_state = 2'b11; else next_state = 2'b01; end\n      2'b11: begin z=1'b1; if (x) next_state = 2'b00; else next_state = 2'b10; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "e40f9a139a06a26611923cdf45c572de98dbccba4bcaf32eec670f5ee7e06eec",
+      "rtl": "module TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; if (x) next_state = 2'b01; else next_state = 2'b00; end\n      2'b01: begin z=1'b1; if (x) next_state = 2'b10; else next_state = 2'b01; end\n      2'b10: begin z=1'b0; if (x) next_state = 2'b11; else next_state = 2'b01; end\n      2'b11: begin z=1'b1; if (x) next_state = 2'b00; else next_state = 2'b10; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\nendmodule",
+      "rtl_raw_sha256": "1133659afcab55fa26641861ee729e427dc6c37f46db7515a9bb7c82c7de0e3d",
+      "sample_index": 18,
+      "status": "fail"
+    },
+    {
+      "detail": "219/436 mismatches",
+      "raw_completion": "// One-hot encoded Mealy finite-state machine.\nmodule TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; if (x) next_state=2'b01; else next_state=2'b00; end\n      2'b01: begin z=1'b1; if (x) next_state=2'b11; else next_state=2'b00; end\n      2'b10: begin z=1'b1; if (x) next_state=2'b11; else next_state=2'b00; end\n      2'b11: begin z=1'b0; if (x) next_state=2'b11; else next_state=2'b00; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\nendmodule",
+      "raw_completion_raw_sha256": "3099af666268d9cee7397f506d20095c38230cd63393adf0b87aea83d46c92e8",
+      "rtl": "module TopModule(input clk, input areset, input x, output reg z);\n  reg [1:0] state, next_state;\n  always @(*) begin\n    case (state)\n      2'b00: begin z=1'b0; if (x) next_state=2'b01; else next_state=2'b00; end\n      2'b01: begin z=1'b1; if (x) next_state=2'b11; else next_state=2'b00; end\n      2'b10: begin z=1'b1; if (x) next_state=2'b11; else next_state=2'b00; end\n      2'b11: begin z=1'b0; if (x) next_state=2'b11; else next_state=2'b00; end\n    endcase\n  end\n  always @(posedge clk) begin\n    if (areset) state <= 2'b00;\n    else state <= next_state;\n  end\nendmodule",
+      "rtl_raw_sha256": "0e129f8a4be04f5a56d952ffce9c0f0a8c2c875becb44c5ff014d20d2f1509d7",
+      "sample_index": 19,
+      "status": "fail"
+    }
+  ],
+  "schema": "verilogeval_rf_problem_shard/1",
+  "status_counts": {
+    "compile_fail": 3,
+    "fail": 17
+  },
+  "testbench_raw_sha256": "6ccb85eceac601cb2e5fb737770b22d3864694ef9f4f2f8cac0ed134459edc81",
+  "training_seed": 2
+}
