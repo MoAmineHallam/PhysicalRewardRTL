@@ -99,7 +99,7 @@ def validate_config(config: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
 
     remote = config.get("remote_execution", {})
     exact_remote = {
-        "repo_root": "/zeng_gk/Amine/mas/fpga",
+        "repo_root": "/zeng_gk/Amine/mas/fpga-v100-v2",
         "allowed_parent": "/zeng_gk/Amine/mas",
         "python": "/zeng_gk/Amine/mas/env_mas/bin/python",
         "environment_bin": "/zeng_gk/Amine/mas/env_mas/bin",

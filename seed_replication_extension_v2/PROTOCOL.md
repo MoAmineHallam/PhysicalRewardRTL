@@ -4,6 +4,10 @@ Status: **prepared, not launched**. This version supersedes the unlaunched V1
 package for the same four seeds. V1 remains immutable evidence and none of its
 output paths may be used or combined with V2.
 
+Execution uses the clean shared worktree
+`/zeng_gk/Amine/mas/fpga-v100-v2`; the historical checkout remains untouched
+because it contains untracked retained study artifacts.
+
 ## What changed
 
 The user prospectively selected the two guaranteed-available, two-GPU V100

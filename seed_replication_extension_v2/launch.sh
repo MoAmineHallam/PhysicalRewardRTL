@@ -3,12 +3,12 @@
 set -euo pipefail
 
 STUDY="seed_replication_extension_v2"
-REPO="/zeng_gk/Amine/mas/fpga"
+REPO="/zeng_gk/Amine/mas/fpga-v100-v2"
 PY="/zeng_gk/Amine/mas/env_mas/bin/python"
 CONFIG="$REPO/$STUDY/config.json"
 VALIDATOR="$REPO/$STUDY/validate.py"
-EXPECTED_CONFIG_SHA256="7b19d45b725bae647116687fb4f1a0f42c8e95596a28c3515c96f87e80b3e2fc"
-EXPECTED_VALIDATOR_SHA256="ed6e1ceb6c93b769d0e834d5eb1dd503e57c68835b0b07b70b46e3d12f85f45b"
+EXPECTED_CONFIG_SHA256="7b1023063582e726e42be0af0f463f0233104d29beddb6a6b569dd6541269682"
+EXPECTED_VALIDATOR_SHA256="f256bc480ba8fd84b4ec8c9519fae0946a6a9215c85f69e3cc7dfdd15a6f8c2a"
 LOCK="/tmp/${STUDY}.${USER:-root}.launch.lock"
 
 export PATH="/zeng_gk/Amine/mas/env_mas/bin:$PATH"

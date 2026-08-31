@@ -3,6 +3,10 @@
 Status: **prepared, not launched**. This package supersedes the unlaunched V1
 execution plan while retaining V1 as immutable evidence.
 
+Model phases use the clean shared worktree
+`/zeng_gk/Amine/mas/fpga-v100-v2`, preserving the historical checkout and its
+untracked retained artifacts.
+
 Every scientific choice in V1 remains unchanged: the 229-slot construction,
 oracle gate, exact physical-label budget, best-versus-worst rule, two DPO seeds,
 276 updates, FP16, 20 held-out designs, 24 draws/design/seed, failure-zero rule,
