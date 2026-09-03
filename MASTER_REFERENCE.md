@@ -4368,3 +4368,487 @@ erase V1--V6, validate the historical WNS-derived frequency proxy, or expose
 Study-2 candidate RTL.  It authorizes freezing the separate all-ten fresh V7
 candidate package; timing-dependent seed replication and PPA-RTL work remain
 locked until that real-candidate pilot also passes its unchanged thresholds.
+
+### 2026-09-03 — Five-model adversarial review synthesis and TCAD revision contract
+
+This section is the authoritative handoff for the next paper-revision session.
+It consolidates adversarial reviews returned in chat by Claude, Qwen, Grok,
+DeepSeek, and Gemini after they read the 2026-08-31 TCAD review bundle. These
+are simulated/AI reviews, not actual IEEE peer-review reports and not empirical
+evidence. They are useful as a red-team editorial audit. Do not cite them in the
+paper or describe them as independent validation.
+
+#### Overall review verdict
+
+All five reviewers converged on **major revision**, generally at confidence
+4/5. None identified a demonstrated error that invalidates the narrow primary
+observation. Their shared view is that the paper has a credible and potentially
+publishable core, but that some framing outruns the evidence and the submitted
+review PDF omitted later evidence that directly addresses its largest physical-
+methodology concern.
+
+The reviewers consistently credited:
+
+1. the strict separation between the learned training reward and real EDA as
+   reporting authority;
+2. the failure-penalized, multiplicity-preserving equal-sample estimand;
+3. the correctness-only and original-MLP control arms;
+4. retention of failed studies, amendments, the median counterexample, and
+   conditional PPA costs rather than hiding them;
+5. probability reallocation as a bounded mechanism claim rather than a claim
+   of open-ended circuit invention; and
+6. fail-closed provenance, generated claims, hashes, and artifact-ledger
+   infrastructure.
+
+#### Critical evidence state: the 2026-08-31 PDF is already incomplete
+
+Do **not** submit or recirculate `paper/build/main.pdf` from 2026-08-31 as the
+current scientific manuscript. It was built after several relevant commits but
+does not integrate their results. The next bundle must incorporate the
+following evidence before another adversarial review.
+
+**1. True timing-closure sensitivity pilot V7 is a frozen PASS.**
+
+The supported Vivado 2026.1 ten-candidate pilot completed after the current
+paper text was written. Authoritative result:
+`timing_closure_candidate_v7/results/pilot_gate.json`.
+
+- 10/10 predeclared candidates completed with constrained, clean routing.
+- Pooled Spearman correlation between the historical single-request WNS-derived
+  values and true closure boundaries is **0.9631901840**.
+- Median sMAPE is **0.0350301040** (3.50%).
+- Five SFT/RF design pairs contain three non-ties and two ties.
+- There are **zero sign reversals** among the non-tied pairs.
+- Mean paired true-closure RF-minus-SFT difference is **+123.508507 MHz**.
+- All four frozen criteria passed: completeness/constraints, Spearman >=0.90,
+  median sMAPE <=0.15, and positive paired direction with at most one reversal.
+- The frozen candidate-package digest is
+  `6d2512c8d256dde29eb7c45754bf4e3e42a89a2e6ef23d121af1e9e768496049`.
+- The authoritative V7 stability PASS digest is
+  `951b4b577fea68cba2d4478ae6022d7be8eec5e373f306d7c89c008c34f929b1`.
+
+This pilot directly bounds the reviewers' strongest fixed-clock/WNS concern,
+but it **does not replace** the frozen 20-design Study-2 endpoint. It contains
+five selected design pairs rather than the full policy distribution and uses
+Vivado 2026.1 instead of the primary flow's Vivado 2023.1. Present it as a
+preregistered post-primary sensitivity/validation result: it supports ranking,
+approximate magnitude fidelity, and paired direction for the tested candidates,
+not a recomputed 35.4-to-93.0-MHz population endpoint.
+
+**2. Matched repaired-RF VerilogEvalV2 is complete and changes the wording.**
+
+Authoritative summary:
+`verilogeval_rf_extension_v3/results/validated_20260830/`
+`comparison_recovery_gpu1_20260830/comparison.json` and `.md`.
+
+- 156 official problems, 20 samples per policy/problem.
+- SFT pass@1: **22.3397%**.
+- repaired RF seed 1 pass@1: **21.1218%**.
+- repaired RF seed 2 pass@1: **20.7692%**.
+- RF-seed mean minus SFT: **-1.3942 percentage points**, paired problem-level
+  95% interval **[-2.6923, -0.0962] pp**.
+- RF seed 1 minus SFT: -1.2179 pp [-2.8205, +0.3846].
+- RF seed 2 minus SFT: -1.5705 pp [-3.0769, -0.0962].
+
+The current manuscript statement that policy optimization adds "no measured
+degradation" is no longer correct. The matched experiment shows a small
+additional general-RTL cost after SFT. Do not pool these results with the legacy
+n=10, temperature=0.8 base/SFT/GRPO experiment (base 32.2%, SFT 16.0%, legacy
+GRPO 16.7%); the protocols differ. The new matched result should be the
+authoritative RF-versus-SFT specialization statement.
+
+**3. Sealed best-of-N and workload accounting extension is available.**
+
+`artifact_extension_results.json` verifies that one repaired-RF draw at
+93.0133 MHz lies between sealed SFT best-of-17 (92.4707 MHz) and best-of-18
+(93.6642 MHz), for an interpolated equivalent of **17.45 SFT draws overall**.
+At best-of-18 the expected per-design workload is 18 LLM draws, 36 oracle
+streams, 10.125 raw correct implementation attempts without caching, and 3.078
+content-deduplicated implementations. These are workload counts, not measured
+GPU seconds. Never reuse the older approximately 21/8 interpolation/
+extrapolation statement as if it were the sealed Study-2 result.
+
+#### Live prospective seed-replication status at 2026-09-03 11:13 UTC
+
+The frozen extension is documented in `seed_replication_extension_v2/`.
+Training completion alone is not an efficacy result: every new checkpoint must
+be audited, sampled on the sealed split, evaluated by both held-out oracle
+streams, physically evaluated, and analyzed under the frozen post-primary
+contract before entering the paper.
+
+- `rf_s3`: COMPLETE, update 276, V100-SXM2; 7 h 48 min 17 s wall time.
+- `rf_s4`: COMPLETE, update 276, V100S-PCIe; 9 h 08 min 36 s wall time.
+- `correctness_s2`: RUNNING at attempt 6,316 and update 258/276 (93.5%).
+  At the recent non-flat rate, the rough training ETA was 16--24 hours.
+- `correctness_s3`: RUNNING at attempt 6,659 and update 226/276 (81.9%).
+  At the recent non-flat rate, the rough training ETA was 3--4 days.
+- Both correctness runs were healthy, GPU-active, and dominated by 8/8-correct
+  flat groups. This is encouraging for training-task functional yield but is
+  **not** evidence of held-out correctness or physical quality.
+- `correctness_s3` is the long pole. With a 15,000-group immutable ceiling and
+  a declining non-flat rate, completion is plausible but not guaranteed. A
+  ceiling-limited stop is a reportable protocol outcome, not permission to
+  raise the ceiling, resume, splice, or rerun until success.
+
+The intended final extension totals are four RF training seeds (original 1/2
+plus extension 3/4) and three correctness-only seeds (original 1 plus extension
+2/3). Report extension seeds separately and as a declared post-primary seed-
+dispersion analysis. Never pool them into or rewrite the original Study-2
+primary confidence interval.
+
+#### Required paper title and terminology direction
+
+Recommended title for the next revision:
+
+> **Correctness-Gated Policy Optimization for Streaming-Accelerator RTL: A
+> Failure-Aware Post-Route Evaluation**
+
+The exact title may still be edited, but it must retain the streaming-
+accelerator/domain qualifier. Avoid a title that implies arbitrary industrial
+FPGA RTL.
+
+The phrase **offline policy optimization/offline RL is technically
+misleading** here. Training samples new groups from the current policy, so it is
+on-policy/group-relative optimization using an offline-trained physical proxy,
+not conventional offline RL over a fixed transition dataset. Preferred terms:
+"proxy-guided policy optimization," "correctness-gated group-relative policy
+optimization," or simply "policy optimization." Do not call the method offline
+RL without defining a nonstandard meaning.
+
+Standardize the reported primary quantity as one of:
+
+- "failure-penalized equal-sample timing endpoint"; or
+- "failure-penalized one-draw timing utility."
+
+Do not use "penalized Fmax," "physical capability," "physical utility," and
+"achievable frequency" interchangeably. `F(m)` for a successfully implemented
+correct candidate remains post-route WNS-derived frequency; the expectation
+that gives failures zero is a policy utility/endpoint, not the physical Fmax of
+an invalid circuit.
+
+#### Mandatory manuscript revisions before the next review bundle
+
+**A. Scope and claim language**
+
+1. State the controlled streaming-accelerator domain in the title, first two
+   abstract sentences, contributions, main result, discussion, and conclusion.
+2. Replace broad "distribution-level physical capability gain" wording with a
+   precise claim about the tested domain, fixed sampling budget, failure-aware
+   endpoint, Zynq-7020 device, and frozen flow.
+3. Replace "two independent policies/seeds" with "two policies trained with
+   distinct RL seeds from a shared SFT checkpoint." The policies are separately
+   trained, but the full pipelines are not independent because they share SFT,
+   reward data, generator, and base model.
+4. State that the design-level interval conditions on the realized SFT
+   checkpoint, reward dataset, and model family. It does not estimate full
+   training-pipeline variance.
+5. Describe the sealed result as a "prospective efficacy test on an unopened
+   split of a post-hoc reward-repair hypothesis." The hypothesis itself was
+   motivated after the historical MLP failure and was not selected blindly.
+6. Preserve the failed first validation attempt and revised reward-eligible gate
+   history. Reusing unchanged checkpoints and an unseen efficacy split protects
+   against result-dependent retraining, but does not make the revised gate
+   population an independently chosen validation target.
+
+**B. Fixed-clock WNS and timing closure**
+
+1. Keep the original primary endpoint explicitly labeled as post-route
+   **WNS-derived** frequency from one fixed 5.0-ns request, not timing closure.
+2. Add the V7 true-closure pilot prominently as post-primary physical-
+   methodology validation with its exact metrics and limits above.
+3. Explain that V7 changes Vivado version from 2023.1 to 2026.1 because the
+   2023.1 runtime was unreliable on the unsupported Windows 11 25H2 host.
+4. Do not relabel the entire 20-design primary distribution as timing-closed.
+5. Define implementation failure exactly: identify the compile, synthesis,
+   implementation, routing, constraint-coverage, and timing-report conditions
+   that produce a zero rather than leaving "implementation failure" informal.
+
+**C. Correctness-only and RF-versus-MLP controls**
+
+1. Until the extension is physically evaluated, label the original
+   correctness-only result as a **single-preregistered-seed descriptive matched
+   control**. Its design-bootstrap interval does not estimate between-training-
+   seed variation.
+2. If correctness seeds 2/3 produce valid endpoints, add them as post-primary
+   replication and report each seed separately plus the frozen dispersion
+   summary. Do not silently convert the original control into a retrospectively
+   multi-seed primary arm.
+3. Rename "matched attribution" to "matched system-level controls" or similar.
+4. RF versus MLP changes predictor class, canonicalization, and feature
+   representation together. The supported result is package-level: the
+   canonicalization-based RF reward package outperformed the original MLP
+   reward package under matched policy-training conditions.
+5. Never claim that the 26.9-MHz RF--MLP difference causally identifies random
+   forests, canonicalization, or any individual feature. A crossed ablation
+   (RF on original features and/or MLP on canonical features) would be useful
+   but is optional if all component-level attribution is removed.
+
+**D. Endpoint decomposition and statistics**
+
+1. Keep the failure-penalized one-draw endpoint primary. It intentionally
+   answers a different question from commercial best-of-N EDA selection.
+   Incorrect or implementation-failed draws have zero delivered timing utility;
+   this is not a methodological error or an attempt to call invalid hardware a
+   zero-MHz circuit.
+2. Add or elevate the exact decomposition `Fbar = q * mu` in the main result
+   table so readers can see correctness and conditional implemented-correct
+   frequency alongside the primary endpoint:
+   - SFT: q=0.562500, mu=62.889157 MHz, Fbar=35.375151 MHz.
+   - repaired RF: q=0.538542, mu=172.713370 MHz, Fbar=93.013346 MHz.
+   - original MLP: q=0.498958, mu=132.556431 MHz, Fbar=66.140136 MHz.
+   - correctness-only seed 1: q=0.673958, mu=36.616941 MHz,
+     Fbar=24.678293 MHz.
+3. Conditional frequency remains an important diagnostic, not a replacement
+   or co-primary estimand. Reporting only it would reinstate survivorship bias.
+4. Keep the preregistered family-by-regime paired bootstrap as primary. Do not
+   switch to the unstratified interval after seeing the results. Retain the
+   unstratified bootstrap and leave-one-family-out analysis as clearly labeled
+   post-primary sensitivity checks.
+5. State family-by-regime cell sizes and that small/unequal cells limit
+   resolution. Provide all 20 paired design differences in a supplementary
+   table or artifact-facing appendix if space permits.
+6. Do not remove the design-level confidence interval merely because it does
+   not estimate training variance. Instead label exactly which uncertainty it
+   estimates and which sources it conditions on.
+
+**E. Median-family interpretation**
+
+1. Median has 0 interpolation and 2 extrapolation designs in the sealed split.
+   Family and regime are fully confounded in this cell.
+2. Repeat that confound wherever median is interpreted: Results, family-table
+   caption, mechanism discussion, PYNQ discussion, threats, and conclusion.
+3. Do not add post-outcome median interpolation designs or re-freeze the sealed
+   split. The eligible median interpolation pool is provably empty under the
+   frozen domain construction; changing the design universe would damage the
+   study more than the explicit limitation.
+4. Retain median as a counterexample. A plausible bounded hypothesis is that
+   fast comparator-network support was insufficient or not reward-
+   distinguishable; do not present that explanation as proven.
+
+**F. Functional oracle**
+
+The manuscript must state the executable details rather than only "frozen
+stimuli" and "bounded latency window":
+
+- stimulus begins with directed corners, alternating patterns, walking ones,
+  walking zeros, and a small ramp, followed by seeded uniform-random values;
+- held-out acceptance uses oracle seeds 1 and 2, each with 1,024 vectors;
+- training used a separate seed 0;
+- alignment ignores an eight-cycle warm-up and searches latency offsets 0--40;
+- the implemented acceptance threshold is an aligned match fraction >=0.999;
+  with 1,024 inputs and the longest 1,016-sample comparison this admits at most
+  one mismatch, so call it near-exact rather than silently claiming a formal
+  equality rule; the retained-candidate hardening audit separately found zero
+  accepted candidates lost when exact equality was imposed;
+- undefined values remain positional failures rather than being deleted;
+- the test accepts different pipeline depths within the 40-cycle bound;
+- the same deterministic software reference supplies the expected trace; and
+- this is sampled functional evidence, not formal equivalence. Designs with a
+  valid latency beyond 40 or errors outside sampled inputs could be rejected or
+  missed, respectively.
+
+Clarify that "completion-masked LoRA" means prompt-token labels are set to
+`-100`; the supervised loss is applied to completion tokens only.
+
+**G. PYNQ-Z2 evidence**
+
+1. Keep the five-design PYNQ-Z2 study explicitly **amended, descriptive, and
+   non-confirmatory** in text, caption, and preferably a visible figure callout.
+2. It is not independent cross-device evidence because it uses the same Zynq-
+   7020 family and feasibility amendments preceded measurement.
+3. State that the programmed sweep grid used a nominal **5-MHz step** over the
+   recorded range. Actual synthesized clock values can appear as 30.3 MHz, etc.
+   The +0.0-MHz polynomial/IIR ties are equality at sweep resolution, not proof
+   of exact analog frequency identity.
+4. The 801-candidate mutation/hash/trace audit covers **distinct reward-eligible
+   RF-path training candidates**. It excludes correctness-only candidates,
+   which do not pass through the RF reward path. Say this explicitly.
+
+**H. PPA and engineering cost**
+
+On the sealed common compiled-correct support, use the following exact bounded
+interpretation:
+
+- LUTs: 689.23 SFT -> 754.93 RF, +65.70 or **+9.53% relative to SFT**.
+- Flip-flops: 161.45 -> 236.20, +74.75 or **+46.30%**.
+- DSPs: 5.00 -> 2.73, -2.26 or **-45.25%**.
+- Vectorless power: 0.15968 -> 0.16225 W, +0.00257 W or **+1.61%**.
+
+For device-capacity context, the added mean LUT and FF counts are approximately
+0.123% of 53,200 LUTs and 0.070% of 106,400 FFs on xc7z020; 2.26 DSPs are about
+1.03% of the 220-DSP capacity. Keep both relative-to-baseline and device-
+capacity percentages so readers do not confuse a 46% per-module FF increase
+with 46% of the FPGA. Do not treat vectorless power as measured board power or
+infer a device power-envelope percentage without an appropriate activity model.
+
+Add a practical sampling/training-cost paragraph using the sealed 17.45-draw
+equivalence and exact workload axes. Training wall time is hardware-specific;
+RF extension seeds took 7.80 and 9.14 V100 hours, but original L40S and V100
+runs are not identical compute substrates. Do not invent missing token counts,
+GPU-energy values, or a universal amortization threshold. State the number of
+deployment queries required to amortize training only when all comparable costs
+have been measured under a declared accounting model.
+
+**I. Generalization and leakage threats**
+
+1. Add an explicit pretrained-data leakage threat. RTLCoder's pretraining corpus
+   may contain common FIR/IIR/median RTL idioms or similar public modules.
+2. All locally held-out specifications remain excluded from SFT, reward rows,
+   policy prompts, and prior sealed analysis. Because every arm shares the same
+   pretrained backbone and SFT initialization, unknown pretraining overlap does
+   not by itself explain the within-study RF-minus-SFT difference; it limits the
+   interpretation of benchmark novelty and domain generalization.
+3. Keep the claim conditional on one SFT checkpoint. Multiple SFT/full-pipeline
+   replications and a second FPGA/device family are valuable future work, not
+   mandatory if the title and conclusions remain narrow.
+4. Promote the matched VerilogEvalV2 result as a first-class specialization
+   cost alongside LUT/FF/DSP/power, rather than hiding it among miscellaneous
+   contextual baselines.
+
+**J. Method and bibliography clarity**
+
+1. Define the KL term `exp(Delta)-Delta-1` as the sampled reverse-KL estimator
+   used by the GRPO formulation and cite its specific origin/form, not only the
+   broad algorithm name.
+2. State that the 15 reward features are deterministic lexical/static
+   structural counts after lexical canonicalization, not a semantic AST or
+   canonical hardware graph. "Canonicalization-based" is safer than language
+   implying semantic understanding.
+3. Explain the unresolved 22.4% of reward-eligible groups: flat groups do not
+   contain within-group ranking information; distinguish flat reward from
+   errors/rejections.
+4. Expand reward-overoptimization related work beyond Gao et al. with two or
+   three primary references on reward hacking/Goodhart-style proxy
+   overoptimization. Do not imply hardware-specific prior exploitation evidence
+   unless a directly supporting paper exists.
+5. Remove every `note={VERIFIED}` from `paper/refs.bib`. IEEEtran renders these
+   internal audit markers visibly as "vERIFIED." Keep verification records in
+   comments or the repository, not the bibliography.
+6. The questioned entries are real as of 2026-09-03: PPA-RTL is a DAC 2025
+   publication (IEEE document 11132897); POET is arXiv:2603.19333; EvolVE is
+   arXiv:2601.18067; RTL-OPT is arXiv:2601.01765. Still verify all author,
+   venue, year, title, and URL metadata during final bibliography audit.
+7. Standardize "functional correctness" or "oracle-passing" instead of using
+   unqualified correctness where readers might infer formal verification.
+
+**K. Figures, tables, and placement**
+
+1. Table II's caption must state 20 designs, 48 draws/design, multiplicity
+   restored, failures zero, the resampling unit, and that correctness-only has
+   one training seed in the original Study-2 row.
+2. Add conditional implemented-correct frequency to the main arm comparison or
+   an immediately adjacent decomposition table.
+3. Ensure the 20-design plot and all mechanism plots remain legible at final
+   IEEE two-column size. Use vector text, overlay individual points where
+   useful, and avoid depending only on color.
+4. Label the source-level FIR example "illustrative, selected after reviewer
+   feedback, not a population estimate," and consider moving it to Discussion.
+5. Keep the board figure only with a visually prominent "descriptive,
+   amended, non-confirmatory" label. Moving it to supplementary material is an
+   editorial option, not a scientific requirement.
+6. Keep the historical reward-hacking trajectory as motivation. Clarify that
+   its lexical audit is post-hoc and that a 101.2% removed-jump value means the
+   correction slightly more than accounts for the raw change; it is not proof
+   of a unique causal mechanism.
+
+**L. IEEE generative-AI disclosure**
+
+IEEE's current author policy requires disclosure of generated content in the
+Acknowledgment, identification of the AI system, identification of the affected
+sections, and a brief explanation of the level of use. Official policy:
+`https://journals.ieeeauthorcenter.ieee.org/become-an-ieee-journal-author/`
+`publishing-ethics/guidelines-and-policies/submission-and-peer-review-policies/`.
+
+The existing disclosure is a good-faith start but should explicitly say that
+OpenAI Codex assisted with drafting/editing Sections I--VII (if accurate),
+analysis and figure code, and repository auditing. State that the human authors
+independently checked every factual claim and bibliographic entry, take full
+responsibility, and that Codex was neither an author nor an empirical source.
+If AI-generated figures were used, disclose them in both the figure caption and
+Acknowledgment; the current programmatically generated scientific plots are not
+to be mislabeled as image-generation output.
+
+#### Reviewer suggestions that must **not** be adopted blindly
+
+1. **Do not replace the primary endpoint with conditional Fmax.** The one-draw
+   failure-aware estimand is the methodological contribution. Elevate `q` and
+   `mu` for transparency without changing the estimand.
+2. **Do not switch the frozen primary bootstrap to the unstratified bootstrap.**
+   The latter remains a sensitivity check.
+3. **Do not remove the valid design-level interval because it omits training
+   variance.** Label its scope and add separately designed seed replication.
+4. **Do not accept "10+ RF seeds and five SFT seeds" as a universal minimum.**
+   This was an arbitrary AI-review demand. Four RF and three correctness seeds
+   materially improve the evidence if the prospective extension finishes; the
+   remaining conditionality must still be disclosed.
+5. **Do not retrain or re-seal merely to create median interpolation samples.**
+6. **Do not claim a second FPGA, formal equivalence, or a new evolutionary
+   baseline is mandatory for the narrow paper.** These would strengthen breadth
+   but can remain future work when scope is contracted. The empirical perfect-
+   selector already answers the fixed-support best-of-N question.
+7. **Do not describe Eq. 5's zero scoring as conflating physical frequency by
+   accident.** It deliberately measures delivered one-draw utility. Make the
+   distinction clearer rather than abandoning it.
+8. **Do not present RF versus MLP as an ablation of canonicalization or model
+   class.** It is a matched training setup but a package-level reward-system
+   comparison.
+9. **Do not call the five-pair V7 pilot a full replication of the 20-design
+   primary endpoint or hide its Vivado-version difference.**
+10. **Do not say the PYNQ result independently confirms the population result.**
+11. **Do not say the repaired RF causes no general-RTL regression.** The matched
+    VerilogEvalV2 result now shows a small negative difference.
+12. **Do not submit the 2026-08-31 PDF or ZIP after merely changing prose.** New
+    evidence must enter claim ledgers, generated tables/figures, verification,
+    and a fresh bundle.
+
+#### Exact next execution and paper-revision order
+
+1. Allow `correctness_s2` and `correctness_s3` to reach their immutable stop
+   conditions; do not interfere because training is slow or mostly flat.
+2. Run the frozen completion audit for every extension run. A complete training
+   checkpoint is necessary but not a paper endpoint.
+3. Implement, test, review, hash, and freeze the separate extension-evaluation
+   launcher before it generates the first endpoint sample. The training launcher
+   intentionally cannot evaluate.
+4. Generate the frozen sealed samples: RF seeds 3/4 use 24 draws/design/seed;
+   correctness seeds 2/3 use 48 draws/design/seed, totaling 2,880 new draws over
+   20 designs.
+5. Apply both held-out oracle streams (seeds 1/2, 1,024 vectors each), retain
+   multiplicity, and deduplicate only for physical implementation.
+6. Execute the declared Vivado 2026.1 physical evaluation through the validated
+   V7 infrastructure. Never substitute partial or training-proxy results.
+7. Generate the post-primary per-seed endpoint and dispersion report without
+   pooling it into the original primary confidence interval.
+8. Independently verify the V7 closure pilot, matched VerilogEvalV2 comparison,
+   sealed best-of-N extension, and seed-extension artifacts before manuscript
+   use.
+9. Revise title, abstract, introduction, methods, results, discussion,
+   conclusion, captions, AI disclosure, and bibliography under the constraints
+   above.
+10. Extend claim ledgers and provenance for every new number; regenerate tables
+    and figures; run all fail-closed verification and LaTeX builds from clean
+    outputs.
+11. Create a new dated PDF and reviewer ZIP. Record SHA-256 hashes and page
+    count, then send that exact bundle for the next adversarial review.
+
+#### TCAD readiness boundary after this review
+
+The current manuscript is **not ready to submit**, primarily because it omits
+completed timing-closure and matched VerilogEval evidence and because the
+correctness-only attribution still rests on one evaluated seed. The defensible
+path to a strong submission is:
+
+- integrate the V7 timing-closure PASS;
+- complete and physically evaluate the prospective seed extension if its frozen
+  stop rules permit;
+- narrow the scope and replace independence/component-attribution overclaims;
+- report the small matched general-RTL regression and exact PPA/sampling costs;
+- make the median confound, sampled-oracle boundary, post-hoc repair history,
+  and uncertainty scope impossible to miss; and
+- rebuild and re-review a fully verified artifact bundle.
+
+A crossed RF/canonicalization ablation would strengthen the mechanism claim but
+is not essential if the paper makes only a package-level comparison. A second
+device, full-pipeline SFT replication, formal equivalence subset, and broader
+industrial RTL suite are valuable future thesis/paper extensions rather than
+conditions for defending this carefully bounded result.
