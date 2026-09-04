@@ -2,7 +2,11 @@ param(
     [string]$TemplatePath = "",
     [string]$SourcePath = "thesis/proposal/proposal_draft.md",
     [string]$OutputPath = "thesis/proposal/HIT_Master_Thesis_Proposal_Mohamed_Amine_Hallam.docx",
-    [string]$PreviewPdfPath = "thesis/proposal/HIT_Master_Thesis_Proposal_Mohamed_Amine_Hallam_preview.pdf"
+    [string]$PreviewPdfPath = "thesis/proposal/HIT_Master_Thesis_Proposal_Mohamed_Amine_Hallam_preview.pdf",
+    [string]$School = "[TO BE COMPLETED]",
+    [string]$Major = "[TO BE COMPLETED]",
+    [string]$Supervisor = "Professor Tseng",
+    [string]$StudentId = "[TO BE COMPLETED]"
 )
 
 $ErrorActionPreference = "Stop"
@@ -25,7 +29,7 @@ $outputDir = Split-Path -Parent $outputFull
 New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
 Copy-Item -LiteralPath $templateFull -Destination $outputFull -Force
 
-$title = "Hardware-Aware LLMs for FPGA RTL Generation: Comparative Inference Efficiency and Correctness-Gated Post-Route Optimization"
+$title = "Hardware-Aware LLM Architectures for FPGA RTL Generation: Inference Efficiency and Failure-Aware Utility under Fixed Budgets"
 $word = $null
 $doc = $null
 
@@ -49,12 +53,12 @@ try {
     $doc = $word.Documents.Open($outputFull)
 
     Replace-AllText $doc "Title: Trajectory Planning for Coordinated Motion of Dual-Armed Robotic Astronauts" "Title: $title"
-    Replace-AllText $doc "School:               School of  XXXXX          " "School:                    [TO BE COMPLETED]"
-    Replace-AllText $doc "Major:                Mechanical Engineering      " "Major:                     [TO BE COMPLETED]"
-    Replace-AllText $doc "Supervisor:             Professor Xu XX            " "Supervisor:                [TO BE COMPLETED]"
+    Replace-AllText $doc "School:               School of  XXXXX          " "School:                    $School"
+    Replace-AllText $doc "Major:                Mechanical Engineering      " "Major:                     $Major"
+    Replace-AllText $doc "Supervisor:             Professor Xu XX            " "Supervisor:                $Supervisor"
     Replace-AllText $doc "Graduate Student:            **                   " "Graduate Student:          Mohamed Amine Hallam"
-    Replace-AllText $doc "Student ID:                15S1530**             " "Student ID:                [TO BE COMPLETED]"
-    Replace-AllText $doc "Date:                     September 23, 2016       " "Date:                      September 3, 2026"
+    Replace-AllText $doc "Student ID:                15S1530**             " "Student ID:                $StudentId"
+    Replace-AllText $doc "Date:                     September 23, 2016       " "Date:                      September 4, 2026"
     Replace-AllText $doc "(Template)" ""
 
     # The distributed template contains three manual page breaks around its
@@ -108,6 +112,7 @@ try {
         $paragraphRange = $doc.Range($start, $end)
         try { $paragraphRange.Style = $Style } catch { $paragraphRange.Style = "Normal" }
         $paragraphRange.Font.Name = "Times New Roman"
+        $paragraphRange.Font.Color = -16777216
         if ($Style -eq "Heading 1") {
             $paragraphRange.Font.Size = 14
             $paragraphRange.Font.Bold = $true
@@ -148,6 +153,30 @@ try {
         $script:insertPos = $range.End
     }
 
+    function Add-ProposalEquation {
+        param([string]$Text)
+        $start = $script:insertPos
+        $range = $doc.Range($start, $start)
+        $range.Text = $Text + "`r"
+        $end = $range.End
+        $equationRange = $doc.Range($start, $end - 1)
+        try { $equationRange.Paragraphs.Item(1).Range.Style = "Normal" } catch {}
+        $equationRange.Font.Name = "Cambria Math"
+        $equationRange.Font.Size = 11
+        $equationRange.Font.Color = -16777216
+        $equationRange.ParagraphFormat.Alignment = 1
+        $equationRange.ParagraphFormat.SpaceAfter = 6
+        # Word's COM dispatcher may ignore the Range argument on the first
+        # OMaths.Add call unless the same range is also the active selection.
+        $equationRange.Select()
+        $selectedRange = $word.Selection.Range
+        $null = $word.Selection.OMaths.Add($selectedRange)
+        if ($word.Selection.OMaths.Count -gt 0) {
+            $word.Selection.OMaths.Item(1).BuildUp()
+        }
+        $script:insertPos = $equationRange.Paragraphs.Item(1).Range.End
+    }
+
     function Add-ProposalTable {
         param([object[]]$Rows)
         if ($Rows.Count -lt 2) { return }
@@ -160,10 +189,12 @@ try {
             }
         }
         $table.Borders.Enable = 1
+        $table.Rows.AllowBreakAcrossPages = $false
         $table.Rows.Item(1).Range.Font.Bold = $true
         $table.Rows.Item(1).HeadingFormat = $true
         $table.Range.Font.Name = "Times New Roman"
         $table.Range.Font.Size = 9
+        $table.Range.Font.Color = -16777216
         $table.Range.ParagraphFormat.SpaceAfter = 0
         $table.Range.ParagraphFormat.LineSpacingRule = 0
         $table.AutoFitBehavior(2)
@@ -222,8 +253,8 @@ try {
             Add-ProposalParagraph -Text $line -Style "Normal" -Center -Bold
             continue
         }
-        if ($line.StartsWith("U = ")) {
-            Add-ProposalParagraph -Text $line -Style "Normal" -Center -Italic
+        if ($line.StartsWith("EQ: ")) {
+            Add-ProposalEquation -Text $line.Substring(4)
             continue
         }
         if ($script:inReferences -and ($line -match '^\[\d+\]')) {
@@ -256,12 +287,12 @@ try {
     $footer.PageNumbers.StartingNumber = 1
     $null = $footer.PageNumbers.Add(1, $true)
 
-    try {
-        $doc.BuiltInDocumentProperties.Item("Title").Value = $title
-        $doc.BuiltInDocumentProperties.Item("Author").Value = "Mohamed Amine Hallam"
-        $doc.BuiltInDocumentProperties.Item("Subject").Value = "Master's thesis proposal"
-    } catch {
-        Write-Warning "Could not update all built-in document properties: $($_.Exception.Message)"
+    foreach ($property in @(
+        @{ Index = 1; Value = $title },
+        @{ Index = 2; Value = "Master's thesis proposal" },
+        @{ Index = 3; Value = "Mohamed Amine Hallam" }
+    )) {
+        try { $doc.BuiltInDocumentProperties.Item($property.Index).Value = $property.Value } catch {}
     }
 
     $doc.Fields.Update() | Out-Null
@@ -287,7 +318,7 @@ finally {
         try { $doc.Close($false) } catch { Write-Warning $_.Exception.Message }
     }
     if ($null -ne $word) {
-        try { $word.Quit() } catch { Write-Warning $_.Exception.Message }
+        try { $word.Quit() } catch {}
     }
     if ($null -ne $doc) { [Runtime.InteropServices.Marshal]::ReleaseComObject($doc) | Out-Null }
     if ($null -ne $word) { [Runtime.InteropServices.Marshal]::ReleaseComObject($word) | Out-Null }
