@@ -20,7 +20,7 @@ In this thesis, “hardware-aware” is an operational and platform-dependent te
 
 The thesis will answer three core research questions:
 
-- RQ1: On the same L40S GPU and under a common BF16 baseline, how do a dense grouped-query-attention Transformer, a pure Mamba-2 state-space model, and a hybrid attention-state-space model differ in prefill latency, decoding latency, throughput, peak memory, GPU energy, and measured arithmetic intensity across feasible context lengths and batch sizes?
+- RQ1: On the same V100 GPU and under a common FP16 baseline, how do a dense grouped-query-attention Transformer, a pure Mamba-2 state-space model, and a hybrid attention-state-space model differ in prefill latency, decoding latency, throughput, peak memory, GPU energy, and measured arithmetic intensity across feasible context lengths and batch sizes?
 - RQ2: After comparable parameter-efficient adaptation, how do the three systems differ in RTL extraction and compilation rate, functional pass@1 and pass@k, output length, failure modes, and post-route FPGA timing and resource use under equal sampling?
 - RQ3: Under fixed generation time and fixed EDA budgets, which system yields the most functionally correct, implementable, and physically useful RTL, and at what quality, area, and specialization cost?
 
@@ -125,7 +125,7 @@ Table 2  Primary model-system candidates and selection rationale
 
 The full-size comparison is an end-to-end system comparison. Different pretraining corpora and tokenizers will be treated as properties of the deployable systems, not controlled variables. Model identities, licenses, parameter counts, tokenizer revisions, training provenance stated by the provider, and inference-engine versions will be recorded.
 
-The common inference condition will use one NVIDIA L40S GPU, BF16 weights and activations, batch sizes 1 and 4, identical semantic prompts, identical stopping rules, and the same sampling parameters. A common PyTorch/Transformers execution path will be used only if all three models pass output-correctness and performance sanity checks. If one model requires its native engine, the native-engine result will be labelled as a system result and will not be used to claim a pure architectural effect.
+The common inference condition will use one NVIDIA V100 GPU per timed run, FP16 weights and activations, batch sizes 1 and 4, identical semantic prompts, identical stopping rules, and the same sampling parameters. A common PyTorch/Transformers execution path will be used only if all three models pass output-correctness and performance sanity checks. If one model requires its native engine, the native-engine result will be labelled as a system result and will not be used to claim a pure architectural effect. The two available V100 GPUs may execute independent runs in parallel, but no timed result will combine measurements from different devices.
 
 Tokenizers make raw tokens per second non-equivalent across models. The thesis will therefore report native token throughput together with wall-clock time per prompt, input and output UTF-8 bytes, characters per second, generated RTL length, and time/energy per verified result. No model will receive repeated filler text merely to reach a context target.
 
@@ -178,7 +178,7 @@ Table 3  Core budgets and sensitivity levels
 | Equal generation time | T0 per task, where T0 is frozen as the slowest eligible model's pilot time for 20 common-condition samples | 0.5T0, T0, and 2T0 |
 | Equal GPU energy | E0 defined analogously from the frozen pilot only if the telemetry gate passes | 0.5E0, E0, and 2E0 |
 | Equal EDA budget | First K distinct correct candidates in frozen hash order, K=3 per model-task | K=1, 3, and 5 |
-| Academic workflow scenario | 10 L40S GPU-hours and 50 Vivado implementations allocated by frozen round-robin task order | 5/20 GPU-hours and 25/100 implementations |
+| Academic workflow scenario | 10 V100 GPU-hours and 50 Vivado implementations allocated by frozen round-robin task order | 5/20 GPU-hours and 25/100 implementations |
 
 Fixed-time and fixed-energy analysis allows faster systems to generate more candidates. Fixed-EDA analysis prevents unlimited synthesis or implementation from hiding the cost of candidate selection. Generation and EDA order will be determined by frozen identifiers, not observed frequency.
 
@@ -195,7 +195,7 @@ Table 4  Research workflow and decision gates
 | Stage | Main operation | Frozen output or gate |
 |---|---|---|
 | 1 | Finalize scope, model candidates, metrics, budgets, and reference audit | Versioned protocol and proposal |
-| 2 | Load models and test common BF16 inference on L40S | Frozen checkpoint hashes, engines, and feasible context bands |
+| 2 | Load models and test common FP16 inference on a V100 | Frozen checkpoint hashes, engines, and feasible context bands |
 | 3 | Run inference and telemetry pilot | Repeatability gate, T0, and conditional E0 |
 | 4 | Adapt two seeds per architecture using the same corpus and token budget | Competence-gated adapters and full provenance |
 | 5 | Freeze new tasks and complete contamination/oracle audits | Unopened final split and oracle audit |
@@ -210,7 +210,7 @@ Table 4  Research workflow and decision gates
 
 The thesis will be considered successfully completed when it delivers all of the following, regardless of which architecture ranks first:
 
-- A frozen, reproducible inference benchmark for three eligible dense, state-space, and hybrid model systems on one L40S GPU at the three core context bands.
+- A frozen, reproducible inference benchmark for three eligible dense, state-space, and hybrid model systems on one V100 GPU at the three core context bands.
 - A transparent model manifest containing checkpoint revisions, tokenizers, licenses, engines, precision, trainable parameters, and adaptation seeds.
 - Functional results on a new unopened five-family accelerator split and VerilogEvalV2 with all failures retained.
 - Post-route results for the preassigned ten-task FPGA subset within the 300-run ceiling, plus a bounded timing-closure sensitivity study.
@@ -253,7 +253,7 @@ Table 5  Monthly schedule
 | Period | Core work and deliverable | Contingency or extension rule |
 |---|---|---|
 | September 2026 | Submit proposal; consolidate preliminary paper evidence; freeze thesis definitions | No new thesis experiment before protocol review |
-| October 2026 | Load the three checkpoints; verify licenses and hashes; build common L40S harness | Replace a model only before the freeze if it cannot run reproducibly |
+| October 2026 | Load the three checkpoints; verify licenses and hashes; build the common V100 harness | Replace a model only before the freeze if it cannot run reproducibly |
 | November 2026 | Complete inference pilot and core 0.5K/2K/8K measurements; freeze T0 and energy gate | Drop 32K and native-engine extensions first |
 | December 2026 | Complete matched corpus preparation, two LoRA seeds per model, and competence gate | Permit one predeclared retry; retain any failed architecture in the report |
 | January 2027 | Freeze the twenty-design split; run contamination and oracle audits; complete functional and VerilogEvalV2 generation | Reduce optional native-precision work if generation is delayed |
@@ -267,7 +267,7 @@ Table 5  Monthly schedule
 
 ## 6.1 Existing Conditions
 
-Available computing resources include two 32 GB NVIDIA V100-class GPUs and authorized access to NVIDIA L40S GPUs. The L40S is the sole primary inference platform because it supports the common BF16 condition and current profiling tools. V100 results, if collected, will be labelled as a secondary portability check and will not be pooled with the L40S comparison.
+Available computing resources consist of two NVIDIA V100 GPUs. One V100 will be used per controlled inference measurement under the common FP16 condition; the second may be used for independent training or experimental runs. Results from separate GPUs will not be pooled as if they were repeated measurements from one device.
 
 The local FPGA environment includes AMD Vivado 2026.1 and a validated implementation flow for the Xilinx Zynq-7020 device. The PYNQ-Z2 board and measurement harness remain available for optional validation. Icarus Verilog provides inexpensive filtering before EDA. Existing software supports parameter-efficient adaptation, multi-sample generation, oracle evaluation, candidate deduplication, PPA extraction, timing-closure search, and statistical analysis.
 
@@ -275,11 +275,11 @@ The repository already contains structured manifests, frozen-hash checks, analys
 
 ## 6.2 Funding and Resource Limits
 
-The minimum thesis does not require an H100 GPU, a new FPGA, paid commercial APIs, or external power instrumentation. Existing institutional and personal research resources are sufficient if L40S scheduling and the licensed Vivado installation remain available.
+The minimum thesis does not require additional GPUs, a new FPGA, paid commercial APIs, or external power instrumentation. The two available V100 GPUs and the licensed Vivado installation are sufficient for the declared core scope.
 
-The physical campaign has a maximum of 300 unique candidate implementations and a six-week planning window. The absolute fixed-budget scenario uses 10 L40S GPU-hours and 50 Vivado runs, with declared sensitivity levels. Optional expenses such as storage, replacement cables, API baselines, a second FPGA, or a power meter require supervisor approval and cannot become dependencies of the core thesis.
+The physical campaign has a maximum of 300 unique candidate implementations and a six-week planning window. The absolute fixed-budget scenario uses 10 V100 GPU-hours and 50 Vivado runs, with declared sensitivity levels. Optional expenses such as storage, replacement cables, API baselines, a second FPGA, or a power meter require supervisor approval and cannot become dependencies of the core thesis.
 
-If L40S access is interrupted, the project will first postpone optional 32K and native-kernel experiments. If interruption persists, the common comparison will move to a single available platform and precision supported by all eligible models, and the protocol change will be documented before outcomes are collected.
+If one V100 becomes unavailable, the controlled measurements will continue sequentially on the remaining V100 and optional 32K or native-kernel experiments will be postponed. If both V100 GPUs become unavailable, GPU experiments will pause rather than silently changing the primary platform after outcomes are observed.
 
 # 7  Anticipated Difficulties, Solutions, and Research Integrity
 
