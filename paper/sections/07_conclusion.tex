@@ -1,33 +1,21 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-Correctness-gated policy optimization with the RF physical reward raises
-equal-sample post-route frequency from
+Correctness-gated, proxy-guided policy optimization improves the physical
+utility of a fixed-budget RTL draw within the studied streaming-accelerator
+domain.  On the sealed split, the RF reward package raises failure-penalized
+post-route timing-derived frequency from
 \studyclaim{StudyTwoOverallSftPenalized} to
-\studyclaim{StudyTwoOverallRfPenalized}~MHz across
-\studyclaim{StudyTwoDesignCount} frozen held-out designs.  Both independent
-training seeds improve, the paired intervals exclude zero under interpolation
-and extrapolation, and the gain survives assigning zero frequency to every
-incorrect or failed sample.  RF also exceeds the matched MLP reward, while the
-correctness-only control does not reproduce the physical gain.
+\studyclaim{StudyTwoOverallRfPenalized}~MHz, with positive effects for both
+policy-training seeds.  The gain reflects faster oracle-passing draws rather
+than higher correctness.  Original-MLP and single-seed correctness-only controls
+constrain the explanation without isolating individual repair components.
 
-The improvement carries a defensible physical trade-off: more LUTs and
-flip-flops, fewer DSP blocks, and a small vectorless power increase on common
-support.  A live PYNQ-Z2 sweep supplies heterogeneous descriptive support with
-two RF wins, two ties, one loss, and exactly repeatable Fmax boundaries; its
-feasibility amendments prevent treating that small subset as independent
-confirmation.
-
-Earlier candidate-level evidence supports a distribution-shift account: optimization
-increases mass on a smaller set of fast correct implementations that supervised
-sampling often already contains.  The perfect-selector analysis quantifies the
-resulting sampling efficiency, while the API, HLS, and VerilogEval controls
-separate one-draw utility, selected implementation quality, and general-RTL
-regression.
-
-The bounded late reward trajectory supplies the necessary warning.  Proxy reward can
-continue rising after measured conditional frequency has flattened and
-equal-sample performance has fallen.  The strongest conclusion is therefore
-neither open-ended circuit invention nor trust in the proxy: correctness-gated
-optimization can make fast accelerator RTL substantially more likely, provided
-that executable oracles and real EDA artifacts remain the final authority.
+The improvement is neither universal across families nor free of cost.  Higher
+LUT/register use, slightly higher vectorless power, and a small matched
+VerilogEval regression accompany the physical gain.  Selected setup-closure
+and board checks add directional evidence but do not replace the sealed
+endpoint or establish full timing sign-off.  The resulting CAD lesson is
+specific: a learned proxy can guide a useful distribution shift, but functional
+testing, complete failure accounting, and independent physical evaluation must
+remain separate from the training objective.

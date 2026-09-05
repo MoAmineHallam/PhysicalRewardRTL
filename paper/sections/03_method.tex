@@ -1,160 +1,239 @@
 \section{Method}
 \label{sec:method}
 
-\subsection{Functional admissibility}
+\subsection{Problem formulation}
 
-For each design specification $d$, a deterministic reference model maps an
-input stream to its expected output stream.  A generated module is compiled and
-simulated on held-out stimuli.  Valid implementations may have different
-pipeline depths, so the oracle searches an admissible latency window and
-requires exact equality after alignment.  Partial similarity earns no credit.
-The same oracle is used for supervised-data filtering, the policy reward gate,
-and held-out evaluation, with disjoint evaluation stimuli.
+For a design specification $d$, let policy $p$ sample an RTL completion $m$.
+The desired quantity is not the best implementation found after an unbounded
+search, but the expected post-route frequency of a policy draw when invalid
+outcomes remain possible.  Training must therefore solve two coupled problems:
+preserve the specified input/output behavior and change the distribution over
+physically distinct correct implementations.  Figure~\ref{fig:training-boundary}
+separates the inexpensive feedback used for policy updates from the more
+expensive evidence used for reporting.
 
-Let $C_d(m)$ denote the oracle verdict for module $m$, and let
-$\widehat{F}(m)$ denote the learned frequency proxy.  The training reward is
+\subsection{Executable functional gate}
+
+Each accelerator family has a deterministic software reference mapping an
+input stream to its required output stream.  A generated module is compiled and
+simulated on frozen stimuli.  Because admissible implementations may introduce
+different pipeline depths, the oracle searches a bounded latency window and
+accepts the best aligned match fraction at or above
+\revisionclaim{OracleThreshold}.  The search allows zero through
+\revisionclaim{OracleMaxLatency} cycles of latency and discards
+\revisionclaim{OracleWarmup} warm-up outputs.  Thus the verdict is binary, but
+the implemented threshold is not an exact-equality contract: a sufficiently
+long trace can pass despite a mismatch.  We use ``correct'' below to mean
+oracle-passing, not formally equivalent.  The same oracle implementation filters supervised examples, gates
+policy rewards, and evaluates held-out samples, with held-out stimulus streams
+reserved for evaluation.
+
+Let $C_d(m)$ denote the binary oracle verdict.  Every reward arm obeys
 
 \begin{equation}
-R_d(m)=
+g_d(m)=
 \begin{cases}
-\widehat{F}(m), & C_d(m)\text{ passes},\\
-\text{zero reward}, & C_d(m)\text{ fails}.
+\one, & C_d(m)\text{ passes},\\
+\zero, & C_d(m)\text{ fails}.
 \end{cases}
+\label{eq:gate}
 \end{equation}
 
-The gate prevents the optimizer from purchasing predicted frequency by
-changing the required computation.  It does not guarantee that the proxy ranks
-two correct implementations properly; that question is deferred to real EDA.
+The gate rejects behavior changes detected by its sampled tests.  It neither
+proves equivalence on all inputs nor establishes that a proxy ranks admissible
+modules properly; physical implementation addresses the latter question.
 
-\subsection{Supervised warm start and policy optimization}
+\subsection{Supervised warm start and policy update}
 
-The base model is first adapted with completion-masked LoRA~\cite{hu2022lora}
-on oracle-verified accelerator RTL.  This warm start is necessary because the raw model's sparse
-correctness provides too little physical signal for online policy optimization.
-The optimized policy begins from the supervised adapter, samples groups across
-all train-split designs, normalizes rewards within each group, and applies a KL
-penalty to a frozen copy of the supervised policy.  The group-relative update
-follows the estimator family introduced for GRPO~\cite{shao2024deepseekmath}.
-All frozen held-out designs
-are excluded from supervised examples, proxy rows, and policy prompts.
+RTLCoder~\cite{liu2024rtlcoder} is adapted on an oracle-verified accelerator
+corpus using completion-masked LoRA~\cite{hu2022lora}.  Held-out designs are
+excluded from the corpus, reward-training rows, and policy prompts.  The
+supervised adapter supplies both the policy initialization and the frozen
+reference.  Anchoring to the SFT adapter rather than the raw base model avoids
+pulling the optimized policy away from the domain competence established by
+supervision.
 
-For a sampled group, rewards are standardized within the design.  If $R_i$ is
-the gated reward of completion $m_i$, its advantage is
+Each training group contains \studyclaim{StudyTwoGroupSize} completions sampled
+at temperature \studyclaim{StudyTwoTrainingTemperature}, with at most
+\studyclaim{StudyTwoTrainingMaxTokens} completion tokens.  If $R_i$ is the
+gated reward of completion $m_i$, its within-group advantage is
 
 \begin{equation}
 A_i=\frac{R_i-\overline{R}}{s_R+\epsilon}.
+\label{eq:advantage}
 \end{equation}
 
-Groups with no reward variation produce no ranking information and are skipped.
-For every remaining completion, the implementation minimizes a sequence-level
-policy loss with a nonnegative KL estimator,
+Fresh completions are sampled from the current policy at each attempted group;
+this is on-policy, proxy-guided optimization, not offline reinforcement
+learning on a fixed transition or preference dataset.
+Groups without reward variation contain no ranking information and do not
+advance the optimizer-update counter.  For an informative group, the
+implemented objective uses the mean completion-token log probability
+$\ell_\theta(m\mid d)=|m|^{-\one}\sum_t
+\log\pi_\theta(m_t\mid d,m_{<t})$:
 
 \begin{equation}
-\mathcal{L}_i=-A_i\log\pi_\theta(m_i\mid d)
+\mathcal{L}_i=-A_i\ell_\theta(m_i\mid d)
 +\beta\left(\exp(\Delta_i)-\Delta_i-\one\right),
+\label{eq:policy-loss}
 \end{equation}
 
-where $\Delta_i=\log\pi_{\mathrm{SFT}}(m_i\mid d)-
-\log\pi_\theta(m_i\mid d)$.  The reference adapter is a frozen copy of the SFT
-policy, rather than the raw base model.  This matters because anchoring to the
-base would pull the policy away from the functional competence established by
-supervision.
+where $\Delta_i=\ell_{\mathrm{SFT}}(m_i\mid d)-
+\ell_\theta(m_i\mid d)$ and the reference is detached.  Losses are averaged
+within the group.  This length-normalized update is inspired by group-relative
+policy optimization~\cite{shao2024deepseekmath}; it is not the standard clipped
+GRPO objective.  Exponentiating a difference of mean token log probabilities
+does not yield the usual sequence-probability ratio, so the penalty is a
+reference regularizer, not an asserted unbiased KL estimate.
+Every arm uses AdamW with learning rate
+\studyclaim{StudyTwoLearningRate}, reference-penalty coefficient
+\studyclaim{StudyTwoKlCoefficient}, and a target of
+\studyclaim{StudyTwoTrainingUpdates} non-flat optimizer updates.  Checkpoints
+are indexed by optimizer updates, not attempted groups; the frozen midpoint is
+update \studyclaim{StudyTwoMidpointUpdate}.
 
-The sealed primary study trains two independent policy seeds from the same
-RTL-specialized supervised checkpoint.  Its main physical reward is a random-
-forest predictor; matched arms replace it with a multilayer perceptron or with
-correctness alone.  An earlier replication repeats the supervised and policy-
-optimization stages with Qwen-Coder; it is not merely inference from a different
-base model using the first model's adapter.  Every evaluation preserves the
-original sample counts after deduplicating identical correct candidates.
+\subsection{Physical reward and matched controls}
 
-\subsection{Training proxy and reporting boundary}
-
-The deployed proxy predicts post-route frequency from textual and structural
-RTL features and is clipped during training for numerical stability.  It is
-neither a correctness oracle nor an evaluation metric.  After sampling, every
-distinct oracle-correct candidate is implemented by the same Vivado flow.
-Candidate multiplicity in the original sample set is retained, so deduplication
-cannot change the empirical policy probabilities.
-
-For policy $p$ and design $d$, the primary endpoint is
+The repaired reward first maps admissible RTL through a frozen lexical
+canonicalizer $\kappa$, then predicts log-frequency from canonical structural
+features $\phi$:
 
 \begin{equation}
-\overline{F}_{p,d}=\frac{\sum_{m\in\mathcal{M}_{p,d}}
-c_m F_{\mathrm{Vivado}}(m)}{n_d},
+R_d^{\mathrm{RF}}(m)=g_d(m)\,
+\exp\!\left[\operatorname{clip}\!\left(
+\widehat{f}_{\mathrm{RF}}(\phi(\kappa(m))),a,b\right)\right].
+\label{eq:rf-reward}
 \end{equation}
 
-where $c_m$ is the original multiplicity and $n_d$ is the full sampling budget.
-Incorrect samples are absent from $\mathcal{M}_{p,d}$ and therefore contribute
-zero; an implementation failure is explicitly assigned zero.  The headline
-statistic is the unweighted mean of $\overline{F}_{p,d}$ over designs, making the
-design rather than the candidate the unit of aggregation.  Conditional-on-
-correct frequency and correctness are reported separately as diagnostics.
+Here $\widehat{f}_{\mathrm{RF}}$ predicts log-frequency, $a,b$ are the frozen
+log-frequency clamp bounds, and exponentiation returns the reward in MHz.
+The RF contains \studyclaim{StudyTwoRewardTreeCount} trees and uses
+\studyclaim{StudyTwoRewardFeatureCount} features: multiplier count, maximum
+per-statement multiplier count, positive-edge count, nonblocking and blocking
+assignment counts, multiply--accumulate structure, register and wire counts,
+ternary and comparison counts, statement count, a structural pipeline ratio,
+and loop count, maximum bound, and summed bounds.  Descriptive impurity
+importance ranks multiplier count, multiply--accumulate structure, pipeline
+ratio, register count, and nonblocking assignments highest; this ranking
+describes the fitted predictor and is not a causal circuit attribution.  It is fitted to
+\studyclaim{StudyTwoRewardTrainingRows} measured RTL rows that exclude every
+held-out and sealed design.  Layout-dependent line counts and name-dependent
+features are absent.  The canonicalizer is lexical and layout-invariant under
+its frozen mutation suite; it is not a canonical hardware representation.
+Canonicalization or canonical-compilation failure also sets the reward to zero
+and is logged.
 
-This endpoint can be decomposed as
+This architecture is a disclosed post-hoc repair hypothesis derived from an
+older reward failure.  Its feature representation and hyperparameters were
+fixed before the sealed efficacy split was opened; the sealed study is thus a
+prospective efficacy test of a post-hoc hypothesis, not a claim that the repair
+hypothesis itself was selected blindly.
+
+Two controls compare reward packages.  The original-MLP arm restores the
+previous textual/structural predictor while keeping the SFT initialization,
+prompts, oracle, optimizer, SFT reference, update target, and evaluation fixed.
+The correctness-only arm uses $R_d^{\mathrm{C}}(m)=g_d(m)$ and therefore tests
+whether correctness pressure suffices in the realized training run.  Because
+canonicalization, features, and predictor class change jointly, RF versus MLP
+is not a component-wise ablation.  The RF arm
+has \studyclaim{StudyTwoRfTrainingSeeds} independent training seeds, the MLP
+arm has \studyclaim{StudyTwoMlpTrainingSeeds}, and the correctness-only arm has
+\studyclaim{StudyTwoCorrectnessTrainingSeeds} preregistered full-budget seed.
+
+The repaired reward is not operationally flat.  It resolves
+\studyclaim{StudyTwoResolvedGroups} of
+\studyclaim{StudyTwoEligibleGroups} eligible RF groups, or
+\studyclaim{StudyTwoRewardResolution}\%.  Before sealed generation, all
+\studyclaim{StudyTwoContractCandidates} distinct reward-eligible training
+candidates reproduced their logged canonical hash and features, compiled, and
+passed sampled original/canonical trace comparison; there were
+\studyclaim{StudyTwoContractRejected} rejections and
+\studyclaim{StudyTwoContractCollisions} cross-design collisions.  The trace
+check uses \studyclaim{StudyTwoContractTraceVectors} vectors per frozen oracle
+seed and is evidence of the executed reward path, not formal equivalence.
+
+\subsection{Failure-penalized physical endpoint}
+
+After generation, each distinct oracle-correct candidate is implemented once
+and joined back to its original multiplicity.  For policy $p$ and design $d$,
+let $\mathcal{M}_{p,d}$ be the distinct correct candidates, $c_m$ the sampled
+multiplicity, $n_d$ the complete draw budget, and $F(m)$ the post-route
+timing-derived frequency, defined as zero when implementation fails.  The
+primary per-design endpoint is
+
+\begin{equation}
+\overline{F}_{p,d}=\frac{\sum_{m\in\mathcal{M}_{p,d}}c_mF(m)}{n_d}.
+\label{eq:equal-sample}
+\end{equation}
+
+Incorrect samples are absent from $\mathcal{M}_{p,d}$ but remain in $n_d$ and
+therefore contribute zero.  Each arm receives
+\studyclaim{StudyTwoSamplesPerArmDesign} draws per design; a two-seed arm uses
+\studyclaim{StudyTwoSamplesPerSeedDesign} draws from each seed.  The headline
+statistic is the unweighted mean of $\overline{F}_{p,d}$ across designs, so the
+design rather than the number of distinct candidates is the aggregation unit.
+Each candidate is implemented once under the same frozen clock request; $F(m)$
+is therefore derived from that request and worst negative slack rather than
+from candidate-specific repeated timing closure.  This symmetry supports the
+paired comparison but bounds absolute-frequency claims to the frozen flow,
+device, and request.
+
+The endpoint decomposes as
 
 \begin{equation}
 \overline{F}_{p,d}=q_{p,d}\,\mu_{p,d},
+\label{eq:decomposition}
 \end{equation}
 
-where $q_{p,d}=\sum_m c_m/n_d$ is empirical correctness and
-$\mu_{p,d}=\sum_m c_m F_{\mathrm{Vivado}}(m)/\sum_m c_m$ is mean frequency
-conditional on a measured correct implementation.  Reporting only
-$\mu_{p,d}$ would hide a policy that occasionally emits very fast RTL but
-usually fails.  Averaging candidates directly would instead overweight designs
-whose policy happens to produce more distinct implementations.  The chosen
-endpoint avoids both changes of estimand.
+where $q_{p,d}$ is empirical correctness and $\mu_{p,d}$ is multiplicity-
+weighted frequency conditional on an oracle-passing draw, retaining zero for
+implementation failure.  We set $\mu_{p,d}=\zero$ when no draw passes.  A policy
+that rarely emits very fast correct RTL can have high $\mu_{p,d}$ and low
+$\overline{F}_{p,d}$; reporting only the former would change the estimand.
 
-For paired uncertainty, the analysis first computes the optimized-minus-SFT
-difference for every design and then resamples those differences within each
-frozen family-by-regime stratum.  The sealed primary study fixes the resampling
-seed and plan before opening the result; the direct RF-minus-MLP comparison
-reuses those exact plans as a bounded post-primary analysis.  Designs, rather
-than individual completions, are resampled because all policies answer the same
-specification and samples within a design share a task-specific physical scale.
+For paired uncertainty, optimized-minus-SFT differences are computed per
+design and resampled within frozen family-by-regime strata.  The primary plan
+uses \studyclaim{StudyTwoBootstrapReplicates} resamples and a
+\studyclaim{StudyTwoBootstrapConfidence}\% percentile interval.  The direct
+RF-minus-MLP analysis reuses the identical resample plans but is labeled post-
+primary.  Candidate draws are not treated as independent experimental units,
+and these design-level intervals do not estimate variation from SFT training,
+reward-data construction, or model-family choice.
 
-\subsection{Perfect-selector upper bound}
+\subsection{Search and distribution diagnostics}
 
-For the supervised policy we reconstruct an empirical distribution containing
-the measured correct candidates plus a zero-mass outcome for every incorrect
-sample.  The expected maximum of $N$ independent draws is computed exactly from
-that distribution.  This selector is intentionally unrealizable: it assumes
-the post-route frequency of every candidate.  It therefore upper-bounds any
-practical reranker at the same supervised sampling budget.
+For a perfect-selector comparison, the empirical SFT distribution contains
+every measured candidate with its multiplicity plus a zero outcome for every
+failure.  If $G_d(x)$ is its empirical cumulative distribution, the maximum of
+$N$ independent draws has cumulative distribution $G_d(x)^N$.  This exact
+curve assumes access to every draw's measured timing-derived frequency before
+selection.  It upper-bounds reranking on this finite sampled support, not on the
+unknown full SFT distribution.  Draw count is not wall-clock cost: oracle calls,
+uncached correct-draw implementation attempts, and content-deduplicated
+implementations are reported separately.  Training cost is not amortized into
+these inference-only counts.
 
-\subsection{Candidate-distribution diagnostics}
-
-The mechanism analysis retains multiplicity rather than treating each distinct
-RTL string as equally likely.  For a correct candidate, define its all-sample
-mass as $w_{p,d,m}=c_m/n_d$.  The dominant mass is $\max_m w_{p,d,m}$.  To
-separate concentration within the correct support from the correctness rate,
-we also normalize $\widetilde{w}_{p,d,m}=c_m/\sum_j c_j$ over correct
-candidates and compute the effective support
+For mechanism, define the all-sample candidate mass
+$w_{p,d,m}=c_m/n_d$ and the dominant mass $\max_m w_{p,d,m}$.  Normalizing over
+correct candidates gives $\widetilde{w}_{p,d,m}=c_m/\sum_jc_j$ and effective
+support
 
 \begin{equation}
-D_{p,d}=\exp\left(-\sum_m \widetilde{w}_{p,d,m}
-\log\widetilde{w}_{p,d,m}\right).
+D_{p,d}=\left(\sum_m\widetilde{w}_{p,d,m}^{\two}\right)^{-\one}.
+\label{eq:effective-support}
 \end{equation}
 
-A smaller effective support means that probability is concentrated on fewer
-distinct correct strings; it does not by itself imply higher physical quality.
-We therefore combine it with real candidate frequencies and with a support
-test asking whether the SFT sample set contains an implementation at least as
-fast as the GRPO conditional mean.  The test distinguishes probability
-reallocation from the stronger claim that optimization must invent an
-implementation absent from supervised sampling.
+Lower $D_{p,d}$ means probability is concentrated on fewer correct strings; it
+does not itself imply better hardware.  We therefore pair it with real
+candidate frequencies and test whether SFT sampling already contains an
+implementation at least as fast as the optimized conditional mean.
 
 \subsection{Fail-closed result generation}
 
-The sealed analysis requires exactly \studyclaim{StudyTwoDesignCount} distinct
-primary designs, the frozen regime counts, every declared arm and seed, and a
-common policy-level sample budget.  Every distinct correct manifest candidate
-must have a PPA row; the complete audit contains
-\studyclaim{StudyTwoPpaCandidates} rows with
-\studyclaim{StudyTwoPpaCompiled} successful implementations and
-\studyclaim{StudyTwoPpaFailed} retained failure.  Secondary evidence has its own
-explicit shape checks and never silently expands the primary set.  The analysis
-scripts emit named TeX claims, tables, plots, JSON results, and ledgers containing
-the computation and artifact line ranges for every number.  The verifier
-recomputes the outputs, validates every source pointer, resolves every claim used
-by the manuscript, and rejects raw numeric literals in authored prose.
+The analysis requires the complete frozen design set, every declared arm and
+seed, the full sample denominator, and a physical-design row for every distinct
+correct candidate.  Missing implementation rows are errors, not silently
+discarded observations.  Separate generators emit named TeX claims, tables,
+figures, JSON results, input/output hashes, and file:line provenance.  The
+verifier regenerates these outputs, resolves every claim used by the manuscript,
+and rejects empirical numbers typed directly into authored prose.

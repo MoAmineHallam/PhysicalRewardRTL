@@ -1,113 +1,131 @@
 \section{Discussion}
 \label{sec:discussion}
 
-\subsection{What the evidence supports}
+\subsection{Interpretation of the physical gain}
 
-Correctness-gated policy optimization changes the one-draw distribution of RTL
-quality.  The central evidence is the sealed equal-sample endpoint: it preserves
-the original probability mass, assigns every failure zero, uses real post-route
-measurements, and raises mean Fmax by
-\studyclaim{StudyTwoOverallRfSftGain}~MHz over
-\studyclaim{StudyTwoDesignCount} frozen designs.  Both independent RF seeds are
-positive, both regime intervals exclude zero, and a direct secondary comparison
-favors RF over the matched MLP reward.  The earlier Qwen-Coder result and
-perfect-selector curve broaden the evidence without entering the primary
-estimand.
+The sealed study supports a distribution-level improvement within the studied
+accelerator generators: the RF-trained policies produce higher timing-derived
+physical utility per draw after failures are charged to the originating
+policy.  The decomposition locates this gain in the physical quality of
+oracle-passing draws, not in higher correctness.  This distinction matters when
+using a generator as an engineering tool, because a fast selected example and
+a reliably useful draw imply different verification and implementation costs.
 
-The earlier candidate analysis sharpens a plausible mechanism.  SFT often contains a fast
-implementation but assigns it little mass; GRPO concentrates on fewer correct
-implementations and makes the fast forms common.  This is a learned generation
-policy, not merely a post-hoc reranker, but it is also not evidence of autonomous
-microarchitecture invention.  The median exception and mixed recursive-filter
-results show that a useful fast form must already be representable and
-reward-distinguishable.
+The controls constrain, but do not fully identify, the cause.  The original
+MLP reward improves on SFT, while RF improves further.  RF changes the predictor
+class, canonicalization, and feature representation jointly; their individual
+contributions remain unresolved.  Correctness-only training yields more passing
+samples but lower physical utility in its single primary seed.  This is a
+counterexample to identifying correctness improvement with physical improvement,
+not evidence that correctness-only training must fail across seeds or models.
 
-The contextual baselines answer narrower objections.  A timing prompt can make
-the API model's correct tail fast, but its low correctness makes the one-draw
-penalized result weak.  Selected GRPO candidates approach pragma-optimized HLS,
-showing that the learned distribution contains competitive implementations;
-selection prevents promoting that comparison to the policy-level headline.
-VerilogEval reveals the cost of specialization and isolates the claim that GRPO
-does not add another general-RTL regression.
+Candidate probabilities suggest a plausible mechanism.  SFT often already
+samples a fast implementation, but infrequently; optimization increases mass
+on fewer correct outputs.  The sealed support exceptions and finite draw budget
+prevent a claim that all optimized implementations were already available in
+the observed SFT sample.  The illustrative FIR pair supplies a concrete
+direct-to-transposed structural contrast and a changed DSP/LUT mapping, but does
+not identify a universal topology change behind the aggregate effect.
+
+\subsection{Implications for CAD workflows}
+
+A learned reward is useful only insofar as it orders enough on-policy
+candidates to guide optimization.  The measured reward resolution and sealed
+efficacy support that role for the repaired package; they do not validate every
+prediction.  The historical late trajectory demonstrates why proxy progress
+cannot replace implementation evidence.  Canonicalization reduces sensitivity
+to formatting and names, while compilation and sampled trace checks remain
+necessary to test the actual reward path.
+
+The physical benefit comes with engineering costs.  RF uses more LUTs and
+registers, fewer DSP blocks, and slightly more vectorless power on common
+correct support.  Implementations may also differ in latency within the
+oracle's alignment window: higher clock frequency is not automatically lower
+end-to-end latency.  A deployed design would need explicit resource, latency,
+and power constraints, or a multi-objective reward, rather than a frequency-only
+preference.  The matched VerilogEval regression further argues for reporting
+general competence alongside domain-specific physical gains.
+
+The empirical perfect-selector crossing describes inference workloads on a
+finite support.  It omits the cost of domain SFT, reward labels, and policy
+training.  Matching non-flat optimizer updates also leaves attempted groups
+and compute unequal between arms.  Consequently, the present evidence does not
+establish an end-to-end runtime advantage, energy saving, or deployment
+break-even point.
 
 \subsection{Threats to validity}
 
 \paragraph{Template-bounded generalization}
-The frozen split establishes transfer to unseen parameters and extrapolation
-beyond training ranges within the benchmark generators.  It does not test
-free-form industrial specifications, control-dominated systems, memories,
-multiple clock domains, or cross-template synthesis.
+The frozen split excludes evaluated designs from domain training, but tests
+new parameters within known generators rather than new specification families.
+It does not establish competence on control-dominated systems, memories,
+multiple clocks, or free-form industrial RTL.  The median family occurs only
+under extrapolation, confounding family and regime in that cell.  The separate
+Qwen-Coder result broadens backbone evidence but uses the earlier, narrower
+family universe.  Neither split construction nor VerilogEval evaluation can
+exclude unknown overlap with a base model's pretraining corpus.
 
-\paragraph{Backbones, runs, and scope}
-The second backbone materially reduces a model-specific explanation, but it
-uses the earlier \claim{QwenFamilyCount}-family split rather than the complete
-primary set.  The sealed result addresses training variance with two RF seeds,
-but they share one supervised checkpoint, benchmark generator, and reward-data
-construction.  More supervised initializations and reward-model fits would be
-needed for a broad variance-components claim.
+\paragraph{Training variance and statistical resolution}
+The RF seeds share one SFT checkpoint, reward dataset, and benchmark generator;
+they are policy-training replications, not independent full-pipeline repeats.
+The correctness-only primary control has one seed.  Design-bootstrap intervals
+condition on these realized checkpoints and the frozen task universe.  Small,
+unequal family-by-regime cells limit their resolution.  Post-primary
+unstratified and leave-one-family-out checks preserve the direction but do not
+remove these limitations.  RF versus SFT is the sole prespecified primary
+contrast; the other intervals are secondary, without multiplicity adjustment.
 
-\paragraph{One target and timing-derived frequency}
-All post-route and silicon measurements target one FPGA part.  Candidate
-frequency is derived from
-worst negative slack after a single implementation flow rather than repeated
-timing closure at candidate-specific clocks.  This is symmetric across policies
-but is not device-independent ground truth.  The live PYNQ-Z2 sweep supplies an
-external physical check, yet its small feasibility-amended subset and shared
-bitstream remain insufficient for device-independent generalization.
+\paragraph{Repair and validation history}
+The canonical-feature RF hypothesis was motivated by the historical MLP
+failure.  Its efficacy test was frozen before the sealed split was opened,
+but the hypothesis was not selected blindly.  The earlier all-nonempty-candidate
+validation contract also failed on an oracle-rejected completion.  The revised
+reward-eligible contract reused unchanged checkpoints and an unseen efficacy
+split, but its population was chosen after diagnosing that failure.  These
+facts limit how independently the repair and validation scope were selected.
 
-\paragraph{Secondary-baseline comparability}
-The API arms have a smaller sampling budget and represent one prompt and model
-configuration.  The HLS comparison changes both input representation and
-selection rule.  We therefore use neither as the causal baseline for the GRPO
-claim.  They answer whether fast candidates exist under alternative workflows,
-not why the policy distribution changed.
+\paragraph{Functional and physical validity}
+The oracle checks sampled, latency-aligned traces with a near-unity threshold,
+not exact equivalence over all inputs.  Stronger exact-match and formal audits
+would be needed to elevate this correctness claim.  The original physical
+endpoint comes from one device and a single requested-period flow.  Its script
+does not fail closed when a valid setup path is absent: the slack variable has
+a zero default.  The retained primary result has not been reclassified on the
+basis of that potential failure mode; a complete path-coverage audit is needed
+before asserting that every row satisfies a stronger timing contract.
 
-\paragraph{Post-hoc uncertainty and mechanism}
-The sealed RF-minus-SFT interval plan was frozen before opening the primary
-result.  Direct RF-minus-MLP, resource, concentration, and historical trajectory
-analyses are post-primary or supporting evidence and are labeled accordingly.
-Candidate identity and similar frequency also do not establish semantic
-microarchitecture equivalence; the mechanism is a distribution-level
-explanation supported by measured support and concentration.
+The setup-closure pilot adds constraint-coverage checks and period bracketing
+on a small selected subset, under a newer Vivado version and constraints applied
+before synthesis.  It supports relative ordering there, but the reverse-FIR
+outlier prevents interpreting the median error as universal calibration.
+The pilot does not enforce hold or pulse-width closure and therefore does not
+establish full timing sign-off.  Cross-tool, cross-device, and operating-corner
+generalization remain untested.
 
-\subsection{Why the reward-hacking result is a subplot}
-
-The trajectory is important operational evidence: early proxy optimization
-corresponds to real hardware gain, while later reward growth accompanies flat
-conditional frequency and falling correctness.  The lexical source audit makes
-the failure concrete, but its canonical rescoring is saturated and lacks
-token-identical pairs.  The result therefore motivates periodic real-EDA audits,
-proxy-distribution monitoring, and early stopping; it does not establish a
-general repair or universal reward-model collapse.
+\paragraph{Conditional costs, silicon, and baseline comparability}
+Resource and power comparisons condition on common correct support, whereas
+the primary endpoint penalizes failures.  The board subset was amended for
+correctness feasibility and sweep coverage before measurement, uses the same
+device family, and includes an RF loss.  It is descriptive support, not an
+independent population confirmation.  API prompting and selected-candidate
+HLS have different budgets and reporting objects.  The study also lacks an
+executed matched DPO or recent external RTL-optimization baseline; internal
+reward controls do not establish superiority over those methods.
 
 \subsection{Artifact and claim traceability}
 
-The accompanying repository publishes the frozen manifests, sampled RTL with
-its original multiplicity, oracle summaries, distinct correct candidates,
-post-route PPA rows, canonical analysis, generated tables and figures, and the
-human-readable claim ledger.\footnote{Artifact repository:
-\url{https://github.com/MoAmineHallam/FPGA}}  Regeneration is fail-closed: the
-analysis refuses an incomplete primary design universe, a changed sample
-denominator, or a manifest candidate without a physical-design row.  A separate
-verifier recomputes every generated result, follows each claim to artifact line
-ranges, resolves all included manuscript sources, and rejects empirical numbers
-typed directly into authored prose.  This does not eliminate methodological
-judgment, but it makes disagreements traceable to a declared computation and
-prevents tables from drifting independently of the underlying artifacts.
+The artifact package contains frozen manifests, sampled RTL and multiplicity,
+oracle summaries, implementation rows and failures, board traces,
+canonicalization audits, and generated claim ledgers.\footnote{Repository:
+\url{https://github.com/MoAmineHallam/FPGA}.  The final release must identify the
+exact manuscript and artifact revision.}  Regeneration rejects missing design
+coverage, changed denominators, missing implementation rows, stale generated
+outputs, and unresolved numerical claims.  The completed post-primary
+decomposition, setup-closure pilot, and matched VerilogEval archive are
+validated independently before their claims enter the manuscript.
 
-The repository also distinguishes prepared experiments from completed
-measurements.  The new board result enters only because the reserved live-sweep
-artifact binds the exact bitstream, HWH, selector map, and amended selection
-manifest.  Its failed first selection, range amendment, and one RF loss remain
-published.  The same rule keeps exploratory student-model evidence and the
-historical asymmetric board comparison outside the quantitative claim set.
-
-\subsection{Evidence intentionally outside the claim set}
-
-Two attractive results remain outside the quantitative manuscript claims.  The
-historical silicon sweep uses asymmetric SFT-versus-GRPO selection and is
-superseded by the provenance-bound Study~\ref{tab:study2-board} protocol.  The
-small-student distillation study has functional training-side evidence but no
-complete held-out physical evaluation.  Excluding them is not a judgment that
-they are uninteresting; it prevents selected or exploratory observations from
-carrying the primary causal conclusion.
+Additional policy-training runs, prepared baseline protocols, and benchmark
+preflights are not reported as completed physical evaluations.  The historical
+asymmetric board comparison and incomplete smaller-student evaluation remain
+excluded.  New seed endpoints must be reported as a separate extension rather
+than silently changing the original sealed population or interval.

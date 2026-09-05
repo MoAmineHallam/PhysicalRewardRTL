@@ -1,78 +1,164 @@
-\section{Experimental Setup}
+\section{Experimental Protocol}
 \label{sec:setup}
 
-\subsection{Design families and frozen split}
+\subsection{Accelerator domain and sealed split}
 
-The benchmark contains streaming FIR, reverse-FIR, polynomial, recursive-filter,
-and median-filter accelerators under a uniform clocked interface.
-Specifications and executable reference functions are generated
-programmatically.  The resulting domain spans the five listed families and
-several implementation templates, but remains bounded by those generators.
+The benchmark contains streaming finite-impulse-response (FIR), reverse-FIR,
+polynomial, recursive-filter, and median-filter accelerators under a uniform
+clocked interface.  The families cover feed-forward arithmetic pipelines,
+recurrences, and comparator networks.  Each specification and its executable
+reference are generated programmatically, and several implementation styles
+provide physically distinct but behaviorally equivalent training examples.
+The domain is deliberately controlled: it spans multiple accelerator
+structures but not arbitrary industrial RTL.
 
-The sealed held-out split was committed before the policies used for the
-primary result were trained.  Interpolation contains
-\studyclaim{StudyTwoInterpDesignCount} unseen parameter choices inside training
-ranges.  Extrapolation contains \studyclaim{StudyTwoExtrapDesignCount} larger or
-newly parameterized designs outside those ranges.  No held-out design appears
-in supervised examples, policy prompts, or proxy-training rows.
+The sealed evaluation contains \studyclaim{StudyTwoDesignCount} designs,
+balanced between \studyclaim{StudyTwoInterpDesignCount} interpolation and
+\studyclaim{StudyTwoExtrapDesignCount} extrapolation tasks.  Family quotas are
+unequal because the eligible median interpolation pool was empty; the median
+family is represented only under extrapolation, so median-family and regime
+effects cannot be separated.  Table~\ref{tab:study2-family}
+reports the exact composition.  Interpolation changes parameters within
+training ranges; extrapolation uses larger or newly parameterized instances
+outside those ranges.  Every sealed design is excluded from the SFT corpus,
+reward rows, policy prompts, and prior analysis.  The split remained unopened
+until all declared checkpoints and pre-open validation artifacts were frozen.
 
-\subsection{Models, sampling, and functional evaluation}
+\subsection{Arms, seeds, and sampling}
 
-The primary comparison uses RTLCoder~\cite{liu2024rtlcoder}, its supervised
-LoRA adapter, and two independently trained correctness-gated policy adapters.
-The RF arm pools equal samples from the two training seeds to match the fixed
-SFT arm budget.  Matched MLP-reward and correctness-only arms use the same
-held-out tasks and policy-level sampling cost.  A candidate is accepted only if
-it exactly matches the executable reference under the frozen held-out stimulus
-streams.  Distinct accepted RTL is stored once together with its original
-multiplicity.
+The primary comparison uses RTLCoder, its completion-masked SFT adapter, and
+two independently trained repaired-RF policy adapters.  The MLP arm trains two
+matched policies from the same SFT adapter using the original reward.  The
+correctness-only arm uses one preregistered full-budget seed.  Arms are matched
+on non-flat optimizer updates rather than attempted groups, because a flat
+group produces no policy-ranking information.  A crashed run is discarded and
+restarted from the frozen SFT state; partial histories are never merged.
+Equal non-flat updates do not imply equal training compute: flat groups still
+require generation and oracle execution, particularly for correctness-only
+rewards.  The primary comparison matches deployment draws, not end-to-end
+training time or energy.
 
-The earlier second-backbone replication uses Qwen-Coder and
-\claim{QwenSamplesPerDesign} samples per policy on
+At the sealed endpoint, SFT and every trained arm receive
+\studyclaim{StudyTwoSamplesPerArmDesign} draws per design at temperature
+\studyclaim{StudyTwoEvaluationTemperature}.  Two-seed arms contribute
+\studyclaim{StudyTwoSamplesPerSeedDesign} draws per seed.  The midpoint
+diagnostic uses \studyclaim{StudyTwoMidSamplesPerSeedDesign} draws per RF seed
+and design.  Generation seeds are distinct from training seeds and from the
+\studyclaim{StudyTwoOracleStreams} oracle streams, each of which contains
+\studyclaim{StudyTwoOracleVectors} test vectors.  Accepted candidates are
+deduplicated only for implementation; multiplicity is preserved for every
+policy statistic.
+
+\subsection{Post-route implementation and statistical analysis}
+
+The frozen physical flow is \studyclaim{StudyTwoVivadoEnvironment}.  Every
+distinct correct candidate is synthesized, placed, and routed with the same
+\claim{TargetPeriod}-ns requested clock.  Achievable frequency is derived from
+the request and reported worst negative slack.  We therefore use
+``post-route timing-derived \fmax'' rather than ``timing closure'': the flow
+does not repeatedly rerun implementation at candidate-specific clock periods.
+The historical script introduces the clock constraint after synthesis; this
+flow is held fixed rather than retroactively corrected in the sealed result.
+
+The primary estimand is Eq.~\eqref{eq:equal-sample}.  Correctness and
+conditional frequency are diagnostics, not replacement endpoints.  The
+primary RF-minus-SFT confidence plan is frozen and stratified by family and
+regime, with percentile bounds.  RF-minus-MLP intervals reuse its exact
+resample plans as a bounded post-primary comparison.  The family cells are
+small and unequal, so the manuscript adds an unstratified paired-bootstrap and
+leave-one-family-out sensitivity but does not replace the frozen primary plan.
+No multiplicity adjustment is applied: the RF-versus-SFT contrast is the sole
+prespecified primary inference, while control, family, PPA, and mechanism
+analyses are secondary or descriptive.  Resource and power analyses condition
+on designs with compiled correct support in SFT, MLP, and RF; assigning zero
+area or power to a failed sample would incorrectly make failure look efficient.
+Power is Vivado's vectorless estimate, not measured board power.
+
+\subsection{Provenance-bound PYNQ-Z2 protocol}
+
+Figure~\ref{fig:board-architecture} shows the candidate-selection contract,
+implemented test harness, and trace-validation path.
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\textwidth]{fig04_board_architecture_v2}
+\caption{Descriptive board-validation architecture.
+(a) The amended correctness-eligible selection uses the same multiplicity and
+hash rules for SFT and RF, with no frequency-based reselection.
+(b) The processing system configures the clock and accesses the capture
+buffer through memory-mapped AXI. Counter-driven SFT/RF DUTs and the echo
+canary coexist in one programmable-logic image; the selector chooses the
+captured output. Solid paths carry data or execution flow; dashed paths show
+clock and capture control. Logical buses are simplified for readability.
+(c) Captured traces are compared with per-DUT golden streams, and clock
+boundaries are accepted only with the specified canary headroom.}
+\label{fig:board-architecture}
+\end{figure*}
+
+The board study uses within-design SFT/RF pairs and applies the same
+multiplicity-aware candidate rule to both policies.  All selected DUTs, a
+co-resident echo canary, and the selector interface occupy one bitstream/HWH
+pair.  Each complete run sweeps the same clock grid, recomputes the passing
+boundary from raw scores, and records the bitstream, HWH, selector-map, and
+selection-manifest hashes.
+
+The first outcome-independent family hash selected a reverse-FIR design with no
+correct candidate in either paired arm, so that attempt stopped without a
+silicon outcome.  Before any board measurement, eligibility was amended to
+require a correct candidate in both arms and the same outcome-independent hash
+was reapplied.  The common sweep floor was also lowered after sealed Vivado
+rows showed that the original range would not bracket every selected DUT.  No
+reward, timing, area, power, or resource outcome was used to choose the
+replacement.  Nevertheless, these feasibility amendments make the resulting
+board subset descriptive rather than independently confirmatory.
+
+\subsection{Supporting and contextual evaluations}
+
+An earlier \claim{DesignCount}-design RTLCoder evaluation provides broader
+five-family evidence and the candidate-distribution analysis.  A separate
+Qwen-Coder experiment~\cite{hui2024qwen25coder} repeats the full
+SFT-to-policy-optimization recipe on
 \claim{QwenDesignCount} designs from the earlier
-\claim{QwenFamilyCount}-family split.  It is reported separately because it
-does not include the later recursive and median families.
+\claim{QwenFamilyCount}-family universe; it is not pooled with the sealed
+study.  The post-primary perfect-selector analysis uses the sealed SFT support
+and retains the earlier evaluation only as historical context.
 
-\subsection{Physical evaluation}
+Three contextual controls answer narrower questions.  A stored API experiment
+uses the same tasks and oracle with \claim{FrontierSamplesPerDesign} samples
+per prompt arm.  The HLS comparison measures post-implementation throughput
+for no-pragma and engineer-pragma C++ but compares them with the fastest
+measured optimized RTL candidate, not a policy average.  The matched post-primary
+VerilogEval extension evaluates the sealed SFT and RF checkpoints using
+\revisionclaim{VerilogSamples} samples per checkpoint on
+\revisionclaim{VerilogProblems} problems.  The earlier base/SFT/policy run uses
+a different generation budget and is not pooled with this comparison.
+Different budgets and selection rules
+prevent the API and HLS results from serving as causal primary baselines.
 
-Every reported candidate frequency comes from synthesis, placement, and routing
-for part \texttt{\claim{TargetPart}} under a requested
-\claim{TargetPeriod}-ns clock.  Frequency is derived from that request and the
-reported worst negative slack.  We call this ``timing-derived frequency''
-because the flow does not rerun implementation at every candidate clock.  Both
-policies use the same flow and constraint.
+A completed post-primary pilot reimplements
+\revisionclaim{ClosureCandidateCount} selected SFT/RF candidates with
+candidate-specific period bracketing under Vivado
+\revisionclaim{ClosureVersion}.  Constraints precede synthesis in that flow.
+It therefore tests sensitivity to both constraint handling and tool version,
+not the timing estimator alone.  Its pass criterion verifies setup slack,
+constraint coverage, and routing, but does not enforce hold or pulse-width
+closure.  We report it as a descriptive setup-closure sensitivity and do not
+replace the primary population endpoint with this selected subset.
 
-The primary endpoint is penalized equal-sample frequency as defined in
-Section~\ref{sec:method}.  Secondary diagnostics are conditional frequency,
-oracle correctness, family effects, candidate concentration, and exact
-perfect-selector curves.  The sealed RF-minus-SFT intervals follow the frozen
-family-by-regime resampling plan.  Direct RF-minus-MLP and conditional resource/
-power intervals were specified after the primary was opened, reuse the frozen
-design universe, and remain bounded secondary analyses.
+\subsection{Study status and reproducibility}
 
-\subsection{Contextual baselines and controls}
+An earlier validation attempt used a stricter contract over every nonempty RF
+training completion.  It stopped before sealed efficacy when that contract
+encountered a malformed, oracle-rejected completion.  After diagnosing the
+scope mismatch, the present study froze a reward-eligible contract over exactly
+the candidates that could influence the RF reward, reused the already-trained
+checkpoints without retraining or selection, and opened a still-unseen sealed
+efficacy split only after the revised gate passed.  The efficacy test is
+prospective with respect to that split, but it is not an independent validation
+of the post-diagnosis gate scope.
 
-The stored API baseline applies the same specifications and oracle to two prompt
-arms, using \claim{FrontierSamplesPerDesign} samples per arm and design.  Its
-smaller budget and single API configuration make it diagnostic rather than a
-general ranking of frontier models.  The HLS comparison uses post-implementation
-throughput and distinguishes no-pragma C++ from engineer-placed pipeline
-pragmas.  Because the RTL column selects the fastest measured optimized
-candidate, HLS is a selected quality bound rather than a policy-average result.
-VerilogEval supplies a separate general-RTL regression control.
-
-\subsection{Symmetric silicon protocol}
-
-The historical board table compared a count-weighted supervised median against
-an optimized-policy maximum and is excluded from quantitative claims.  The
-sealed-study replacement first attempted an outcome-independent family hash.  It
-stopped because one selected family member had no correct candidate in either
-paired arm.  Before board measurement, a disclosed amendment restricted
-eligibility to designs with a correct candidate in both arms and then reapplied
-the same hash without consulting reward, Fmax, area, power, or resource values.
-A second pre-silicon amendment lowered the common sweep floor after sealed
-Vivado rows showed that the original range would not bracket all valid DUTs.
-Both members of every pair share the same design, use the same candidate rule,
-occupy one bitstream with a co-resident canary, and undergo the same clock
-sweep.  These amendments make the result descriptive support rather than an
-independently selected confirmation.
+All frozen inputs and outputs are content-hashed.  Generated claim ledgers bind
+manuscript values to artifact line ranges; figure manifests additionally store
+the exact plotted arrays and input/output hashes.  Failed protocol attempts,
+implementation failures, board amendments, and excluded exploratory results
+remain in the public record rather than being overwritten.

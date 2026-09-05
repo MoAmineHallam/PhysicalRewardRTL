@@ -1,8 +1,14 @@
 {
-  "schema": "study2_secondary_results/1",
+  "schema": "study2_secondary_results/2",
   "status": "post-primary bounded secondary analysis; not preregistered confirmatory evidence",
+  "reviewer_revision": {
+    "added_utc": "2026-08-31T00:00:00Z",
+    "status": "reviewer-requested post-primary analysis; definitions fixed after external manuscript review",
+    "purpose": "Expose sealed family heterogeneity, test sensitivity to the small frozen strata, repeat the support-reallocation diagnostic on the sealed samples, and document one illustrative RTL/PPA contrast without changing the primary endpoint.",
+    "primary_inference_unchanged": true
+  },
   "primary_outcome_unchanged": "full_two_regime_repair",
-  "spec_sha256_lf": "984fbcbc519737a895f1f64271a10b84e254c2985904e0fee0adfb96c3de6758",
+  "spec_sha256_lf": "ba687049efed4d145b36bc0137b2a2d73c53a1d9d0be3a6faa999fd266a879f6",
   "input_sha256_lf": {
     "sealed_results_study2.json": "03c746a87de291613cc1c32a867ab40fce512af50eb40fd39c0b76ce441802f9",
     "sealed_ppa_audit_study2.json": "b4c9d57b7b368ff76ef3631aa344f9be8357b0faa90dae50508be68f520093cd",
@@ -551,11 +557,147 @@
       }
     }
   },
+  "reviewer_requested": {
+    "family_breakdown": {
+      "fir": {
+        "n_designs": 5,
+        "n_interp": 3,
+        "n_extrap": 2,
+        "sft_equal": 26.557487248467442,
+        "rf_equal": 112.75422448709931,
+        "rf_minus_sft": 86.19673723863187,
+        "designs": [
+          "fir30_v5_8b",
+          "fir26_v8_8b",
+          "fir13_v6_8b",
+          "fir42_v6_8b",
+          "fir34_v1_8b"
+        ]
+      },
+      "firr": {
+        "n_designs": 5,
+        "n_interp": 3,
+        "n_extrap": 2,
+        "sft_equal": 6.758253279971382,
+        "rf_equal": 28.15909890883491,
+        "rf_minus_sft": 21.40084562886353,
+        "designs": [
+          "firr18_v5",
+          "firr27_v3",
+          "firr20_v6",
+          "firr42_v5",
+          "firr42_v3"
+        ]
+      },
+      "poly": {
+        "n_designs": 4,
+        "n_interp": 2,
+        "n_extrap": 2,
+        "sft_equal": 32.73069471548617,
+        "rf_equal": 136.7968822599391,
+        "rf_minus_sft": 104.06618754445293,
+        "designs": [
+          "poly6_v13_8b",
+          "poly8_v9_8b",
+          "poly12_v15_8b",
+          "poly16_v13_8b"
+        ]
+      },
+      "iir": {
+        "n_designs": 4,
+        "n_interp": 2,
+        "n_extrap": 2,
+        "sft_equal": 98.59358407764873,
+        "rf_equal": 149.89902995692478,
+        "rf_minus_sft": 51.30544587927605,
+        "designs": [
+          "iir8_v7",
+          "iir3_v9",
+          "iir24_v2",
+          "iir18_v7"
+        ]
+      },
+      "med": {
+        "n_designs": 2,
+        "n_interp": 0,
+        "n_extrap": 2,
+        "sft_equal": 7.813597373796551,
+        "rf_equal": 4.458329604367951,
+        "rf_minus_sft": -3.3552677694285995,
+        "designs": [
+          "med21",
+          "med19"
+        ]
+      }
+    },
+    "sensitivity": {
+      "unstratified_paired_bootstrap": {
+        "n_designs": 20,
+        "n_boot": 100000,
+        "seed": 20260831,
+        "interval": "percentile",
+        "mean_diff": 57.63819562467678,
+        "ci_lo": 31.1307075931319,
+        "ci_hi": 85.44988023655362
+      },
+      "leave_one_family_out": {
+        "effects": {
+          "fir": 48.11868175335841,
+          "firr": 69.71731228994786,
+          "poly": 46.03119764473274,
+          "iir": 59.22138306102696,
+          "med": 64.4152471129107
+        },
+        "minimum": 46.03119764473274,
+        "maximum": 69.71731228994786
+      }
+    },
+    "sealed_support": {
+      "common_correct_support_designs": 16,
+      "sft_support_at_or_above_rf_conditional": 14,
+      "exceptions": [
+        "fir26_v8_8b",
+        "fir13_v6_8b"
+      ],
+      "sft_effective_support": 3.775380033153196,
+      "rf_effective_support": 2.6713465712846802,
+      "identity": "source_sha256 merges identical raw candidate strings across seeds"
+    },
+    "illustrative_rtl_case": {
+      "design": "fir13_v6_8b",
+      "selection_status": "post-review illustrative case chosen for an interpretable direct-form versus registered transposed-form contrast; not a preregistered representative sample",
+      "arms": {
+        "sft": {
+          "module": "sft__fir13_v6_8b__g1",
+          "count": 22,
+          "n": 48,
+          "sample_mass": 0.4583333333333333,
+          "fmax": 47.39111890431733,
+          "lut": 1,
+          "ff": 88,
+          "dsp": 13,
+          "structure": "direct form with delayed samples, product registers, and a final parallel sum"
+        },
+        "rf": {
+          "module": "rf_s1__fir13_v6_8b__g0",
+          "count": 21,
+          "n": 24,
+          "sample_mass": 0.875,
+          "fmax": 220.0704225352113,
+          "lut": 251,
+          "ff": 221,
+          "dsp": 0,
+          "structure": "registered transposed accumulation chain"
+        }
+      }
+    }
+  },
   "reporting_rules": [
     "The preregistered RF-versus-SFT endpoint remains the only primary claim.",
     "Direct RF-versus-MLP and conditional resource/power results are secondary.",
     "A direct RF-versus-MLP superiority claim requires its paired confidence interval to exclude zero.",
     "Conditional PPA claims must state their common-support design count and vectorless-power limitation.",
+    "Reviewer-requested family, sensitivity, support, and RTL-case analyses must be labeled post-primary and descriptive.",
     "No further training, seeds, checkpoint selection, or sealed-sample additions are authorized by this analysis."
   ]
 }

@@ -1,80 +1,119 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Executable RTL benchmarks ask whether generated code compiles and matches a
-reference behavior.  Physical design adds a separate capability: two
-cycle-compatible implementations can compute the same function yet have very
-different critical paths.  A generator trained only for correctness has no
-reason to prefer the form that closes timing at a useful clock, while selecting
-many candidates after generation shifts the cost to inference and EDA.
+Executable RTL benchmarks have made functional correctness measurable for
+language-model-generated hardware~\cite{liu2023verilogeval,lu2024rtllm}.
+Physical usefulness is a different capability.  Behaviorally compatible modules can
+implement the same computation with sharply different critical paths,
+resource mappings, and achievable clocks.  A model trained only to pass a
+testbench has no reason to prefer the physically better form.  Conversely,
+generating many candidates and selecting the fastest after electronic-design-
+automation (EDA) evaluation shifts the cost to inference and repeated physical
+design.
 
-Training against physical quality is difficult for the opposite reason.
-Post-route implementation is too expensive to place inside every policy update,
-so a learned proxy is attractive.  Once optimized, however, that proxy is least
-trustworthy exactly where the policy concentrates probability.  Reporting the
-training reward as achieved frequency would confuse the objective with the
-evidence.  We therefore impose two boundaries: functional equivalence gates the
-reward, and real post-route implementation gates every physical claim in the
-paper.  Incorrect samples, missing candidates, and implementation failures all
-receive zero frequency in the primary endpoint.
+Recent work has therefore connected RTL generation to synthesis feedback,
+reinforcement learning, evolutionary search, or per-design adaptation
+~\cite{ppartl2025,chipseek2025,yao2024rtlrewriter,poet2026,
+evolve2026,zhou2026alphartl,drrtl2026}.  A central measurement problem remains:
+an optimizer can improve a selected candidate, a conditional-on-correct mean,
+or the learned objective without making a random policy draw more useful.
+Physical implementation is also too expensive for every policy update, which
+makes a learned reward attractive but exposes it to distribution shift and
+overoptimization~\cite{gao2023scaling}.  The reward is least trustworthy where
+the optimized policy places its mass.
 
-The strongest experiment is a separately frozen
-\studyclaim{StudyTwoDesignCount}-design evaluation with matched sample cost and
-two independent optimized training seeds.  Penalized equal-sample frequency
-rises from \studyclaim{StudyTwoOverallSftPenalized} to
-\studyclaim{StudyTwoOverallRfPenalized}~MHz.  The paired RF-reward gain is
-\studyclaim{StudyTwoInterpRfSftGain}~MHz under interpolation and
-\studyclaim{StudyTwoExtrapRfSftGain}~MHz under extrapolation; both frozen
-intervals exclude zero.  The two seed-specific overall effects are
-\studyclaim{StudyTwoRfSeedOneOverallGain} and
-\studyclaim{StudyTwoRfSeedTwoOverallGain}~MHz.  Correctness changes only from
-\studyclaim{StudyTwoSftCorrectness}\% to
-\studyclaim{StudyTwoRfCorrectness}\%, so the physical gain is not purchased by a
-collapse in functional validity.
+The open question in this paper is therefore deliberately bounded: within a
+controlled streaming-accelerator domain, does proxy-guided training change the
+generator's physical utility at a fixed draw budget after functional and
+implementation failures are charged to the policy that produced them?
+Answering that question also requires distinguishing a timing-aware reward from
+generic policy movement and from an increase in correctness alone.  The group-
+relative update rule and EDA feedback are ingredients of the study rather than
+new algorithms; the contribution is the failure-aware distribution-level
+formulation, controlled reward-package comparisons, and a prospective post-route test.
 
-Matched controls sharpen the claim.  The random-forest reward exceeds an
-otherwise matched multilayer-perceptron reward by
-\studyclaim{StudyTwoOverallRfMlpGain}~MHz, with a paired secondary interval of
-[\studyclaim{StudyTwoOverallRfMlpCiLow},
-\studyclaim{StudyTwoOverallRfMlpCiHigh}]~MHz.  A correctness-only control does
-not reproduce the physical gain.  An earlier, separate evaluation and a
-Qwen-Coder replication~\cite{hui2024qwen25coder} remain supporting evidence;
-they are not pooled with the sealed study.
+We address these two issues with a strict training/evidence boundary
+(Fig.~\ref{fig:training-boundary}).  During training, an executable oracle
+first rejects functionally invalid RTL; a learned physical reward ranks only
+admissible completions.  During reporting, neither the reward nor a selected
+example is accepted as hardware evidence.  Every distinct correct candidate is
+implemented by the same post-route Vivado flow, its original sample
+multiplicity is restored, and every incorrect or implementation-failed draw is
+assigned zero frequency.  The resulting equal-sample endpoint measures the
+physical utility of one draw while keeping the design, rather than the
+candidate, as the unit of aggregation.
 
-The evaluation is organized around four questions.  \emph{Capability} asks
-whether optimization improves the performance of one draw when sampling cost
-is held fixed and all failures remain in the denominator.  \emph{Transfer}
-asks whether the direction survives a second backbone and extrapolated design
-parameters.  \emph{Mechanism} asks whether the policy discovers wholly new
-support or reallocates probability among implementations already reachable
-after supervision.  \emph{Reliability} asks when the learned reward ceases to
-track real physical design.  This separation prevents a selected fast example,
-a proxy score, or a conditional-on-correct statistic from substituting for the
-policy-level result.
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\textwidth]{fig01_training_evidence_boundary_v3}
+\caption{Implemented training and physical-evaluation workflow.
+(a) Domain SFT and the physical predictor use training-only resources.
+(b) Fresh policy samples receive group-relative updates with a frozen SFT
+reference; flat groups do not advance the update counter.
+(c) The RF reward uses canonicalized structural features; MLP and
+correctness-only rewards are separate control runs. Red branches assign zero
+to rejected candidates.
+(d) Frozen checkpoints are evaluated using the executable oracle and post-route
+implementation. Original multiplicity and the full draw denominator are
+restored; incorrect and implementation-failed draws are not discarded.
+Dashed paths denote feedback, references, or separately run controls.}
+\label{fig:training-boundary}
+\end{figure*}
+
+The primary test is a separately frozen
+\studyclaim{StudyTwoDesignCount}-design study spanning interpolation and
+extrapolation across the retained accelerator generators.  Two policy-training
+seeds sharing one SFT checkpoint and a canonicalization-aware random-forest (RF) reward raise
+penalized equal-sample \fmax{} from
+\studyclaim{StudyTwoOverallSftPenalized} to
+\studyclaim{StudyTwoOverallRfPenalized}~MHz.  Their seed-averaged paired effect
+is \studyclaim{StudyTwoOverallRfSftGain}~MHz with interval
+[\studyclaim{StudyTwoOverallRfSftCiLow},
+\studyclaim{StudyTwoOverallRfSftCiHigh}]~MHz; each training seed is positive,
+and the interpolation and extrapolation intervals both exclude zero.  The
+optimized policy's correctness remains close to the supervised fine-tuned
+(SFT) baseline, and the failure penalty already charges the endpoint for the
+difference.
+
+Matched controls constrain the explanation for the gain.  The repaired RF reward
+exceeds the original multilayer-perceptron (MLP) reward by
+\studyclaim{StudyTwoOverallRfMlpGain}~MHz under the same tasks and sampling
+budget.  Correctness-only training instead raises validity to
+\studyclaim{StudyTwoCorrectnessOnlyCorrectness}\% but lowers penalized \fmax{}
+relative to SFT in its single preregistered seed.  The observed physical gain
+therefore does not arise from higher functional yield; attribution beyond these
+realized checkpoints requires further training replication.  Conditional resource and power
+analysis exposes its implementation cost.  A separate, explicitly descriptive
+PYNQ-Z2 sweep is retained in the evidence record rather than used to strengthen
+the primary population claim.
 
 This paper makes four contributions:
 
 \begin{itemize}
-    \item a correctness-gated policy objective that combines an executable
-    input/output-equivalence oracle with a learned physical reward while
-    preserving a frozen supervised-policy KL anchor;
-    \item a separately frozen interpolation/extrapolation study with two
-    independent RF-reward seeds, matched MLP-reward and correctness-only
-    controls, and a failure-penalized post-route primary endpoint;
-    \item conditional resource and vectorless-power trade-offs plus a live
-    PYNQ-Z2 clock-sweep study whose protocol amendments and heterogeneous
-    outcomes remain explicit;
-    \item an earlier second-backbone replication, perfect-selector comparison,
-    and contextual HLS, API, and general-RTL controls kept outside the primary
-    estimand; and
-    \item a candidate-distribution explanation plus a bounded reward-
-    overoptimization subplot, all generated from artifact-backed claim ledgers.
+    \item \emph{Controlled empirical finding:} on the frozen accelerator split,
+    both independently trained RF policies improve the failure-penalized
+    post-route endpoint under interpolation and extrapolation.  Descriptive
+    family and sensitivity analyses expose, rather than average away, the weak
+    family.
+    \item \emph{Reward-package comparison:} original-reward and correctness-only
+    arms separate the observed gain from an increase in functional yield.
+    The comparison supports the repaired reward package on the studied split;
+    it does not isolate random-forest architecture from canonical features.
+    \item \emph{Failure-aware protocol:} the fixed-draw estimand preserves
+    original sample multiplicity and charges every incorrect or implementation-
+    failed draw zero, while real post-route EDA rather than the learned proxy
+    remains the reporting authority.
+    \item \emph{Bounded engineering interpretation:} candidate probabilities,
+    a source-level RTL contrast, conditional PPA, setup-closure and board
+    sensitivities, and matched general-RTL evaluation expose both physical
+    improvements and specialization costs.
 \end{itemize}
 
-The supported mechanism is probability reallocation, not open-ended circuit
-invention.  Supervision already exposes several implementations; optimization
-places more probability on fast ones.  That distinction explains both the
-large FIR, reverse-FIR, and polynomial gains and the weaker recursive and
-median cases.  It also motivates the paper's central methodological rule: the
-proxy may train the policy, but only functional simulation and real EDA may
-evaluate it.
+The dominant observed mechanism is probability reallocation, not demonstrated
+open-ended circuit invention.  Supervision exposes multiple correct
+implementations, and policy optimization often makes fast forms more probable
+when the reward can distinguish them.  The sealed support diagnostic also has
+exceptions, so the paper does not reduce every gain to reweighting within the
+finite SFT sample.  This narrower interpretation predicts stronger gains where
+fast structures are representable and reward-distinguishable, weaker families,
+and failure when a learned proxy ceases to track physical reality.

@@ -1,5 +1,128 @@
 # PROJECT MASTER REFERENCE — Hardware-Grounded RL for RTL Generation + Verilog MAS
 
+> **Paper working revision, 2026-09-05:** `paper/build/revision-2026-09-05/main.pdf`
+> is the new 14-page draft; the older `paper/build/main.pdf` is preserved.
+> The training/evaluation and PYNQ-Z2 diagrams were rebuilt as editable vectors
+> from implementation sources, with all six manuscript figures visually checked.
+> Primary/secondary/board/revision evidence and exact figure reproduction pass;
+> `verify_claims.py` resolves 440 claims and 265 used manuscript identifiers.
+> Completed decomposition, setup-closure sensitivity, and matched VerilogEval
+> evidence are included without changing the frozen primary result. Additional
+> seed training is not presented as completed physical evaluation. See
+> `paper/FIGURE_STYLE_NOTES.md` and `paper/TCAD_SUBMISSION.md` for details and
+> remaining scientific and author-approval checks. This version is being archived
+> on `claude/amazing-hopper-ytsbvr` at the author's request; it is not a journal
+> submission or an acceptance-ready certification.
+
+## Paper handoff — 2026-09-05
+
+### Exact version
+
+- Title: **Correctness-Gated Policy Optimization for Streaming-Accelerator RTL:
+  A Failure-Aware Post-Route Study**.
+- PDF: [`paper/build/revision-2026-09-05/main.pdf`](paper/build/revision-2026-09-05/main.pdf),
+  14 pages, including references.
+- PDF SHA-256: `4948fa9464d283ca98da2fe6770b7c25ac51e02e4b027626c4f2f9bf5173afc2`.
+- Source: `paper/main.tex`, `paper/sections/`, `paper/refs.bib`, and the generated
+  claim/table files. The older local `paper/build/main.pdf` is not this version.
+- This handoff preserves the reviewed draft. The compliance corrections below
+  have been identified but have **not** yet been implemented in this PDF.
+
+### Completed in this paper revision
+
+1. Rewrote the title, abstract, introduction, related work, method, protocol,
+   results, discussion, and conclusion around a bounded streaming-accelerator
+   claim and failure-aware physical evaluation. Corrected the description from
+   offline RL to on-policy, proxy-guided optimization; documented the actual
+   loss, thresholded oracle, canonicalization, and physical reporting boundary.
+2. Retained the frozen 20-design primary result and its original interval.
+   Explicitly separated shared-SFT training seeds, RF/MLP reward-package
+   confounding, post-primary diagnostics, historical support, and amended board
+   evidence. Reported weak median-family outcomes and physical-cost trade-offs.
+3. Integrated completed endpoint decomposition, sealed best-of-N/workload
+   accounting, the selected V7 setup-closure sensitivity pilot, and matched
+   VerilogEval regression. No unfinished seed physical results were inserted.
+4. Added `paper/make_revision_evidence.py`, its claim ledger and generated
+   tables, and extended `verify_claims.py` to validate them.
+5. Rebuilt the training/evaluation and PS/PL board schematics as editable vector
+   drawings derived from implementation sources. Compacted their heights by
+   20.2% and 12.1%, respectively, without shrinking text. They remain on pages
+   2 and 7. Separated the board architecture from its measured-results plot;
+   refined the other plots, captions, and placement.
+6. Retained PDF/PNG figure exports and SVG schematic sources, with numeric
+   arrays, source pointers, and hashes in the figure manifest. Used the four
+   author-supplied reference papers for visual conventions, without copying
+   their artwork. Their local PDFs are not redistributed in this commit.
+7. Updated the AI acknowledgment to identify assisted sections and human
+   responsibility, without claiming that all authors have already approved it.
+8. Compiled and inspected the PDF. Primary, secondary, board, revision-evidence,
+   claim, and exact figure-reproduction checks passed. The claim verifier
+   resolves 440 claims and 265 used manuscript IDs. The optional LODO rerun was
+   not executed. Font-substitution/underfull-box warnings remain; no overfull
+   boxes or unresolved reference/citation warnings were found.
+9. Before archiving, checked staged Git blobs against the manifests and made
+   the new figure/revision verifiers normalize CRLF to LF for text hashes.
+   PDF/PNG hashes remain byte-exact; the reviewed PDF and results are unchanged.
+
+### Remaining before submission
+
+**Scientific evidence and claim scope**
+
+- Complete and audit the prospective seed extension under its frozen rules.
+  At the last live check (2026-09-05 12:05 UTC), RF seeds 3/4 and correctness
+  seed 2 had completed training; correctness seed 3 was active at update
+  260/276. This is a timestamped observation, not a current-status guarantee.
+- Training completion is not physical evaluation: audit checkpoints, freeze
+  the extension-evaluation launcher before endpoint generation, generate the
+  declared held-out draws, apply both oracle streams, retain multiplicity,
+  perform the declared Vivado evaluation, and report post-primary seed
+  dispersion without changing the original primary interval.
+- Audit the primary timing flow's path coverage and zero-default slack
+  behavior. The V7 selected setup pilot is complete, but is not an all-design
+  timing audit or proof of hold/pulse-width closure. No local Vivado process was
+  active at the last process check on 2026-09-05.
+- Resolve with the supervisor the adequacy of the sampled 0.999-threshold
+  oracle and of comparisons against contemporary external optimizers. Neither
+  formal equivalence nor state-of-the-art superiority is established here.
+
+**TCAD/IEEE compliance cleanup identified in the read-only audit**
+
+- Add explicit text callouts for Tables II and IX; fix first-citation order
+  (Table IV is currently mentioned before Tables II/III).
+- Alphabetize/standardize index terms and acronym definitions, use `Fig.`
+  consistently in prose, and remove terminal periods from table captions.
+- Complete bibliography metadata, including journal volume/issue/pages or
+  article numbers and conference pagination where applicable; verify current
+  publication versions. IEEE bibliography styling alone does not fill omissions.
+- Review label sizes: some diagram lettering is 7.3–8.8 pt. Current general
+  IEEE guidance recommends about 9–10 pt, while TCAD's linked older production
+  guide specifies 6–8 pt. Body text is 10 pt; do not equate these differing
+  graphics recommendations with a blanket compliance pass or definite failure.
+- Recheck the final production build, font substitutions, grayscale legibility,
+  table styling, and pagination after corrections and any new results. There
+  is no spare page beyond the current 14-page submission limit.
+- Assemble the exact submission source/graphics package, with appropriate
+  file naming and any production-stage caption lists/author biographies/photos
+  requested by the portal. Do not upload the obsolete August PDF/ZIP.
+
+**Author-controlled submission facts**
+
+- Supervisor and every qualifying author must approve the science, author
+  order, final text/figures, and complete AI disclosure; confirm all ORCIDs.
+- Confirm prior review/publication history, required overlap/extension
+  disclosures, no concurrent submission, conflicts, and cover-letter statements.
+- Pin the public artifact link to the submitted version and confirm publication
+  route, funding acknowledgment if applicable, and charges.
+
+Official references checked on 2026-09-05:
+[TCAD submission instructions](https://ieee-ceda.org/publications/tcad/tcad-paper-submissions),
+[IEEE editorial manual](https://journals.ieeeauthorcenter.ieee.org/wp-content/uploads/sites/7/IEEE-Editorial-Style-Manual-for-Authors.pdf),
+[IEEE graphics formatting](https://journals.ieeeauthorcenter.ieee.org/create-your-ieee-journal-article/create-graphics-for-your-article/file-formatting/).
+Artifact consistency is not independent scientific validation, full journal
+compliance, or a guarantee of acceptance.
+
+---
+
 > Single source of truth for the whole project. Two tracks live in the same
 > server folder `/zeng_gk/Amine/mas/`:
 > 1. **MAS** — a multi-agent autonomous Verilog→FPGA system (supervisor's original vision).

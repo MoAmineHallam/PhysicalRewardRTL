@@ -347,6 +347,7 @@ def tex_table(paired: collections.OrderedDict[str, dict]) -> str:
 correctness-feasibility amendment and is not independent confirmatory evidence.}}
 \label{{tab:study2-board}}
 \small
+\setlength{{\tabcolsep}}{{4pt}}
 \begin{{tabular}}{{llrrr}}
 \toprule
 Family & Design & SFT & RF & RF--SFT [MHz] \\

@@ -304,7 +304,7 @@ def _strip_nonprose_commands(text):
     text = re.sub(r"(?<!\\)%.*", "", text)
     # Every rendered empirical number must enter through a named claim.  Remove
     # those calls before searching for illicit raw numeric literals.
-    text = re.sub(r"\\(?:claim|studyclaim|boardclaim)\{[A-Za-z]+\}", "", text)
+    text = re.sub(r"\\(?:claim|studyclaim|boardclaim|revisionclaim)\{[A-Za-z]+\}", "", text)
     # Digits in citation keys, labels, filenames and URLs are identifiers.
     one_arg = (
         "cite", "citep", "citet", "ref", "eqref", "autoref", "label",
@@ -326,9 +326,11 @@ def sec_f_manuscript():
     study_ledger_path = PAPER / "generated" / "study2_claims.json"
     board_generator = ROOT / "analyze_study2_board.py"
     board_ledger_path = PAPER / "generated" / "study2_board_claims.json"
+    revision_generator = PAPER / "make_revision_evidence.py"
+    revision_ledger_path = PAPER / "generated" / "revision_claims.json"
     if not all(path.is_file() for path in (
             generator, ledger_path, study_generator, study_ledger_path,
-            board_generator, board_ledger_path)):
+            board_generator, board_ledger_path, revision_generator, revision_ledger_path)):
         print("  missing canonical generator or claim ledger")
         return False
 
@@ -359,12 +361,22 @@ def sec_f_manuscript():
     print("  legacy 30-design support outputs are current ... OK")
     print("  sealed Study 2 headline outputs are current .... OK")
     print("  live Study 2 board outputs are current ......... OK")
+    revision_fresh = subprocess.run(
+        [sys.executable, str(revision_generator), "--check"],
+        cwd=ROOT, capture_output=True, text=True,
+    )
+    if revision_fresh.returncode:
+        print("  post-primary revision artifacts are stale or invalid:")
+        print((revision_fresh.stderr or revision_fresh.stdout).rstrip())
+        return False
+    print("  completed revision evidence is current ........ OK")
 
     ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
     study_ledger = json.loads(study_ledger_path.read_text(encoding="utf-8"))
     board_ledger = json.loads(board_ledger_path.read_text(encoding="utf-8"))
+    revision_ledger = json.loads(revision_ledger_path.read_text(encoding="utf-8"))
     claims = dict(ledger.get("claims", {}))
-    for extra in (study_ledger, board_ledger):
+    for extra in (study_ledger, board_ledger, revision_ledger):
         for claim_id, record in extra.get("claims", {}).items():
             if claim_id in claims:
                 print(f"  duplicate claim ID across ledgers: {claim_id}")
@@ -395,7 +407,7 @@ def sec_f_manuscript():
     for path in sorted(tex_paths):
         text = path.read_text(encoding="utf-8")
         used.update(re.findall(
-            r"\\(?:claim|studyclaim|boardclaim)\{([A-Za-z]+)\}", text
+            r"\\(?:claim|studyclaim|boardclaim|revisionclaim)\{([A-Za-z]+)\}", text
         ))
         # Generated files are checked byte-for-byte above.  The raw-literal
         # ban applies to authored title/abstract/prose, not generated macros.
@@ -432,8 +444,12 @@ def sec_h_study2_secondary():
     audit_path = ROOT / "sealed_ppa_audit_study2.json"
     ledger_path = PAPER / "generated" / "study2_claims.json"
     table_paths = (
+        PAPER / "generated" / "study2_table_primary.tex",
+        PAPER / "generated" / "study2_table_rf_replication.tex",
         PAPER / "generated" / "study2_table_comparison.tex",
         PAPER / "generated" / "study2_table_ppa.tex",
+        PAPER / "generated" / "study2_table_family.tex",
+        PAPER / "generated" / "study2_table_rtl_case.tex",
     )
     required = (result_path, primary_path, audit_path, ledger_path) + table_paths
     missing = [str(path.relative_to(ROOT)) for path in required if not path.is_file()]

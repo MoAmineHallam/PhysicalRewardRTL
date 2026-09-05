@@ -1,7 +1,13 @@
 {
-  "schema": "study2_secondary_analysis_spec/1",
+  "schema": "study2_secondary_analysis_spec/2",
   "frozen_utc": "2026-08-26T07:50:23Z",
   "status": "post-primary bounded secondary analysis; not preregistered confirmatory evidence",
+  "reviewer_revision": {
+    "added_utc": "2026-08-31T00:00:00Z",
+    "status": "reviewer-requested post-primary analysis; definitions fixed after external manuscript review",
+    "purpose": "Expose sealed family heterogeneity, test sensitivity to the small frozen strata, repeat the support-reallocation diagnostic on the sealed samples, and document one illustrative RTL/PPA contrast without changing the primary endpoint.",
+    "primary_inference_unchanged": true
+  },
   "immutable_primary_outcome": "full_two_regime_repair",
   "inputs_sha256_lf": {
     "sealed_results_study2.json": "03c746a87de291613cc1c32a867ab40fce512af50eb40fd39c0b76ce441802f9",
@@ -35,11 +41,42 @@
     "power_limitation": "Vivado vectorless estimate, not measured board power",
     "failure_rule": "never assign zero area or power to an incorrect or failed sample; report correctness and synthesis coverage beside conditional PPA"
   },
+  "reviewer_requested_analyses": {
+    "family_breakdown": {
+      "scope": "point estimates on the immutable sealed RF-versus-SFT endpoint",
+      "uncertainty": "none; family sample sizes are too small for stable family-level intervals",
+      "reporting": "descriptive and post-primary"
+    },
+    "unstratified_sensitivity": {
+      "effect": "paired per-design RF minus SFT penalized equal-sample Fmax",
+      "bootstrap_replicates": 100000,
+      "bootstrap_seed": 20260831,
+      "interval": "percentile",
+      "reporting": "sensitivity only; does not replace the frozen stratified primary interval"
+    },
+    "leave_one_family_out": {
+      "effect": "unweighted mean paired RF minus SFT effect after omitting each family in turn",
+      "reporting": "range across the five omissions; descriptive sensitivity"
+    },
+    "sealed_support": {
+      "support_test": "SFT contains a compiled correct candidate with measured Fmax at least the RF multiplicity-weighted conditional-on-correct mean, tolerance 1e-6 MHz",
+      "effective_support": "inverse-Simpson count over distinct oracle-correct strings after normalizing their multiplicities conditional on correctness",
+      "reporting": "mechanism diagnostic, not a causal test"
+    },
+    "illustrative_rtl_case": {
+      "design": "fir13_v6_8b",
+      "sft_candidate": "sft__fir13_v6_8b__g1",
+      "rf_candidate": "rf_s1__fir13_v6_8b__g0",
+      "selection_status": "post-review illustrative case chosen for an interpretable direct-form versus registered transposed-form contrast; not a preregistered representative sample",
+      "reporting": "source-level example only; no population or causal inference"
+    }
+  },
   "reporting_rules": [
     "The preregistered RF-versus-SFT endpoint remains the only primary claim.",
     "Direct RF-versus-MLP and conditional resource/power results are secondary.",
     "A direct RF-versus-MLP superiority claim requires its paired confidence interval to exclude zero.",
     "Conditional PPA claims must state their common-support design count and vectorless-power limitation.",
+    "Reviewer-requested family, sensitivity, support, and RTL-case analyses must be labeled post-primary and descriptive.",
     "No further training, seeds, checkpoint selection, or sealed-sample additions are authorized by this analysis."
   ]
 }
