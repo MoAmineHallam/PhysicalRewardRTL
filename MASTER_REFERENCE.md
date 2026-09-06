@@ -1,5 +1,96 @@
 # PROJECT MASTER REFERENCE — Hardware-Grounded RL for RTL Generation + Verilog MAS
 
+## Active follow-up work — 2026-09-05 (after the archived paper)
+
+The author authorized all ready work without waiting for correctness_s3.
+The following jobs have actually started; they are not merely proposed.
+
+| Work | State at handoff | Location |
+|---|---|---|
+| RF seed 3 endpoint generation/oracle evaluation | COMPLETE and output audit PASS: 480 draws, 65 emitted candidates | v100a GPU 0 |
+| RF seed 4 endpoint generation/oracle evaluation | COMPLETE and output audit PASS: 480 draws, 43 emitted candidates | v100b GPU 0 |
+| Correctness seed 2 endpoint generation/oracle evaluation | COMPLETE and output audit PASS: 960 draws, 82 emitted candidates | v100a GPU 1 |
+| Correctness seed 3 training | Still running, last observed update 275/276; untouched | v100b GPU 1 |
+| Original SFT/RF timing-path coverage | COMPLETE: 202/202 retained results; see findings below | Laptop Vivado 2026.1 |
+| New-seed physical closure | RUNNING: frozen 302-candidate SFT/RF3/RF4/correctness2 population | Laptop Vivado 2026.1 |
+
+### Evaluation launch identity and operating instructions
+
+- New package: `seed_replication_evaluation_v1/`; frozen before generation in
+  commit `184a54a9`. Freeze SHA-256 (LF-normalized):
+  `ceaa5da6625e0f48f0ee880e7e91cfd1a0b2f034f0199b186cadc3967976af14`.
+- Nineteen new/inherited evaluator tests pass. The unchanged frozen evaluator
+  uses final update 276, RF 24 draws/design, correctness 48, seed 100+training
+  seed, batch 4, FP16, temperature/top-p 1, and oracle seeds 1/2 at 1024 vectors.
+  The three active workers cover 1920 draws; this is not completed physical evidence.
+- Server root: `/zeng_gk/Amine/mas/fpga-v100-v2` (shared by both V100 hosts).
+  Under `seed_replication_evaluation_v1/state/<run_id>/`, inspect `status.json`,
+  `stdout.log`, `training_completion_audit.json` and, only when COMPLETE,
+  `generation_completion_audit.json`. Outputs are under `outputs/<run_id>/`.
+- Workers rf_s3, rf_s4, and correctness_s2 all reached COMPLETE. Their local
+  copies under `seed_replication_evaluation_v1/outputs/` pass the package's
+  denominator, metadata, multiplicity, emitted-hash, and server-completion-hash
+  checks. The 1,920 total draws yielded 190 distinct oracle-passing candidates.
+- Do not re-launch/resume a failed generation into its old output directory.
+  The remaining correctness_s3 can use the same frozen launcher only after
+  training completes and its independent completion/idle checks pass.
+- The new package alone was copied to the shared server. No checkout/pull or
+  frozen training-script modification was performed while training ran.
+
+### Timing finding and broader audit
+
+- Read-only audit: `timing_path_audit_v1/REPORT.md` and `audit.json` verify
+  489 historical rows and reconstruct the original endpoints. One SFT case
+  has zero slack and zero resources; no RF row uses the unchanged zero default.
+- Confirmed cross-version replay: `timing_path_audit_v1/REPLAY_FINDING.md`.
+  `sft__med21__g3` has no setup paths and a constant-zero routed netlist in
+  Vivado 2026.1, yet the unchanged historical formula reports 200 MHz.
+  Original Vivado 2023.1 artifacts and manuscript numbers remain untouched.
+- Full primary coverage package: `timing_coverage_extension_v1/PROTOCOL.md`,
+  `freeze.json`, `run.py`, `analysis.json`, and `REPORT.md`. All 202 original
+  SFT/RF candidates completed with reports/netlists/checkpoints retained and no
+  performance selection. Results: SFT 108 setup-path-valid, one confirmed
+  no-path artifact, three inconclusive 2026.1 implementation failures; RF seed
+  one 38 valid and one inconclusive; RF seed two 51 valid. Every successful
+  candidate had clear named constraint counts. Median cross-version symmetric
+  frequency error on common valid candidates is 0.36% (SFT), 0.70% (RF1), and
+  0.61% (RF2); maximum 6.28%. One additional SFT candidate emitted multi-driver
+  synthesis warnings despite retaining a setup path. This audit is not a
+  complete corrected endpoint because four candidates remain inconclusive.
+  This is explicitly post-primary, cross-version coverage sensitivity, not
+  period-bracketed closure or full hold/pulse-width sign-off.
+- Completed coverage-runner launch PID was 35252. Short scratch was `C:\TPC0905`;
+  isolated suspect replay scratch was `C:\TPA0905`.
+- A missing path is INVALID_NO_SETUP_PATH; infrastructure/report failures are
+  INCONCLUSIVE, not physical zeros. No original result is overwritten.
+
+### Ready editorial work completed and dependencies remaining
+
+- Fixed missing primary/board table callouts, first-callout order, index-term
+  alphabetization and prose `Fig.` spelling; board caption now says descriptive.
+- Latest local editorial PDF: `paper/build/revision-2026-09-05-editorial/main.pdf`,
+  14 pages, SHA-256 `c0f0d33fb157e524df16f4c49f539ebd52ec235b6aeff105fe29d95b28d79055`.
+  The archived PDF below is preserved. This new PDF is editorial only: it does
+  not incorporate unfinished results or assert the timing issue is resolved.
+- Numeric-claim verification, revision evidence and exact figure regeneration
+  pass; no overfull boxes/unresolved references in the build. Font substitutions
+  and underfull-box warnings remain. Result/board pages were visually checked.
+- New physical package: `seed_replication_physical_v1/`, frozen in commit
+  `f2a23f83` before its first Vivado measurement. Manifest SHA-256:
+  `0b8ed448896f0c1d5c5273661a3786b82cb05d3bf2abf2a17ce3c8a1862a5348`.
+  It includes the shared SFT baseline (112 candidates) and all 190 emitted
+  candidates from RF3/RF4/correctness2. The V7 period-bracketing campaign was
+  started as local PID 8016 with short scratch `C:\SRP0906`; inspect
+  `seed_replication_physical_v1/runner.stdout.log` and `runner.stderr.log`.
+  Do not start another competing local Vivado campaign. Run `analyze.py` only
+  after 302/302 candidate results exist.
+- Training completion alone is not a physical result. Keep new-seed contrasts
+  separate from the original primary interval. Correctness3 is not included in
+  physical V1 and requires a separately frozen addition after its endpoint pass.
+- Bibliography metadata, remaining caption/acronym cleanup, full oracle scope,
+  external-baseline scope and supervisor/author submission approvals remain open.
+  Neither the jobs nor these editorial changes establish TCAD readiness.
+
 > **Paper working revision, 2026-09-05:** `paper/build/revision-2026-09-05/main.pdf`
 > is the new 14-page draft; the older `paper/build/main.pdf` is preserved.
 > The training/evaluation and PYNQ-Z2 diagrams were rebuilt as editable vectors

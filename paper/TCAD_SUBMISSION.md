@@ -34,12 +34,15 @@ The exact 2026-09-05 PDF is an archived working draft, not a compliance-certifie
 submission. The detailed completed/remaining handoff is at the top of
 `MASTER_REFERENCE.md`.
 
-- [ ] Finish and audit the additional-seed physical evaluations if they are to
-  enter this submission. Completed training is not completed endpoint evidence.
-  Keep this extension separate from the original frozen primary result.
-- [ ] Review the original timing-flow path coverage and zero-default slack
-  behavior. The selected setup-closure pilot does not replace a complete audit
-  and does not establish hold or pulse-width closure.
+- [ ] Finish the running 302-candidate additional-seed physical evaluation if it
+  is to enter this submission. RF3/RF4/correctness2 endpoint generation and
+  output audits are complete; correctness3 training remains one update short at
+  the last check. Keep the extension separate from the original primary result.
+- [x] Audited all 202 original SFT/RF candidates for timing-path coverage under
+  Vivado 2026.1. One SFT missing-path/default-frequency artifact was confirmed;
+  four cross-version implementation failures remain inconclusive. See
+  `timing_coverage_extension_v1/REPORT.md`. This does not establish hold or
+  pulse-width closure and is not silently substituted for the frozen endpoint.
 - [ ] Decide with the supervisor whether the sampled 0.999-threshold oracle
   needs stronger exact-equivalence evidence for the proposed claim scope.
 - [ ] Decide whether to add a matched contemporary external optimizer baseline.
@@ -49,10 +52,10 @@ submission. The detailed completed/remaining handoff is at the top of
 
 ## Formatting and editorial cleanup still required
 
-- [ ] Add numbered prose callouts for Tables II and IX and fix first-callout
-  order (Table IV currently precedes II/III).
-- [ ] Alphabetize index terms, check acronym definitions, consistently use
-  `Fig.` in prose, and remove terminal periods from table captions.
+- [x] Added numbered prose callouts for Tables II and IX and fixed first-callout
+  order in the editorial follow-up, `build/revision-2026-09-05-editorial/main.pdf`.
+- [x] Alphabetized index terms and consistently used `Fig.` in prose.
+- [ ] Finish acronym definitions and remove terminal periods from table captions.
 - [ ] Complete and verify bibliography metadata and publication versions.
 - [ ] Review small figure labels against the differing current general IEEE
   and older linked TCAD production guidance; preserve readability.
