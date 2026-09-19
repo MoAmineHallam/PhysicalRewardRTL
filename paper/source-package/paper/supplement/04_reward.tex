@@ -1,0 +1,84 @@
+\begin{figure*}[t]
+\centering
+\includegraphics[width=.85\textwidth]{fig06_reward_reliability}
+\caption{Bounded reward-reliability evidence.  Panel (a) shows a historical
+proxy rising while failure-penalized Vivado utility falls.  Panel (b) shows the
+repaired RF midpoint-to-endpoint trajectory: interpolation changes from
+\studyclaim{StudyTwoInterpMidFmax} to
+\studyclaim{StudyTwoInterpEndFmax}~MHz and extrapolation from
+\studyclaim{StudyTwoExtrapMidFmax} to
+\studyclaim{StudyTwoExtrapEndFmax}~MHz.}
+\label{fig:reward-reliability}
+\end{figure*}
+
+\section{Reward diagnostics and validation history}
+\subsection{Historical and repaired trajectories}
+\label{sec:trajectory}
+
+Fig.~\ref{fig:reward-reliability} contrasts the older exploited reward with
+the repaired RF trajectory.  In the historical run, early penalized physical
+performance rises from \claim{TrajectoryStartPenalized} to
+\claim{TrajectoryEarlyPenalized}~MHz.  Late in training, however, the proxy
+rises from \claim{TrajectoryLateProxy} to
+\claim{TrajectoryFinalProxy}~MHz while correctness falls from
+\claim{TrajectoryLateCorrectness}\% to
+\claim{TrajectoryFinalCorrectness}\%.  Penalized physical performance
+therefore falls from \claim{TrajectoryLatePenalized} to
+\claim{TrajectoryFinalPenalized}~MHz.
+
+
+
+A lexical audit identifies one plausible channel in the older reward: a
+line-anchored assignment feature increases while its layout-canonical
+counterpart does not, and diagnostic rescoring removes
+\claim{ReflowRemoved}\% of the raw late reward jump.  The canonical scores are
+clamp-saturated and there are \claim{ReflowTokenPairCount} token-identical
+cross-checkpoint pairs, so this is bounded attribution rather than a randomized
+causal test.  In the repaired run, interpolation remains essentially stable
+from midpoint to endpoint and extrapolation improves.  The sealed efficacy study provides the evidence for the repaired reward. The
+historical trajectory explains the need for independent physical evaluation.
+
+
+\subsection{Archived predictor rescoring}
+\input{generated/revision_table_predictors}
+The archive compares predictors on outputs produced by historical MLP-guided
+optimization. Table~\ref{tab:predictors} retains the recorded fits and metrics;
+the models were not refitted in the original software environment for this
+revision. Several alternatives have smaller bias than the deployed MLP on
+this observed distribution, and the character n-gram ridge configuration has
+the highest cross-design rank correlation among these archived configurations.
+Because this comparison was made after the optimized outputs had been
+observed, it measures how well the predictors rescore a fixed distribution.
+It does not show how policies trained against those alternatives would behave,
+isolate canonicalization in the sealed experiment, or establish resistance to
+future reward exploitation. The archive instead documents plausible predictor
+alternatives and motivates their prospective evaluation.
+
+\subsection{Executed reward path and contract history}
+The RF reward distinguishes
+\studyclaim{StudyTwoResolvedGroups} of
+\studyclaim{StudyTwoEligibleGroups} eligible RF groups, or
+\studyclaim{StudyTwoRewardResolution}\%.  Before sealed generation, all
+\studyclaim{StudyTwoContractCandidates} distinct reward-eligible training
+candidates reproduced their logged canonical hash and features, compiled, and
+passed sampled original/canonical trace comparison; there were
+\studyclaim{StudyTwoContractRejected} rejections and
+\studyclaim{StudyTwoContractCollisions} cross-design collisions.  The trace
+check uses \studyclaim{StudyTwoContractTraceVectors} vectors per frozen oracle
+seed and is evidence of the executed reward path, not formal equivalence.
+An earlier validation attempt used a stricter contract over every nonempty RF
+training completion.  It stopped before sealed efficacy when that contract
+encountered a malformed, oracle-rejected completion.  After diagnosing the
+scope mismatch, the present study froze a reward-eligible contract over exactly
+the candidates that could influence the RF reward, reused the already-trained
+checkpoints without retraining or selection, and opened a still-unseen sealed
+efficacy split only after the revised gate passed.  The efficacy test is
+prospective with respect to that split, but it is not an independent validation
+of the post-diagnosis gate scope.
+
+The revision's claim generator recomputes the historical re-anchored outcome
+from manifests, oracle summaries, and implementation rows; it revalidates
+structural and timing-coverage artifacts before rendering their claims. The
+predictor table is an explicitly archival diagnostic. Across both documents,
+generated ledgers retain source line ranges and hashes, while the manuscript
+verifier checks every included numerical claim and rejects stale outputs.

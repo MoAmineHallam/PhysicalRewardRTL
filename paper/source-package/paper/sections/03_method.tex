@@ -1,0 +1,199 @@
+\section{Method}
+\label{sec:method}
+
+\subsection{Problem formulation and overview}
+
+Our goal is to improve the expected physical utility of generated accelerator
+RTL at a fixed draw budget. For specification $d$, policy $\pi_\theta$ samples completion
+$m$. Let $g_d(m)$ be the binary executable-oracle verdict and $F(m)$ the
+post-route timing-derived frequency, defined as zero if implementation fails.
+The objective over a design distribution $\mathcal{D}$ is
+\begin{equation}
+\max_\theta J(\theta),\qquad
+J(\theta)=\operatorname{E}_{d\sim\mathcal{D}}
+\operatorname{E}_{m\sim\pi_\theta(\cdot\mid d)}[g_d(m)F(m)].
+\label{eq:problem}
+\end{equation}
+Because failures contribute zero, this objective favors policies that assign
+more probability to fast implementations that pass the oracle.
+Equation~(\ref{eq:equal-sample}) gives the finite-sample estimate used in the
+evaluation. Implementing every training sample would be too expensive, so a
+learned surrogate supplies the training reward and measured post-route timing
+determines the reported result. Fig.~\ref{fig:training-boundary} places these
+steps in context. Domain SFT provides both the initial policy and a frozen
+reference; fresh completions pass through the executable gate and receive a
+physical or control reward. Group-relative updates then change the policy's
+sampling distribution. The final comparison evaluates frozen checkpoints at
+equal draw budgets using the oracle and Vivado.
+
+
+Each accelerator family has a deterministic software reference. The oracle
+compiles generated modules and compares simulated outputs on frozen stimuli.
+To accommodate different pipeline depths, it searches a bounded latency window and
+accepts the best aligned match fraction at or above
+\revisionclaim{OracleThreshold}.  The search allows zero through
+\revisionclaim{OracleMaxLatency} cycles of latency and discards
+\revisionclaim{OracleWarmup} warm-up outputs. A sufficiently long trace can pass
+this near-unity threshold despite a mismatch. We use ``correct'' below to mean
+oracle-passing, not formally equivalent. The same oracle filters supervised examples, gates
+policy rewards, and evaluates held-out samples, with held-out stimulus streams
+reserved for evaluation. Let $C_d(m)$ denote the binary oracle verdict.
+Every reward arm obeys
+\begin{equation}
+g_d(m)=
+\begin{cases}
+\one, & C_d(m)\text{ passes},\\
+\zero, & C_d(m)\text{ fails}.
+\end{cases}
+\label{eq:gate}
+\end{equation}
+The gate rejects behavior changes detected by its sampled tests.  It neither
+proves equivalence on all inputs nor establishes that a proxy ranks admissible
+modules properly; physical implementation addresses the latter question.
+
+\subsection{Physical reward and matched controls}
+
+The physical reward ranks oracle-passing completions. It first applies a frozen
+lexical canonicalizer $\kappa$, then predicts log-frequency from canonical structural
+features $\phi$:
+\begin{equation}
+R_d^{\mathrm{RF}}(m)=g_d(m)\,
+\exp\!\left[\operatorname{clip}\!\left(
+\widehat{f}_{\mathrm{RF}}(\phi(\kappa(m))),a,b\right)\right].
+\label{eq:rf-reward}
+\end{equation}
+Here $\widehat{f}_{\mathrm{RF}}$ predicts log-frequency, $a,b$ are the frozen
+log-frequency clamp bounds, and exponentiation returns the reward in MHz.
+The RF contains \studyclaim{StudyTwoRewardTreeCount} trees and uses
+\studyclaim{StudyTwoRewardFeatureCount} features: multiplier count, maximum
+per-statement multiplier count, positive-edge count, nonblocking and blocking
+assignment counts, multiply--accumulate structure, register and wire counts,
+ternary and comparison counts, statement count, a structural pipeline ratio,
+and loop count, maximum bound, and summed bounds.  Descriptive impurity
+importance ranks multiplier count, multiply--accumulate structure, pipeline
+ratio, register count, and nonblocking assignments highest; this ranking
+describes the fitted predictor and is not a causal circuit attribution.  It is fitted to
+\studyclaim{StudyTwoRewardTrainingRows} measured RTL rows that exclude every
+held-out and sealed design.  Layout-dependent line counts and name-dependent
+features are absent.  The canonicalizer is lexical and layout-invariant under
+its frozen mutation suite; it is not a canonical hardware representation.
+Canonicalization or canonical-compilation failure also sets the reward to zero
+and is logged.
+
+An earlier reward failure motivated the choice of canonical features and the
+RF predictor, as documented in the Supplementary Material. We fixed these
+features and hyperparameters before opening the sealed efficacy split, which
+allowed the repair hypothesis to be tested prospectively on that split.
+The hypothesis itself was informed by the earlier outcomes. The RF provides
+reward variation in \studyclaim{StudyTwoRewardResolution}\% of eligible
+training groups. The supplement also records the reward-path validation and the
+changes to its scope before sealed evaluation.
+
+Two controls assess the role of the reward. The original-MLP arm restores the
+previous textual/structural predictor while keeping the SFT initialization,
+prompts, oracle, optimizer, SFT reference, update target, and evaluation fixed.
+The correctness-only arm uses $R_d^{\mathrm{C}}(m)=g_d(m)$ and therefore tests
+whether correctness pressure suffices in the realized training run.  Because
+canonicalization, features, and predictor class change jointly, RF versus MLP
+is not a component-wise ablation.  The RF arm
+has \studyclaim{StudyTwoRfTrainingSeeds} independent training seeds, the MLP
+arm has \studyclaim{StudyTwoMlpTrainingSeeds}, and the correctness-only arm has
+\studyclaim{StudyTwoCorrectnessTrainingSeeds} preregistered full-budget seed.
+
+\subsection{Supervised initialization and policy training}
+
+We adapt RTLCoder~\cite{liu2024rtlcoder} on an oracle-verified accelerator
+corpus using completion-masked LoRA~\cite{hu2022lora}.  Held-out designs are
+excluded from the corpus, reward-training rows, and policy prompts.  The
+supervised adapter supplies both the policy initialization and the frozen
+reference, allowing optimization to remain anchored to the domain competence
+established by supervision. Using the raw base model as the reference would
+instead regularize toward a model that had not received this domain adaptation.
+
+Each training group contains \studyclaim{StudyTwoGroupSize} completions sampled
+at temperature \studyclaim{StudyTwoTrainingTemperature}, with at most
+\studyclaim{StudyTwoTrainingMaxTokens} completion tokens.  If $R_i$ is the
+gated reward of completion $m_i$, its within-group advantage is
+\begin{equation}
+A_i=\frac{R_i-\overline{R}}{s_R+\epsilon}.
+\label{eq:advantage}
+\end{equation}
+We sample each attempted group from the current policy and use its rewards
+directly in the update. Groups without reward variation provide no ranking
+information and do not advance the optimizer-update counter. For an informative group, the
+implemented objective uses the mean completion-token log probability
+$\ell_\theta(m\mid d)=|m|^{-\one}\sum_t
+\log\pi_\theta(m_t\mid d,m_{<t})$:
+\begin{equation}
+\mathcal{L}_i=-A_i\ell_\theta(m_i\mid d)
++\beta\left(\exp(\Delta_i)-\Delta_i-\one\right),
+\label{eq:policy-loss}
+\end{equation}
+where $\Delta_i=\ell_{\mathrm{SFT}}(m_i\mid d)-
+\ell_\theta(m_i\mid d)$ and the reference is detached.  Losses are averaged
+within the group.  This length-normalized update is inspired by group-relative
+policy optimization~\cite{shao2024deepseekmath}; it is not the standard clipped
+GRPO objective.  Exponentiating a difference of mean token log probabilities
+does not yield the usual sequence-probability ratio, so the penalty is a
+reference regularizer rather than an unbiased KL estimate.
+Every arm uses AdamW with learning rate
+\studyclaim{StudyTwoLearningRate}, reference-penalty coefficient
+\studyclaim{StudyTwoKlCoefficient}, and a target of
+\studyclaim{StudyTwoTrainingUpdates} non-flat updates. Checkpoints follow the
+training update counter rather than attempted groups; the frozen midpoint is
+update \studyclaim{StudyTwoMidpointUpdate}.
+
+\subsection{Physical evaluation and distribution analysis}
+
+Evaluation implements each distinct oracle-passing candidate once and restores
+its original sample multiplicity.  For policy $p$ and design $d$,
+let $\mathcal{M}_{p,d}$ be the distinct correct candidates, $c_m$ the sampled
+multiplicity, $n_d$ the complete draw budget, and $F(m)$ the post-route
+timing-derived frequency, defined as zero when implementation fails.  The
+primary per-design endpoint is
+\begin{equation}
+\overline{F}_{p,d}=\frac{\sum_{m\in\mathcal{M}_{p,d}}c_mF(m)}{n_d}.
+\label{eq:equal-sample}
+\end{equation}
+Incorrect samples are absent from $\mathcal{M}_{p,d}$ but remain in $n_d$ and
+therefore contribute zero.  Each arm receives
+\studyclaim{StudyTwoSamplesPerArmDesign} draws per design; a two-seed arm uses
+\studyclaim{StudyTwoSamplesPerSeedDesign} draws from each seed.  The headline
+statistic is the unweighted mean of $\overline{F}_{p,d}$ across designs, so the
+design rather than the number of distinct candidates is the aggregation unit.
+Each candidate is implemented once under the same frozen clock request; $F(m)$
+is therefore derived from that request and worst negative slack rather than
+from candidate-specific repeated timing closure.  This symmetry supports the
+paired comparison but bounds absolute-frequency claims to the frozen flow,
+device, and request.
+
+The endpoint decomposes as
+\begin{equation}
+\overline{F}_{p,d}=q_{p,d}\,\mu_{p,d},
+\label{eq:decomposition}
+\end{equation}
+where $q_{p,d}$ is empirical correctness and $\mu_{p,d}$ is multiplicity-
+weighted frequency conditional on an oracle-passing draw, retaining zero for
+implementation failure.  We set $\mu_{p,d}=\zero$ when no draw passes.  A policy
+that rarely emits very fast correct RTL can have high $\mu_{p,d}$ and low
+$\overline{F}_{p,d}$; reporting only the former would change the estimand.
+
+For paired uncertainty, optimized-minus-SFT differences are computed per
+design and resampled within frozen family-by-regime strata.  The primary plan
+uses \studyclaim{StudyTwoBootstrapReplicates} resamples and a
+\studyclaim{StudyTwoBootstrapConfidence}\% percentile interval.  The direct
+RF-minus-MLP analysis reuses the identical resample plans but is labeled post-
+primary.  Candidate draws are not treated as independent experimental units,
+and these design-level intervals do not estimate variation from SFT training,
+reward-data construction, or model-family choice.
+
+
+
+Post-primary diagnostics examine how probability is distributed over passing
+candidate strings and compare one RF draw with a perfect selector over repeated
+SFT draws. This selector uses the measured finite SFT support, retains failures
+as zero-valued outcomes, and assumes that physical measurements are available
+before selection. It therefore describes an inference workload on the observed
+support rather than a complete training-and-deployment cost comparison. The
+Supplementary Material gives the exact calculation, implementation counts, and
+artifact checks; training cost is excluded from these workloads.

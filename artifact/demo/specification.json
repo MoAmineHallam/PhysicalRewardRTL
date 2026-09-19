@@ -1,0 +1,31 @@
+{
+  "design": "fir13_v6_8b",
+  "family": "fir",
+  "regime": "interp",
+  "params": {
+    "taps": 13,
+    "v": 6,
+    "coeffs": [
+      19,
+      28,
+      42,
+      41,
+      60,
+      8,
+      17,
+      9,
+      28,
+      42,
+      19,
+      44,
+      37
+    ]
+  },
+  "max_tokens": 1536,
+  "prompt": "Write a Verilog module named `fir13_v6_8b`, a 13-tap direct-form FIR filter with inputs `clk`, active-low `rst_n`, an 8-bit unsigned sample input `x`, and a 16-bit registered output `y`. Keep a 13-element delay line of past samples and each cycle output the low 16 bits of the sum of products of the taps with the fixed coefficients [19, 28, 42, 41, 60, 8, 17, 9, 28, 42, 19, 44, 37]. Clear state to 0 on `!rst_n`.\n\nUse exactly this module interface (port names and widths must match):\n\nmodule fir13_v6_8b (\n    input  wire        clk,\n    input  wire        rst_n,\n    input  wire [7:0]  x,\n    output reg  [15:0] y\n);\n\nWrite standard synthesizable Verilog-2001. Active-low rst_n clears the outputs; outputs are registered on posedge clk.",
+  "prompt_sha256": "a8f54c323b040f0693c8e68cfa3248619ce79e2862a588bd5e93bc5e2d9cd752",
+  "witness_style": "ref",
+  "reference_sha256": "2c99c6020d16637f78996d0f57e00c1060aefaebaf19f1b85311aeb5a6db9cef",
+  "reference_chars": 880,
+  "reference_tokens": 437
+}

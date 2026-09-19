@@ -1,0 +1,103 @@
+\section{Discussion}
+\label{sec:discussion}
+\subsection{Interpretation of the physical gain}
+
+The main result is that physical-reward training improves measured utility
+per draw on the sealed accelerator tasks. Both physical rewards improve over
+SFT, with the larger gain obtained by the RF package. This improvement comes
+from faster implementations among the outputs that pass the oracle. In
+contrast, correctness-only training increases acceptance while reducing
+physical utility. The additional-seed extension repeats both directions under
+its matched setup flow, and the separate Qwen-Coder experiment shows that the
+training recipe can also help another backbone on the earlier task set.
+
+Changing candidate probabilities has practical value because it improves the
+expected hardware outcome at a fixed sampling budget. SFT already produces
+fast structures for many designs, and optimization makes a smaller set of
+passing outputs more likely. The structural summaries and implemented FIR
+pair support this interpretation, although they do not show that every gain
+arises from the same topology change. The finite samples also leave circuit
+novelty unresolved. Likewise, the perfect-selector calculation describes a
+separate inference workload and excludes policy-training cost, so it cannot
+establish whether reranking or policy training is the better overall strategy.
+
+\subsection{Implications for CAD workflows}
+
+A learned reward is useful when it can distinguish the physical quality of
+current policy outputs well enough to guide updates. The RF reward's observed
+ranking resolution and sealed efficacy support that role in this domain,
+while the archived reward failure and predictor rescoring show why physical
+measurements remain necessary. The measured frequency gains also carry costs:
+RF uses more LUTs and registers, fewer DSP blocks, and slightly more vectorless
+power on common passing support. Pipeline latency can vary within the oracle's
+alignment window, so a higher clock frequency does not necessarily reduce
+end-to-end latency. A deployment workflow would need explicit resource,
+latency, and power constraints, together with a check on general RTL competence
+given the matched VerilogEval regression.
+
+The sampling budget and the total compute budget answer different questions.
+Matching draws measures the expected outcome of a fixed number of deployment
+attempts, but training arms can encounter different numbers of flat groups,
+each of which still requires generation and oracle execution. The
+perfect-selector comparison also excludes SFT, reward-label, and policy-training
+costs. Consequently, the present results do not identify the runtime, energy,
+or deployment volume at which policy training becomes more economical than
+repeated sampling and physical selection.
+
+\subsection{Scope and validity}
+
+The split evaluates unseen parameters within known streaming-accelerator
+generators. Its findings therefore do not establish competence on
+control-dominated systems, memories, multiple clocks, or free-form industrial
+RTL. Median filters appear only in extrapolation, which prevents us from
+separating their family effect from the regime effect. The Qwen study provides
+evidence on a second backbone but uses a narrower, earlier task universe.
+These scope limits also coexist with unknown overlap between the tested tasks
+and base-model pretraining data.
+
+All RF and correctness-only training replications share one SFT initialization.
+Design-bootstrap intervals condition on the evaluated checkpoints and draws;
+they do not capture full-pipeline training variance. Family cells are small and
+unequal. RF versus SFT is the sole prespecified primary contrast; secondary
+intervals have no multiplicity adjustment. RF versus MLP changes predictor class,
+canonicalization, and features jointly. It supports a reward-package comparison,
+while individual component effects and matched external-method superiority
+remain untested. In particular, no matched DPO or recent external RTL-optimization
+baseline was executed.
+
+The oracle supplies sampled, latency-aligned acceptance at a near-unity
+threshold. It does not prove exact functional equivalence. The original physical
+endpoint uses one device and a single requested-period flow, with constraints
+introduced after synthesis. Its slack variable has a zero default when a valid
+setup path is absent; the retained primary rows have not been reclassified under
+a stronger contract. The complete coverage diagnostic records one missing-path
+case and inconclusive implementations alongside close timing agreement on common
+valid candidates. The period-bracketed pilot and additional-seed flow add
+stronger setup checks but do not enforce hold or pulse-width closure. The
+reverse-FIR pilot outlier also limits absolute-frequency calibration. Broader
+device, tool, and operating-corner transfer remains untested.
+
+The RF repair hypothesis was motivated by earlier MLP outcomes. Its sealed
+efficacy split stayed unseen until checkpoints and the reward-eligible validation
+contract were frozen, but that contract followed an unsuccessful broader gate.
+The board subset likewise required feasibility and sweep amendments before
+measurement. These histories are retained in the Supplementary Material:
+the board result is descriptive, and the repair was prospectively tested after
+being motivated by earlier evidence. Contextual API and selected-candidate HLS
+comparisons have different reporting objects from the primary policy endpoint.
+
+\subsection{Artifact and claim traceability}
+
+The research archive retains the manifests, sampled RTL and multiplicities, oracle
+summaries, implementation failures, board traces, and numerical claim
+ledgers needed to trace the reported results.\footnote{
+Project repository: \url{https://github.com/MoAmineHallam/FPGA}.}
+The accompanying supplementary package provides the worked RTL example and
+recomputes the completed RF versus SFT comparison from its archived draws and
+physical records, with a file manifest linking the inputs to the analysis.
+Regeneration checks design coverage, draw denominators, implementation records,
+source hashes, and every numerical claim in the paper and supplement. Each
+completed supporting study retains its original evaluation contract. Prepared
+protocols, training-only seed logs, the asymmetric historical board comparison,
+and the incomplete smaller-student evaluation remain in the archive but do
+not enter the paper's efficacy evidence.

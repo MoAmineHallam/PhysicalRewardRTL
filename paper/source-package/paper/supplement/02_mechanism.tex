@@ -1,0 +1,105 @@
+\section{Structural, sampling, and statistical diagnostics}
+\subsection{Cross-arm structural features}
+\input{generated/revision_table_structure}
+The comparison uses \revisionclaim{StructureDesigns} designs with oracle-passing
+support in all three arms. Within each design, features are averaged over
+passing candidate multiplicities; designs then receive equal weight. RF has
+smaller per-statement multiplier groups and larger structural accumulation and
+pipeline-ratio scores than SFT. Correctness-only shifts in the opposite direction.
+These source-derived features describe expressions and assignment patterns,
+including patterns available to the RF reward. They do not measure routed
+pipeline depth or establish an independent causal mechanism. The main paper's
+implemented FIR pair connects this descriptive evidence to a physical example.
+
+\subsection{Finite-support sampling analysis}
+For a perfect-selector comparison, the empirical SFT distribution contains
+every measured candidate with its multiplicity plus a zero outcome for every
+failure.  If $G_d(x)$ is its empirical cumulative distribution, the maximum of
+$N$ independent draws has cumulative distribution $G_d(x)^N$.  This exact
+curve assumes access to every draw's measured timing-derived frequency before
+selection.  It upper-bounds reranking on this finite sampled support, not on the
+unknown full SFT distribution.  Draw count is not wall-clock cost: oracle calls,
+uncached correct-draw implementation attempts, and content-deduplicated
+implementations are reported separately.  Training cost is not amortized into
+these inference-only counts.
+
+To measure concentration, define the all-sample candidate mass
+$w_{p,d,m}=c_m/n_d$ and the dominant mass $\max_m w_{p,d,m}$.  Normalizing over
+correct candidates gives $\widetilde{w}_{p,d,m}=c_m/\sum_jc_j$ and effective
+support
+\begin{equation}
+D_{p,d}=\left(\sum_m\widetilde{w}_{p,d,m}^{\two}\right)^{-\one}.
+\label{eq:effective-support}
+\end{equation}
+Lower $D_{p,d}$ means that probability is concentrated on fewer correct strings,
+which does not by itself imply better hardware. We therefore examine it
+alongside measured candidate frequencies and ask whether SFT sampling already
+contains an implementation at least as fast as the optimized conditional mean.
+Among \studyclaim{StudyTwoSealedMechanismCommonCount} designs with
+correct sampled strings under both policies, SFT's measured support contains a
+candidate at least as fast as the RF conditional mean on
+\studyclaim{StudyTwoSealedMechanismSupportCount}.  Mean inverse-Simpson
+effective correct-string support contracts from
+\studyclaim{StudyTwoSealedMechanismSftEffective} to
+\studyclaim{StudyTwoSealedMechanismRfEffective}. These observations support a
+shift toward faster implementations on most designs with common support,
+although the finite samples and the sealed exceptions leave circuit novelty
+unresolved.
+
+On the sealed distribution, one RF draw lies between the empirical SFT
+perfect-selector expectations for \revisionclaim{SelectorLowerN} draws
+(\revisionclaim{SelectorLowerFmax}~MHz) and
+\revisionclaim{SelectorUpperN} draws
+(\revisionclaim{SelectorUpperFmax}~MHz).  At the upper integer crossing, the
+SFT workload is \revisionclaim{SelectorUpperN} generations and
+\revisionclaim{SelectorStreams} oracle simulation streams per design, with
+\revisionclaim{SelectorRawImplementations} expected correct-draw implementation
+attempts without caching or \revisionclaim{SelectorCachedImplementations}
+distinct implementations with content caching.  These are empirical expected
+workloads, not measured runtime or speedup.  They exclude policy-training cost
+and assume perfect post-route selection on observed support; they do not imply
+dominance over an unrestricted SFT search.
+
+\subsection{Family effects, endpoint decomposition, and seed dispersion}
+\input{generated/study2_table_rf_replication}
+
+\input{generated/study2_table_family}
+
+Table~\ref{tab:study2-family} shows how the post-primary effects vary by family.  FIR, reverse FIR, polynomial, and recursive-filter
+point estimates are positive, whereas median is negative and is represented
+only by extrapolation designs.  These rows are descriptive because the family
+cells are small and unequal.  The primary direction is nevertheless insensitive
+to two post-primary checks: the unstratified paired percentile
+bootstrap gives
+[\studyclaim{StudyTwoSensitivityUnstratifiedCiLow},
+\studyclaim{StudyTwoSensitivityUnstratifiedCiHigh}]~MHz, and the mean effect
+across leave-one-family-out omissions ranges from
+\studyclaim{StudyTwoSensitivityLeaveFamilyOutMin} to
+\studyclaim{StudyTwoSensitivityLeaveFamilyOutMax}~MHz.  Both checks are post-
+primary sensitivities, not replacements for the frozen interval.
+\input{generated/revision_table_decomposition}
+
+Table~\ref{tab:decomposition} separates functional yield from the physical
+quality of oracle-passing draws.  With equal budgets across designs, pooled
+$q\mu$ reproduces the primary mean exactly; this pooled $\mu$ is not an
+unweighted mean of per-design conditional frequencies.  RF increases pooled
+conditional frequency from \revisionclaim{SftConditional} to
+\revisionclaim{RfConditional}~MHz while correctness decreases.  In contrast,
+the correctness-only policy has a conditional frequency of
+\revisionclaim{CorrectnessConditional}~MHz.  The observed RF gain is thus a
+shift in the physical quality of passing draws, not an increase in their count.
+All \revisionclaim{SeedCandidateCount} additional-seed candidate records and
+\revisionclaim{SeedTrialCount} trial records pass the artifact audit and exact
+offline replay of the frozen search. The RF seed mean is
+\revisionclaim{SeedRfMean}~MHz, with a paired gain of
+\revisionclaim{SeedRfGain}~MHz
+[\revisionclaim{SeedRfLow}, \revisionclaim{SeedRfHigh}]; its descriptive
+between-seed sample standard deviation is \revisionclaim{SeedRfSd}~MHz.
+The correctness-only mean is \revisionclaim{SeedCorrMean}~MHz, with difference
+\revisionclaim{SeedCorrGain}~MHz
+[\revisionclaim{SeedCorrLow}, \revisionclaim{SeedCorrHigh}] and seed standard
+deviation \revisionclaim{SeedCorrSd}~MHz.  Unstratified intervals and every
+leave-one-family-out mean retain these directions.  This strengthens the
+checkpoint replication evidence, but is neither a universal policy ranking nor
+an independent full-pipeline repeat.  These newer-tool setup-period endpoints
+are not pooled with the original timing-derived results.

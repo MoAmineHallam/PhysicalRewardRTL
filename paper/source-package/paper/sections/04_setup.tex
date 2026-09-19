@@ -1,0 +1,117 @@
+\section{Experimental Protocol}
+\label{sec:setup}
+
+\subsection{Designs, training arms, and sampling}
+
+The benchmark covers streaming finite-impulse-response (FIR), reverse-FIR,
+polynomial, recursive-filter, and median-filter accelerators under a uniform
+clocked interface.  The families cover feed-forward arithmetic pipelines,
+recurrences, and comparator networks.  Each specification and its executable
+reference are generated programmatically, and several implementation styles
+provide physically distinct but behaviorally equivalent training examples.
+This construction lets us compare several accelerator structures within a
+controlled domain, while keeping the scope distinct from arbitrary industrial RTL.
+
+The sealed evaluation contains \studyclaim{StudyTwoDesignCount} designs,
+balanced between \studyclaim{StudyTwoInterpDesignCount} interpolation and
+\studyclaim{StudyTwoExtrapDesignCount} extrapolation tasks.  Family quotas are
+unequal because the eligible median interpolation pool was empty; the median
+family is represented only under extrapolation, so median-family and regime
+effects cannot be separated.  The family breakdown in
+Sec.~\ref{sec:results} reports the exact composition.  Interpolation changes parameters within
+training ranges; extrapolation uses larger or newly parameterized instances
+outside those ranges.  Every sealed design is excluded from the SFT corpus,
+reward rows, policy prompts, and prior analysis.  The split remained unopened
+until all declared checkpoints and pre-open validation artifacts were frozen.
+
+
+The primary comparison starts from RTLCoder and its completion-masked SFT
+adapter, and evaluates
+two independently trained repaired-RF policy adapters. The MLP arm trains two
+matched policies from the same SFT adapter using the original reward.  The
+correctness-only arm uses one preregistered full-budget seed.  Arms use the same non-flat training-update target; flat groups provide no
+policy-ranking information and do not advance the counter.  A crashed run is discarded and
+restarted from the frozen SFT state; partial histories are never merged.
+Equal update targets do not imply equal training compute: flat groups still
+require generation and oracle execution, particularly for correctness-only
+rewards.  The primary comparison matches deployment draws, not end-to-end
+training time or energy.
+
+At the sealed endpoint, SFT and every trained arm receive
+\studyclaim{StudyTwoSamplesPerArmDesign} draws per design at temperature
+\studyclaim{StudyTwoEvaluationTemperature}.  Two-seed arms contribute
+\studyclaim{StudyTwoSamplesPerSeedDesign} draws per seed.  The midpoint
+diagnostic uses \studyclaim{StudyTwoMidSamplesPerSeedDesign} draws per RF seed
+and design.  Generation seeds are distinct from training seeds and from the
+\studyclaim{StudyTwoOracleStreams} oracle streams, each of which contains
+\studyclaim{StudyTwoOracleVectors} test vectors.  Accepted candidates are
+deduplicated only for implementation; multiplicity is preserved for every
+policy statistic.
+
+\subsection{Post-route evaluation and statistical analysis}
+
+We use the frozen physical flow \studyclaim{StudyTwoVivadoEnvironment}. Every
+distinct correct candidate is synthesized, placed, and routed with the same
+\claim{TargetPeriod}-ns requested clock.  Achievable frequency is derived from
+the request and reported worst negative slack.  We therefore use
+``post-route timing-derived \fmax'' rather than ``timing closure'': the flow
+does not repeatedly rerun implementation at candidate-specific clock periods.
+The historical script introduces the clock constraint after synthesis; this
+flow is held fixed rather than retroactively corrected in the sealed result.
+
+The primary estimand is Eq.~\eqref{eq:equal-sample}.  Correctness and
+conditional frequency are diagnostics, not replacement endpoints.  The
+primary RF-minus-SFT confidence plan is frozen and stratified by family and
+regime, with percentile bounds.  RF-minus-MLP intervals reuse its exact
+resample plans as a bounded post-primary comparison.  The family cells are
+small and unequal, so the manuscript adds an unstratified paired-bootstrap and
+leave-one-family-out sensitivity but does not replace the frozen primary plan.
+No multiplicity adjustment is applied: the RF-versus-SFT contrast is the sole
+prespecified primary inference, while control, family, PPA, and mechanism
+analyses are secondary or descriptive.  Resource and power analyses condition
+on designs with compiled correct support in SFT, MLP, and RF; assigning zero
+area or power to a failed sample would incorrectly make failure look efficient.
+Power is Vivado's vectorless estimate, not measured board power.
+
+
+\subsection{Physical validation and additional seeds}
+
+Three supporting studies probe physical sensitivity. A PYNQ-Z2 experiment
+uses paired SFT/RF candidates selected by multiplicity and an outcome-independent
+hash. All DUTs and an echo canary share one image and clock grid. Eligibility
+and sweep coverage were amended before board measurement, so the subset is
+descriptive. The Supplementary Material records the harness and amendments.
+A separate pilot brackets setup-passing clock periods for
+\revisionclaim{ClosureCandidateCount} selected candidates under Vivado
+\revisionclaim{ClosureVersion}, with constraints applied before synthesis.
+An exhaustive cross-version diagnostic retains the original RTL, device,
+clock request, and constraint order, and checks setup-path coverage separately.
+
+The additional-seed study evaluates RF seeds three and four and correctness-only
+seeds two and three on all \revisionclaim{SeedDesignCount} frozen designs.
+SFT is remeasured under the same bounded setup-period flow, retaining each
+checkpoint's original draws and all physical failure zeros. The physical
+packages were frozen before measurement; the statistical specification followed
+inspection of point estimates. Its exploratory paired design-bootstrap
+intervals use \revisionclaim{SeedBootstrapCount} shared family-by-regime
+resamples. They condition on the sampled checkpoints and are reported separately
+from the original timing-derived endpoint. None of these studies establishes
+full hold and pulse-width timing sign-off.
+
+\subsection{Transfer and supporting evidence}
+
+To assess transfer beyond the main backbone, we evaluate the complete
+SFT-to-policy recipe on
+Qwen-Coder~\cite{hui2024qwen25coder} using the
+earlier \claim{QwenDesignCount}-design, \claim{QwenFamilyCount}-family split.
+This second-backbone experiment uses an earlier reward/training configuration,
+so it tests transfer of the recipe rather than replication of the sealed RF
+package. A matched VerilogEval extension tests the sealed SFT and RF checkpoints
+on \revisionclaim{VerilogProblems} official problems using
+\revisionclaim{VerilogSamples} draws per checkpoint and problem. The
+Supplementary Material preserves the earlier five-family evaluations,
+predictor diagnostics, API and HLS context, and detailed protocol history.
+Those studies have distinct sampling or selection rules and are not pooled
+with the sealed estimate. All reported numerical values are generated from
+retained artifacts; complete denominators, failures, source hashes, and claim
+provenance are checked during manuscript regeneration.

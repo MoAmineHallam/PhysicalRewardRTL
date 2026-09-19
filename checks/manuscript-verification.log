@@ -1,0 +1,113 @@
+
+==========================================================================
+A. Aggregate correctness: is it preserved, or does it decline?
+==========================================================================
+  Claim REMOVED from 05_results.tex: 'correctness is preserved in
+  aggregate'. Replacement: 88.7% -> 86.9% overall; interp flat,
+  extrap down >5 points.
+
+  sft ALL correctness %                        claimed   88.700   computed   88.681   OK
+  grpo ALL correctness %                       claimed   86.900   computed   86.944   OK
+  sft interp correctness %                     claimed   92.800   computed   92.763   OK
+  grpo interp correctness %                    claimed   93.200   computed   93.202   OK
+  sft extrap correctness %                     claimed   81.600   computed   81.629   OK
+  grpo extrap correctness %                    claimed   76.100   computed   76.136   OK
+
+==========================================================================
+B. Best-of-N: does one GRPO sample beat a perfect best-of-48?
+==========================================================================
+  Claim WITHDRAWN. Also withdrawn: firr10/fir40 'existence failures'.
+  Runs analyze_bestofn.py on the 30-design set and greps its table.
+
+  fir40_8b   SFT bo48 =   181.7   GRPO bo1 =    94.7   -> SFT wins
+  firr10     SFT bo48 =   313.2   GRPO bo1 =   300.7   -> SFT wins
+  extrap: perfect bo48 = 170.4 MHz, GRPO bo1 = 138.6 MHz  -> GRPO does NOT beat bo48
+  interp: perfect bo48 = 210.3 MHz, GRPO bo1 = 198.7 MHz  -> GRPO does NOT beat bo48
+
+  Expected: GRPO does NOT beat bo48 in either regime, and SFT wins
+  on both firr10 and fir40 -- which is why 'existence failure' went.
+
+==========================================================================
+C. Trajectory: does the reward saturate, and where?
+==========================================================================
+  Figure 1. Uses rtl/traj_v8 and rtl/traj_v9 Vivado results.
+
+  traj_v8 final checkpoint:
+      predicted MHz                            claimed  497.900   computed  497.907   OK
+      measured MHz (over correct)              claimed  241.200   computed  241.237   OK
+      measured MHz (penalised, for reference)                 212.339
+      correctness %                            claimed   88.000   computed   88.021   OK
+      interp  predicted   496.9   measured   261.5
+      extrap  predicted   500.0   measured   188.8
+  traj_v9 final checkpoint:
+      predicted MHz                            claimed  333.200   computed  333.151   OK
+      measured MHz (over correct)              claimed  240.700   computed  240.654   OK
+      measured MHz (penalised, for reference)                 238.147
+      correctness %                            claimed   99.000   computed   98.958   OK
+      interp  predicted   254.5   measured   266.7
+      extrap  predicted   490.4   measured   188.1
+
+  Expected: v8's late proxy rises to ~498 while conditional measured
+  Fmax stays ~241; penalised Fmax falls to ~212 as correctness falls.
+  v9 tracks on interpolation but remains pinned on extrapolation.
+
+==========================================================================
+D. Oracle x/z audit: did any verdict change?
+==========================================================================
+  candidates audited ............................ 1529
+  emit x/z on some cycle ........................ 18
+  accepted by OLD parse but not new (false pos) . 0
+  accepted by NEW parse but not old ............. 0
+  survive exact equality ........................ 1529/1529
+
+  Expected: 1529 audited, 18 with x/z, 0 flips in either direction.
+
+==========================================================================
+F. Manuscript provenance: no hand-copied numbers
+==========================================================================
+  legacy 30-design support outputs are current ... OK
+  sealed Study 2 headline outputs are current .... OK
+  live Study 2 board outputs are current ......... OK
+  completed revision evidence is current ........ OK
+  seed-extension figure and provenance .......... OK
+  claim source pointers resolve .................. 590 claims OK
+  rendered numeric claims are ledger-backed ........ 426 used IDs OK
+
+==========================================================================
+G. Historical holdout board preflight (excluded from paper)
+==========================================================================
+  identical candidate rule ....................... OK
+  complete symmetric policy pairs ................ 5
+  laptop bitstream and matching HWH ............... present
+  historical live result .......................... ABSENT (excluded)
+
+==========================================================================
+H. Sealed Study 2 secondary closure
+==========================================================================
+  immutable primary outcome ...................... full_two_regime_repair
+  direct RF-MLP scopes use frozen plans .......... OK
+  Study 2 claim pointers resolve ................. 171 claims
+  generated Study 2 table claims resolve ......... 120 used IDs
+
+==========================================================================
+I. Live Study 2 board result: raw traces, provenance, and scope
+==========================================================================
+  four live-input hashes and raw boundaries ........ OK
+  paired silicon outcomes ......................... 2 wins / 2 ties / 1 loss
+  repeatability and canary gates .................. 0 MHz max spread; 57.14 MHz min margin
+  descriptive board claim pointers resolve ....... 27 claims
+
+==========================================================================
+SUMMARY
+==========================================================================
+  A correctness        reproduced
+  B best-of-N          reproduced
+  C trajectory         reproduced
+  D oracle audit       reproduced
+  F manuscript provenance reproduced
+  G historical board   reproduced
+  H Study 2 closure    reproduced
+  I Study 2 board      reproduced
+
+  Section E (the LODO figures) NOT run. Add --lodo 10 to test the
+  one correction that rests on a single unseeded draw.

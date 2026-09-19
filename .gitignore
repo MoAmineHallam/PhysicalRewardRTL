@@ -1,36 +1,16 @@
-# Hardware captures (generated on the board, large, regenerable)
-rtl_library/*/waveform.npy
-rtl_library/*/golden_waveform.npy
-
-# Vivado build outputs
-rtl/batches/out_b*/
-rtl/holdout_silicon_symmetric/out/
-rtl/sealed_study2_board/out/proj/
-rtl/sealed_study2_board/out/*.dcp
-*.bit
-*.xsa
-.Xil/
-vivado*.jou
-vivado*.log
-
-# Python
+.venv/
 __pycache__/
-*.pyc
-
-# Crash dumps (delete + never commit)
-core.*
-
-# Run logs / pids / waveforms (regenerable)
+*.py[cod]
+artifact/outputs/
+paper/source-package/build/
+*.aux
+*.bbl
+*.blg
 *.log
-*.out
-*.pid
-*.vcd
-# NOTE: grpo_*_log.jsonl are NOT ignored -- they are the per-step training
-# record (design, correctness, surrogate reward) and are the ONLY evidence for
-# the training-dynamics figure both external reviewers asked for. Keep them.
-
-# Training output dirs & policy checkpoints are large — keep out of git
-*_out/
-grpo_*/
-
-# (rtl/frontier_eval + rtl/holdout_eval ARE committed — candidates transfer to the laptop via git)
+!checks/manuscript-verification.log
+!checks/artifact-validation.log
+*.synctex.gz
+!artifact/**
+!paper/source-package/**
+artifact/outputs/
+paper/source-package/build/

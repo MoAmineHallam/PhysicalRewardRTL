@@ -1,0 +1,81 @@
+\section{Physical-validation details}
+\subsection{Board harness and feasibility amendments}
+
+The board study uses paired SFT/RF candidates from the same design and applies
+the same multiplicity-aware selection rule to both policies.
+Fig.~\ref{fig:board-architecture} shows this selection contract, the implemented
+test harness, and the trace-validation path. All selected DUTs, an echo canary,
+and the selector interface occupy one bitstream/HWH pair. Each complete run
+sweeps the same clock grid, recomputes the passing boundary from raw scores,
+and records the bitstream, HWH, selector-map, and selection-manifest hashes.
+This common harness allows the paired outputs to be measured under the same
+clock and capture conditions.
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\textwidth]{fig04_board_architecture_v2}
+\caption{Descriptive board-validation architecture.
+(a) The amended correctness-eligible selection uses the same multiplicity and
+hash rules for SFT and RF, with no frequency-based reselection.
+(b) The processing system configures the clock and accesses the capture
+buffer through memory-mapped AXI. Counter-driven SFT/RF DUTs and the echo
+canary coexist in one programmable-logic image; the selector chooses the
+captured output. Solid paths carry data or execution flow; dashed paths show
+clock and capture control. Logical buses are simplified for readability.
+(c) Captured traces are compared with per-DUT golden streams, and clock
+boundaries are accepted only with the specified canary headroom.}
+\label{fig:board-architecture}
+\end{figure*}
+
+The first outcome-independent family hash selected a reverse-FIR design with no
+correct candidate in either paired arm, so that attempt stopped without a
+silicon outcome.  Before any board measurement, eligibility was amended to
+require a correct candidate in both arms and the same outcome-independent hash
+was reapplied.  The common sweep floor was also lowered after sealed Vivado
+rows showed that the original range would not bracket every selected DUT.  No
+reward, timing, area, power, or resource outcome was used to choose the
+replacement.  Nevertheless, these feasibility amendments make the resulting
+board subset descriptive rather than independently confirmatory.
+
+\subsection{Selected setup-closure pilot}
+\input{generated/revision_table_closure}
+
+A separate pilot evaluates \revisionclaim{ClosureCandidateCount} selected
+candidates under Vivado \revisionclaim{ClosureVersion}, applying constraints
+before synthesis and bracketing a setup-passing period for each candidate.
+It therefore changes both the tool version and constraint handling relative
+to the primary flow. The selected candidates yield Spearman correlation
+\revisionclaim{ClosureRho} between original timing-derived and setup-passing
+frequencies, with median symmetric percentage error
+\revisionclaim{ClosureMedianSmape}\%.  None of the
+\revisionclaim{ClosureNonTiedPairs} non-tied pairs reverses direction
+(Table~\ref{tab:setup-closure}).  However, the largest candidate error is
+\revisionclaim{ClosureWorstSmape}\%: the reverse-FIR RF candidate changes from
+\revisionclaim{ClosureBRfOriginal} to
+\revisionclaim{ClosureBRfSetup}~MHz.  The median error therefore must not be
+read as a uniform accuracy guarantee.  The check supports relative ordering
+on this subset, while absolute frequency remains sensitive to implementation
+conditions.  Setup passing alone is not full timing sign-off.
+
+\subsection{Complete cross-version coverage diagnostic}
+\input{generated/revision_table_coverage}
+The archived diagnostic preserves RTL, device, clock request, and constraint
+order while changing the Vivado version. It covers
+\revisionclaim{CoverageCandidates} original SFT/RF candidates. All
+\revisionclaim{CoverageValid} setup-path-present candidates have zero counts in
+the six named constraint-coverage checks. The confirmed missing-path case is
+\revisionclaim{CoverageInvalidModule}; \revisionclaim{CoverageInconclusive}
+other implementations remain inconclusive after the retained attempts.
+\revisionclaim{CoverageWarningCount} SFT candidates also have multi-driver
+synthesis warnings; these are recorded without silently converting them into
+physical failures.
+
+Median common-valid symmetric errors appear in Table~\ref{tab:coverage}; the
+maximum is \revisionclaim{CoverageMaxError}\%. The complete RF seed-two
+diagnostic mean is \revisionclaim{CoverageRfTwoReplay}~MHz versus
+\revisionclaim{CoverageRfTwoOriginal}~MHz originally. SFT and RF seed-one means
+are unavailable because of the inconclusive cases, which are not assigned zero.
+Missing-path replays receive zero and all original draw denominators remain.
+These results describe timing sensitivity and coverage, not period-bracketed
+closure, synthesized functional equivalence, full timing sign-off, or a corrected
+primary confidence interval. The retained primary values are unchanged.

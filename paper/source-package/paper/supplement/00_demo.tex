@@ -1,0 +1,111 @@
+\section{Worked RTL example and matched RF versus SFT evaluation}
+\label{sec:supp-demo}
+\subsection{What the example demonstrates}
+The accompanying runnable package connects the paper's training objective to
+an inspectable hardware example and then to the complete policy comparison.
+The example uses \revisionclaim{DemoFirName}, the FIR design also discussed in
+the main paper, with fresh outputs from the completed post-primary campaign.
+For each policy, we select the most frequent functionally passing exact RTL
+string among its \revisionclaim{DemoDrawsPerDesign} draws on this design,
+breaking ties by the content hash. This selection is made after the experiment
+to explain the implementation structure; timing is not used to choose either
+string. The pair illustrates what a physical reward can favor, while the
+all-design analysis below measures whether the resulting distribution is
+better under the stated endpoint.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{reviewer_demo.pdf}
+\caption{Abbreviated assignments from the packaged FIR implementations.
+The SFT output sums products of delayed inputs; the RF implementation registers
+partial weighted sums. Full modules, including widths and reset logic, are
+provided in the runnable package. These candidates illustrate a structural
+difference and are not a causal ablation.}
+\label{fig:reviewer-demo}
+\end{figure}
+
+In the SFT implementation, registers retain delayed inputs and a combinational
+expression forms their weighted sum before the output register. In the RF
+implementation, each stage stores a partial weighted sum, giving a transposed
+FIR structure (Fig.~\ref{fig:reviewer-demo}). The selected strings occur in
+\revisionclaim{DemoSftFirMultiplicity} SFT draws and
+\revisionclaim{DemoRfFirMultiplicity} RF draws. Their measured bounded
+setup-period frequencies are \revisionclaim{DemoSftFirFrequency} and
+\revisionclaim{DemoRfFirFrequency}~MHz, respectively. Both pass the same
+simulation gate, including repeated reset episodes and latency alignment.
+This concrete difference is consistent with the intended reward, but does not
+establish that the RF policy discovered a circuit absent from SFT support.
+The measurements belong to the new campaign and do not replace the earlier
+FIR measurements reported in the main paper.
+
+\subsection{How to inspect and run the package}
+After installing the dependency listed in \texttt{requirements.txt}, running
+\texttt{python run\_demo.py} verifies the packaged hashes and recomputes the
+comparison from all archived draws. The output includes the policy means,
+functional pass counts, paired interval, per-design scores, and measured
+selection curve. Adding \texttt{--simulate} runs the actual files
+\texttt{demo/sft.sv} and \texttt{demo/rf.sv} with Icarus Verilog against the
+shared reference. The gate uses \revisionclaim{DemoStreams} stimulus streams
+of \revisionclaim{DemoStimuli} inputs, repeats each stream after reset, and
+requires a common valid latency up to \revisionclaim{DemoMaxLatency} cycles
+after a \revisionclaim{DemoWarmup}-sample warmup. Simulation traces and reset
+checks are retained in the output. This is a functional simulation check;
+it does not provide formal equivalence.
+
+The package's \texttt{README.txt} provides installation commands, expected
+values, file descriptions, and contact information. Candidate hashes link
+the example to its exact draw and archived physical record; the selected
+passing-boundary implementation reports are included for inspection. The
+analysis runs without a GPU or Vivado because it replays archived physical
+measurements. It does not retrain the policies or rerun implementation, and
+the model weights and complete physical trial directories are outside the
+package. These limits make the scope of the runnable demonstration explicit
+while allowing the numerical comparison and the functional example to be
+checked independently of the authors' server environment.
+
+\subsection{Completed comparison on fresh draws}
+\input{generated/revision_table_demo_comparison}
+The completed campaign evaluates \revisionclaim{DemoDesigns} previously used
+designs with \revisionclaim{DemoDrawsPerDesign} new draws per policy and design.
+SFT has two sampling replicates from the same checkpoint; RF uses the existing
+training-seed-three and training-seed-four checkpoints, each generating
+\revisionclaim{DemoReplicateDraws} draws per design. All outputs use the shared
+functional gate and bounded routed setup-period search with Vivado
+\revisionclaim{DemoVersion}. Every functional or physical failure contributes
+zero, and each design receives equal weight. This post-primary comparison
+comes from a completed campaign that also evaluated a DPO arm. The present
+package isolates the RF versus SFT contrast requested for the supplement;
+it is not a matched reproduction of an external method or an independent
+test set, and its measurements are not pooled with the primary study.
+
+RF reaches \revisionclaim{DemoRfMean}~MHz in failure-aware utility, compared
+with \revisionclaim{DemoSftMean}~MHz for SFT
+(Table~\ref{tab:demo-comparison}). The paired difference is
+\revisionclaim{DemoGain}~MHz, with a \revisionclaim{DemoConfidence}\%
+family-by-regime design-bootstrap interval of
+[\revisionclaim{DemoLow}, \revisionclaim{DemoHigh}]~MHz from
+\revisionclaim{DemoResamples} resamples. The RF replicate means are
+\revisionclaim{DemoRfFirst} and \revisionclaim{DemoRfSecond}~MHz, compared
+with \revisionclaim{DemoSftFirst} and \revisionclaim{DemoSftSecond}~MHz for
+the SFT sampling replicates. RF's functional pass rate is lower:
+\revisionclaim{DemoRfRate}\% versus \revisionclaim{DemoSftRate}\%.
+The physical utility gain therefore coexists with a correctness tradeoff.
+The interval is conditional on these checkpoints and draws and does not
+capture uncertainty from retraining SFT or the entire pipeline. The endpoint
+measures bounded routed setup-period performance, not full timing signoff.
+
+\subsection{Selection at equal draw budgets}
+\input{generated/revision_table_demo_selection}
+To separate policy quality from the opportunity to select among several
+outputs, Table~\ref{tab:demo-selection} reports the best measured result in
+fixed consecutive draw blocks within each replicate. Failures remain zero,
+and the same draw budgets are used for both policies. RF has higher utility
+at each reported budget, while the gap narrows as more candidates are
+available. At the largest budget, SFT reaches
+\revisionclaim{DemoSftBestTwentyFour}~MHz and RF reaches
+\revisionclaim{DemoRfBestTwentyFour}~MHz. This comparison grants the selector
+access to measured physical outcomes; it does not model an inexpensive
+reranker or include training cost. Together, the example and the complete
+draw-level comparison support a shift toward physically faster outputs under
+the stated evaluation contract, while leaving the overall compute tradeoff
+and transfer to broader RTL workloads open.

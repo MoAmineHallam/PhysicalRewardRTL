@@ -1,0 +1,118 @@
+\section{Related Work}
+\label{sec:related}
+
+\subsection{Executable RTL generation}
+
+VerilogEval and RTLLM established executable benchmarks for RTL generation
+~\cite{liu2023verilogeval,lu2024rtllm}. The revised VerilogEval adds
+specification-to-RTL tasks, in-context examples, and failure classification
+~\cite{pinckney2025revisiting}. ChipVerilog extends evaluation to larger
+OpenCores-derived designs and cross-module interactions~\cite{tan2026chipverilog}.
+OpenLLM-RTL expands the RTLLM benchmark and releases verified training data
+~\cite{liu2024openllmrtl}. TuRTLe integrates benchmarks to evaluate syntax,
+functionality, synthesis, and PPA within a common framework
+~\cite{garciagasulla2025turtle}.
+VeriGen, RTLCoder, CodeV, and CraftRTL improve generation through specialized
+pretraining, supervised adaptation, data construction, or targeted repair
+~\cite{thakur2024verigen,liu2024rtlcoder,zhao2024codev,liu2024craftrtl}.
+VeriSeek introduces code-structure-guided reinforcement learning, while
+VeriReason combines supervised learning, testbench feedback, and group-relative
+policy optimization~\cite{wang2024veriseek,wang2025verireason}. VeriPrefer uses
+testbench outcomes to construct preference pairs for correctness-oriented
+training~\cite{wang2026veriprefer}. FormalRTL
+couples executable specifications to formal verification in a multi-agent
+synthesis flow~\cite{formalrtl2026}. VeriRefine makes specification refinement
+an explicit stage and routes failures back to either interpretation or code
+generation~\cite{kong2026verirefine}. These approaches improve or assess
+functional generation. Our study asks how physical quality changes across a
+policy's sampled outputs, retaining both oracle rejections and implementation
+failures in the evaluation.
+
+\subsection{LLM-driven physical optimization}
+
+Physical feedback can guide training, target-specific adaptation, or search.
+BetterV uses task-specific generative discriminators to guide Verilog generation
+for synthesis and verification objectives~\cite{pei2024betterv}.
+RTLRewriter rewrites an existing implementation~\cite{yao2024rtlrewriter}.
+SymRTLO combines LLM rewriting with symbolic reasoning and formal/test-based
+validation for physical optimization~\cite{wang2025symrtlo}.
+PPA-RTL constructs synthesis-scored preference pairs and applies direct
+preference optimization (DPO)~\cite{ppartl2025}.  ChipSeek uses curriculum-guided
+dynamic policy optimization with syntax, functional, and synthesis-derived
+feedback~\cite{chipseek2025}.  Alpha-RTL instead adapts the
+policy for each target at test time through an executable EDA loop
+~\cite{zhou2026alphartl}.  Dr.~RTL uses commercial-tool feedback, critical-path
+analysis, parallel rewriting, and reusable optimization skills
+~\cite{drrtl2026}.  POET and EvolVE apply evolutionary search to verified RTL
+variants~\cite{poet2026,evolve2026}. REvolution evolves separate populations for
+bug fixing and PPA improvement~\cite{min2025revolution}. COEVO jointly searches
+correctness and PPA using an adaptive correctness gate and Pareto-based
+selection~\cite{coevo2026}. RTL-OPT contributes a benchmark of
+suboptimal/human-optimized RTL pairs and an automated correctness/PPA
+evaluation flow~\cite{lu2026rtlopt}. Fu et al. assess synthesis quality using
+area, delay, and tool warnings, and distinguish single-attempt quality from
+best-of-several performance~\cite{fu2026synthesis}. Their evaluation reinforces
+the need to specify how sampled outcomes are aggregated; our endpoint uses
+post-route FPGA timing and retains each draw's original multiplicity.
+
+Table~\ref{tab:positioning} distinguishes selected implementations from policy
+distributions. ChipSeek reports mean and extreme physical metrics among correct
+generations; our frozen paired evaluation retains the full draw denominator,
+including failures. The perfect-selector analysis separately compares repeated
+SFT sampling with one optimized draw. The internal reward controls do not
+establish head-to-head superiority over PPA-RTL or ChipSeek.
+
+\begin{table*}[t]
+\centering
+\caption{Protocol-level positioning against the closest physical RTL learning
+and optimization settings.  ``Selected implementation'' denotes the output of
+a target-specific search; ``policy distribution'' retains every sampled
+outcome and its multiplicity.}
+\label{tab:positioning}
+\small
+\begin{tabularx}{\textwidth}{@{}lXXX@{}}
+\toprule
+Approach & Optimization locus & Feedback/reporting authority & Primary object \tabularnewline
+\midrule
+PPA-RTL~\cite{ppartl2025}
+& Fixed-preference DPO
+& Synthesis-scored preference pairs
+& Objective-conditioned RTL generation \tabularnewline
+ChipSeek~\cite{chipseek2025}
+& Curriculum-guided policy optimization
+& Syntax, simulation, and synthesis feedback
+& Correctness and conditional physical quality \tabularnewline
+Alpha-RTL~\cite{zhou2026alphartl}
+& Per-design test-time learning
+& Executable verification and EDA feedback
+& Selected implementation after adaptation \tabularnewline
+Dr.~RTL~\cite{drrtl2026}
+& Agentic per-design rewriting
+& Commercial EDA and critical-path feedback
+& Selected optimized implementation \tabularnewline
+RTL-OPT~\cite{lu2026rtlopt}
+& Evaluation benchmark
+& Automated equivalence and PPA evaluation
+& Suboptimal-to-reference optimization \tabularnewline
+\textbf{This work}
+& Proxy-guided on-policy training
+& Executable training gate; post-route EDA for reporting
+& Equal-sample policy distribution on a frozen split \tabularnewline
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+\subsection{Physical predictors and reward reliability}
+
+Pre-synthesis predictors reduce the cost of FPGA design-space exploration
+~\cite{ustun2020accurate,wu2022highlevel,fang2024presynthesis}. Optimizing a
+learned reward changes its input distribution and can magnify prediction
+errors~\cite{gao2023scaling}. In our method, the predictor guides training,
+while post-route and board measurements provide physical evidence. The
+historical reward trajectory illustrates why this separation matters, without
+implying that physical predictors fail in general. Our contribution is a
+controlled evaluation of physical-reward training at a fixed draw budget,
+supported by matched reward controls, paired design-level analysis, and
+candidate diagnostics. The resulting conclusions apply to the studied
+streaming accelerators and sampled oracle contract; they do not establish
+formal equivalence or superiority on industrial RTL.

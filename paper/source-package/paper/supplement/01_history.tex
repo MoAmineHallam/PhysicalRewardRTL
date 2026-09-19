@@ -1,0 +1,82 @@
+\section{Historical training and contextual comparisons}
+\subsection{Domain adaptation and re-anchoring}
+
+The studies collected here provide supporting evidence under their original
+protocols, separately from the sealed RF experiment. Table~\ref{tab:history-ladder}
+compares the raw-base, supervised, and earlier optimized checkpoints, retaining
+the full declared draw budget for each. The earlier
+\claim{DesignCount}-design evaluation provides broader five-family coverage:
+its penalized endpoint rises from \claim{OverallSftPenalized} to
+\claim{OverallGrpoPenalized}~MHz, with \claim{OverallImproved} of
+\claim{DesignCount} designs improving. Feed-forward families show the most
+consistent gains, while IIR is mixed and median remains slow in absolute terms.
+Because its uncertainty analysis is historical and post-hoc, this study
+supports the breadth of the findings but is not pooled with the sealed result.
+
+\begin{table}[b]
+\centering
+\caption{Earlier five-family capability ladder. Utility is failure-penalized
+timing-derived frequency; correctness denotes the sampled oracle verdict.}
+\label{tab:history-ladder}
+\small
+\begin{tabular}{lrr}
+\toprule
+Checkpoint & Utility (MHz) & Oracle pass (\%) \\
+\midrule
+Raw base & \claim{BasePenalized} & \claim{BaseCorrectness} \\
+SFT & \claim{OverallSftPenalized} & \claim{OverallSftCorrectness} \\
+Earlier policy (v8) & \claim{OverallGrpoPenalized} & \claim{OverallGrpoCorrectness} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\input{generated/revision_table_history_vnine}
+The historical re-anchored MLP policy (v9) raises utility from
+\revisionclaim{HistoryVnineSftUtility} to
+\revisionclaim{HistoryVninePolicyUtility}~MHz on its own matched SFT sample,
+with \revisionclaim{HistoryVnineImproved} of
+\revisionclaim{HistoryVnineDesigns} designs improving. Its mean gain is
+\revisionclaim{HistoryVnineGain}~MHz. Oracle acceptance also increases
+(Table~\ref{tab:history-vnine}). The earlier v8 and v9 evaluations use different
+training budgets and generated samples. Their difference cannot isolate the
+causal effect of re-anchoring, and training-only seed logs do not supply
+additional held-out physical replications.
+
+\subsection{Second-backbone study}
+Qwen-Coder repeats the complete domain-SFT and policy-optimization recipe on
+the earlier \claim{QwenDesignCount}-design,
+\claim{QwenFamilyCount}-family universe. This is a separate earlier pipeline
+experiment, with its own SFT initialization and reward configuration. The main
+paper retains its overall and regime-level results because they provide
+positive evidence beyond a single backbone. They are not a second test of the
+canonical-feature RF package, and are not pooled with the sealed study.
+
+\subsection{API prompting and HLS context}
+The archived API experiment uses the same accelerator tasks and oracle, with
+\claim{FrontierSamplesPerDesign} samples per prompt arm. HLS uses engineer-written
+C++ and either no pragmas or engineer-selected pragmas. The reported RTL
+comparison selects the fastest measured optimized candidate. These budgets,
+inputs, and selection rules differ from the main policy-average comparison.
+Within the API experiment, a timing-focused prompt raises conditional \fmax{} from
+\claim{FrontierPlainConditional} to
+\claim{FrontierFastConditional}~MHz while correctness changes from
+\claim{FrontierPlainCorrectness}\% to
+\claim{FrontierFastCorrectness}\%; its penalized endpoint is
+\claim{FrontierFastPenalized}~MHz. This contrast illustrates why conditional
+speed and per-draw utility need to be reported separately. It describes one API
+configuration under a smaller sampling budget and does not establish a general
+ranking of frontier models.
+
+For selected implementation quality, the fastest measured optimized RTL
+candidate reaches \claim{HlsExpertGeomean}$\times$ the geometric-mean
+throughput of engineer-pragma HLS over \claim{HlsDesignCount} comparable
+designs.  It reaches \claim{HlsNaiveGeomean}$\times$ no-pragma HLS.  Because HLS
+starts from engineer-written C++ and the RTL value is selected rather than
+policy-average, this comparison is context, not the causal baseline.
+\subsection{Earlier general-RTL evaluation}
+The earlier base-model comparison showed pass-at-one decreasing from
+\claim{VerilogBasePassone}\% to \claim{VerilogSftPassone}\% after domain SFT.
+That experiment uses different generation settings; its absolute values are
+not comparable with the matched RF extension and are not pooled.  Together,
+the two experiments identify specialization costs at different training stages,
+without establishing performance on unseen industrial RTL.

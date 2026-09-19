@@ -1,0 +1,104 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Language models can generate RTL that passes executable benchmarks
+~\cite{liu2023verilogeval,lu2024rtllm,pinckney2025revisiting}, but functional
+acceptance alone says little about the quality of the implemented circuit.
+Modules that compute the same outputs can differ substantially in their critical
+paths, resource mappings, and achievable clock frequencies. A model trained
+only to pass a testbench has no direct incentive to prefer the faster
+implementation. Sampling several alternatives and selecting the fastest can
+address this problem, although it requires repeated electronic design automation
+(EDA) runs at inference time.
+
+Recent work uses synthesis feedback, reinforcement learning, evolutionary
+search, and per-design adaptation to improve RTL
+~\cite{ppartl2025,chipseek2025,yao2024rtlrewriter,poet2026,
+evolve2026,zhou2026alphartl,drrtl2026}. These approaches make it important to
+distinguish the quality of a selected circuit from the expected quality of a
+single policy draw. Synthesis-based evaluation also finds a gap between
+single-attempt and best-of-several results~\cite{fu2026synthesis}. A learned
+physical reward offers a way to guide training without implementing every
+candidate, but optimization can shift the generated code toward regions where
+the predictor is less reliable~\cite{gao2023scaling}. Its training scores must
+therefore be assessed against independent physical measurements.
+
+We study whether training with a physical proxy improves expected physical
+utility at a fixed draw budget in a controlled streaming-accelerator domain.
+Both functional and implementation failures contribute zero, so the endpoint
+reflects the full distribution of generated outputs. Matched reward controls
+test whether physical feedback adds value beyond correctness pressure alone.
+As shown in Fig.~\ref{fig:training-boundary}, domain SFT initializes the
+generator, an executable oracle gates the physical reward, and group-relative
+updates change candidate probabilities. Frozen checkpoints are then evaluated
+through independent post-route implementation. The contribution lies in this
+distribution-level evaluation and controlled reward comparison; the policy
+update and EDA feedback build on established methods.
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\textwidth]{fig01_training_evidence_boundary_v3}
+\caption{Implemented training and physical-evaluation workflow.
+(a) Domain SFT and the physical predictor use training-only resources.
+(b) Fresh policy samples receive group-relative updates with a frozen SFT
+reference; flat groups do not advance the update counter.
+(c) The RF reward uses canonicalized structural features; MLP and
+correctness-only rewards are separate control runs. Red branches assign zero
+to rejected candidates.
+(d) Frozen checkpoints are evaluated using the executable oracle and post-route
+implementation. Original multiplicity and the full draw denominator are
+restored; incorrect and implementation-failed draws are not discarded.
+Dashed paths denote feedback, references, or separately run controls.}
+\label{fig:training-boundary}
+\end{figure*}
+
+The primary test is a separately frozen
+\studyclaim{StudyTwoDesignCount}-design study spanning interpolation and
+extrapolation across the retained accelerator generators.  Two policy-training
+seeds sharing one SFT checkpoint and a canonicalization-aware random-forest (RF) reward raise
+penalized equal-sample \fmax{} from
+\studyclaim{StudyTwoOverallSftPenalized} to
+\studyclaim{StudyTwoOverallRfPenalized}~MHz.  Their seed-averaged paired effect
+is \studyclaim{StudyTwoOverallRfSftGain}~MHz with interval
+[\studyclaim{StudyTwoOverallRfSftCiLow},
+\studyclaim{StudyTwoOverallRfSftCiHigh}]~MHz; each training seed is positive,
+and the interpolation and extrapolation intervals both exclude zero.  The
+optimized policy's correctness remains close to the supervised fine-tuned
+(SFT) baseline, and the failure penalty already charges the endpoint for the
+difference.
+
+The matched controls help explain the gain.  The repaired RF reward
+exceeds the original multilayer-perceptron (MLP) reward by
+\studyclaim{StudyTwoOverallRfMlpGain}~MHz under the same tasks and sampling
+budget.  Correctness-only training instead raises validity to
+\studyclaim{StudyTwoCorrectnessOnlyCorrectness}\% but lowers penalized \fmax{}
+relative to SFT in its single preregistered seed.  The observed physical gain
+therefore does not arise from higher functional yield.  A separate completed
+setup-closure extension repeats the RF and correctness-only physical directions
+in additional policy-training seeds, while retaining the shared-SFT limitation.
+A separate Qwen-Coder~\cite{hui2024qwen25coder} experiment improves utility on all
+\claim{QwenDesignCount} tested designs. Conditional resource measurements,
+paired board checks, and general-RTL evaluation describe the engineering costs
+and limits of these gains.
+
+Together, these experiments establish a controlled physical improvement on
+the frozen split and identify its engineering limits. Family and sensitivity
+analyses show where the gains are weaker, while the original-reward and
+correctness-only arms distinguish physical improvement from increased
+functional yield. The comparison supports the RF reward package as a whole;
+it does not isolate predictor architecture from canonical features. Throughout
+the evaluation, the fixed-draw endpoint preserves sample multiplicity and
+assigns zero to every incorrect or implementation-failed draw. Post-route
+measurements determine the reported outcome, with source-level RTL analysis,
+conditional PPA, setup checks, board measurements, and general-RTL evaluation
+providing context for its practical value.
+
+The candidate analysis suggests that much of the gain comes from making fast
+implementations more likely. Supervision already supplies several passing
+forms, and optimization concentrates probability on a smaller set of outputs.
+The sealed support diagnostic nevertheless contains exceptions, so the finite
+SFT sample cannot account for every observed gain. These results establish a
+change in the sampled distribution without resolving whether optimization
+produces new circuit structures. They also explain why the benefit depends
+on the implementations available to the generator and on the reward's ability
+to distinguish their physical quality.
