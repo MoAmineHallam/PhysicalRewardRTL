@@ -1,3 +1,20 @@
+# FPGA2 — Transformer architecture and chip co-design
+
+This branch starts the next research project: first test transformer block
+structures that reduce data movement and simplify an accelerator while preserving
+model quality; then distill an LLM into the selected architecture and adapt it for
+physically useful RTL generation.
+
+Start with the [FPGA2 master reference](MASTER_REFERENCE.md), the
+[related-work ledger](research/fpga2/RELATED_WORK.md), and the
+[search and decision record](research/fpga2/SEARCH_RECORD.md).
+These are research plans and literature assessments, not new experimental results.
+
+The previous paper's reviewer artifact is retained below and in its existing
+directories. Its results are distinct from the proposed FPGA2 research.
+
+---
+
 # Physical-Reward Policy Optimization for Accelerator RTL
 
 This repository is the reviewer-facing artifact for the manuscript
