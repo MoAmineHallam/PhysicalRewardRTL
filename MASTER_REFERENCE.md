@@ -1,8 +1,8 @@
 # FPGA2 — Master Reference
 
-**Updated:** 2026-09-22
+**Updated:** 2026-09-23
 
-**Status:** Research definition and literature review. No FPGA2 training, hardware implementation, or efficacy result exists yet.
+**Status:** Initial Stage 1 execution completed: four short training pilots, a dense GPU profile, and a Z2 synthesis smoke test. No preserved-quality, architectural speedup, FPGA accelerator, or ASIC result exists yet. See the [execution report](research/fpga2/STAGE1_STATUS.md) and [pilot protocol/code](stage1/README.md).
 
 **Branch:** `FPGA2`, based on GitHub `main` at `f7c0572bcf6fac8e6a560382854cfc62266e52b4`.
 
@@ -263,7 +263,7 @@ The previous master reference records coarse VCCINT telemetry on both boards. Va
 | 6. ASIC extension | Pinned flow and memory macros/explicit memory model, matched post-route results | Limit chip claims to the evidence actually obtained |
 | 7. Stage 2 | Matched distillation, SFT, physical-reward controls and final exports | Test whether the architecture benefit and RTL competence survive |
 
-No training or hardware jobs were launched to write this reference. No implementation speedup, preserved quality, energy saving, or new-block novelty has yet been demonstrated. Hardware and training budgets should be set from measured pilot throughput rather than extrapolated from RFT's reported runtime.
+The initial September 22 literature review launched no experiments. Subsequent authorized Stage 1 work is recorded in the [execution report](research/fpga2/STAGE1_STATUS.md). No implementation speedup, preserved quality, energy saving, or new-block novelty has yet been demonstrated. Hardware and training budgets should be set from measured pilot throughput rather than extrapolated from RFT's reported runtime.
 
 ### Open decisions, to resolve through the first steps
 
@@ -294,3 +294,5 @@ This research branch was created in an isolated worktree so the original working
 Append dated decisions and evidence links as the project proceeds. Keep proposed, executed, measured, estimated, and independently reproduced outcomes distinct. Record commit IDs, model/data hashes, source versions, seeds, failure counts, tool/PDK versions, and deviations from frozen protocols. A promising pilot may change the plan; it must not retroactively become a preregistered result.
 
 **2026-09-22:** Established the two-stage plan, reviewed related literature, prioritized a communication-constrained structured FFN study subject to profiling and novelty checks, deferred RFT memory, and created `FPGA2`. Literature review and documentation only.
+
+**2026-09-23:** Implemented and tested the causal baseline and three FFN controls; audited and reused local C4/GPT-2 data infrastructure without RFT memory; completed four matched 2.10M-token smoke pilots. All 256 updates per arm succeeded, with identical sampled-window hashes. Simple grouping did not preserve dense development loss in this short run; no stable ranking is claimed. Completed a 126.72M-parameter eager GPU profile, whose operator attribution needs refinement before choosing a bottleneck. Selected working Vivado 2026.1; Z2 synthesis passed, while ZU device support is missing. Both GPU servers were idle at the final check. Full evidence and next runs are in the execution report.

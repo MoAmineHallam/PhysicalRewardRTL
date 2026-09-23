@@ -8,7 +8,9 @@ physically useful RTL generation.
 Start with the [FPGA2 master reference](MASTER_REFERENCE.md), the
 [related-work ledger](research/fpga2/RELATED_WORK.md), and the
 [search and decision record](research/fpga2/SEARCH_RECORD.md).
-These are research plans and literature assessments, not new experimental results.
+The [Stage 1 execution report](research/fpga2/STAGE1_STATUS.md) records the first
+bounded pilots, and [stage1/README.md](stage1/README.md) gives the code and protocol.
+These are preliminary pipeline checks, not evidence of a new efficient architecture.
 
 The previous paper's reviewer artifact is retained below and in its existing
 directories. Its results are distinct from the proposed FPGA2 research.
