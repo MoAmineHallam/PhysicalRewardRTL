@@ -99,18 +99,6 @@ class ModelTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 m(torch.zeros((1, 1), dtype=torch.long), cache, use_cache=True)
 
-    def test_explicit_single_query_matches_sdpa(self):
-        m = Decoder(Config(width=16, heads=4, hidden=24, layers=2, vocab=43, context=32)).eval()
-        x = torch.randint(43, (2, 11))
-        with torch.no_grad():
-            full, _ = m(x)
-            cache = m.allocate_cache(2, 16)
-            m(x[:, :7], cache, use_cache=True)
-            m.set_decode_backend('explicit')
-            for t in range(7, 11):
-                actual, _ = m(x[:, t:t+1], cache, use_cache=True)
-                torch.testing.assert_close(actual, full[:, t:t+1], atol=1e-6, rtol=1e-5)
-
 
 if __name__ == '__main__':
     unittest.main()

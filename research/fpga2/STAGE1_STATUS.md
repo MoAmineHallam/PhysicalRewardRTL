@@ -1,10 +1,41 @@
 # Stage 1: first execution milestone
 
-Updated 2026-09-26. **Four short pilots and one GPU profile completed. No quality
-preservation, architectural speedup, FPGA accelerator, or ASIC result is established.**
-All four GPUs were idle at the September 23 final live check; no continuing experiment was left running. On September 26, the existing Vivado 2023.1 installation passed synthesis smoke tests for both Z2 and ZU; the missing 2026.1 device package is no longer blocking the project.
+Updated 2026-09-26. **SSH works on both servers. Corrected profiles and structured
+controls are validated; a longer, three-seed development campaign is running.**
+No quality preservation, architectural speedup, FPGA accelerator, or ASIC result
+is established. The existing Vivado 2023.1 installation passed synthesis smoke
+tests for both Z2 and ZU; no new installation or powered board is required for
+the current GPU work.
 
-## Completed
+## Current work, September 26
+
+- Completed corrected dense profiling on both GPU types with dynamic/static KV
+  storage and SDPA/explicit single-query attention. Attribution totals agree with
+  GPU activity totals. Fixed-shape graph and real growing-cache eager request
+  measurements are reported separately.
+- Compiled dense FFN control passes numerical checks but has shape-dependent
+  timing: compilation is not a universal improvement. DRAM-counter probe timed
+  out; no measured traffic or energy result is available.
+- Implemented pinned rectangular Monarch and trainable low-rank controls, with
+  a parameter-matched dense Monarch comparator. Fourteen local tests pass;
+  Monarch also agrees with the author's reference functions. GPU precision and
+  gradient checks pass all 42 arm/seed/initialization combinations.
+- Found a substantial initialization-scale confound and added expected-variance
+  matching, while preserving identical shared non-FFN tensors. This is a
+  disclosed recipe change, not an architectural contribution.
+- Launched seven arms x three seeds at 1,024 updates (8.39M sampled tokens per
+  run), plus three seed-42 legacy-initialization checks. Four sequential workers
+  use the four available GPUs. The first completed runs have zero skipped
+  updates; worker output directories preserve all logs and final checkpoints.
+  No result or ranking is inferred before collecting the complete campaign.
+
+Details: [profiling/control report](PROFILE_UPDATE_20260926.md),
+[frozen screening protocol](SCREENING_PROTOCOL_20260926.md), and
+[campaign launch snapshot](evidence/screening-20260926/launch_snapshot.json).
+This status describes a live campaign, not a continuing monitoring service;
+recheck worker state before launching additional GPU tasks.
+
+## Earlier milestone, September 23
 
 - Implemented a causal decoder with dense, narrower dense, four-group, and
   grouped-with-output-shuffle gated FFN controls. No distillation or RFT memory.
@@ -127,16 +158,18 @@ on September 23 UTC. See [toolchain inventory](evidence/stage1-pilot-20260923/to
 
 ## What must run next
 
-1. Correct profiler event attribution, implement a preallocated KV cache, and
-   test tuned dense FFN execution. Repeat same-device profiling and obtain actual
-   movement counters or clearly bounded analytical schedules. Decide whether the
-   FFN intervention is valuable for the chosen workload.
-2. Pin and implement the closest Monarch/butterfly and low-rank controls; finish
-   the equation/schedule novelty audit before naming any new block.
-3. Check initialization sensitivity, then train longer with at least three
-   finalist seeds and a broader pinned evaluation suite. Set the budget from a
-   representative longer throughput measurement, including startup/evaluation,
-   checkpointing and search costs. Freeze quality margins before confirmation.
+1. Collect all 24 screening results; verify paired sample hashes and successful
+   updates, report every seed and the legacy-initialization diagnostic. Compare
+   structured arms against both full dense and their equal-parameter dense
+   controls before selecting anything for a larger study.
+2. Finish the equation/schedule novelty audit against the closest full papers.
+   The implemented Monarch, grouping, shuffle and low-rank controls are known
+   operators, not proposed new blocks. Define explicit buffer/bank/traffic
+   schedules and obtain physical or counter evidence for movement claims.
+3. Select a larger pinned corpus and independent, broader evaluation suite;
+   establish a matched optimization budget and quality margins before
+   confirmatory runs. Current 8M-token development screens are undertrained and
+   do not establish competitive language quality or long-context behavior.
 4. Use the verified 2023.1 toolchain and verify board access. Define fixed-point arithmetic,
    then implement and compare matched dense/structured FFN schedules with honest
    buffer, bank, DMA and timing accounting. Expand to full-block/model costs.

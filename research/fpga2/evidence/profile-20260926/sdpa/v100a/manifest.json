@@ -1,0 +1,50 @@
+{
+  "environment": {
+    "utc": "2026-09-26T13:00:30.118426+00:00",
+    "python": "3.10.20",
+    "torch": "2.4.1+cu121",
+    "cuda": "12.1",
+    "gpu": "Tesla V100-SXM2-32GB",
+    "sources": {
+      "__init__.py": "630c0c5183fbec537844e1c42a652dcc2cd0220a8709d2210a9c57a423cd5331",
+      "launch_pilot.py": "590804063c25fa755491ba82d65082550d27ef8e66c9703238dd7b066c235c47",
+      "model.py": "7737d510d41e337ca5eac07e99b9f52aa71aefac323cca202e6129ce01d519c2",
+      "prepare_data.py": "4baa8be17fdb12f258aaf9df41006b077aaf786367107c2a8f182f72c40ae733",
+      "profile_v2.py": "0982a9f454cdd082c7de322754257d6c12c780e60b214c777e7f908991790457",
+      "run.py": "636b86d164234d87495a0e46d722e8cf7815339930bb4f6d12c2d76077e29d80",
+      "test_data.py": "243f27d2d99b3bebc49f31f19f52a71c2786e62b8b876524fe7ac3ec9af1f744",
+      "test_model.py": "ed7f096c612b8b008a56ab551f35ca6d14bc294cb7c343878e33c15012ade815",
+      "test_profile.py": "f2290fc117a85ab622ff778e1d2dd554645ef9c5d1a0e7ff602cc0fbcb9c7243"
+    }
+  },
+  "config": {
+    "vocab": 50257,
+    "width": 768,
+    "layers": 12,
+    "heads": 12,
+    "hidden": 2048,
+    "context": 4096,
+    "groups": 1,
+    "shuffle": false
+  },
+  "arguments": {
+    "out": "/zeng_gk/Amine/mas/fpga2-profile-v2-20260926/v100a-dense",
+    "seed": 42,
+    "arm": "dense",
+    "lengths": [
+      512,
+      2048
+    ],
+    "repeats": 20,
+    "generate": 32
+  },
+  "parameters": 126716160,
+  "correctness": {
+    "max_abs_logit_error": 0.005859375,
+    "tolerance": {
+      "rtol": 0.025,
+      "atol": 0.005
+    },
+    "dtype": "torch.float16"
+  }
+}

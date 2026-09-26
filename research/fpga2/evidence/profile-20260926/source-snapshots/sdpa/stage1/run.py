@@ -34,13 +34,8 @@ def configuration(arm, target=False):
     c = Config(width=768, layers=12, heads=12, hidden=2048) if target else Config()
     if arm == 'narrow':
         c.hidden //= 4
-    elif arm == 'monarch_dense_match':
-        c.hidden = (3*c.hidden + 2*c.width)//12
     elif arm in ('grouped', 'shuffle'):
         c.groups = 4; c.shuffle = arm == 'shuffle'
-    elif arm in ('monarch', 'lowrank'):
-        c.ffn_kind = arm
-        c.rank = 64 if not target else 128
     return c
 
 
@@ -172,23 +167,18 @@ def profile(a, c, model, out):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('mode', choices=['train', 'profile'])
-    p.add_argument('--arm', choices=['dense', 'narrow', 'grouped', 'shuffle',
-                                    'monarch', 'monarch_dense_match', 'lowrank'], default='dense')
-    p.add_argument('--init-policy', choices=['legacy', 'fan_matched'], default='legacy')
+    p.add_argument('--arm', choices=['dense', 'narrow', 'grouped', 'shuffle'], default='dense')
     p.add_argument('--data'); p.add_argument('--out', required=True)
     p.add_argument('--steps', type=int, default=256); p.add_argument('--batch', type=int, default=8)
     p.add_argument('--accum', type=int, default=4); p.add_argument('--seq', type=int, default=256)
     p.add_argument('--seed', type=int, default=42); p.add_argument('--target', action='store_true')
     a = p.parse_args()
-    if a.mode == 'profile':
-        p.error('Legacy profiling is retired; use python -m stage1.profile_v2 --out NEW_DIR')
     torch.set_num_threads(4); torch.manual_seed(a.seed)
     if not torch.cuda.is_available(): raise RuntimeError('CUDA required for measured runs')
     if a.mode == 'train' and (not a.data or min(a.steps, a.batch, a.accum, a.seq) <= 0):
         raise ValueError('training requires data and positive run dimensions')
     out = Path(a.out); out.mkdir(parents=True, exist_ok=False)
     c = configuration(a.arm, a.target)
-    c.init_policy = a.init_policy
     model = Decoder(c); model.reset_parameters(a.seed); model.cuda()
     manifest = {'arguments': vars(a), 'environment': environment(), 'config': asdict(c)}
     (out/'run_manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')

@@ -291,7 +291,23 @@ This research branch was created in an isolated worktree so the original working
 
 ## 11. Update discipline
 
+Latest Stage 1 execution: [corrected profiling and controls](research/fpga2/PROFILE_UPDATE_20260926.md),
+[three-seed screening protocol](research/fpga2/SCREENING_PROTOCOL_20260926.md),
+and [live-campaign status](research/fpga2/STAGE1_STATUS.md).
+
 Append dated decisions and evidence links as the project proceeds. Keep proposed, executed, measured, estimated, and independently reproduced outcomes distinct. Record commit IDs, model/data hashes, source versions, seeds, failure counts, tool/PDK versions, and deviations from frozen protocols. A promising pilot may change the plan; it must not retroactively become a preregistered result.
+
+**2026-09-26, Stage 1 continuation:** Restored SSH access, completed corrected
+profiles on both GPU types, implemented/tested preallocated KV storage, and
+checked eager versus compiled dense FFNs. Fixed-shape graph improvements do not
+translate into faster eager generation for the explicit attention control.
+Added pinned Monarch and low-rank operators and an exactly matched dense Monarch
+control. Initial activation scales exposed a confound in the first pilot; the
+new screen uses disclosed variance-matched initialization plus a legacy check.
+Launched 21 primary runs (seven arms, three seeds) and three initialization
+diagnostics, each with 8.39M sampled tokens. No new architecture, preserved quality,
+physical efficiency, or measured DRAM-traffic result is claimed. Distillation,
+RFT memory and physical-reward training remain deferred.
 
 **2026-09-22:** Established the two-stage plan, reviewed related literature, prioritized a communication-constrained structured FFN study subject to profiling and novelty checks, deferred RFT memory, and created `FPGA2`. Literature review and documentation only.
 

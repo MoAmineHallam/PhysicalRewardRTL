@@ -5,7 +5,6 @@ import math
 import torch
 from torch import nn
 from torch.nn import functional as F
-from .structured import MonarchLinear, LowRankLinear
 
 
 def region(enabled, name):
@@ -61,10 +60,6 @@ class Config:
     context: int = 4096
     groups: int = 1
     shuffle: bool = False
-    ffn_kind: str = 'standard'
-    factor_blocks: int = 4
-    rank: int = 64
-    init_policy: str = 'legacy'
 
     def __post_init__(self):
         if min(self.vocab, self.width, self.layers, self.heads, self.hidden,
@@ -72,12 +67,6 @@ class Config:
             raise ValueError('dimensions must be positive')
         if self.width % self.heads or self.width % self.groups or self.hidden % self.groups:
             raise ValueError('incompatible head/group dimensions')
-        if self.ffn_kind not in ('standard', 'monarch', 'lowrank'):
-            raise ValueError('unknown FFN kind')
-        if self.init_policy not in ('legacy', 'fan_matched'):
-            raise ValueError('unknown initialization policy')
-        if self.ffn_kind != 'standard' and self.groups != 1:
-            raise ValueError('factorized projections use factor_blocks rather than groups')
 
 
 class FFN(nn.Module):
@@ -85,13 +74,7 @@ class FFN(nn.Module):
         super().__init__()
         self.groups, self.width, self.hidden = c.groups, c.width, c.hidden
         # One fused gate/up projection, including in the dense reference.
-        if c.ffn_kind == 'monarch':
-            self.up_gate = MonarchLinear(c.width, 2*c.hidden, c.factor_blocks)
-            self.down = MonarchLinear(c.hidden, c.width, c.factor_blocks)
-        elif c.ffn_kind == 'lowrank':
-            self.up_gate = LowRankLinear(c.width, 2*c.hidden, c.rank)
-            self.down = LowRankLinear(c.hidden, c.width, c.rank)
-        elif c.groups == 1:
+        if c.groups == 1:
             self.up_gate = nn.Linear(c.width, 2 * c.hidden, bias=False)
             self.down = nn.Linear(c.hidden, c.width, bias=False)
         else:
@@ -224,34 +207,6 @@ class Decoder(nn.Module):
                 std = 0.02 / math.sqrt(2 * self.config.layers) if (
                     name.endswith('attention.out.weight') or '.ffn.down' in name) else 0.02
                 nn.init.normal_(p, std=std, generator=gen)
-        if self.config.init_policy == 'fan_matched':
-            self.reset_ffn_fan_matched(seed)
-
-    def reset_ffn_fan_matched(self, seed):
-        """Match initial projection output variances, not nonlinear expressivity.
-
-        Reference gated width is 8d/3. Factorized first maps have unit expected
-        variance gain; second maps supply the same gain as the dense reference.
-        Per-parameter name seeds leave all shared non-FFN tensors unchanged.
-        """
-        import hashlib
-        c = self.config
-        reference_hidden = 8*c.width/3
-        up_gain = 0.02*math.sqrt(c.width)
-        down_gain = 0.02*math.sqrt(reference_hidden)/math.sqrt(2*c.layers)
-        for name, p in self.named_parameters():
-            if '.ffn.' not in name or p.ndim == 1: continue
-            key = int.from_bytes(hashlib.sha256(f'{seed}:{name}'.encode()).digest()[:8], 'little')
-            gen = torch.Generator(device=p.device).manual_seed(key)
-            gain = down_gain if '.ffn.down' in name else up_gain
-            if name.endswith('.first'):
-                std = 1/math.sqrt(p.shape[-1])
-            elif name.endswith('.second') or p.ndim == 2:
-                std = gain/math.sqrt(p.shape[-1])
-            else:
-                # Grouped tensors use (group, input, output), unlike F.linear.
-                std = gain/math.sqrt(p.shape[-2])
-            nn.init.normal_(p, std=std, generator=gen)
 
     def forward(self, ids, past=None, use_cache=False, last_only=False):
         if past is not None and len(past) != len(self.blocks):

@@ -1,5 +1,13 @@
 # Stage 1 execution
 
+September 26 update: corrected profiling and preallocated KV storage are available,
+and Monarch/low-rank controls pass algebra, gradient and numerical checks. The
+three-seed screening campaign uses the separately frozen
+[protocol](../research/fpga2/SCREENING_PROTOCOL_20260926.md). See the
+[measurement report](../research/fpga2/PROFILE_UPDATE_20260926.md) and
+[current status](../research/fpga2/STAGE1_STATUS.md). The settings below describe
+the earlier September 23 pilot unless explicitly updated.
+
 This is a research baseline, not a new architecture or an FPGA accelerator. It
 implements a causal decoder with learned absolute positions, pre-LayerNorm,
 ordinary multi-head attention, tied token/output embeddings, and a gated SiLU
@@ -64,15 +72,17 @@ are committed. Hashes and aggregated audit counts are recorded as evidence.
 Run from the repository root in an environment with torch, numpy and tokenizers:
 
 ```bash
-python -m unittest stage1.test_model stage1.test_data -v
+python -m unittest stage1.test_model stage1.test_data stage1.test_profile stage1.test_structured -v
 python -m stage1.prepare_data --train TRAIN.jsonl --validation VAL.jsonl \
   --tokenizer tokenizer.json --out DATA_DIR --allow-truncated-tail
 CUDA_VISIBLE_DEVICES=0 python -m stage1.run train --arm dense \
   --data DATA_DIR --out NEW_RUN_DIR
-CUDA_VISIBLE_DEVICES=0 python -m stage1.run profile --target --out NEW_PROFILE_DIR
+CUDA_VISIBLE_DEVICES=0 python -m stage1.profile_v2 --out NEW_PROFILE_DIR
 ```
 
-Change `--arm` to `narrow`, `grouped`, or `shuffle`. Every output directory must
+Change `--arm` to `narrow`, `grouped`, `shuffle`, `monarch`,
+`monarch_dense_match`, or `lowrank`. For the new screen, use `--init-policy
+fan_matched --steps 1024`, with the protocol's paired seeds. Every output directory must
 be new; the runner refuses to overwrite results. `final.pt` is a final-model
 export, not an exact optimizer/RNG resume checkpoint. These bounded pilots do not
 resume after interruption; preserve failures and launch a new run directory.
@@ -90,10 +100,19 @@ the operator list to determine the actual backend. A cached single query has no
 causal mask; a cached multi-token query uses the explicit offset mask, following
 the [PyTorch SDPA semantics](https://docs.pytorch.org/docs/main/generated/torch.nn.functional.scaled_dot_product_attention.html).
 
-The cache currently uses `torch.cat`, copying old K/V. This is a deliberately
-identified reference limitation, **not** a strong deployment baseline. A
-preallocated cache and tuned fused/compiled FFN implementation are required
-before claiming an architectural speedup. No GPU result substitutes for FPGA
+The v2 profiler compares `torch.cat` with preallocated KV storage and compares
+ordinary launches with fixed-shape CUDA graph replay. Graph offsets are captured
+constants, so graph results are not growing-context serving latency. Separate
+request measurements include prefill plus 32 growing-cache teacher-forced steps.
+Use `--decode-backend explicit` to test the mathematically equivalent single-query
+attention implementation. The default remains SDPA; explicit is slower for eager
+requests in the measured setup despite faster graph replay. Region attribution
+uses CPU-event self device work only and excludes duplicate device annotations.
+
+`python -m stage1.ffn_benchmark --out NEW_DIR` checks eager versus Inductor dense
+FFNs, including compile time and numerical parity. This isolated-layer comparison
+does not establish an optimized full-model baseline. Legacy `stage1.run profile`
+is retired; its old raw results remain archived. No GPU result substitutes for FPGA
 measurement. Weight and KV byte counts are analytical sizes, not measured DRAM
 traffic. Hardware counters, SRAM/bank accounting, and physical implementation
 remain outstanding. Random input/weight profiling establishes shapes and timing
