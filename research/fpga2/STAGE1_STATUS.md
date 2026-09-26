@@ -1,8 +1,8 @@
 # Stage 1: first execution milestone
 
-Updated 2026-09-23. **Four short pilots and one GPU profile completed. No quality
+Updated 2026-09-26. **Four short pilots and one GPU profile completed. No quality
 preservation, architectural speedup, FPGA accelerator, or ASIC result is established.**
-All four GPUs were idle at the final live check; no continuing experiment was left running.
+All four GPUs were idle at the September 23 final live check; no continuing experiment was left running. On September 26, the existing Vivado 2023.1 installation passed synthesis smoke tests for both Z2 and ZU; the missing 2026.1 device package is no longer blocking the project.
 
 ## Completed
 
@@ -94,15 +94,27 @@ off-chip byte counters, and power have not been measured.
 
 ## Vivado decision
 
-Use **Vivado 2026.1, SW build 6511674**, provisionally for all Stage 1 comparisons.
-It launches and synthesizes the `xc7z020clg400-1` test successfully. The installed
-2023.1 files remain, but its launcher fails both normally and with a cleaned
-process environment; no 2023-versus-2026 PPA comparison was performed.
+Use **Vivado 2023.1, SW build 3865809**, for initial Stage 1 hardware work and
+keep the tool version matched across architecture comparisons. On September 26,
+the existing installation launched in batch mode, acquired the synthesis license,
+and successfully synthesized the probe for both `xc7z020clg400-1` and
+`xczu5eg-sfvc784-1-e`. The process exited 0. Both runs had zero errors and zero
+critical warnings; each reported that parallel synthesis criteria were not met.
+See the [new inventory](evidence/toolchain-20260926/inventory.json) and
+[complete synthesis log](evidence/toolchain-20260926/synthesis.txt).
+
+**Correction:** the earlier 2023.1 version-only command printed `ECHO is off`
+and returned 1. That did not establish that batch execution was broken. A direct
+batch test now succeeds without changing the installation. The previous wording
+that its launcher generally failed was too broad. No repair, reinstallation,
+device-database copying, or license modification was needed.
 
 The 2026.1 device query returns no `xczu5eg-sfvc784*` parts. Zynq UltraScale+
 MPSoC device support is missing from this installation; the ZU synthesis step
-was not run. Add the proper 2026.1 device package and repeat the probe before
-implementing ZU hardware. Do not copy device databases from another release.
+was not run. Attempts to download that package repeatedly failed at AMD's
+download-link service. Installing it is no longer required to begin ZU work,
+because the existing 2023.1 installation already supports the device. Retain
+the working 2026.1 installation; no 2023-versus-2026 PPA comparison was performed.
 This is an installation gap, not evidence that the board is unsupported by
 Vivado in general. AMD's [installer documentation](https://www.amd.com/en/support/adaptive-socs-and-fpgas/installer-info-general.html)
 describes selecting device families.
@@ -125,7 +137,7 @@ on September 23 UTC. See [toolchain inventory](evidence/stage1-pilot-20260923/to
    finalist seeds and a broader pinned evaluation suite. Set the budget from a
    representative longer throughput measurement, including startup/evaluation,
    checkpointing and search costs. Freeze quality margins before confirmation.
-4. Add ZU device support and verify board access. Define fixed-point arithmetic,
+4. Use the verified 2023.1 toolchain and verify board access. Define fixed-point arithmetic,
    then implement and compare matched dense/structured FFN schedules with honest
    buffer, bank, DMA and timing accounting. Expand to full-block/model costs.
 

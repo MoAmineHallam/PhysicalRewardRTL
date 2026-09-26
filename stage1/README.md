@@ -101,6 +101,12 @@ only, not language quality. No FPGA power or ASIC claim follows from it.
 
 ## Next gates
 
+Hardware toolchain (verified 2026-09-26): use the existing
+`C:\Xilinx\Vivado\2023.1\bin\vivado.bat`. The unchanged `toolchain_probe.tcl`
+passes synthesis for both board parts in batch mode. A failed `-version` call
+was misleading; no reinstallation is needed. See the
+[toolchain evidence](../research/fpga2/evidence/toolchain-20260926/inventory.json).
+
 1. Audit the complete data preparation and four pilot runs, including skipped
    updates, matching data/sample hashes, and failure logs.
 2. Improve the dense cache/kernel baseline and measure actual movement where

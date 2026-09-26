@@ -1,8 +1,8 @@
 # FPGA2 — Master Reference
 
-**Updated:** 2026-09-23
+**Updated:** 2026-09-26
 
-**Status:** Initial Stage 1 execution completed: four short training pilots, a dense GPU profile, and a Z2 synthesis smoke test. No preserved-quality, architectural speedup, FPGA accelerator, or ASIC result exists yet. See the [execution report](research/fpga2/STAGE1_STATUS.md) and [pilot protocol/code](stage1/README.md).
+**Status:** Initial Stage 1 execution completed: four short training pilots, a dense GPU profile, and synthesis smoke tests for both Z2 and ZU. The existing Vivado 2023.1 installation works and is selected for initial hardware work; further 2026.1 downloads are not needed to begin. No preserved-quality, architectural speedup, FPGA accelerator, or ASIC result exists yet. See the [execution report](research/fpga2/STAGE1_STATUS.md) and [pilot protocol/code](stage1/README.md).
 
 **Branch:** `FPGA2`, based on GitHub `main` at `f7c0572bcf6fac8e6a560382854cfc62266e52b4`.
 
@@ -242,7 +242,7 @@ No router supervision may leak evaluation answers or future tokens into inferenc
 | V100b | Two V100S-PCIe GPUs, 32 GiB each, same inspection | Training and replication |
 | PYNQ-ZU | User-confirmed ownership; XCZU5EG, 4 GB DDR4; 5.1 Mb BRAM and 18 Mb UltraRAM in official specifications | Primary FPGA target |
 | PYNQ-Z2 | User-confirmed ownership; XC7Z020, 512 MB DDR3 in official specifications | Smaller/common configurations and transfer checks |
-| Vivado | Historical 2023.1 and 2026.1 flows documented in prior work | Pin one new flow; verify installation and licenses |
+| Vivado | Existing 2023.1 passed licensed batch synthesis for both board parts on 2026-09-26; 2026.1 previously passed Z2 but lacks ZU device support | Use 2023.1 consistently for initial Stage 1 hardware work |
 | ASIC PDK/libraries/SRAM/flow | Not inventoried or validated | Required before ASIC efficacy claims |
 
 Board sources: [PYNQ-ZU](https://xilinx.github.io/PYNQ-ZU/overview.html), [PYNQ-Z2](https://pynq.readthedocs.io/en/v2.7.0/pynq_overlays/pynqz2.html). Megabits of on-chip memory are not megabytes. DDR capacity is not effective accelerator bandwidth, and PS-connected memory must be accessed through the implemented interfaces.
@@ -296,3 +296,5 @@ Append dated decisions and evidence links as the project proceeds. Keep proposed
 **2026-09-22:** Established the two-stage plan, reviewed related literature, prioritized a communication-constrained structured FFN study subject to profiling and novelty checks, deferred RFT memory, and created `FPGA2`. Literature review and documentation only.
 
 **2026-09-23:** Implemented and tested the causal baseline and three FFN controls; audited and reused local C4/GPT-2 data infrastructure without RFT memory; completed four matched 2.10M-token smoke pilots. All 256 updates per arm succeeded, with identical sampled-window hashes. Simple grouping did not preserve dense development loss in this short run; no stable ranking is claimed. Completed a 126.72M-parameter eager GPU profile, whose operator attribution needs refinement before choosing a bottleneck. Selected working Vivado 2026.1; Z2 synthesis passed, while ZU device support is missing. Both GPU servers were idle at the final check. Full evidence and next runs are in the execution report.
+
+**2026-09-26:** Corrected the toolchain diagnosis: the unsuccessful 2023.1 version-only command did not imply a failed batch launcher. Direct batch tests recognized both board parts, acquired licenses, and completed Z2 and ZU synthesis with exit code 0. Select the existing Vivado 2023.1 (SW build 3865809) for initial Stage 1 hardware work. No installation changes were needed. The recurring 2026.1 download-link HTTP 400 remains unresolved but is no longer blocking ZU synthesis. This is a tool/device smoke test, not a routing, board, or architecture efficacy result; [evidence](research/fpga2/evidence/toolchain-20260926/inventory.json).
