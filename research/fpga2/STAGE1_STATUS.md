@@ -1,13 +1,15 @@
 # Stage 1: first execution milestone
 
-Updated 2026-09-26. **SSH works on both servers. Corrected profiles and structured
-controls are validated; a longer, three-seed development campaign is running.**
+Updated 2026-09-27. **All 24 screening trials finished successfully in 17.82
+minutes. Both GPU servers are idle at the latest check.** Ordinary reduced-width
+dense FFNs beat grouped and Monarch controls at matched parameter counts in all
+three tested seeds. See the [complete results](SCREENING_RESULTS_20260927.md).
 No quality preservation, architectural speedup, FPGA accelerator, or ASIC result
 is established. The existing Vivado 2023.1 installation passed synthesis smoke
 tests for both Z2 and ZU; no new installation or powered board is required for
 the current GPU work.
 
-## Current work, September 26
+## Completed work, September 26–27
 
 - Completed corrected dense profiling on both GPU types with dynamic/static KV
   storage and SDPA/explicit single-query attention. Attribution totals agree with
@@ -27,13 +29,18 @@ the current GPU work.
   run), plus three seed-42 legacy-initialization checks. Four sequential workers
   use the four available GPUs. The first completed runs have zero skipped
   updates; worker output directories preserve all logs and final checkpoints.
-  No result or ranking is inferred before collecting the complete campaign.
+  The complete campaign has now been collected and audited: zero skipped
+  updates, matching sample hashes within each seed, and verified source hashes.
+  The structured arms fail the exploratory excess-NLL <= 0.10 screening rule;
+  the two reduced-width dense controls meet it. This is not confirmation of
+  preserved quality or a verdict on the best achievable structured-model recipe.
 
 Details: [profiling/control report](PROFILE_UPDATE_20260926.md),
 [frozen screening protocol](SCREENING_PROTOCOL_20260926.md), and
-[campaign launch snapshot](evidence/screening-20260926/launch_snapshot.json).
-This status describes a live campaign, not a continuing monitoring service;
-recheck worker state before launching additional GPU tasks.
+[campaign launch snapshot](evidence/screening-20260926/launch_snapshot.json), and
+[completed campaign](SCREENING_RESULTS_20260927.md). The launch snapshot is
+historical; the completed summary supersedes its running status. No further
+training was started at this check. Recheck availability before new GPU tasks.
 
 ## Earlier milestone, September 23
 
@@ -158,10 +165,10 @@ on September 23 UTC. See [toolchain inventory](evidence/stage1-pilot-20260923/to
 
 ## What must run next
 
-1. Collect all 24 screening results; verify paired sample hashes and successful
-   updates, report every seed and the legacy-initialization diagnostic. Compare
-   structured arms against both full dense and their equal-parameter dense
-   controls before selecting anything for a larger study.
+1. Revisit the architectural restriction: collection and audit of all 24 runs
+   is complete, and none of the structured arms passes the exploratory quality
+   rule. Keep narrow dense as a required control and avoid promoting the current
+   grouped/Monarch variants directly to the main FPGA implementation.
 2. Finish the equation/schedule novelty audit against the closest full papers.
    The implemented Monarch, grouping, shuffle and low-rank controls are known
    operators, not proposed new blocks. Define explicit buffer/bank/traffic

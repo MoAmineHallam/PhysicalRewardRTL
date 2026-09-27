@@ -293,7 +293,18 @@ This research branch was created in an isolated worktree so the original working
 
 Latest Stage 1 execution: [corrected profiling and controls](research/fpga2/PROFILE_UPDATE_20260926.md),
 [three-seed screening protocol](research/fpga2/SCREENING_PROTOCOL_20260926.md),
-and [live-campaign status](research/fpga2/STAGE1_STATUS.md).
+and [current status](research/fpga2/STAGE1_STATUS.md).
+
+**2026-09-27:** Collected and audited all 24 screening trials, which finished
+September 26 at 21:36 Shanghai time after 17.82 minutes. Every trial completed
+1,024 updates without skips; paired sample hashes and source hashes check out.
+Narrow dense beats grouping/shuffle and the Monarch-budget dense control beats
+Monarch in all three seeds. The initialization correction helps grouping in the
+single-seed sensitivity check but does not close that quality gap. No structured
+arm meets the exploratory +0.10 NLL rule versus full dense. These undertrained
+development results justify revisiting the restriction before the main FPGA
+implementation, not rejecting structured models in general. Both servers are
+idle; no new job was started. See [complete results and evidence](research/fpga2/SCREENING_RESULTS_20260927.md).
 
 Append dated decisions and evidence links as the project proceeds. Keep proposed, executed, measured, estimated, and independently reproduced outcomes distinct. Record commit IDs, model/data hashes, source versions, seeds, failure counts, tool/PDK versions, and deviations from frozen protocols. A promising pilot may change the plan; it must not retroactively become a preregistered result.
 
