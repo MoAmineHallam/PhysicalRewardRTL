@@ -1,5 +1,13 @@
 # Stage 1 execution
 
+September 27 execution update: the [seven-step checklist](../research/fpga2/EXECUTION_PLAN.md)
+and [workload contract](../research/fpga2/WORKLOAD_CONTRACT.md) track the new study.
+Three experimental message-placement FFNs are available through `Config`/`Decoder`;
+see `communication.py` and `test_communication.py`. All 19 tests pass locally.
+These arms are not yet exposed in the historical pilot runner: stronger controls,
+fresh pinned data and a resumable runner are required before the next campaign.
+The older protocol and measurements below remain historical records.
+
 September 26 update: corrected profiling and preallocated KV storage are available,
 and Monarch/low-rank controls pass algebra, gradient and numerical checks. The
 three-seed screening campaign uses the separately frozen

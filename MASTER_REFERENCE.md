@@ -8,6 +8,12 @@
 
 **Branch:** `FPGA2`, based on GitHub `main` at `f7c0572bcf6fac8e6a560382854cfc62266e52b4`.
 
+**Execution checklist:** follow the [seven recorded steps](research/fpga2/EXECUTION_PLAN.md)
+and [initial workload contract](research/fpga2/WORKLOAD_CONTRACT.md). Execution
+has begun with three message-placement FFNs integrated into the decoder; all
+19 current CPU tests pass. Stronger prior-work controls, pinned data, resumable
+training and realistic hardware accounting remain prerequisites to larger runs.
+
 ## 1. Objective and the agreed two-stage sequence
 
 The supervisor-directed first question is:

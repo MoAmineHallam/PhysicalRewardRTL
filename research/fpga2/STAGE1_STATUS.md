@@ -165,6 +165,13 @@ on September 23 UTC. See [toolchain inventory](evidence/stage1-pilot-20260923/to
 
 ## What must run next
 
+**Execution started:** the [seven-step checklist](EXECUTION_PLAN.md) records
+completion criteria and current progress. The [workload contract](WORKLOAD_CONTRACT.md)
+defines the first comparisons. Pre-gate, value-path and post-computation FFNs
+are now integrated into the causal decoder, with five new test methods; all
+19 tests pass locally. No new training campaign is running as part of this
+implementation milestone. The previous campaign and runner are preserved.
+
 The [September 27 research proposal](RESEARCH_PROPOSAL_20260927.md) now makes
 these tasks concrete: compare equal-budget pre-gate, value-path and post-FFN
 communication; retain narrow dense and stronger published controls; model
