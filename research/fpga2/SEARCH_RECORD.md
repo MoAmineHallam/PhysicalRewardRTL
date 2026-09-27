@@ -21,7 +21,7 @@ Representative query groups executed:
 | Optional memory | `Memorizing Transformers`; `Native Sparse Attention`; `external memory retrieval language model FPGA sparse routing top k` |
 | ASIC path | `OpenROAD open-source RTL GDSII flow` |
 
-The literature ledger contains **32 records**, with grouped closely related versions in some records. It is selective, not a count of every search hit. Coverage includes 2026 papers found during the search, but is not a guarantee of complete coverage through that date.
+The initial literature ledger contained **32 records**, extended to **39 records** on September 27, with grouped closely related versions in some records. It is selective, not a count of every search hit. Coverage includes 2026 papers found during the search, but is not a guarantee of complete coverage through that date.
 
 ## Full-text checks that changed the recommendation
 
@@ -59,3 +59,40 @@ Read-only server checks earlier in this conversation established GPU model/count
 - Keep model-inference efficiency separate from generated-circuit utility during Stage 2.
 - Treat the gap as provisional. A full reproduction/novelty audit can narrow, redirect, or invalidate it.
 - Create `FPGA2` from the verified GitHub `main` snapshot in an isolated worktree; preserve the original working branch and uncommitted manuscript changes.
+
+## September 27: evidence-driven proposal revision
+
+Re-read the submitted main paper and supplement, the complete 24-run audit and
+the corrected GPU profile. Inspected primary papers on structured-FFN training,
+selective grouping and local/global projection paths. Searches included
+`Building on Efficient Foundations structured feedforward`,
+`HDPL Hybrid Dual transformer`, and
+`transformer feedforward communication gate block diagonal low rank`, followed
+by primary paper/project/code links. Earlier broad searches are not exhaustive
+coverage; third-party search summaries were not used as technical evidence.
+
+Added R33–R39. Upgraded GroupBERT to a relevant full-text read: our existing
+all-projection grouping is not its asymmetric projection pattern. StructuredFFN
+requires stronger training controls; HDPL directly rules out a generic
+local-plus-global novelty claim. Parallel Track Transformers rules out the
+broader claim that architecture-level synchronization reduction is unexplored.
+FiLM, SE and workspace research constrain conceptual claims about conditioning
+and limited communication. Masked GLU remains an abstract-level lead.
+
+Relevant StructuredFFN and HDPL source files were downloaded for read-only
+inspection at immutable revisions. The [source manifest](evidence/research-plan-20260927/source_manifest.json)
+records file hashes and URLs. No upstream code was executed or imported into
+training. Available StructuredFFN code predates final publication; pinning it
+does not establish exact reproduction of the final recipe. License and full
+configuration review remain necessary before code reuse.
+
+The [new proposal](RESEARCH_PROPOSAL_20260927.md) defines a bounded pre/post
+communication comparison and a physical rejection test. Its isolated CPU
+derivative/count probe passed three seeded checks. This validates local
+mathematics only. No new LM training, FPGA build, power measurement, data
+download, installation or baseline reproduction occurred in this review.
+
+Outstanding: exact graph/schedule equivalence against closest full methods,
+forward/backward citations for the selected restriction, stronger training
+recipes, and an actual quality/physical Pareto comparison. The review identifies
+a testable hypothesis, not a certified research gap.

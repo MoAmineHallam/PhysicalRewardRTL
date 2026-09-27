@@ -1,8 +1,10 @@
 # FPGA2 — Master Reference
 
-**Updated:** 2026-09-26
+**Updated:** 2026-09-27
 
-**Status:** Initial Stage 1 execution completed: four short training pilots, a dense GPU profile, and synthesis smoke tests for both Z2 and ZU. The existing Vivado 2023.1 installation works and is selected for initial hardware work; further 2026.1 downloads are not needed to begin. No preserved-quality, architectural speedup, FPGA accelerator, or ASIC result exists yet. See the [execution report](research/fpga2/STAGE1_STATUS.md) and [pilot protocol/code](stage1/README.md).
+**Status:** All 24 follow-up screening trials are complete. Narrow dense FFNs beat the tested grouped/Monarch controls at matched parameter counts in all three seeds. No preserved-quality, architectural speedup, FPGA accelerator, or ASIC result exists yet. Vivado 2023.1 works for both Z2 and ZU. See the [complete results](research/fpga2/SCREENING_RESULTS_20260927.md), [execution report](research/fpga2/STAGE1_STATUS.md), and [code](stage1/README.md).
+
+**Current research recommendation:** test the placement of a bounded global message before versus after local FFN nonlinear computation, under exactly matched arithmetic/weight budgets and explicit bank/DDR constraints. The [September 27 proposal](research/fpga2/RESEARCH_PROPOSAL_20260927.md) specifies equations, strong baselines, independent evaluation, hardware schedules, budgets and stopping rules. This supersedes the earlier broad candidate priority where they differ. New literature checks found close precedents in StructuredFFN and HDPL; generic grouping or local/global paths are not claimed as new. Novelty and physical benefit remain unproven. No further training was launched for the planning review.
 
 **Branch:** `FPGA2`, based on GitHub `main` at `f7c0572bcf6fac8e6a560382854cfc62266e52b4`.
 

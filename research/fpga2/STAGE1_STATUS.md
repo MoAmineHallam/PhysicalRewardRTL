@@ -165,6 +165,15 @@ on September 23 UTC. See [toolchain inventory](evidence/stage1-pilot-20260923/to
 
 ## What must run next
 
+The [September 27 research proposal](RESEARCH_PROPOSAL_20260927.md) now makes
+these tasks concrete: compare equal-budget pre-gate, value-path and post-FFN
+communication; retain narrow dense and stronger published controls; model
+realistic bank/DDR costs before committing to an accelerator. A small CPU
+mathematical probe verifies the proposed counts and derivative distinctions,
+but provides no language-quality or speed result. New literature findings add
+substantial novelty risk, especially HDPL. No new training or board job was
+started during this planning review.
+
 1. Revisit the architectural restriction: collection and audit of all 24 runs
    is complete, and none of the structured arms passes the exploratory quality
    rule. Keep narrow dense as a required control and avoid promoting the current

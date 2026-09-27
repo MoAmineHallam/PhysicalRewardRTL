@@ -1,6 +1,6 @@
 # FPGA2 — Related research and gap ledger
 
-Review date: **2026-09-22**. Companion to the [master reference](../../MASTER_REFERENCE.md).
+Review dates: **2026-09-22 and 2026-09-27**. Companion to the [master reference](../../MASTER_REFERENCE.md). The September 27 extension corrects important omissions in the initial review; see R33–R39 and the [research proposal](RESEARCH_PROPOSAL_20260927.md).
 
 This is a focused research map, not an exhaustive systematic review. Findings below are attributed to their authors and have not been reproduced here. A reported GPU, FPGA, simulator, or compute-in-memory result is evidence for that setting; it is not an interchangeable ASIC measurement. No headline speedups from different papers are pooled or ranked.
 
@@ -55,13 +55,15 @@ This is a focused research map, not an exhaustive systematic review. Findings be
 <a id="r05"></a>
 ### R05 — GroupBERT (2021)
 
-[GroupBERT: Enhanced Transformer Architecture with Efficient Grouped Structures](https://arxiv.org/abs/2106.05822). Scope: A.
+[GroupBERT: Enhanced Transformer Architecture with Efficient Grouped Structures](https://arxiv.org/abs/2106.05822). Scope: T (Section 3.2 revisited September 27).
 
 **Done:** combines attention, convolution, and grouped transformations to reduce dense feed-forward/convolution cost, evaluating BERT-style representations and training efficiency.
 
 **Implication:** grouped FFNs are established. Replacing dense FFNs with groups is a baseline, not sufficient novelty.
 
 **Remaining question:** causal decoding quality and actual digital accelerator communication for a particular constrained grouping/mixing rule. Encoder results must not be treated as decoder results.
+
+**Correction for our baselines:** its FFN retains dense expansion, groups contraction, then mixes outputs densely. The paper discusses the harm from grouping expansion. Our all-three-projection grouped SwiGLU is therefore not a GroupBERT reproduction. Adapt and label the projection pattern explicitly. The original GELU FFN's compression fraction does not carry over unchanged to SwiGLU with an extra dense output mixer.
 
 <a id="r06"></a>
 ### R06 — SVD-LLM (2024) and SVD-LLM V2 (2025)
@@ -376,4 +378,73 @@ The broad objective is feasible as a research direction, but its ingredients are
 
 That candidate is an inference from the reviewed evidence. This ledger does not prove that the proposed restriction is absent from all prior work. Before naming a new block, compare its equations and graph against the closest full papers and released implementations. If an existing method expresses the same graph, identify the actual remaining contribution: a new training constraint, a stronger physical schedule, a validated trade-off, or none.
 
-A useful reading order is R04, R03, R05, R08, R12, R19, R31, then the Stage 2 papers. These constrain the proposal most directly. R01 and R09 further limit claims about structured matrices and factorization tricks.
+A useful reading order is now R33, R34, R05, R04, R03, R08, R12, R19 and R35, then the Stage 2 papers. These constrain the proposal most directly. R01 and R09 further limit claims about structured matrices and factorization tricks.
+
+## September 27 extension: training, local/global paths and conditioning
+
+<a id="r33"></a>
+### R33 — Building on Efficient Foundations (NeurIPS 2024)
+
+[Building on Efficient Foundations: Effectively Training LLMs with Structured Feedforward Layers](https://arxiv.org/abs/2406.16450); [author project](https://claire-labo.github.io/StructuredFFN/); [code](https://github.com/CLAIRE-Labo/StructuredFFN). Scope: T/P.
+
+**Done:** studies LowRank, BlockShuffle and BlockDense in 110M–1.3B LMs, training/scaling difficulties, temporary dense self-guidance and pre-merging factors for small-batch inference.
+
+**Implication:** count guidance compute and any expanded inference representation. Include a strong structured training recipe before rejecting the family. Our 8M-token screen does not reproduce this study.
+
+**Candidate gap:** a whole-FFN communication restriction with a physical schedule and matched-quality measurements, rather than another claim that structured matrices reduce FLOPs. Code revision and inspected file hashes are in the [source manifest](evidence/research-plan-20260927/source_manifest.json); available code predates the final conference publication and is not automatically the final recipe.
+
+<a id="r34"></a>
+### R34 — HDPL (February 2026 preprint)
+
+[Hybrid Dual-Path Linear Transformations for Efficient Transformer Architectures](https://arxiv.org/abs/2602.07070); [v1 method](https://arxiv.org/html/2602.07070v1); [author code](https://github.com/VladimerKhasia/HDPL). Scope: T/P.
+
+**Done:** combines grouped local projections with a variational global bottleneck. Its deterministic inference path uses the latent mean and a nonlinear decoder path. Selected attention and gate/up projections change; output/down aggregation stays dense.
+
+**Implication:** a direct novelty collision for generic local-plus-global proposals. Author claims are not independently reproduced here. The actual code flags, rather than inconsistent nearby comments, determine its selected projections.
+
+**Candidate distinction to test:** a single bounded collective across the whole FFN, local contraction, and a controlled pre/post-nonlinearity comparison. Removing the variational term alone is not a persuasive contribution.
+
+<a id="r35"></a>
+### R35 — Parallel Track Transformers (February 2026 preprint)
+
+[Parallel Track Transformers: Enabling Fast GPU Inference with Reduced Synchronization](https://arxiv.org/abs/2602.07306); [full text](https://arxiv.org/html/2602.07306v1). Scope: T.
+
+**Done:** separates computation into transformer tracks and reduces synchronization through less frequent cross-track aggregation, studying large-model GPU inference.
+
+**Implication:** architecture-level communication reduction is established. Distinguish within-FFN bank communication from synchronization among complete tracks. Our resources do not justify reproducing its largest training runs; cite and analyze the graph rather than inventing an unfair miniature reproduction.
+
+<a id="r36"></a>
+### R36 — Masked Gated Linear Unit (2025)
+
+[Masked Gated Linear Unit](https://arxiv.org/abs/2506.23225); [NeurIPS proceedings](https://proceedings.neurips.cc/paper_files/paper/2025/file/dd73f39426a03131c38c8d943153d44b-Paper-Conference.pdf). Scope: A.
+
+**Done:** uses shared gate/value weights with learned masks and a corresponding efficient implementation.
+
+**Implication:** gate/up sharing is not an unoccupied direction. Review the complete method if weight sharing enters our candidate; it is not equivalent to communication placement solely because both modify a GLU.
+
+<a id="r37"></a>
+### R37 — FiLM (2017 preprint; AAAI 2018)
+
+[FiLM: Visual Reasoning with a General Conditioning Layer](https://arxiv.org/abs/1709.07871). Scope: A.
+
+**Done:** conditions feature computation with learned feature-wise affine modulation.
+
+**Implication:** global conditioning of local features is an established idea. A hardware-specific communication budget and a causal-LM comparison need their own evidence; do not claim invention of modulation.
+
+<a id="r38"></a>
+### R38 — Squeeze-and-Excitation Networks (2017 preprint; CVPR 2018)
+
+[Squeeze-and-Excitation Networks](https://arxiv.org/abs/1709.01507). Scope: A (linked revised journal version).
+
+**Done:** learns channel-wise recalibration from channel dependencies in convolutional networks.
+
+**Implication:** compact channel-conditioning paths precede this project. Different modality and topology do not erase the conceptual precedent.
+
+<a id="r39"></a>
+### R39 — Shared Global Workspace (2021 preprint)
+
+[Coordination Among Neural Modules Through a Shared Global Workspace](https://arxiv.org/abs/2103.01197). Scope: A.
+
+**Done:** studies coordination among modules through a shared workspace with limited communication capacity.
+
+**Implication:** a shared communication bottleneck is not itself new. Compare exact operators and costs; sparse workspace selection is not automatically the same schedule as a fixed reduction and broadcast.
