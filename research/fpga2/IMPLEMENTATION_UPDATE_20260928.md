@@ -69,7 +69,20 @@ schedule, routed accelerator, measured power or ASIC evidence has been produced.
 
 ## Remaining scope
 
-The next run is the 24-trial exploratory screen, frozen separately. It does not
+The 24-trial exploratory screen launched September 28 at **06:28 UTC / 14:28
+Shanghai**, after source commit `1bc2bf27c7ddfc591b8531d13b41689102d04d57` was
+pushed. Four workers use all four V100s, six sequential jobs each. The launch
+snapshot shows steps 156/156/112/146 of the first jobs, all without failures.
+Seed-42 workers agree on the sampling-chain hash at equal step 156.
+The [launch snapshot](evidence/message-screen-20260927/launch_progress.json)
+and four launch receipts preserve worker PIDs, source hashes and commands.
+
+Each run targets 6,144 updates / 100,663,296 scored training tokens, so the
+campaign totals 2,415,919,104 token exposures across 24 trials, not that many
+unique corpus tokens. Early smoke timings suggest several hours for the queue;
+checkpoint/evaluation overhead and sustained throughput determine the actual ETA.
+
+This does not
 complete the broader evaluation: HDPL, near-duplicate/benchmark contamination,
 equal-compute recipe comparison, third-seed confirmation and realistic hardware
 schedules remain outstanding. No reserved-test quality result is used to select

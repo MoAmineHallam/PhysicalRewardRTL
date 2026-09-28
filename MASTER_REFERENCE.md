@@ -2,7 +2,7 @@
 
 **Updated:** 2026-09-28
 
-**Status:** All 24 follow-up screening trials are complete. Narrow dense FFNs beat the tested grouped/Monarch controls at matched parameter counts in all three seeds. No preserved-quality, architectural speedup, FPGA accelerator, or ASIC result exists yet. Vivado 2023.1 works for both Z2 and ZU. See the [complete results](research/fpga2/SCREENING_RESULTS_20260927.md), [execution report](research/fpga2/STAGE1_STATUS.md), and [code](stage1/README.md).
+**Status:** The new 24-trial communication screen started September 28 at 14:28 Shanghai, using all four V100s. At the launch check, all four workers were training with no failures; each run targets 100.66M tokens. The older 24-trial screen is complete and favored narrow dense over its grouped/Monarch matches. No preserved-quality, architectural speedup, FPGA accelerator, or ASIC result exists yet. Vivado 2023.1 works for both Z2 and ZU. See the [new execution update](research/fpga2/IMPLEMENTATION_UPDATE_20260928.md), [older results](research/fpga2/SCREENING_RESULTS_20260927.md), and [code](stage1/README.md).
 
 **Current research recommendation:** test the placement of a bounded global message before versus after local FFN nonlinear computation, under exactly matched arithmetic/weight budgets and explicit bank/DDR constraints. The [September 27 proposal](research/fpga2/RESEARCH_PROPOSAL_20260927.md) specifies equations, strong baselines, independent evaluation, hardware schedules, budgets and stopping rules. This supersedes the earlier broad candidate priority where they differ. New literature checks found close precedents in StructuredFFN and HDPL; generic grouping or local/global paths are not claimed as new. Novelty and physical benefit remain unproven. No further training was launched for the planning review.
 
@@ -17,8 +17,8 @@ training and realistic hardware accounting remain prerequisites to larger runs.
 **September 28 execution:** pinned FineWeb-Edu data, stronger projection controls
 and a resumable trainer are now implemented. All 23 local tests and 48 GPU FFN
 precision checks pass. The [implementation update](research/fpga2/IMPLEMENTATION_UPDATE_20260928.md)
-records a detected GPU nondeterminism issue and its deterministic recheck.
-The next 24-trial screen follows its [frozen protocol](research/fpga2/MESSAGE_SCREEN_PROTOCOL_20260927.md).
+records a detected GPU nondeterminism issue and the successful exact-continuation recheck.
+The running 24-trial screen follows its [frozen protocol](research/fpga2/MESSAGE_SCREEN_PROTOCOL_20260927.md).
 
 ## 1. Objective and the agreed two-stage sequence
 

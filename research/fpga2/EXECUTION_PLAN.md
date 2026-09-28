@@ -50,7 +50,10 @@ software tests is not evidence of language quality or hardware benefit.
 
 **Exit:** reproducible data, verified resume and a committed run manifest.
 
-## 4. Screen model quality and hardware feasibility together — pending
+## 4. Screen model quality and hardware feasibility together — in progress
+
+- [x] Launch the frozen 24-trial screen on all four V100s after deterministic
+  smoke/resume checks, September 28 at 14:28 Shanghai. Initial updates are healthy.
 
 - [ ] Run approximately 32M-scale models for an initial 100M fresh tokens per
   arm, initially two seeds; expand selected comparisons as specified in the proposal.
@@ -118,3 +121,10 @@ An initial CUDA continuation diagnostic exposed pre-checkpoint nondeterminism;
 the revised deterministic training path passes exact GPU continuation before the main screen.
 See the [implementation update](IMPLEMENTATION_UPDATE_20260928.md). Historical
 "next work" entries above refer to their recorded milestone, not current completion.
+
+**September 28 launch:** source commit `1bc2bf27c7ddfc591b8531d13b41689102d04d57`
+was committed and pushed before launch. Four workers each execute six sequential
+jobs. At the initial snapshot, workers had reached steps 156, 156, 112 and 146
+of their first 6,144-step runs, with no failure markers. The two seed-42 workers
+at equal step 156 have identical sampling chains. Full campaign outcomes remain
+pending; do not infer quality rankings from the smoke or initial training losses.

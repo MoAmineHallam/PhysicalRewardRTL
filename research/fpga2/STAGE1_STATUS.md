@@ -1,12 +1,13 @@
-# Stage 1: first execution milestone
+# Stage 1 execution status
 
-**September 28 update:** data preparation, stronger controls and resumable training
-are implemented. See the [execution update](IMPLEMENTATION_UPDATE_20260928.md)
+**September 28 update:** the new 24-trial campaign is running on all four V100s,
+launched at 14:28 Shanghai. Data preparation, stronger controls and deterministic
+resumable training passed their launch checks. See the [execution update](IMPLEMENTATION_UPDATE_20260928.md)
 and [new screening protocol](MESSAGE_SCREEN_PROTOCOL_20260927.md). The results
 below describe the completed older campaign; they are not new-screen outcomes.
 
-Updated 2026-09-27. **All 24 screening trials finished successfully in 17.82
-minutes. Both GPU servers are idle at the latest check.** Ordinary reduced-width
+Previous milestone, 2026-09-27: **all 24 older screening trials finished successfully in 17.82
+minutes. Both GPU servers were idle at that earlier check.** Ordinary reduced-width
 dense FFNs beat grouped and Monarch controls at matched parameter counts in all
 three tested seeds. See the [complete results](SCREENING_RESULTS_20260927.md).
 No quality preservation, architectural speedup, FPGA accelerator, or ASIC result
