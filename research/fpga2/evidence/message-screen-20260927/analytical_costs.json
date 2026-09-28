@@ -1,0 +1,205 @@
+{
+  "scope": "Analytical first-FFN ledger, not FPGA measurements or a cycle schedule.",
+  "assumptions": {
+    "clock_hz": 150000000,
+    "macs_per_cycle": 256,
+    "weight_bits": 8,
+    "activation_message_bits": 16,
+    "reduction_bits": 32,
+    "ddr_gigabytes_per_second_sweep": [
+      1,
+      2,
+      4
+    ]
+  },
+  "limitations": [
+    "Numerical formats and bandwidth are illustrative, not quality-validated or board-measured.",
+    "Cold weights streamed once per FFN invocation; assumes perfect compute/transfer overlap.",
+    "Lower bounds omit nonlinearities, scales, alignment, banking, control, DMA setup and other transformer operations.",
+    "Link bits describe one group topology. An optimized dense mapping may avoid that topology.",
+    "Prior controls require their own detailed collective/buffer schedules; null is unknown, not zero.",
+    "Equal-budget narrow dense and message FFNs have equal ideal cold-weight bandwidth floors."
+  ],
+  "rows": [
+    {
+      "arm": "dense",
+      "ffn_weights": 1179648,
+      "leading_macs_per_token": 1179648,
+      "hidden_nonlinearity_elements": 1024,
+      "illustrative_cold_weight_bytes_int8": 1179648,
+      "message_collective_link_bits": null,
+      "dense_four_cluster_collective_link_bits": 55296,
+      "illustrative_256_mac_per_cycle_cycles": 4608,
+      "optimistic_cold_ffn_seconds": {
+        "1": 0.001179648,
+        "2": 0.000589824,
+        "4": 0.000294912
+      }
+    },
+    {
+      "arm": "dense256",
+      "ffn_weights": 294912,
+      "leading_macs_per_token": 294912,
+      "hidden_nonlinearity_elements": 256,
+      "illustrative_cold_weight_bytes_int8": 294912,
+      "message_collective_link_bits": null,
+      "dense_four_cluster_collective_link_bits": 55296,
+      "illustrative_256_mac_per_cycle_cycles": 1152,
+      "optimistic_cold_ffn_seconds": {
+        "1": 0.000294912,
+        "2": 0.000147456,
+        "4": 7.3728e-05
+      }
+    },
+    {
+      "arm": "dense300",
+      "ffn_weights": 345600,
+      "leading_macs_per_token": 345600,
+      "hidden_nonlinearity_elements": 300,
+      "illustrative_cold_weight_bytes_int8": 345600,
+      "message_collective_link_bits": null,
+      "dense_four_cluster_collective_link_bits": 55296,
+      "illustrative_256_mac_per_cycle_cycles": 1350,
+      "optimistic_cold_ffn_seconds": {
+        "1": 0.0003456,
+        "2": 0.0001728,
+        "4": 8.64e-05
+      }
+    },
+    {
+      "arm": "grouped",
+      "ffn_weights": 294912,
+      "leading_macs_per_token": 294912,
+      "hidden_nonlinearity_elements": 1024,
+      "illustrative_cold_weight_bytes_int8": 294912,
+      "message_collective_link_bits": 0,
+      "dense_four_cluster_collective_link_bits": null,
+      "illustrative_256_mac_per_cycle_cycles": 1152,
+      "optimistic_cold_ffn_seconds": {
+        "1": 0.000294912,
+        "2": 0.000147456,
+        "4": 7.3728e-05
+      }
+    },
+    {
+      "arm": "communication_gate",
+      "ffn_weights": 345600,
+      "leading_macs_per_token": 345600,
+      "hidden_nonlinearity_elements": 1024,
+      "illustrative_cold_weight_bytes_int8": 345600,
+      "message_collective_link_bits": 5184,
+      "dense_four_cluster_collective_link_bits": null,
+      "illustrative_256_mac_per_cycle_cycles": 1350,
+      "optimistic_cold_ffn_seconds": {
+        "1": 0.0003456,
+        "2": 0.0001728,
+        "4": 8.64e-05
+      }
+    },
+    {
+      "arm": "communication_value",
+      "ffn_weights": 345600,
+      "leading_macs_per_token": 345600,
+      "hidden_nonlinearity_elements": 1024,
+      "illustrative_cold_weight_bytes_int8": 345600,
+      "message_collective_link_bits": 5184,
+      "dense_four_cluster_collective_link_bits": null,
+      "illustrative_256_mac_per_cycle_cycles": 1350,
+      "optimistic_cold_ffn_seconds": {
+        "1": 0.0003456,
+        "2": 0.0001728,
+        "4": 8.64e-05
+      }
+    },
+    {
+      "arm": "communication_post",
+      "ffn_weights": 345600,
+      "leading_macs_per_token": 345600,
+      "hidden_nonlinearity_elements": 1024,
+      "illustrative_cold_weight_bytes_int8": 345600,
+      "message_collective_link_bits": 5184,
+      "dense_four_cluster_collective_link_bits": null,
+      "illustrative_256_mac_per_cycle_cycles": 1350,
+      "optimistic_cold_ffn_seconds": {
+        "1": 0.0003456,
+        "2": 0.0001728,
+        "4": 8.64e-05
+      }
+    },
+    {
+      "arm": "groupbert_pattern",
+      "ffn_weights": 1032192,
+      "leading_macs_per_token": 1032192,
+      "hidden_nonlinearity_elements": 1024,
+      "illustrative_cold_weight_bytes_int8": 1032192,
+      "message_collective_link_bits": null,
+      "dense_four_cluster_collective_link_bits": null,
+      "illustrative_256_mac_per_cycle_cycles": 4032,
+      "optimistic_cold_ffn_seconds": {
+        "1": 0.001032192,
+        "2": 0.000516096,
+        "4": 0.000258048
+      }
+    },
+    {
+      "arm": "dense896",
+      "ffn_weights": 1032192,
+      "leading_macs_per_token": 1032192,
+      "hidden_nonlinearity_elements": 896,
+      "illustrative_cold_weight_bytes_int8": 1032192,
+      "message_collective_link_bits": null,
+      "dense_four_cluster_collective_link_bits": 55296,
+      "illustrative_256_mac_per_cycle_cycles": 4032,
+      "optimistic_cold_ffn_seconds": {
+        "1": 0.001032192,
+        "2": 0.000516096,
+        "4": 0.000258048
+      }
+    },
+    {
+      "arm": "blockdense",
+      "ffn_weights": 267264,
+      "leading_macs_per_token": 267264,
+      "hidden_nonlinearity_elements": 1024,
+      "illustrative_cold_weight_bytes_int8": 267264,
+      "message_collective_link_bits": null,
+      "dense_four_cluster_collective_link_bits": null,
+      "illustrative_256_mac_per_cycle_cycles": 1044,
+      "optimistic_cold_ffn_seconds": {
+        "1": 0.000267264,
+        "2": 0.000133632,
+        "4": 6.6816e-05
+      }
+    },
+    {
+      "arm": "blockdense_guided",
+      "ffn_weights": 267264,
+      "leading_macs_per_token": 267264,
+      "hidden_nonlinearity_elements": 1024,
+      "illustrative_cold_weight_bytes_int8": 267264,
+      "message_collective_link_bits": null,
+      "dense_four_cluster_collective_link_bits": null,
+      "illustrative_256_mac_per_cycle_cycles": 1044,
+      "optimistic_cold_ffn_seconds": {
+        "1": 0.000267264,
+        "2": 0.000133632,
+        "4": 6.6816e-05
+      }
+    },
+    {
+      "arm": "dense232",
+      "ffn_weights": 267264,
+      "leading_macs_per_token": 267264,
+      "hidden_nonlinearity_elements": 232,
+      "illustrative_cold_weight_bytes_int8": 267264,
+      "message_collective_link_bits": null,
+      "dense_four_cluster_collective_link_bits": 55296,
+      "illustrative_256_mac_per_cycle_cycles": 1044,
+      "optimistic_cold_ffn_seconds": {
+        "1": 0.000267264,
+        "2": 0.000133632,
+        "4": 6.6816e-05
+      }
+    }
+  ]
+}

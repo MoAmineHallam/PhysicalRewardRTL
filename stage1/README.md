@@ -1,5 +1,16 @@
 # Stage 1 execution
 
+September 28: `prepare_fineweb`, `experiment`, `prior_controls`, `train_screen`,
+`audit_screen`, `smoke_screen` and `screen_worker` implement the new exploratory
+study. Follow its [frozen protocol](../research/fpga2/MESSAGE_SCREEN_PROTOCOL_20260927.md)
+and [execution update](../research/fpga2/IMPLEMENTATION_UPDATE_20260928.md).
+Run all current checks with `python -m unittest stage1.test_model stage1.test_data
+stage1.test_profile stage1.test_structured stage1.test_communication stage1.test_screen -v`.
+Twenty-three tests pass. `train_screen --resume` restores only identical run,
+source, data and runtime identities; model exports exclude dense training guides.
+The trainer never opens reserved test arrays. New campaign and old pilot output
+directories are separate.
+
 September 27 execution update: the [seven-step checklist](../research/fpga2/EXECUTION_PLAN.md)
 and [workload contract](../research/fpga2/WORKLOAD_CONTRACT.md) track the new study.
 Three experimental message-placement FFNs are available through `Config`/`Decoder`;

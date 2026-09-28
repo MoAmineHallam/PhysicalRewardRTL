@@ -1,0 +1,371 @@
+{
+  "environment": {
+    "utc": "2026-09-27T15:05:05.027840+00:00",
+    "python": "3.10.20",
+    "torch": "2.4.1+cu121",
+    "cuda": "12.1",
+    "gpu": "Tesla V100-SXM2-32GB",
+    "sources": {
+      "__init__.py": "630c0c5183fbec537844e1c42a652dcc2cd0220a8709d2210a9c57a423cd5331",
+      "audit_screen.py": "9a37510c5f5a59c2d077da592c6217164eb476c799de8de3beffd5cec2343418",
+      "campaign.py": "77a6af970759bfbab210fce766f594b83045d9baaa7755cc9527a875329e72ea",
+      "communication.py": "eb85d8999d5417783caa7f0b245b51f09000f6bdfa0f5c34cb83c0b4dc3a4f2c",
+      "counter_probe.py": "09e1817cf398debc7d1218e48a8723feffce1801972f09e4516ed6aa7797142f",
+      "experiment.py": "1152849c55aa462550933a7b1cfeaaaa2f685032d0ba3993e589e8d8dfba35ad",
+      "ffn_benchmark.py": "a7e7ec86d58c5d645eb6ed75e88c9a6c9f8fa60d74a204cce1a6cc93213a7a70",
+      "launch_pilot.py": "590804063c25fa755491ba82d65082550d27ef8e66c9703238dd7b066c235c47",
+      "model.py": "a761052f37f254c41a0fc55190f9f1dbec2ab22d2cf70c7c4f2cf5fc8f4b0c3a",
+      "prepare_data.py": "4baa8be17fdb12f258aaf9df41006b077aaf786367107c2a8f182f72c40ae733",
+      "prepare_fineweb.py": "63af8bacb146161fad6308efcbb63806eaa6f3f84b52485ffc9d7d414aea9e13",
+      "prior_controls.py": "a1dd3fae62afe884176c6675b16002244556369b8f620d0af51845b534c83f8a",
+      "profile_v2.py": "537605ade16ef131e5ac8223c0fdd8c3fb5cf8f34c993f1145b50ad471737fc7",
+      "run.py": "2b29213e1ee9dae648e7ac8665717878a6840bd6d9b9e8d73104a1702d4edb96",
+      "structured.py": "d34270f23185d8e30019cc0dccf45e047488fe9768e2644d79e89bc97d444ff5",
+      "test_communication.py": "8bb1f6661d7e37480c7a19a062fb5240cc72d4b663f22337283d10f76aa795aa",
+      "test_data.py": "243f27d2d99b3bebc49f31f19f52a71c2786e62b8b876524fe7ac3ec9af1f744",
+      "test_model.py": "6b31107478083d4929f1adec8f5c615ef35ea419698b073ba13fedff46dd17b7",
+      "test_profile.py": "f2290fc117a85ab622ff778e1d2dd554645ef9c5d1a0e7ff602cc0fbcb9c7243",
+      "test_screen.py": "51fac020cba8da6db6a4260cad2708b3cc8b8804bf4fe002dd7c50cf017bfa8b",
+      "test_structured.py": "2efc309597cc3ca4e820bdfbe6443ca4caf6d6f17f4fb32ffdd138f0078a48b7",
+      "train_screen.py": "49bbc743fd2b6d866eae2c7b02be82f7d53eab9f1107bed44f627a9cb9c0921e",
+      "validate_controls.py": "97dea87c05d18d5e49a1bfe11fb681a8075e3432cf9f30dc37c8207c0ea02540"
+    }
+  },
+  "rows": [
+    {
+      "arm": "dense",
+      "seed": 42,
+      "output_rms": 0.014881731942296028,
+      "fp16_relative_rms_error": 0.0007004804792813957,
+      "gradients_finite": true,
+      "parameters_training": 31498368,
+      "parameters_deployed": 31498368,
+      "gradient_l1": {
+        "up_gate.weight": 96.47364807128906,
+        "down.weight": 109.49641418457031
+      }
+    },
+    {
+      "arm": "dense256",
+      "seed": 42,
+      "output_rms": 0.014869051054120064,
+      "fp16_relative_rms_error": 0.0006710796151310205,
+      "gradients_finite": true,
+      "parameters_training": 26189952,
+      "parameters_deployed": 26189952,
+      "gradient_l1": {
+        "up_gate.weight": 84.37532043457031,
+        "down.weight": 38.45454406738281
+      }
+    },
+    {
+      "arm": "dense300",
+      "seed": 42,
+      "output_rms": 0.0148251261562109,
+      "fp16_relative_rms_error": 0.0006662316736765206,
+      "gradients_finite": true,
+      "parameters_training": 26494080,
+      "parameters_deployed": 26494080,
+      "gradient_l1": {
+        "up_gate.weight": 84.83676147460938,
+        "down.weight": 42.56745910644531
+      }
+    },
+    {
+      "arm": "grouped",
+      "seed": 42,
+      "output_rms": 0.014812067151069641,
+      "fp16_relative_rms_error": 0.0006695017800666392,
+      "gradients_finite": true,
+      "parameters_training": 26189952,
+      "parameters_deployed": 26189952,
+      "gradient_l1": {
+        "up_gate": 29.628623962402344,
+        "down": 39.485374450683594
+      }
+    },
+    {
+      "arm": "communication_gate",
+      "seed": 42,
+      "output_rms": 0.015006814152002335,
+      "fp16_relative_rms_error": 0.0007573420880362391,
+      "gradients_finite": true,
+      "parameters_training": 26494080,
+      "parameters_deployed": 26494080,
+      "gradient_l1": {
+        "up_gate": 28.617013931274414,
+        "down": 40.204097747802734,
+        "message_read": 5.881329536437988,
+        "message_write": 6.578241348266602
+      }
+    },
+    {
+      "arm": "communication_value",
+      "seed": 42,
+      "output_rms": 0.015008680522441864,
+      "fp16_relative_rms_error": 0.0007521613733842969,
+      "gradients_finite": true,
+      "parameters_training": 26494080,
+      "parameters_deployed": 26494080,
+      "gradient_l1": {
+        "up_gate": 28.77384376525879,
+        "down": 40.32460403442383,
+        "message_read": 5.443666934967041,
+        "message_write": 6.156391143798828
+      }
+    },
+    {
+      "arm": "communication_post",
+      "seed": 42,
+      "output_rms": 0.014927138574421406,
+      "fp16_relative_rms_error": 0.0007510064169764519,
+      "gradients_finite": true,
+      "parameters_training": 26494080,
+      "parameters_deployed": 26494080,
+      "gradient_l1": {
+        "up_gate": 37.066951751708984,
+        "down": 34.18394088745117,
+        "message_read": 11.192938804626465,
+        "message_write": 9.364395141601562
+      }
+    },
+    {
+      "arm": "groupbert_pattern",
+      "seed": 42,
+      "output_rms": 0.014729352667927742,
+      "fp16_relative_rms_error": 0.000727425329387188,
+      "gradients_finite": true,
+      "parameters_training": 30613632,
+      "parameters_deployed": 30613632,
+      "gradient_l1": {
+        "down": 46.60505676269531,
+        "up_gate.weight": 107.30294799804688,
+        "mix.weight": 10.220155715942383
+      }
+    },
+    {
+      "arm": "dense896",
+      "seed": 42,
+      "output_rms": 0.014870251528918743,
+      "fp16_relative_rms_error": 0.0006960598402656615,
+      "gradients_finite": true,
+      "parameters_training": 30613632,
+      "parameters_deployed": 30613632,
+      "gradient_l1": {
+        "up_gate.weight": 94.00736236572266,
+        "down.weight": 97.51539611816406
+      }
+    },
+    {
+      "arm": "blockdense",
+      "seed": 42,
+      "output_rms": 0.015419707633554935,
+      "fp16_relative_rms_error": 0.0008346208487637341,
+      "gradients_finite": true,
+      "parameters_training": 26024064,
+      "parameters_deployed": 26024064,
+      "gradient_l1": {
+        "up_gate.first": 9.256091117858887,
+        "up_gate.second": 45.98710632324219,
+        "down.first": 8.538819313049316,
+        "down.second": 23.768306732177734
+      }
+    },
+    {
+      "arm": "blockdense_guided",
+      "seed": 42,
+      "output_rms": 0.015419707633554935,
+      "fp16_relative_rms_error": 0.0008346208487637341,
+      "gradients_finite": true,
+      "parameters_training": 33101952,
+      "parameters_deployed": 26024064,
+      "gradient_l1": {
+        "up_gate.first": 9.256091117858887,
+        "up_gate.second": 45.98710632324219,
+        "down.first": 8.538819313049316,
+        "down.second": 23.768306732177734
+      }
+    },
+    {
+      "arm": "dense232",
+      "seed": 42,
+      "output_rms": 0.014708586037158966,
+      "fp16_relative_rms_error": 0.0006654105382040143,
+      "gradients_finite": true,
+      "parameters_training": 26024064,
+      "parameters_deployed": 26024064,
+      "gradient_l1": {
+        "up_gate.weight": 82.34747314453125,
+        "down.weight": 35.259918212890625
+      }
+    },
+    {
+      "arm": "dense",
+      "seed": 43,
+      "output_rms": 0.01498344074934721,
+      "fp16_relative_rms_error": 0.0006973642739467323,
+      "gradients_finite": true,
+      "parameters_training": 31498368,
+      "parameters_deployed": 31498368,
+      "gradient_l1": {
+        "up_gate.weight": 97.30167388916016,
+        "down.weight": 111.05491638183594
+      }
+    },
+    {
+      "arm": "dense256",
+      "seed": 43,
+      "output_rms": 0.014979192055761814,
+      "fp16_relative_rms_error": 0.0006668291171081364,
+      "gradients_finite": true,
+      "parameters_training": 26189952,
+      "parameters_deployed": 26189952,
+      "gradient_l1": {
+        "up_gate.weight": 85.6783447265625,
+        "down.weight": 38.95244216918945
+      }
+    },
+    {
+      "arm": "dense300",
+      "seed": 43,
+      "output_rms": 0.014988524839282036,
+      "fp16_relative_rms_error": 0.0006587125244550407,
+      "gradients_finite": true,
+      "parameters_training": 26494080,
+      "parameters_deployed": 26494080,
+      "gradient_l1": {
+        "up_gate.weight": 86.85888671875,
+        "down.weight": 43.41410827636719
+      }
+    },
+    {
+      "arm": "grouped",
+      "seed": 43,
+      "output_rms": 0.015051077120006084,
+      "fp16_relative_rms_error": 0.0006649787537753582,
+      "gradients_finite": true,
+      "parameters_training": 26189952,
+      "parameters_deployed": 26189952,
+      "gradient_l1": {
+        "up_gate": 30.46656036376953,
+        "down": 40.658782958984375
+      }
+    },
+    {
+      "arm": "communication_gate",
+      "seed": 43,
+      "output_rms": 0.014858134090900421,
+      "fp16_relative_rms_error": 0.0007574115297757089,
+      "gradients_finite": true,
+      "parameters_training": 26494080,
+      "parameters_deployed": 26494080,
+      "gradient_l1": {
+        "up_gate": 28.175111770629883,
+        "down": 39.26321792602539,
+        "message_read": 5.678418159484863,
+        "message_write": 6.229875087738037
+      }
+    },
+    {
+      "arm": "communication_value",
+      "seed": 43,
+      "output_rms": 0.014947973191738129,
+      "fp16_relative_rms_error": 0.0007478492916561663,
+      "gradients_finite": true,
+      "parameters_training": 26494080,
+      "parameters_deployed": 26494080,
+      "gradient_l1": {
+        "up_gate": 28.71603775024414,
+        "down": 39.77430725097656,
+        "message_read": 5.28446102142334,
+        "message_write": 5.977646350860596
+      }
+    },
+    {
+      "arm": "communication_post",
+      "seed": 43,
+      "output_rms": 0.015051084570586681,
+      "fp16_relative_rms_error": 0.0007459939224645495,
+      "gradients_finite": true,
+      "parameters_training": 26494080,
+      "parameters_deployed": 26494080,
+      "gradient_l1": {
+        "up_gate": 37.21477508544922,
+        "down": 35.08592224121094,
+        "message_read": 11.284605026245117,
+        "message_write": 9.40453052520752
+      }
+    },
+    {
+      "arm": "groupbert_pattern",
+      "seed": 43,
+      "output_rms": 0.014876067638397217,
+      "fp16_relative_rms_error": 0.0007260738639160991,
+      "gradients_finite": true,
+      "parameters_training": 30613632,
+      "parameters_deployed": 30613632,
+      "gradient_l1": {
+        "down": 47.207855224609375,
+        "up_gate.weight": 109.30465698242188,
+        "mix.weight": 10.416954040527344
+      }
+    },
+    {
+      "arm": "dense896",
+      "seed": 43,
+      "output_rms": 0.014925889670848846,
+      "fp16_relative_rms_error": 0.0006983816856518388,
+      "gradients_finite": true,
+      "parameters_training": 30613632,
+      "parameters_deployed": 30613632,
+      "gradient_l1": {
+        "up_gate.weight": 94.47464752197266,
+        "down.weight": 98.40082550048828
+      }
+    },
+    {
+      "arm": "blockdense",
+      "seed": 43,
+      "output_rms": 0.015195875428617,
+      "fp16_relative_rms_error": 0.0008393793250434101,
+      "gradients_finite": true,
+      "parameters_training": 26024064,
+      "parameters_deployed": 26024064,
+      "gradient_l1": {
+        "up_gate.first": 9.064474105834961,
+        "up_gate.second": 45.23967742919922,
+        "down.first": 8.296592712402344,
+        "down.second": 23.053192138671875
+      }
+    },
+    {
+      "arm": "blockdense_guided",
+      "seed": 43,
+      "output_rms": 0.015195875428617,
+      "fp16_relative_rms_error": 0.0008393793250434101,
+      "gradients_finite": true,
+      "parameters_training": 33101952,
+      "parameters_deployed": 26024064,
+      "gradient_l1": {
+        "up_gate.first": 9.064474105834961,
+        "up_gate.second": 45.23967742919922,
+        "down.first": 8.296592712402344,
+        "down.second": 23.053192138671875
+      }
+    },
+    {
+      "arm": "dense232",
+      "seed": 43,
+      "output_rms": 0.014999086037278175,
+      "fp16_relative_rms_error": 0.0006658063502982259,
+      "gradients_finite": true,
+      "parameters_training": 26024064,
+      "parameters_deployed": 26024064,
+      "gradient_l1": {
+        "up_gate.weight": 85.22325134277344,
+        "down.weight": 36.580467224121094
+      }
+    }
+  ],
+  "scope": "Synthetic first-FFN precision and initialization audit; no language-quality measurement."
+}

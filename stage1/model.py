@@ -7,6 +7,7 @@ from torch import nn
 from torch.nn import functional as F
 from .structured import MonarchLinear, LowRankLinear
 from .communication import COMMUNICATION_KINDS, CommunicationFFN
+from .prior_controls import PRIOR_KINDS, PriorFFN
 
 
 def region(enabled, name):
@@ -73,7 +74,7 @@ class Config:
             raise ValueError('dimensions must be positive')
         if self.width % self.heads or self.width % self.groups or self.hidden % self.groups:
             raise ValueError('incompatible head/group dimensions')
-        if self.ffn_kind not in ('standard', 'monarch', 'lowrank') + COMMUNICATION_KINDS:
+        if self.ffn_kind not in ('standard', 'monarch', 'lowrank') + COMMUNICATION_KINDS + PRIOR_KINDS:
             raise ValueError('unknown FFN kind')
         if self.init_policy not in ('legacy', 'fan_matched'):
             raise ValueError('unknown initialization policy')
@@ -84,13 +85,21 @@ class Config:
                 raise ValueError('invalid communication group count or message width')
             if self.shuffle or self.init_policy != 'fan_matched':
                 raise ValueError('communication FFNs require fan_matched and no shuffle')
+        if self.ffn_kind in PRIOR_KINDS:
+            if self.init_policy != 'fan_matched' or self.shuffle:
+                raise ValueError('prior controls require fan_matched and no shuffle')
+            if self.ffn_kind.startswith('blockdense') and (
+                    self.factor_blocks <= 0 or self.rank <= 0 or self.groups != 1
+                    or self.width % self.factor_blocks or self.hidden % self.factor_blocks
+                    or self.rank % self.factor_blocks):
+                raise ValueError('invalid BlockDense dimensions')
 
 
 class FFN(nn.Module):
     def __init__(self, c):
         super().__init__()
-        if c.ffn_kind in COMMUNICATION_KINDS:
-            raise ValueError('use CommunicationFFN for communication configurations')
+        if c.ffn_kind in COMMUNICATION_KINDS + PRIOR_KINDS:
+            raise ValueError('use the specialized FFN for this configuration')
         self.groups, self.width, self.hidden = c.groups, c.width, c.hidden
         # One fused gate/up projection, including in the dense reference.
         if c.ffn_kind == 'monarch':
@@ -172,7 +181,12 @@ class Block(nn.Module):
         self.norm1 = nn.LayerNorm(c.width)
         self.attention = Attention(c)
         self.norm2 = nn.LayerNorm(c.width)
-        self.ffn = CommunicationFFN(c) if c.ffn_kind in COMMUNICATION_KINDS else FFN(c)
+        if c.ffn_kind in COMMUNICATION_KINDS:
+            self.ffn = CommunicationFFN(c)
+        elif c.ffn_kind in PRIOR_KINDS:
+            self.ffn = PriorFFN(c)
+        else:
+            self.ffn = FFN(c)
         self.trace_regions = False
 
     def forward(self, x, past=None, use_cache=False):
@@ -244,7 +258,7 @@ class Decoder(nn.Module):
         """
         import hashlib
         c = self.config
-        if c.ffn_kind in COMMUNICATION_KINDS:
+        if c.ffn_kind in COMMUNICATION_KINDS + PRIOR_KINDS:
             for i, block in enumerate(self.blocks):
                 block.ffn.reset_parameters(seed, f'blocks.{i}.ffn')
             return

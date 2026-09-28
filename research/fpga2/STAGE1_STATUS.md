@@ -1,5 +1,10 @@
 # Stage 1: first execution milestone
 
+**September 28 update:** data preparation, stronger controls and resumable training
+are implemented. See the [execution update](IMPLEMENTATION_UPDATE_20260928.md)
+and [new screening protocol](MESSAGE_SCREEN_PROTOCOL_20260927.md). The results
+below describe the completed older campaign; they are not new-screen outcomes.
+
 Updated 2026-09-27. **All 24 screening trials finished successfully in 17.82
 minutes. Both GPU servers are idle at the latest check.** Ordinary reduced-width
 dense FFNs beat grouped and Monarch controls at matched parameter counts in all

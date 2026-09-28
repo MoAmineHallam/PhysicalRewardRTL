@@ -27,22 +27,26 @@ limits; mark the latter provisional until verified.
 - [x] Verify causal/cache behavior, nonzero message gradients, one optimizer
   step and model/config checkpoint reload. All 19 current unit tests pass.
 - [x] Document initialization and algebraic counts in the workload contract.
-- [ ] Implement stronger GroupBERT-pattern and StructuredFFN/HDPL comparisons;
-  disclose adaptations and inspect upstream licenses before source reuse.
+- [x] Implement GroupBERT-pattern and BlockDense/self-guided comparisons with
+  exact-budget dense controls; disclose the local SwiGLU adaptations.
+- [ ] Complete the HDPL comparison and remaining closest-work checks; inspect
+  upstream licenses before any source reuse.
 - [ ] Complete exact operator/schedule novelty audit and GPU precision checks.
 
 **Exit:** working, fairly initialized candidates and strong controls. Passing
 software tests is not evidence of language quality or hardware benefit.
 
-## 3. Prepare reliable training and evaluation — pending
+## 3. Prepare reliable training and evaluation — in progress
 
-- [ ] Pin corpus revision, tokenizer and preprocessing; make separate document
+- [x] Pin corpus revision, tokenizer and preprocessing; make separate document
   manifests for training, development and independent testing.
-- [ ] Audit duplicate/benchmark overlap; record all hashes and exclusions.
-- [ ] Implement and verify optimizer/scaler/RNG resume, sample-order records and
-  periodic checkpoints. The old pilot runner is not a resumable long-run trainer.
-- [ ] Freeze arms, seeds, optimization recipes, costs and evaluation rules in a
-  separate screening protocol before launching its jobs.
+- [x] Audit normalized exact duplicates and record hashes/exclusions.
+- [ ] Complete near-duplicate and external benchmark overlap checks before
+  confirmatory claims. The current corpus is an exploratory single-shard sample.
+- [x] Implement optimizer/scaler/RNG resume, sample-order records and periodic
+  checkpoints; exact CPU and deterministic GPU continuation pass.
+- [x] Freeze arms, seeds, recipes and evaluation rules in the
+  [screening protocol](MESSAGE_SCREEN_PROTOCOL_20260927.md) before main jobs.
 
 **Exit:** reproducible data, verified resume and a committed run manifest.
 
@@ -107,3 +111,10 @@ No training-quality, timing or energy benefit is established.
 **Next concrete work:** implement the stronger controls and resumable data/training
 path, and construct the matched dense/candidate physical schedule. Boards need
 power for access/deployment checks, not for model implementation or synthesis.
+
+**September 28:** stronger controls and resumable training implemented; pinned
+data prepared/transferred; 23 CPU tests and 48 GPU FFN precision checks passed.
+An initial CUDA continuation diagnostic exposed pre-checkpoint nondeterminism;
+the revised deterministic training path passes exact GPU continuation before the main screen.
+See the [implementation update](IMPLEMENTATION_UPDATE_20260928.md). Historical
+"next work" entries above refer to their recorded milestone, not current completion.

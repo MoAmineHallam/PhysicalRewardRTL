@@ -1,6 +1,6 @@
 # FPGA2 — Master Reference
 
-**Updated:** 2026-09-27
+**Updated:** 2026-09-28
 
 **Status:** All 24 follow-up screening trials are complete. Narrow dense FFNs beat the tested grouped/Monarch controls at matched parameter counts in all three seeds. No preserved-quality, architectural speedup, FPGA accelerator, or ASIC result exists yet. Vivado 2023.1 works for both Z2 and ZU. See the [complete results](research/fpga2/SCREENING_RESULTS_20260927.md), [execution report](research/fpga2/STAGE1_STATUS.md), and [code](stage1/README.md).
 
@@ -13,6 +13,12 @@ and [initial workload contract](research/fpga2/WORKLOAD_CONTRACT.md). Execution
 has begun with three message-placement FFNs integrated into the decoder; all
 19 current CPU tests pass. Stronger prior-work controls, pinned data, resumable
 training and realistic hardware accounting remain prerequisites to larger runs.
+
+**September 28 execution:** pinned FineWeb-Edu data, stronger projection controls
+and a resumable trainer are now implemented. All 23 local tests and 48 GPU FFN
+precision checks pass. The [implementation update](research/fpga2/IMPLEMENTATION_UPDATE_20260928.md)
+records a detected GPU nondeterminism issue and its deterministic recheck.
+The next 24-trial screen follows its [frozen protocol](research/fpga2/MESSAGE_SCREEN_PROTOCOL_20260927.md).
 
 ## 1. Objective and the agreed two-stage sequence
 
