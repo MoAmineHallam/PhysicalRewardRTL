@@ -1,5 +1,18 @@
 # Stage 1 execution
 
+## Monitor the current campaign
+
+After `ssh v100a`, run this single line (no multiline Python paste required):
+
+```bash
+/zeng_gk/Amine/mas/env_mas/bin/python /zeng_gk/Amine/mas/fpga2-message-20260927/stage1/monitor_screen.py --root /zeng_gk/Amine/mas/fpga2-message-20260927
+```
+
+It shows all four workers from the shared filesystem, refreshing every 15 seconds.
+Add `--once` for one snapshot. Ctrl+C stops only the monitor. Reported worker
+status comes from files; the displayed log age can help identify stalled jobs.
+The monitor does not modify jobs, logs or checkpoints.
+
 September 28: `prepare_fineweb`, `experiment`, `prior_controls`, `train_screen`,
 `audit_screen`, `smoke_screen` and `screen_worker` implement the new exploratory
 study. Follow its [frozen protocol](../research/fpga2/MESSAGE_SCREEN_PROTOCOL_20260927.md)
