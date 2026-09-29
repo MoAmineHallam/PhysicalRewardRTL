@@ -1,10 +1,10 @@
-# Candidate paper plan — RTL action interface and FPGA co-design
+# Candidate paper plan — RTL action interface and chip co-design
 
 ## Working thesis
 
 **Can a student trained to emit typed RTL actions, rather than BPE Verilog
-tokens, retain RTL-generation quality while giving an FPGA a smaller, regular
-and formally constrained decode interface?**
+tokens, retain RTL-generation quality while giving a memory-constrained chip a
+smaller, regular and formally constrained decode interface?**
 
 The intended system has three parts:
 
@@ -26,8 +26,9 @@ hardware-aware NAS.  These have direct precedents.
 The claim under test is narrower:
 
 > A typed, state-indexed RTL output interface can be trained and mapped as an
-> integrated model--FPGA system, avoiding a full BPE-vocabulary projection at
-> decode time and improving the measured RTL-quality--hardware frontier.
+> integrated model--accelerator system, avoiding a full BPE-vocabulary
+> projection at decode time and improving the measured RTL-quality--hardware
+> frontier.
 
 The contribution is credible only if the mechanism, trained model, renderer,
 and post-route evidence are all necessary.  A grammar mask applied after a
@@ -74,10 +75,13 @@ comparable deployment budget.  Valid syntax alone does not count as success.
 
 ### Gate C — physical mechanism
 
-Implement the output interface, grammar state and renderer first.  Use the
-PYNQ-ZU as the primary target and a reduced configuration on PYNQ-Z2 as a
-portability result.  Under identical clock/precision/memory-interface rules,
-measure post-route resources, achieved clock, cycles per decoded action,
+First construct a technology-neutral byte, storage and operation ledger for the
+BPE and action interfaces.  It must state output-head bytes, action/state
+storage, input/output precision, read/write ports, action length and memory
+lifetimes without assuming an FPGA-specific resource mapping.  Then implement
+the output interface, grammar state and renderer on PYNQ-ZU; use PYNQ-Z2 as a
+reduced portability result.  Under identical clock/precision/memory-interface
+rules, measure post-route resources, achieved clock, cycles per decoded action,
 off-chip bytes and complete prompt-plus-generation latency.
 
 **Stop:** if head savings disappear once action length, state handling, copy and
@@ -89,10 +93,25 @@ alone are insufficient.
 Keep the selected model on the FPGA across generation as far as the board
 permits.  Compare complete decode requests, not only an isolated matrix.
 Publish all resource limits, bit widths, memory residency, generated sequences,
-failures and confidence intervals.
+failures and confidence intervals.  The FPGA result validates the mechanism; it
+does not by itself establish an ASIC claim.
 
 **Advance:** only with a repeatable full-system physical advantage at comparable
 functional RTL quality, explained by measured reduced vocabulary-head traffic.
+
+### Gate D2 — chip generality
+
+For a claim about chips beyond FPGA, map the same frozen interfaces through one
+explicit ASIC physical-design flow with a pinned standard-cell library, SRAM
+macros, voltage/corner, target utilization, timing constraints and memory
+organization.  Compare the same BPE and action designs with identical rules.
+Report post-route area, timing, congestion/routing evidence, SRAM versus logic
+area, and activity-based power when a defensible activity model exists.
+
+**Claim discipline:** FPGA demonstrates reconfigurable-hardware viability;
+ASIC evidence supports an ASIC result; the technology-neutral byte/traffic
+model explains why the architectural mechanism can transfer.  Do not use an
+FPGA frequency as a proxy for ASIC energy or area.
 
 ### Gate E — use the submitted method
 
@@ -111,11 +130,14 @@ reward for a fixed architecture.
 1. A formal, reproducible RTL action language and hardware interface.
 2. A causal quality result: typed action training versus BPE, BPE masking and a
    strong generic reduced-head baseline.
-3. Post-route PYNQ-ZU evidence for the whole decoder path, with a useful
-   latency, traffic, energy, resource, or feasible-model-size improvement.
-4. Functional RTL evidence and independent PPA evaluation that retains failed
+3. A technology-neutral traffic/storage explanation and post-route PYNQ-ZU
+   evidence for the whole decoder path, with a useful latency, traffic, energy,
+   resource, or feasible-model-size improvement.
+4. If making a general-chip or ASIC claim, a matched ASIC post-route result
+   under an explicit library and SRAM model.
+5. Functional RTL evidence and independent PPA evaluation that retains failed
    samples in the denominator.
-5. A clear ablation showing that the benefit is not merely grammar masking,
+6. A clear ablation showing that the benefit is not merely grammar masking,
    vocabulary pruning, distillation, or best-of-N selection.
 
 The precise improvement margins should be preregistered after Gate C measures
@@ -133,8 +155,9 @@ system is a negative result, not a paper claim.
 3. **Training:** canonicalization, direct action supervision, matched teacher
    distillation and, only after model selection, correctness-gated physical
    reward adaptation.
-4. **Implementation:** memory map, state/action tables, arithmetic, bit widths,
-   on-chip/off-chip residency and PYNQ targets.
+4. **Architecture and implementation:** technology-neutral memory/dataflow
+   model, state/action tables, arithmetic and bit widths; FPGA post-route
+   validation; and matched ASIC physical implementation if that claim is made.
 5. **Evaluation:** representation coverage, quality controls, post-route
    end-to-end PPA, generated RTL functional/PPA results, ablations and failure
    accounting.
