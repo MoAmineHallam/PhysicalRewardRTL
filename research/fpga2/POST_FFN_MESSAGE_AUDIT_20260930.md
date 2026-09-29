@@ -25,6 +25,7 @@ be implemented on the PYNQ-ZU and compared fairly with a dense baseline.
 | Shared weight dictionaries | [MASA](https://arxiv.org/abs/2508.04581), [ResidualTransformer](https://arxiv.org/abs/2310.02489), [AQLM](https://arxiv.org/abs/2401.06118) | The main mathematical idea is already present. |
 | Generic physical-aware search or distillation | [HAT](https://arxiv.org/abs/2005.14187), [LLMForge](https://arxiv.org/abs/2605.17653), [SNAC-Pack](https://lss.fnal.gov/archive/2026/conf/fermilab-conf-26-0339-csaid.pdf) | A new search loop alone is not a research contribution. |
 | Grammar-constrained or AST code generation | [type-constrained decoding](https://doi.org/10.1145/3729274), [PATOIS action decoder](https://escholarship.org/content/qt89t646kn/qt89t646kn.pdf), [VeriAssist](https://arxiv.org/abs/2406.00115) | Grammar actions and constrained decoding are established; do not claim their invention. |
+| Generic output-head reduction | [vector-index output embeddings](https://arxiv.org/abs/2608.27460), [VQ-Logits](https://www.alphaxiv.org/abs/2505.10202) | A smaller or approximate vocabulary head is established; the candidate must not claim to be first to remove this bottleneck. |
 
 This review does **not** prove that no related work exists.  It is a scoped
 novelty audit, and any candidate must receive a citation and implementation
@@ -70,7 +71,9 @@ vocabulary, and copying.  The possible contribution is narrower:
 
 No paper located in this audit demonstrated that exact model interface together
 with a measured FPGA accelerator for RTL generation.  That is a gap to test,
-not a novelty claim.
+not a novelty claim.  Generic output-head reduction is active research, so the
+possible novelty is the RTL-specific formal interface and its physical
+co-design, rather than avoiding a full vocabulary projection in isolation.
 
 ## Why this is stronger than another FFN variant
 

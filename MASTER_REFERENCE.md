@@ -10,7 +10,8 @@ case to carry to FPGA.  The [post-screen audit](research/fpga2/POST_FFN_MESSAGE_
 records the result, the literature collisions that rule out several tempting
 alternatives, and one bounded feasibility candidate: a hardware-resident typed
 RTL action interface.  It is a hypothesis to test, not a novelty claim or a
-launched training plan.
+launched training plan.  The [candidate paper plan](research/fpga2/ACTION_INTERFACE_PAPER_PLAN_20260930.md)
+sets its comparison set and stopping gates.
 
 **Branch:** `FPGA2`, based on GitHub `main` at `f7c0572bcf6fac8e6a560382854cfc62266e52b4`.
 
