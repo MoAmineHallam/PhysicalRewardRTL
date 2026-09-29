@@ -4,7 +4,13 @@
 
 **Status:** The new 24-trial communication screen started September 28 at 14:28 Shanghai, using all four V100s. At the launch check, all four workers were training with no failures; each run targets 100.66M tokens. The older 24-trial screen is complete and favored narrow dense over its grouped/Monarch matches. No preserved-quality, architectural speedup, FPGA accelerator, or ASIC result exists yet. Vivado 2023.1 works for both Z2 and ZU. See the [new execution update](research/fpga2/IMPLEMENTATION_UPDATE_20260928.md), [older results](research/fpga2/SCREENING_RESULTS_20260927.md), and [code](stage1/README.md).
 
-**Current research recommendation:** test the placement of a bounded global message before versus after local FFN nonlinear computation, under exactly matched arithmetic/weight budgets and explicit bank/DDR constraints. The [September 27 proposal](research/fpga2/RESEARCH_PROPOSAL_20260927.md) specifies equations, strong baselines, independent evaluation, hardware schedules, budgets and stopping rules. This supersedes the earlier broad candidate priority where they differ. New literature checks found close precedents in StructuredFFN and HDPL; generic grouping or local/global paths are not claimed as new. Novelty and physical benefit remain unproven. No further training was launched for the planning review.
+**Current research recommendation:** the FFN-message family is stopped after its
+matched language-model screen: it lost to matched dense FFNs and has no physical
+case to carry to FPGA.  The [post-screen audit](research/fpga2/POST_FFN_MESSAGE_AUDIT_20260930.md)
+records the result, the literature collisions that rule out several tempting
+alternatives, and one bounded feasibility candidate: a hardware-resident typed
+RTL action interface.  It is a hypothesis to test, not a novelty claim or a
+launched training plan.
 
 **Branch:** `FPGA2`, based on GitHub `main` at `f7c0572bcf6fac8e6a560382854cfc62266e52b4`.
 
