@@ -119,8 +119,9 @@ These are lower bounds, not latency predictions.
   (new seed 20261001; sealed and all previously measured designs excluded;
   median extrapolation pool widened to 23/25 before drawing).  The sealed
   split is not touched.  Dev designs are barred from all later training.
-- **Policies:** `student_v1_out` (1.5B) and the Qwen-7B SFT/GRPO pair.
-  Same tokenizer family, so one kept-vocabulary file serves all.
+- **Policies:** `student_v1_out` (1.5B) and the Qwen-7B SFT/GRPO pair, each on
+  the families it was trained on (the Qwen-7B pair saw fir/firr/poly only).
+  The frozen details are in [GATE0_PROTOCOL_20261001.md](GATE0_PROTOCOL_20261001.md).
 - **Arms per policy:** FP16; RTN W8/W4/W3; **GPTQ W4/W3** (128 calibration rows
   from the training corpora, rendered as in SFT); FP16 + trimmed head; GPTQ W4 +
   trimmed head.  Group 128, decoder projections only, head FP16 unless trimmed.

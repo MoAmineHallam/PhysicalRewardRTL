@@ -9,7 +9,8 @@ fixed before any draw:
 1. a new seed (default 20261001);
 2. every design in the existing ``sealed_split.json`` and in every
    ``fmax_manifest.json``/``holdout_summary.json`` anywhere under the checkout
-   is excluded, in addition to the generator's own exclusions;
+   (and under any ``--also-exclude-from`` checkout) is excluded, in addition to
+   the generator's own exclusions;
 3. the median extrapolation pool gains widths 23 and 25, because the sealed
    split and its follow-ups may have consumed the original pool.
 
@@ -70,6 +71,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                     help="tokenizer of the evaluated student family (budget rule)")
     ap.add_argument("--out", required=True)
     ap.add_argument("--seed", type=int, default=DEV_SEED)
+    ap.add_argument("--also-exclude-from", nargs="*", default=[],
+                    help="other project checkouts whose split, manifests and summaries "
+                         "name designs that must also be excluded")
     args = ap.parse_args(argv)
 
     root = os.path.abspath(args.fpga_root)
@@ -81,6 +85,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     import gen_sealed_split as G
 
     extra = designs_named_under(root)
+    for other in args.also_exclude_from:
+        if os.path.isdir(other):
+            extra |= designs_named_under(os.path.abspath(other))
     original_used = G.previously_used
     G.previously_used = lambda: original_used() | extra
     widths, variants = G.POOLS["med"]["extrap"]

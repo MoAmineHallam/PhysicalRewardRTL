@@ -126,8 +126,14 @@ def run(args: argparse.Namespace, deps: Optional[SimpleNamespace] = None) -> Non
         raise SystemExit("frozen sampling requires temperature 1.0 and batch 4")
     if args.adapter and not os.path.isdir(args.adapter):
         raise SystemExit(f"adapter directory is missing: {args.adapter}")
-    sealed.prepare_output(args.out_dir)
     rows = sealed.load_split(args.split)
+    all_designs = [row["design"] for row in rows]
+    if args.families:
+        unknown = set(args.families) - {row["family"] for row in rows}
+        if unknown:
+            raise SystemExit(f"--families not present in the split: {sorted(unknown)}")
+        rows = [row for row in rows if row["family"] in set(args.families)]
+    sealed.prepare_output(args.out_dir)
 
     import numpy as np
     import torch
@@ -138,7 +144,7 @@ def run(args: argparse.Namespace, deps: Optional[SimpleNamespace] = None) -> Non
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(args.generation_seed)
 
-    model, tokenizer, compression = build_model(args, [row["design"] for row in rows])
+    model, tokenizer, compression = build_model(args, all_designs)
     device = next(model.parameters()).device
 
     manifest: Dict[str, dict] = {}
@@ -196,6 +202,8 @@ def run(args: argparse.Namespace, deps: Optional[SimpleNamespace] = None) -> Non
         "adapter_sha256": sealed.sha256_dir(args.adapter) if args.adapter else None,
         "split": os.path.abspath(args.split),
         "split_sha256": sealed.sha256_file(args.split),
+        "families": sorted({row["family"] for row in rows}),
+        "designs": [row["design"] for row in rows],
         "compression": compression,
         "keep_vocab_sha256": (sealed.sha256_file(args.keep_vocab)
                               if args.keep_vocab else None),
@@ -223,6 +231,8 @@ def parser() -> argparse.ArgumentParser:
     ap.add_argument("--adapter", default=None, help="LoRA adapter; omit for the base model")
     ap.add_argument("--split", required=True, help="sealed_split/1 design split")
     ap.add_argument("--policy", required=True, help="output tag, [a-z][a-z0-9_]*")
+    ap.add_argument("--families", nargs="*", default=[],
+                    help="evaluate only these split families (fixed per policy before any draw)")
     ap.add_argument("--generation-seed", type=int, required=True)
     ap.add_argument("--n", type=int, required=True, help="draws per design")
     ap.add_argument("--out-dir", required=True)
