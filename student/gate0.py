@@ -275,6 +275,8 @@ def work(args: argparse.Namespace) -> None:
         raise SystemExit(f"no runs assigned to {args.worker}")
     os.makedirs(os.path.join(WORK, "logs"), exist_ok=True)
     os.makedirs(os.path.join(WORK, "failures"), exist_ok=True)
+    os.makedirs(os.path.join(WORK, "runs"), exist_ok=True)
+    os.makedirs(os.path.join(WORK, "runs"), exist_ok=True)
     env = dict(os.environ, CUDA_VISIBLE_DEVICES=gpu, TOKENIZERS_PARALLELISM="false",
                HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
     for run in mine:
