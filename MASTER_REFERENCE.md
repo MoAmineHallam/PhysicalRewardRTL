@@ -1,20 +1,22 @@
 # FPGA2 — Master Reference
 
-**Updated:** 2026-09-28
+**Updated:** 2026-10-01
 
-**Status:** The new 24-trial communication screen started September 28 at 14:28 Shanghai, using all four V100s. At the launch check, all four workers were training with no failures; each run targets 100.66M tokens. The older 24-trial screen is complete and favored narrow dense over its grouped/Monarch matches. No preserved-quality, architectural speedup, FPGA accelerator, or ASIC result exists yet. Vivado 2023.1 works for both Z2 and ZU. See the [new execution update](research/fpga2/IMPLEMENTATION_UPDATE_20260928.md), [older results](research/fpga2/SCREENING_RESULTS_20260927.md), and [code](stage1/README.md).
+**Status:** Both FFN screens are complete and the FFN-message family is stopped:
+it lost to matched dense FFNs and has no physical case (see the
+[post-screen audit](research/fpga2/POST_FFN_MESSAGE_AUDIT_20260930.md)). No
+preserved-quality, architectural speedup, FPGA accelerator, or ASIC result exists.
+Vivado 2023.1 works for both PYNQ-Z2 and PYNQ-ZU.
 
-**Current research recommendation:** the FFN-message family is stopped after its
-matched language-model screen: it lost to matched dense FFNs and has no physical
-case to carry to FPGA.  The [post-screen audit](research/fpga2/POST_FFN_MESSAGE_AUDIT_20260930.md)
-records the result, the literature collisions that rule out several tempting
-alternatives, and one bounded feasibility candidate: a hardware-resident typed
-RTL action interface.  It is a hypothesis to test, not a novelty claim or a
-launched training plan.  The [candidate paper plan](research/fpga2/ACTION_INTERFACE_PAPER_PLAN_20260930.md)
-sets its comparison set and stopping gates.  FPGA is the accessible validation
-platform, while the architectural objective is a data-movement benefit that is
-defined independently of a particular chip; any ASIC claim requires the
-separate matched physical-design evidence specified in the plan.
+**Current direction (agreed 2026-10-01):** a hardware-efficient RTL-generating
+student. The question is how compressing a student (fewer bytes per decoded
+token) changes the physical quality of the circuits it generates, whether the
+submitted paper's physical-reward training recovers it, and what the measured
+PYNQ-ZU decode-cost versus circuit-utility frontier is. See the
+[plan](research/fpga2/RTL_STUDENT_PLAN_20261001.md). Gate 0 (a no-training kill
+test on a fresh development split) is implemented in [`student/`](student/README.md)
+and tested on CPU; it has not been run. The action-interface candidate is folded
+into this plan as the trimmed-output-head arm.
 
 **Branch:** `FPGA2`, based on GitHub `main` at `f7c0572bcf6fac8e6a560382854cfc62266e52b4`.
 
@@ -329,6 +331,15 @@ arm meets the exploratory +0.10 NLL rule versus full dense. These undertrained
 development results justify revisiting the restriction before the main FPGA
 implementation, not rejecting structured models in general. Both servers are
 idle; no new job was started. See [complete results and evidence](research/fpga2/SCREENING_RESULTS_20260927.md).
+
+**2026-10-01:** Reframed FPGA2 around an RTL-generating student after a prior-work
+check found the main bytes-per-token levers (low-bit weights, depth reuse, KV and
+vocabulary reduction, whole-model-on-chip) already claimed, mostly with FPGA or chip
+evidence. Added the [student plan](research/fpga2/RTL_STUDENT_PLAN_20261001.md) and
+Gate 0 tools in [`student/`](student/README.md): RTN weight quantization, a
+trimmed-head mask, a fresh development-split wrapper, a compressed-policy evaluator
+reusing the frozen `eval_sealed` contract, and a decode-traffic ledger. Eleven new
+CPU tests and the 23 Stage 1 tests pass. No generation, training or Vivado job ran.
 
 Append dated decisions and evidence links as the project proceeds. Keep proposed, executed, measured, estimated, and independently reproduced outcomes distinct. Record commit IDs, model/data hashes, source versions, seeds, failure counts, tool/PDK versions, and deviations from frozen protocols. A promising pilot may change the plan; it must not retroactively become a preregistered result.
 
