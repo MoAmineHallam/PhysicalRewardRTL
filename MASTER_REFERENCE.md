@@ -338,8 +338,11 @@ vocabulary reduction, whole-model-on-chip) already claimed, mostly with FPGA or 
 evidence. Added the [student plan](research/fpga2/RTL_STUDENT_PLAN_20261001.md) and
 Gate 0 tools in [`student/`](student/README.md): RTN weight quantization, a
 trimmed-head mask, a fresh development-split wrapper, a compressed-policy evaluator
-reusing the frozen `eval_sealed` contract, and a decode-traffic ledger. Eleven new
-CPU tests and the 23 Stage 1 tests pass. No generation, training or Vivado job ran.
+reusing the frozen `eval_sealed` contract, and a decode-traffic ledger. Later the
+same day: verified prior work reported by three other models, added GPTQ (a
+practical quantizer) to Gate 0, and recorded a venue assessment in the plan.
+Sixteen new CPU tests and the 23 Stage 1 tests pass. No generation, training or
+Vivado job ran.
 
 Append dated decisions and evidence links as the project proceeds. Keep proposed, executed, measured, estimated, and independently reproduced outcomes distinct. Record commit IDs, model/data hashes, source versions, seeds, failure counts, tool/PDK versions, and deviations from frozen protocols. A promising pilot may change the plan; it must not retroactively become a preregistered result.
 

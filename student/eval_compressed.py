@@ -30,7 +30,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 if os.path.dirname(HERE) not in sys.path:
     sys.path.insert(0, os.path.dirname(HERE))
 
-from student.compress import (DEFAULT_TARGETS, quantize_linear_weights_,  # noqa: E402
+from student.compress import (DEFAULT_TARGETS, calibration_from_rows,  # noqa: E402
+                              gptq_quantize_model_, quantize_linear_weights_,
                               restrict_output_vocabulary_)
 
 
@@ -60,7 +61,15 @@ def load_keep_vocab(path: Optional[str]) -> Optional[dict]:
     return data
 
 
-def build_model(args: argparse.Namespace):
+def load_corpus_rows(paths: Sequence[str]) -> list:
+    rows = []
+    for path in paths:
+        with open(path, encoding="utf-8") as handle:
+            rows.extend(json.loads(line) for line in handle if line.strip())
+    return rows
+
+
+def build_model(args: argparse.Namespace, exclude_designs: Sequence[str] = ()):
     """Load, merge, and compress the policy exactly as it will be evaluated."""
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -84,9 +93,20 @@ def build_model(args: argparse.Namespace):
 
     compression: Dict[str, object] = {"weight_bits": args.bits,
                                       "group_size": args.group_size}
-    if args.bits < 16:
+    if args.bits < 16 and args.method == "rtn":
         compression["quantization"] = quantize_linear_weights_(
             model, args.bits, args.group_size, DEFAULT_TARGETS)
+    elif args.bits < 16:
+        if not args.calib:
+            raise SystemExit("--method gptq needs --calib corpus files")
+        calibration = calibration_from_rows(
+            tokenizer, load_corpus_rows(args.calib), args.calib_n, args.calib_len,
+            args.calib_seed, exclude_designs)
+        compression["quantization"] = gptq_quantize_model_(
+            model, calibration, args.bits, args.group_size, targets=DEFAULT_TARGETS)
+        compression["quantization"]["calibration"] = {
+            "files": [os.path.abspath(p) for p in args.calib], "n": args.calib_n,
+            "max_len": args.calib_len, "seed": args.calib_seed}
     keep = load_keep_vocab(args.keep_vocab)
     if keep is not None:
         restrict_output_vocabulary_(model, keep["keep_ids"])
@@ -118,7 +138,7 @@ def run(args: argparse.Namespace, deps: Optional[SimpleNamespace] = None) -> Non
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(args.generation_seed)
 
-    model, tokenizer, compression = build_model(args)
+    model, tokenizer, compression = build_model(args, [row["design"] for row in rows])
     device = next(model.parameters()).device
 
     manifest: Dict[str, dict] = {}
@@ -209,6 +229,13 @@ def parser() -> argparse.ArgumentParser:
     ap.add_argument("--bits", type=int, default=16, choices=(16, 8, 6, 5, 4, 3),
                     help="weight bits for decoder linear layers; 16 = unchanged")
     ap.add_argument("--group-size", type=int, default=128)
+    ap.add_argument("--method", choices=("rtn", "gptq"), default="rtn",
+                    help="how integer weights are chosen when --bits < 16")
+    ap.add_argument("--calib", nargs="*", default=[],
+                    help="corpus JSONL files (prompt/completion) for GPTQ calibration")
+    ap.add_argument("--calib-n", type=int, default=128)
+    ap.add_argument("--calib-len", type=int, default=2048)
+    ap.add_argument("--calib-seed", type=int, default=0)
     ap.add_argument("--keep-vocab", default=None,
                     help="keep_vocab/1 JSON from make_keep_vocab.py")
     ap.add_argument("--temp", type=float, default=1.0)

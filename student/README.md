@@ -6,7 +6,7 @@ branch `claude/amazing-hopper-ytsbvr`) rather than copying it.
 
 | File | Purpose |
 |---|---|
-| `compress.py` | RTN group-wise weight fake-quantization; output-vocabulary mask equal to a trimmed head |
+| `compress.py` | RTN and GPTQ group-wise weight fake-quantization; SFT-format calibration; output-vocabulary mask equal to a trimmed head |
 | `make_dev_split.py` | Fresh development split with the frozen split generator (sealed split excluded) |
 | `make_keep_vocab.py` | Kept-token set from training completions only |
 | `eval_compressed.py` | One compressed policy × one seed on a split; same outputs as `eval_sealed.py` |
@@ -36,6 +36,10 @@ $PY student/eval_compressed.py --fpga-root $FPGA --base $QWEN15 \
     --adapter $FPGA/../student_v1_out --split gate0/dev_split.json \
     --policy student_w4 --generation-seed 1001 --n 24 --bits 4 \
     --out-dir gate0/student_w4
+
+# GPTQ arm: same command plus a calibration corpus (training data only).
+$PY student/eval_compressed.py ... --bits 4 --method gptq \
+    --calib $FPGA/sft_corpus.jsonl $FPGA/distill_corpus.jsonl --out-dir gate0/student_gptq4
 ```
 
 Then run the existing `run_ppa.py` flow on each output directory.  Commit the
@@ -47,5 +51,5 @@ split, kept-vocabulary file and a frozen protocol before the first draw.
 python -m unittest student.test_student -v
 ```
 
-Eleven tests pass on CPU.  The end-to-end evaluator test runs only when
+Sixteen tests pass on CPU.  The end-to-end evaluator test runs only when
 `FPGA_ROOT` points at the old checkout.

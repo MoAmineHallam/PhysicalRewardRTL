@@ -61,15 +61,25 @@ cost of **executing the student**, and the utility of the **circuits it writes**
   tokens/s, energy where instrumentation allows) against generated-circuit
   utility, with the selected student implemented end to end.
 
-**Prior-work check (scoped, 2026-10-01).**  Found: RL recovery after compression
-for robot policies ([RLRC](https://arxiv.org/abs/2506.17639)), distillation-based
-healing of 4-bit LLMs ([2608.20953](https://arxiv.org/abs/2608.20953)), edge-FPGA
-TinyLlama ([LlamaF](https://arxiv.org/abs/2409.11424)), many PPA-aware RTL
-generators (ChipSeek, RTLSeek, LLM-VeriPPA, COEVO).  Not found: any measurement
-of how student compression changes the PPA of generated circuits, or physical-
-reward recovery of it.  This is not a novelty clearance; repeat the search before
-writing claims.
+**Prior-work check (2026-10-01, updated after independent searches by three
+other models).**  No work was found that measures how compressing an RTL
+generator changes the PPA of the circuits it generates, or that recovers it with
+physical-reward training.  The closest work, verified by search, falls in five
+groups; the paper must cite and separate itself from each:
 
+| Group | Work | What it does not do |
+|---|---|---|
+| Quantized RTL models, functional only | RTLCoder 4-bit release; [OpenRTLSet](https://arxiv.org/abs/2606.10285) (INT4 vs BF16, 7B–32B) | No synthesis or PPA of generated circuits |
+| Quantization vs. non-functional software code quality | [Precision or Peril](https://arxiv.org/abs/2411.10656); [Is Quantization a Deal-breaker? (ICSME 2025)](https://arxiv.org/abs/2507.09665); [Quantize with Confidence?](https://arxiv.org/abs/2607.14181) | Static-analysis quality of software (complexity, maintainability); effects mixed; no hardware, no recovery |
+| Quantization changes which valid answer is chosen | [Quantization Amplifies Determinism, Not Bias](https://arxiv.org/abs/2609.07901) (Qwen3 8B–32B) | General text; supplies our mechanism hypothesis but no physical consequence |
+| PPA-aware RTL generation | PPA-RTL (DAC 2025), [ChipSeek (ACL 2026)](https://aclanthology.org/2026.acl-long.1154/), [VeriAgent](https://arxiv.org/abs/2603.17613), [VeriOpt](https://arxiv.org/abs/2507.14776), COEVO, [FinHardBench (COLM 2026)](https://arxiv.org/abs/2608.00909); CodeV-R1 (distill-then-RL, functional) | Full-size models; no compression axis |
+| Edge-FPGA LLM inference | TeLLMe, [Hummingbird / Hummingbird+ (FPGA 2026)](https://dl.acm.org/doi/10.1145/3748173.3779189) (GPTQ-4 Qwen3-30B-A3B at >18 tokens/s on a ZU2CG/3EG board with 24 GB), PD-Swap, FlightLLM | Never generate RTL or measure a downstream circuit |
+
+Consequences for the claims: "quantization changes non-functional code quality"
+is not new for software; the defensible novelty is **hardware PPA measured by
+implementation**, the **mechanism** (which correct implementation the model
+selects), and **recovery** with a physical reward.  Hummingbird+ sets a high bar,
+so a new edge accelerator is not claimed as an architecture contribution.
 ## 3. Decode-traffic ledger (analytical, `student/footprint.py`)
 
 Logical bytes per generated token, context 1024, FP16 head unless trimmed to
@@ -111,9 +121,11 @@ These are lower bounds, not latency predictions.
   split is not touched.  Dev designs are barred from all later training.
 - **Policies:** `student_v1_out` (1.5B) and the Qwen-7B SFT/GRPO pair.
   Same tokenizer family, so one kept-vocabulary file serves all.
-- **Arms per policy:** FP16; W8, W4, W3 (RTN, group 128, decoder projections,
-  head FP16); FP16 + trimmed head; W4 + trimmed head.  The adapter is merged
-  before quantization, as deployed.
+- **Arms per policy:** FP16; RTN W8/W4/W3; **GPTQ W4/W3** (128 calibration rows
+  from the training corpora, rendered as in SFT); FP16 + trimmed head; GPTQ W4 +
+  trimmed head.  Group 128, decoder projections only, head FP16 unless trimmed.
+  The adapter is merged before quantization, as deployed.  GPTQ is required: an
+  effect seen only under RTN would be dismissed as an artefact of a weak quantizer.
 - **Sampling:** 24 draws per design, temperature 1.0, one generation seed shared
   across arms; frozen oracle; multiplicity retained.
 - **Physical:** each distinct correct candidate implemented once with the
@@ -126,15 +138,24 @@ These are lower bounds, not latency predictions.
 
 | Outcome | Reading | Action |
 |---|---|---|
-| A | At W4 or W3, `μ` falls with an interval below zero and at least 10% relative loss for some policy | RQ1 is real: proceed to RQ2 |
+| A | Under **GPTQ** W4 or W3, `μ` falls with an interval below zero and at least 10% relative loss for some policy | RQ1 is real at a practical setting: proceed to RQ2 |
+| A′ | `μ` falls only under RTN, not GPTQ | Weak-quantizer artefact: report as a diagnostic only; treat as B for the paper decision |
 | B | `μ` intervals include zero or loss < 5% at both W4 and W3 for every policy | Compression costs correctness only: RQ1 negative; take RQ3 to the supervisor as a frontier/accelerator paper or stop |
-| C | `q` collapses at W4 (below half of FP16) for the 1.5B student | Post-training quantization is too crude; RQ1 needs quantization-aware training first; re-plan |
+| C | `q` collapses at GPTQ W4 (below half of FP16) for the 1.5B student | Post-training quantization is too crude; RQ1 needs quantization-aware training first; re-plan |
+
+Also record, without a decision rule, how much probability mass each policy puts
+on each canonical implementation style per design (effective support size), since
+the mechanism hypothesis is that compression moves mass between correct styles.
 
 ## 6. Later stages (each gated on the previous one)
 
-1. **Compression ladder (if A).**  Add Qwen2.5-Coder-0.5B (SFT on the existing
-   corpus), a GPTQ-style W4 baseline beside RTN, and one looped/shared variant
-   only if a converted checkpoint is affordable on V100s.
+1. **Compression ladder and generality (if A).**  Add Qwen2.5-Coder-0.5B (SFT on
+   the existing corpus), AWQ beside GPTQ, a second model family, at least one
+   public benchmark with synthesis-based PPA (for example an RTLLM or RTL-OPT
+   subset), and an open ASIC flow (Yosys/OpenROAD) beside Vivado.  One looped or
+   shared-weight variant only if a converted checkpoint is affordable on V100s.
+   Method candidate to test: physically aware calibration (GPTQ/AWQ calibrated on
+   oracle-verified fast implementations) against corpus-random calibration.
 2. **RQ2 training.**  Correctness-only and RF physical-reward arms on the W4
    student (LoRA on the frozen quantized base, re-quantized after merge and
    re-evaluated), versus distillation from the optimized 7B, two seeds per arm.
@@ -146,7 +167,28 @@ These are lower bounds, not latency predictions.
 4. **ASIC (optional).**  Only if a chip-level claim is wanted: one pinned
    OpenROAD-class flow for the accelerator core, reported separately.
 
-## 7. Open items for the author
+## 7. Publication assessment and venues (2026-10-01)
+
+The question is new and the pipeline is strong, but acceptance at a CCF-A venue
+depends on results not yet in hand.  Reviewers will accept an empirical
+"hidden cost" paper only if (1) the effect appears at a practical setting
+(GPTQ/AWQ W4, or a 0.5–1.5B student), (2) it generalizes beyond the five
+generated DSP families and one tool flow, and (3) there is a technical
+contribution beyond "RL with a PPA reward helps", such as the mechanism and a
+physically aware compression or recovery method.
+
+| Gate 0 outcome | Paper | Target |
+|---|---|---|
+| A, strong and fast | RQ1 + RQ2 on the DSP suite plus one public benchmark | DAC 2027 (CCF-A): abstract 2026-11-11, manuscript 2026-11-17 |
+| A, needs generality work | Full RQ1–RQ2 with second family, public benchmark, ASIC flow | TCAD (CCF-A journal); ICCAD 2027 as backup; ACL/EMNLP-style venues are plausible given ChipSeek at ACL 2026 |
+| B | No hidden-cost paper | Accelerator/frontier study for FPGA or FCCM, or stop |
+
+The edge accelerator (RQ3) is best written as a separate hardware paper; it is
+too large to add to a DAC-length paper and does not carry the novelty.  Check the
+current CCF list and JCR quartiles before choosing; DAC is double-blind, and the
+under-review TCAD paper must be cited anonymously without reusing its text.
+
+## 8. Open items for the author
 
 1. Confirm checkpoint paths on the server: `student_v1_out`, `sft_qwen_out`,
    `grpo_qwen`, the Qwen2.5-Coder-1.5B and -7B base directories, and whether

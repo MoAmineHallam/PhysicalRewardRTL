@@ -18,9 +18,10 @@ from types import SimpleNamespace
 
 import torch
 
-from student.compress import (CompressionError, DEFAULT_TARGETS, keep_ids_from_texts,
-                              quantize_linear_weights_, quantize_weight,
-                              restrict_output_vocabulary_)
+from student.compress import (CompressionError, DEFAULT_TARGETS, calibration_from_rows,
+                              gptq_quantize_model_, gptq_quantize_weight,
+                              keep_ids_from_texts, quantize_linear_weights_,
+                              quantize_weight, restrict_output_vocabulary_)
 from student.footprint import decode_bytes_per_token, decoder_weight_count
 
 QWEN05_CONFIG = {  # Qwen2.5-Coder-0.5B shapes
@@ -146,6 +147,70 @@ class ModelTransformTest(unittest.TestCase):
         self.assertLess(len(no_fallback), len(keep))
 
 
+class GPTQTest(unittest.TestCase):
+    def test_identity_hessian_reduces_to_rtn(self):
+        torch.manual_seed(3)
+        w = torch.randn(16, 256)
+        q, _scales = gptq_quantize_weight(w, torch.eye(256), bits=4, group_size=128,
+                                          percdamp=0.0)
+        self.assertTrue(torch.allclose(q, quantize_weight(w, 4, 128), atol=1e-6))
+
+    def test_beats_rtn_on_correlated_inputs_and_stays_on_grid(self):
+        torch.manual_seed(4)
+        mix = torch.randn(256, 256) / 16 + torch.eye(256)
+        x = torch.randn(2048, 256) @ mix          # correlated activations
+        w = torch.randn(32, 256)
+        q, scales = gptq_quantize_weight(w, x.T @ x, bits=3, group_size=128)
+        rtn = quantize_weight(w, 3, 128)
+        gptq_err = float((x @ (w - q).T).pow(2).sum())
+        rtn_err = float((x @ (w - rtn).T).pow(2).sum())
+        self.assertLess(gptq_err, rtn_err)
+        for g in range(2):
+            codes = q[:, g * 128:(g + 1) * 128] / scales[:, g:g + 1]
+            self.assertTrue(torch.allclose(codes, codes.round(), atol=1e-4))
+            self.assertLessEqual(float(codes.abs().max()), 3 + 1e-4)
+
+    def test_rejects_bad_shapes(self):
+        with self.assertRaises(CompressionError):
+            gptq_quantize_weight(torch.randn(4, 128), torch.eye(64), 4, 128)
+        with self.assertRaises(CompressionError):
+            gptq_quantize_weight(torch.randn(4, 100), torch.eye(100), 4, 128)
+
+    def test_model_pass_quantizes_every_target_on_a_grid(self):
+        model = tiny_qwen()
+        embed = model.get_input_embeddings().weight.detach().clone()
+        torch.manual_seed(5)
+        calibration = [torch.randint(0, 300, (40,)) for _ in range(6)]
+        stats = gptq_quantize_model_(model, calibration, bits=4, group_size=64)
+        self.assertEqual(stats["n_layers"], 2 * len(DEFAULT_TARGETS))
+        self.assertEqual(stats["n_calibration_tokens"], 240)
+        self.assertTrue(torch.equal(model.get_input_embeddings().weight, embed))
+        for layer in model.model.layers:
+            for name in DEFAULT_TARGETS:
+                module = dict(layer.named_modules())[
+                    ("self_attn." if name.endswith(("q_proj", "k_proj", "v_proj", "o_proj"))
+                     else "mlp.") + name]
+                groups = module.weight.reshape(module.weight.shape[0], -1, 64)
+                for row in groups[:4]:
+                    for group in row:
+                        self.assertLessEqual(len(torch.unique(group)), 15)
+        with torch.no_grad():
+            self.assertTrue(torch.isfinite(model(torch.tensor([[1, 2, 3]])).logits).all())
+
+    def test_calibration_rows_are_seeded_and_leak_checked(self):
+        tok = tiny_tokenizer()
+        rows = [{"design": f"d{i}", "prompt": f"write module {i}",
+                 "completion": "module m; endmodule"} for i in range(10)]
+        a = calibration_from_rows(tok, rows, n=4, max_len=8, seed=1)
+        b = calibration_from_rows(tok, rows, n=4, max_len=8, seed=1)
+        self.assertEqual([t.tolist() for t in a], [t.tolist() for t in b])
+        self.assertTrue(all(len(t) <= 8 for t in a))
+        with self.assertRaises(CompressionError):
+            calibration_from_rows(tok, rows, n=4, max_len=8, seed=1, exclude_designs=["d3"])
+        with self.assertRaises(CompressionError):
+            calibration_from_rows(tok, rows, n=20, max_len=8, seed=1)
+
+
 class FootprintTest(unittest.TestCase):
     def test_qwen05_counts(self):
         self.assertEqual(decoder_weight_count(QWEN05_CONFIG), 357_826_560)
@@ -209,6 +274,22 @@ class EvaluatorTest(unittest.TestCase):
             self.assertTrue(os.path.isfile(os.path.join(out, "w4__d1__g0.sv")))
             with self.assertRaises(sealed.EvaluationError):
                 eval_compressed.run(args, deps)  # never writes into a used directory
+
+            corpus = os.path.join(tmp, "corpus.jsonl")
+            with open(corpus, "w") as handle:
+                for i in range(8):
+                    handle.write(json.dumps({"design": f"t{i}", "prompt": f"spec {i}",
+                                             "completion": good}) + "\n")
+            gptq_args = eval_compressed.parser().parse_args([
+                "--fpga-root", os.environ["FPGA_ROOT"], "--base", base,
+                "--split", split, "--policy", "g4", "--generation-seed", "7",
+                "--n", "4", "--out-dir", os.path.join(tmp, "out_gptq"), "--bits", "4",
+                "--group-size", "64", "--method", "gptq", "--calib", corpus,
+                "--calib-n", "8", "--calib-len", "32", "--allow-cpu"])
+            eval_compressed.run(gptq_args, deps)
+            config = json.load(open(os.path.join(tmp, "out_gptq", "generation_config.json")))
+            self.assertEqual(config["compression"]["quantization"]["method"], "gptq")
+            self.assertEqual(config["compression"]["quantization"]["n_calibration_sequences"], 8)
 
 
 if __name__ == "__main__":
