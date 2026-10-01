@@ -93,4 +93,10 @@ the A/B decision.
 
 ## Amendments
 
-None.
+1. **2026-10-01, after generation started and before any outcome was
+   inspected.**  Family × regime strata in the development split hold only two
+   or three designs, which makes stratified bootstrap intervals narrow.  The
+   analysis therefore also reports an unstratified paired design-bootstrap
+   interval for every contrast, as a descriptive sensitivity check.  The
+   decision rule is unchanged and uses the stratified interval.  Fix to the
+   launcher (missing `gate0/runs` directory) changed no run setting.

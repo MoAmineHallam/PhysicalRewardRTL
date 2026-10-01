@@ -12,6 +12,7 @@ branch `claude/amazing-hopper-ytsbvr`) rather than copying it.
 | `eval_compressed.py` | One compressed policy × one seed on a split; same outputs as `eval_sealed.py` |
 | `footprint.py` | Analytical bytes per decoded token from a `config.json` |
 | `gate0.py` | Gate 0 launcher: `prepare` once, `work --worker v100a-0` per GPU, `status` |
+| `gate0_physical.py` | `collect` distinct correct circuits for Vivado; `analyze` with the frozen rule |
 | `test_student.py` | CPU checks |
 
 ## Server workflow
