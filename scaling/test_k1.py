@@ -116,6 +116,15 @@ class K1Test(unittest.TestCase):
                 h.write("otherhost 1 x\n")
             self.assertFalse(k1.acquire(lock))  # another host's lock is never cleared
 
+    def test_stopping_a_worker_stops_its_child(self):
+        import subprocess, sys as _sys
+        child = subprocess.Popen([_sys.executable, "-c", "import time; time.sleep(60)"])
+        k1._CHILD = child
+        with self.assertRaises(SystemExit):
+            k1._stop_child_and_exit(15, None)
+        self.assertIsNotNone(child.poll())
+        k1._CHILD = None
+
     def test_trend_rule(self):
         sizes = ["a", "b", "c", "d"]
         cis = {"d - a": [1, 5], "b - a": [-1, 2], "c - b": [-2, 1], "d - c": [0.5, 3]}

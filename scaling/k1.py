@@ -26,6 +26,7 @@ import json
 import math
 import os
 import random
+import signal
 import socket
 import statistics
 import subprocess
@@ -352,7 +353,24 @@ def job_commands(job: dict, plan: dict) -> List[Tuple[List[str], str]]:
               "--families", *job["families"], "--out-dir", job["out_dir"], "--bits", "16"], root)]
 
 
+_CHILD: Optional[subprocess.Popen] = None
+
+
+def _stop_child_and_exit(signum, _frame) -> None:
+    """A stopped worker takes its training or evaluation process with it, so no orphan
+    keeps a GPU busy while another worker restarts the same job."""
+    child = _CHILD
+    if child is not None and child.poll() is None:
+        child.terminate()
+        try:
+            child.wait(timeout=60)
+        except subprocess.TimeoutExpired:
+            child.kill()
+    raise SystemExit(128 + signum)
+
+
 def run_job(job: dict, plan: dict, gpu: str) -> bool:
+    global _CHILD
     out = job["out_dir"]
     if os.path.exists(out) and job["stage"] == "eval":
         os.rename(out, f"{out}.failed-{G0.now()}")  # evaluations always start fresh
@@ -368,7 +386,9 @@ def run_job(job: dict, plan: dict, gpu: str) -> bool:
         for cmd, cwd in job_commands(job, plan):
             handle.write(f"\n### {G0.now()} {socket.gethostname()} GPU {gpu}: {' '.join(cmd)}\n")
             handle.flush()
-            rc = subprocess.run(cmd, cwd=cwd, env=env, stdout=handle, stderr=subprocess.STDOUT).returncode
+            _CHILD = subprocess.Popen(cmd, cwd=cwd, env=env, stdout=handle, stderr=subprocess.STDOUT)
+            rc = _CHILD.wait()
+            _CHILD = None
             if rc != 0:
                 break
     if rc == 0 and is_complete(job):
@@ -385,6 +405,9 @@ def run_job(job: dict, plan: dict, gpu: str) -> bool:
 
 def work(args: argparse.Namespace) -> None:
     global FAILURE_CUTOFF
+    signal.signal(signal.SIGTERM, _stop_child_and_exit)
+    signal.signal(signal.SIGINT, _stop_child_and_exit)
+    signal.signal(signal.SIGHUP, _stop_child_and_exit)
     if args.retry_failed:
         FAILURE_CUTOFF = time.time()
     plan = load_plan()

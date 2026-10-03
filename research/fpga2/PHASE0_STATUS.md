@@ -174,3 +174,17 @@ parallelism).
   the crash.  `eda_vivado.py` now stops without recording whenever Vivado writes no
   result file (`run_ppa` adds an `error` field only then); genuine synthesis failures
   still write `{"compiled": 0}` and are recorded.
+
+## 2026-10-03 — K1 relaunch: orphaned training processes, out-of-memory
+
+- After the seeding fix, training started (7B at about 98 s per optimizer step, 108
+  steps per sweep run).  Restarting workers with `pkill -f "k1.py work"` killed the
+  workers but not the `sft.py` processes they had started.  Those orphans kept
+  training; new workers treated their locks as stale and launched the same jobs on
+  the same GPUs, so 7B and 3B runs failed with CUDA out-of-memory (two processes per
+  GPU, about 22 GiB + 9 GiB).  No K1 job had completed, so no outcome was affected;
+  one orphaned 7B run (25 of 108 steps) was lost when its directory was moved aside.
+- Fix: a worker now terminates its child process when it receives SIGTERM, SIGINT or
+  SIGHUP, so stopping a worker frees its GPU.  The relaunch procedure also kills any
+  remaining `scaling/sft.py` and `eval_compressed.py` processes and clears lock files
+  on both boxes before starting the workers again, staggered by 10 s.
