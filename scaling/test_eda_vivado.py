@@ -30,7 +30,7 @@ if sys.argv[1:] == ["-version"]:
     if os.environ.get("FAKE_VIVADO_BROKEN"):
         print("terminate called after throwing an instance of 'std::runtime_error'", file=sys.stderr)
         sys.exit(134)
-    print("Vivado v2023.1 (64-bit)")
+    print("vivado v2023.1 (64-bit)")  # the real 2023.1 Linux build prints lower case
     sys.exit(0)
 vfile, top, clk, period, outj = sys.argv[-5:]
 rtl = open(vfile).read()
@@ -94,7 +94,7 @@ class EdaVivadoTest(unittest.TestCase):
             finally:
                 del os.environ["FAKE_VIVADO_BROKEN"]
             self.assertFalse(os.path.exists(out))
-            self.assertEqual(ev.preflight(vivado, None), "Vivado v2023.1 (64-bit)")
+            self.assertEqual(ev.preflight(vivado, None), "vivado v2023.1 (64-bit)")
 
     def test_sample_is_hash_ordered_and_limited_to_reference(self):
         ref = {f"m{i}": {"compiled": 1} for i in range(30)}

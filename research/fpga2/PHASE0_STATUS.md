@@ -154,3 +154,7 @@ parallelism).
   `LOCPATH`.  No Vivado file is edited.  `eda_vivado.py` now sets `LOCPATH`, runs a
   preflight (`vivado -version` must report 2023.1) before any job, and stops without
   recording if a job's output shows that Vivado itself did not run.
+- Locale compiled (`/zeng_gk/Amine/mas/locale/en_US.UTF-8`, plus an `en_US.utf8`
+  link).  With `LOCPATH` set, Vivado starts: `vivado v2023.1 (64-bit)`, SW Build
+  3865809 (7 May 2023), the same build as the laptop's 2023.1.  The Linux build prints
+  the version in lower case, so the preflight check was made case-insensitive.

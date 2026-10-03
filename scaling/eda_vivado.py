@@ -94,8 +94,8 @@ def preflight(vivado: str, locpath: Optional[str]) -> str:
                             env=vivado_env(locpath), timeout=300)
     except (OSError, subprocess.TimeoutExpired) as exc:
         raise SystemExit(f"Vivado preflight failed: {exc}")
-    first = next((l for l in cp.stdout.splitlines() if l.startswith("Vivado v")), "")
-    if cp.returncode != 0 or not first.startswith("Vivado v2023.1"):
+    first = next((l for l in cp.stdout.splitlines() if l.lower().startswith("vivado v")), "")
+    if cp.returncode != 0 or not first.lower().startswith("vivado v2023.1"):
         raise SystemExit("Vivado preflight failed (nothing was run or recorded):\n"
                          + (cp.stdout + cp.stderr)[-1500:])
     return first.strip()
