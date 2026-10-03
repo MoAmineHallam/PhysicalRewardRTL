@@ -105,6 +105,17 @@ class K1Test(unittest.TestCase):
                               open(os.path.join(j["out_dir"], j["marker"]), "w"))
             self.assertEqual(set(k1.select_learning_rates(plan)["lr"].values()), {1e-4})
 
+    def test_acquire_clears_stale_lock_once(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            lock = os.path.join(tmp, "job.lock")
+            with open(lock, "w") as h:
+                h.write(f"{k1.socket.gethostname()} 999999999 x\n")  # dead pid on this host
+            self.assertTrue(k1.acquire(lock))
+            self.assertFalse(k1.acquire(lock))  # now held by this live process
+            with open(lock, "w") as h:
+                h.write("otherhost 1 x\n")
+            self.assertFalse(k1.acquire(lock))  # another host's lock is never cleared
+
     def test_trend_rule(self):
         sizes = ["a", "b", "c", "d"]
         cis = {"d - a": [1, 5], "b - a": [-1, 2], "c - b": [-2, 1], "d - c": [0.5, 3]}

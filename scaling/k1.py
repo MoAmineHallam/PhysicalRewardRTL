@@ -242,6 +242,31 @@ def load_plan() -> dict:
     return load_json(path)
 
 
+def acquire(lock: str) -> bool:
+    """Atomic lock on the shared filesystem; a lock left by a dead worker on this host is
+    cleared.  Two workers clearing the same stale lock at once is harmless."""
+    record = f"{socket.gethostname()} {os.getpid()} {G0.now()}\n"
+    for _ in range(2):
+        try:
+            fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
+            try:
+                host, pid, _ = open(lock).read().split()
+            except (OSError, ValueError):
+                return False
+            if host == socket.gethostname() and not os.path.exists(f"/proc/{pid}"):
+                try:
+                    os.remove(lock)
+                except FileNotFoundError:
+                    pass
+                continue
+            return False
+        with os.fdopen(fd, "w") as handle:
+            handle.write(record)
+        return True
+    return False
+
+
 def is_complete(job: dict) -> bool:
     return os.path.isfile(os.path.join(job["out_dir"], job["marker"]))
 
@@ -378,7 +403,7 @@ def work(args: argparse.Namespace) -> None:
             return
         picked = None
         for j in pending:
-            if states[j["id"]] == "ready" and G0.acquire(j["out_dir"] + ".lock"):
+            if states[j["id"]] == "ready" and acquire(j["out_dir"] + ".lock"):
                 picked = j
                 break
         if picked is None:
