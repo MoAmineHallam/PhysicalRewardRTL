@@ -106,3 +106,20 @@ parallelism).
   results are in `gate0/vivado/ppa.jsonl`.
 - Vivado 2023.1: download finished (the checksum error on one file was recovered by
   the installer), and installing onto the share was at 9%.
+
+## 2026-10-03 — flow identity and recipe provenance (step 7, part 1)
+
+- **Same Vivado flow on server and laptop.**  The server's `fpga/run_ppa.py` and
+  `fpga/ppa_synth.tcl` hash to `795fc0ef…843c69d` and `36813384…f85593cf`, identical
+  to GitHub commit `40acc78`.  The laptop's copies hash to `94c3fcca…ff2b89eb` and
+  `3def59ef…f31c72`, which are exactly those files with Windows (CRLF) line endings,
+  checked by converting the commit's files to CRLF and hashing them.  The content
+  is therefore the same.
+- **Old adapters:** `student_v1_out` (base `Qwen2___5-Coder-1___5B`),
+  `sft_qwen_out` and `grpo_qwen` (base `qwen2.5-coder-7b-instruct`) are all LoRA
+  r=16, alpha=32, matching the `sft_train_v2.py` defaults.  `sft_qwen_out` has
+  checkpoints at 22/44/67/88 steps (4 epochs × 22 steps ≈ 352 rows at effective
+  batch 16, consistent with `sft_corpus_v5.jsonl`, 358 rows).  `student_v1_out`
+  has checkpoints at 25/50/76/100 (`distill_corpus.jsonl`, 407 rows).
+  `grpo_qwen` saved `step_300` and `step_400`.
+- Weight SHA-256 hashing started in the background (`logs/weights.sha256`).
