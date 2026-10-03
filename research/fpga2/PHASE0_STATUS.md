@@ -44,3 +44,15 @@ channel (mirrored by TUNA), so a separate `env_eda` with
 
 Started next: Qwen2.5-Coder base 0.5B, 3B, 7B and 14B downloads from ModelScope
 into `models/Qwen/Qwen2.5-Coder-<size>`, and the `env_eda` conda environment.
+
+## 2026-10-03 — downloads (steps 2–4 in progress)
+
+- `env_eda` conda environment created without errors (OpenROAD and Yosys from
+  `litex-hub`, dependencies from the TUNA `main` mirror); tools not yet tested.
+- ModelScope downloads running at 2–17 MB/s per file: 0.5B (954 MB) and 3B
+  (5.8 GB) complete, 7B in progress, 14B queued.  The folder
+  `models/Qwen/Qwen2.5-Coder-1.5B` is empty (512 bytes); the complete 1.5B base is
+  `models/Qwen/Qwen2___5-Coder-1___5B` (2.9 GB), as used by Gate 0.
+- Vivado 2023.1 Linux web installer (`Xilinx_Unified_2023.1_0507_1903_Lin64.bin`,
+  266 MB) copied to `installers/`.  A 2026.1 installer was also copied by mistake;
+  it is kept only as a fallback and is not used for any measurement.
