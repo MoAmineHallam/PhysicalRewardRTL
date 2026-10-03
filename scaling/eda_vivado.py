@@ -35,6 +35,9 @@ from typing import Dict, List, Optional, Sequence
 MAS = "/zeng_gk/Amine/mas"
 DEFAULT_VIVADO = f"{MAS}/Xilinx/Vivado/2023.1/bin/vivado"
 DEFAULT_FPGA_ROOT = f"{MAS}/fpga"
+# Vivado's rdiArgs.sh forces LC_ALL=en_US.UTF-8, which the containers lack; the locale
+# is compiled once onto the share and found through LOCPATH (no Vivado file is edited).
+DEFAULT_LOCPATH = f"{MAS}/locale"
 CALIB_N = 20
 
 # Calibration rule (frozen before the first server run; see PHASE0_STATUS.md).
@@ -45,6 +48,8 @@ MIN_FMAX_MATCH = 18      # of 20: within FMAX_REL_TOL
 MAX_FMAX_REL = 0.03      # and no circuit off by more than 3%
 
 _run_one = None
+# Text in a failed job's output that means Vivado itself did not run.
+INFRA_MARKERS = ("terminate called", "setlocale", "command not found", "No such file or directory")
 
 
 def sha256_file(path: str) -> str:
@@ -73,8 +78,33 @@ def list_circuits(directory: str) -> List[str]:
     return sorted(glob.glob(os.path.join(directory, "*.sv")) + glob.glob(os.path.join(directory, "*.v")))
 
 
-def _init_worker(fpga_root: str) -> None:
+def vivado_env(locpath: Optional[str]) -> dict:
+    env = dict(os.environ)
+    if locpath and os.path.isdir(os.path.join(locpath, "en_US.UTF-8")):
+        env["LOCPATH"] = locpath
+    return env
+
+
+def preflight(vivado: str, locpath: Optional[str]) -> str:
+    """Vivado must start and report 2023.1 before any job, so an environment failure can
+    never be recorded as a circuit that failed to synthesise."""
+    import subprocess
+    try:
+        cp = subprocess.run([vivado, "-version"], capture_output=True, text=True,
+                            env=vivado_env(locpath), timeout=300)
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise SystemExit(f"Vivado preflight failed: {exc}")
+    first = next((l for l in cp.stdout.splitlines() if l.startswith("Vivado v")), "")
+    if cp.returncode != 0 or not first.startswith("Vivado v2023.1"):
+        raise SystemExit("Vivado preflight failed (nothing was run or recorded):\n"
+                         + (cp.stdout + cp.stderr)[-1500:])
+    return first.strip()
+
+
+def _init_worker(fpga_root: str, locpath: Optional[str] = None) -> None:
     global _run_one
+    if locpath and os.path.isdir(os.path.join(locpath, "en_US.UTF-8")):
+        os.environ["LOCPATH"] = locpath
     sys.path.insert(0, fpga_root)
     import run_ppa  # the previous project's frozen flow
     _run_one = run_ppa.run_one
@@ -92,13 +122,16 @@ def _job(vivado: str, vfile: str, clk: str, period: float) -> dict:
 
 
 def run_parallel(files: Sequence[str], out: str, vivado: str, fpga_root: str,
-                 jobs: int, clk: str = "clk", period: float = 5.0) -> dict:
+                 jobs: int, clk: str = "clk", period: float = 5.0,
+                 locpath: Optional[str] = DEFAULT_LOCPATH) -> dict:
+    version = preflight(vivado, locpath)
     os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
     done = set(load_records(out))
     todo = [f for f in files if os.path.splitext(os.path.basename(f))[0] not in done]
     meta = {
         "started": _dt.datetime.now().isoformat(timespec="seconds"),
         "host": socket.gethostname(), "jobs": jobs, "vivado": vivado, "period_ns": period,
+        "vivado_version": version, "locpath": vivado_env(locpath).get("LOCPATH"),
         "run_ppa_sha256": sha256_file(os.path.join(fpga_root, "run_ppa.py")),
         "ppa_synth_tcl_sha256": sha256_file(os.path.join(fpga_root, "ppa_synth.tcl")),
         "n_files": len(files), "n_skipped": len(files) - len(todo),
@@ -106,10 +139,13 @@ def run_parallel(files: Sequence[str], out: str, vivado: str, fpga_root: str,
     n_ok = n_fail = 0
     t0 = time.time()
     with open(out, "a", encoding="utf-8") as fout, cf.ProcessPoolExecutor(
-            max_workers=jobs, initializer=_init_worker, initargs=(fpga_root,)) as pool:
+            max_workers=jobs, initializer=_init_worker, initargs=(fpga_root, locpath)) as pool:
         futures = {pool.submit(_job, vivado, os.path.abspath(f), clk, period): f for f in todo}
         for i, fut in enumerate(cf.as_completed(futures), 1):
             rec = fut.result()
+            if not rec.get("compiled") and any(m in rec.get("error", "") for m in INFRA_MARKERS):
+                raise SystemExit(f"{rec['module']}: Vivado did not run ({rec['error'][-200:]!r}); "
+                                 "nothing recorded for it - fix the environment and rerun")
             fout.write(json.dumps(rec) + "\n")
             fout.flush()
             if rec.get("compiled"):
@@ -183,7 +219,8 @@ def cmd_run(args: argparse.Namespace) -> None:
     files += args.files or []
     if not files:
         raise SystemExit("no input files (use --dir or --files)")
-    meta = run_parallel(files, args.out, args.vivado, args.fpga_root, args.jobs, args.clk, args.period)
+    meta = run_parallel(files, args.out, args.vivado, args.fpga_root, args.jobs, args.clk, args.period,
+                        args.locpath)
     print(json.dumps({k: v for k, v in meta.items() if not k.endswith("sha256")}, indent=1))
 
 
@@ -197,7 +234,7 @@ def cmd_calibrate(args: argparse.Namespace) -> None:
     files = [os.path.join(args.ref_dir, m + ".sv") for m in sample]
     files = [f if os.path.isfile(f) else f[:-3] + ".v" for f in files]
     out = os.path.join(args.out, "ppa.jsonl")
-    meta = run_parallel(files, out, args.vivado, args.fpga_root, args.jobs)
+    meta = run_parallel(files, out, args.vivado, args.fpga_root, args.jobs, locpath=args.locpath)
     result = compare(ref, load_records(out), sample)
     result["meta"] = meta
     with open(os.path.join(args.out, "calibration.json"), "w", encoding="utf-8", newline="\n") as handle:
@@ -222,6 +259,8 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         p.add_argument("--fpga-root", default=DEFAULT_FPGA_ROOT,
                        help="previous-project checkout providing run_ppa.py and ppa_synth.tcl")
         p.add_argument("--jobs", type=int, default=8)
+        p.add_argument("--locpath", default=DEFAULT_LOCPATH,
+                       help="directory holding a compiled en_US.UTF-8 locale (used if present)")
     r = sub.choices["run"]
     r.add_argument("--dir")
     r.add_argument("--files", nargs="*")

@@ -137,3 +137,20 @@ parallelism).
   tools (`scaling/sft.py`, `scaling/k1.py`, `scaling/make_confirmation_split.py`);
   37 CPU tests pass.  K1 training and generation do not need Vivado, so they can
   start while Vivado installs; Vivado is needed only for the physical step.
+
+## 2026-10-03 — Vivado installed; locale failure; calibration run 1 void
+
+- Vivado 2023.1 installed on the share ("Installation completed successfully").
+- It cannot start in these containers: `bin/rdiArgs.sh` forces
+  `LC_ALL=en_US.UTF-8`, the containers only have `C`, `C.UTF-8` and `POSIX`, and the
+  C++ runtime aborts (`locale::facet::_S_create_c_locale name not valid`).
+  Overriding `LC_ALL` from outside has no effect.
+- The first calibration launch therefore recorded "SYNTH FAIL" for circuits on which
+  Vivado never ran.  It was stopped and moved to `phase0/vivado_calib.failed-locale`.
+  It is an environment failure, not a measurement, and the frozen calibration rule
+  applies to the next run unchanged.
+- Fix: compile `en_US.UTF-8` once onto the share (`/zeng_gk/Amine/mas/locale`) from
+  Ubuntu's `locales` source package (2.31-0ubuntu9.18, matching glibc 2.31), and pass
+  `LOCPATH`.  No Vivado file is edited.  `eda_vivado.py` now sets `LOCPATH`, runs a
+  preflight (`vivado -version` must report 2023.1) before any job, and stops without
+  recording if a job's output shows that Vivado itself did not run.

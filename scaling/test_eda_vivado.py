@@ -26,6 +26,12 @@ def run_one(vivado, vfile, top, clk, period):
 # Fake Vivado: fmax from the file length, failure if the RTL contains "BROKEN".
 FAKE_VIVADO = '''#!/usr/bin/env python3
 import json, os, sys
+if sys.argv[1:] == ["-version"]:
+    if os.environ.get("FAKE_VIVADO_BROKEN"):
+        print("terminate called after throwing an instance of 'std::runtime_error'", file=sys.stderr)
+        sys.exit(134)
+    print("Vivado v2023.1 (64-bit)")
+    sys.exit(0)
 vfile, top, clk, period, outj = sys.argv[-5:]
 rtl = open(vfile).read()
 assert os.path.isdir(".") and not os.getcwd().startswith(os.path.dirname(vfile))
@@ -74,6 +80,21 @@ class EdaVivadoTest(unittest.TestCase):
             self.assertEqual((meta2["n_run"], meta2["n_skipped"]), (0, 3))
             with open(out) as h:
                 self.assertEqual(len(h.readlines()), 3)
+
+    def test_preflight_stops_before_recording_anything(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, vivado = fake_root(tmp)
+            circ = os.path.join(tmp, "circ")
+            write_circuits(circ, {"a": "x"})
+            out = os.path.join(tmp, "res", "ppa.jsonl")
+            os.environ["FAKE_VIVADO_BROKEN"] = "1"
+            try:
+                with self.assertRaises(SystemExit):
+                    ev.run_parallel(ev.list_circuits(circ), out, vivado, root, jobs=1)
+            finally:
+                del os.environ["FAKE_VIVADO_BROKEN"]
+            self.assertFalse(os.path.exists(out))
+            self.assertEqual(ev.preflight(vivado, None), "Vivado v2023.1 (64-bit)")
 
     def test_sample_is_hash_ordered_and_limited_to_reference(self):
         ref = {f"m{i}": {"compiled": 1} for i in range(30)}
