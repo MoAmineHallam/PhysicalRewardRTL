@@ -27,3 +27,20 @@ Install routes identified (to be tested):
   Yosys alone.
 - **Vivado 2023.1:** web installer in batch mode on the server if AMD's download
   servers are reachable; otherwise an install image prepared on the laptop.
+
+## 2026-10-03 — software and network check (step 1, continued)
+
+| Item | Value | Consequence |
+|---|---|---|
+| `env_mas` | Python 3.10.20, torch 2.4.1+cu121, transformers 4.46.3, peft 0.13.2 | Stays frozen for Qwen2.5 work.  Qwen3 (Phase 4) needs transformers ≥ 4.51, so it gets a separate environment. |
+| Tools | `/opt/conda/bin/conda`, `/usr/bin/iverilog`; no Yosys, no Vivado; no `modelscope` package | Downloader goes into a separate `--target` directory so `env_mas` is untouched |
+| Reachable | conda.anaconda.org, repo.anaconda.com, mirrors.tuna.tsinghua.edu.cn, www.xilinx.com, login.amd.com, download.amd.com (host answers) | Conda install of OpenROAD/Yosys is possible on the server.  Whether the Vivado web installer can download is only known by trying it. |
+| Not reachable | github.com, xilinx-ax-dl.entitlenow.com (at the root path) | — |
+
+The `litex-hub` OpenROAD and Yosys builds (py38) depend on boost 1.73, qt
+5.9.7, spdlog 1.9, tk 8.6 and zlib 1.2.13, all present in the Anaconda `main`
+channel (mirrored by TUNA), so a separate `env_eda` with
+`-c litex-hub -c <TUNA main>` and `python=3.8` should resolve.
+
+Started next: Qwen2.5-Coder base 0.5B, 3B, 7B and 14B downloads from ModelScope
+into `models/Qwen/Qwen2.5-Coder-<size>`, and the `env_eda` conda environment.
