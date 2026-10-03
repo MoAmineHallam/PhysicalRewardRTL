@@ -92,3 +92,17 @@ the scaling study then comes from the server, and comparisons with Gate 0 or the
 paper go only through re-implementing those circuits on the server.  Either way,
 the run also gives the first throughput number (circuits per hour at the chosen
 parallelism).
+
+## 2026-10-03 — weights complete; Vivado installing
+
+- All four ModelScope downloads finished (`ALL_DONE`): Qwen2.5-Coder base 0.5B
+  (954 MB), 3B (5.8 GB), 7B (15 GB) and 14B (28 GB) in `models/Qwen/`; the 1.5B base
+  is the Gate 0 copy `models/Qwen/Qwen2___5-Coder-1___5B` (2.9 GB).  Weight hashes
+  are to be recorded next.
+- `env_eda` tools confirmed: Yosys 0.38+92, OpenROAD 2.0-12381-g01bba3695.
+- `scaling/` was fetched to the server checkout through jsDelivr (pinned commit), so
+  the server can take new code from jsDelivr without the laptop.  The previous
+  project's `run_ppa.py` and `ppa_synth.tcl` are in `fpga/`, and the laptop's Gate 0
+  results are in `gate0/vivado/ppa.jsonl`.
+- Vivado 2023.1: download finished (the checksum error on one file was recovered by
+  the installer), and installing onto the share was at 9%.
