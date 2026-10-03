@@ -170,6 +170,36 @@ class GPTQTest(unittest.TestCase):
             self.assertTrue(torch.allclose(codes, codes.round(), atol=1e-4))
             self.assertLessEqual(float(codes.abs().max()), 3 + 1e-4)
 
+    def test_first_attempt_unchanged_when_factorization_succeeds(self):
+        torch.manual_seed(6)
+        x = torch.randn(512, 128)
+        info = {}
+        q, _ = gptq_quantize_weight(torch.randn(8, 128), x.T @ x, 4, 128, info=info)
+        self.assertEqual(info, {"damping": 0.01, "precision": "float32"})
+
+    def test_falls_back_to_float64_and_more_damping(self):
+        from unittest import mock
+        real = torch.linalg.cholesky
+        calls = {"n": 0}
+
+        def flaky(a, *args, **kwargs):
+            # fail every float32 attempt and the first float64 attempt
+            if a.dtype == torch.float32 or calls["n"] == 0:
+                if a.dtype == torch.float64:
+                    calls["n"] += 1
+                raise torch.linalg.LinAlgError("not positive-definite")
+            return real(a, *args, **kwargs)
+
+        torch.manual_seed(7)
+        x = torch.randn(512, 128)
+        w = torch.randn(8, 128)
+        info = {}
+        with mock.patch("torch.linalg.cholesky", side_effect=flaky):
+            q, scales = gptq_quantize_weight(w, x.T @ x, 4, 128, info=info)
+        self.assertEqual(info, {"damping": 0.03, "precision": "float64"})
+        codes = q / scales[:, :1]
+        self.assertTrue(torch.allclose(codes, codes.round(), atol=1e-4))
+
     def test_rejects_bad_shapes(self):
         with self.assertRaises(CompressionError):
             gptq_quantize_weight(torch.randn(4, 128), torch.eye(64), 4, 128)

@@ -107,9 +107,43 @@ def quantize_linear_weights_(model: nn.Module, bits: int, group_size: int = 128,
     }
 
 
+FALLBACK_DAMPING = (0.01, 0.03, 0.1, 0.3, 1.0)
+
+
+def _upper_cholesky_of_inverse(H: torch.Tensor, percdamp: float) -> Tuple[torch.Tensor, float, str]:
+    """Upper Cholesky factor of the damped inverse Hessian, as in GPTQ.
+
+    The first attempt is exactly the reference computation (float32, the
+    requested damping).  Only if that factorization fails, which happens on
+    layers with extreme activation outliers, it is retried in float64 with
+    stepwise larger damping.  Returns ``(factor, damping_used, precision)``.
+    """
+    cols = H.shape[0]
+    try:
+        damped = H + percdamp * torch.mean(torch.diag(H)) * torch.eye(cols, device=H.device)
+        factor = torch.linalg.cholesky(torch.cholesky_inverse(torch.linalg.cholesky(damped)),
+                                       upper=True)
+        return factor, percdamp, "float32"
+    except torch.linalg.LinAlgError:
+        pass
+    H64 = H.to(torch.float64)
+    eye = torch.eye(cols, device=H.device, dtype=torch.float64)
+    mean = torch.mean(torch.diag(H64))
+    for damping in [d for d in FALLBACK_DAMPING if d >= percdamp]:
+        try:
+            factor = torch.linalg.cholesky(
+                torch.cholesky_inverse(torch.linalg.cholesky(H64 + damping * mean * eye)),
+                upper=True)
+            return factor.to(torch.float32), damping, "float64"
+        except torch.linalg.LinAlgError:
+            continue
+    raise CompressionError("GPTQ Hessian is not positive definite even with damping 1.0")
+
+
 def gptq_quantize_weight(weight: torch.Tensor, hessian: torch.Tensor, bits: int,
                          group_size: int, percdamp: float = 0.01,
-                         block_size: int = 128) -> Tuple[torch.Tensor, torch.Tensor]:
+                         block_size: int = 128,
+                         info: Optional[dict] = None) -> Tuple[torch.Tensor, torch.Tensor]:
     """GPTQ-quantize a 2-D weight ``[out, in]`` given ``H = X^T X`` over its inputs.
 
     Uses the same symmetric per-group integer format as ``quantize_weight``.
@@ -134,9 +168,9 @@ def gptq_quantize_weight(weight: torch.Tensor, hessian: torch.Tensor, bits: int,
     dead = torch.diag(H) == 0
     H[dead, dead] = 1
     W[:, dead] = 0
-    H += percdamp * torch.mean(torch.diag(H)) * torch.eye(cols, device=H.device)
-    Hinv = torch.linalg.cholesky(torch.cholesky_inverse(torch.linalg.cholesky(H)),
-                                 upper=True)
+    Hinv, damping, precision = _upper_cholesky_of_inverse(H, percdamp)
+    if info is not None:
+        info.update({"damping": damping, "precision": precision})
 
     Q = torch.zeros_like(W)
     scales = torch.zeros(rows, cols // group_size, device=W.device)
@@ -192,8 +226,9 @@ def gptq_quantize_model_(model: nn.Module, calibration: Sequence[torch.Tensor],
     model.config.use_cache = False
     n_layers = n_weights = 0
     sq_err = sq_ref = 0.0
+    fallbacks: List[dict] = []
     try:
-        for layer in layers:
+        for layer_index, layer in enumerate(layers):
             linears = [(name, module) for name, module in layer.named_modules()
                        if isinstance(module, nn.Linear)
                        and name.rsplit(".", 1)[-1] in targets]
@@ -224,8 +259,11 @@ def gptq_quantize_model_(model: nn.Module, calibration: Sequence[torch.Tensor],
                     handle.remove()
             for name, module in linears:
                 original = module.weight.data
+                info: dict = {}
                 quantized, _scales = gptq_quantize_weight(
-                    original, hessians[name], bits, group_size, percdamp)
+                    original, hessians[name], bits, group_size, percdamp, info=info)
+                if info["precision"] != "float32":
+                    fallbacks.append({"layer": layer_index, "module": name, **info})
                 diff = quantized.to(torch.float32) - original.to(torch.float32)
                 sq_err += float(diff.pow(2).sum())
                 sq_ref += float(original.to(torch.float32).pow(2).sum())
@@ -249,6 +287,7 @@ def gptq_quantize_model_(model: nn.Module, calibration: Sequence[torch.Tensor],
         "n_calibration_sequences": len(calibration),
         "n_calibration_tokens": int(sum(int(t.numel()) for t in calibration)),
         "relative_rms_weight_change": (sq_err / sq_ref) ** 0.5 if sq_ref else 0.0,
+        "damping_fallbacks": fallbacks,
     }
 
 

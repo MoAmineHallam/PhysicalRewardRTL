@@ -100,3 +100,15 @@ the A/B decision.
    interval for every contrast, as a descriptive sensitivity check.  The
    decision rule is unchanged and uses the stratified interval.  Fix to the
    launcher (missing `gate0/runs` directory) changed no run setting.
+2. **2026-10-03, after generation and before any Vivado result existed.**  All
+   three student GPTQ runs (`stu_gptq4`, `stu_gptq3`, `stu_gptq4t`) stopped
+   before generating: the float32 Cholesky factorization of one damped Hessian
+   (an 8,960-input MLP projection) was not positive definite at 1% damping.
+   The factorization now keeps the original computation as its first attempt
+   and, only if it fails, retries in float64 with damping 3%, 10%, 30% and
+   100% of the mean diagonal, recording every layer that needed it in
+   `generation_config.json`.  Runs whose factorization succeeded (all 7B GPTQ
+   runs) are therefore unchanged.  The three student runs are rerun from
+   scratch with this code; their failed directories are kept.  Correctness
+   counts of other arms had been seen when this was written; no frequency
+   result had.
