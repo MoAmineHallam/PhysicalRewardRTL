@@ -56,3 +56,14 @@ into `models/Qwen/Qwen2.5-Coder-<size>`, and the `env_eda` conda environment.
 - Vivado 2023.1 Linux web installer (`Xilinx_Unified_2023.1_0507_1903_Lin64.bin`,
   266 MB) copied to `installers/`.  A 2026.1 installer was also copied by mistake;
   it is kept only as a fallback and is not used for any measurement.
+
+## 2026-10-03 — EDA tools start (step 4) and Vivado installer unpacked (step 3)
+
+- Yosys 0.38+92 runs from `env_eda`.  OpenROAD 2.0-12381-g01bba3695 first failed
+  to load (`libGL.so.1` missing, needed only for its Qt GUI); adding `libgl` 1.7.0
+  from the TUNA `main` mirror to `env_eda` fixed it, and no shared library is now
+  missing.  Both live on the shared filesystem, so both boxes can use them.
+- `libtinfo.so.5` and `libncurses.so.5`, required by Vivado 2023.1, are present.
+- The Vivado installer passed its integrity check, but unpacking it onto the BeeGFS
+  share failed in `tar`.  Unpacked instead to the container's local `/tmp` (4.4 TB
+  free); Vivado itself will be installed on the share.
