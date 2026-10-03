@@ -67,3 +67,28 @@ into `models/Qwen/Qwen2.5-Coder-<size>`, and the `env_eda` conda environment.
 - The Vivado installer passed its integrity check, but unpacking it onto the BeeGFS
   share failed in `tar`.  Unpacked instead to the container's local `/tmp` (4.4 TB
   free); Vivado itself will be installed on the share.
+
+## 2026-10-03 — Vivado calibration rule (frozen before any server Vivado run)
+
+Tool: `scaling/eda_vivado.py calibrate --ref-dir gate0/vivado`.  It re-implements,
+on the server's Vivado 2023.1, the first 20 Gate 0 circuits in SHA-256 order of
+their module names, with the same `run_ppa.run_one` and `ppa_synth.tcl`, and
+compares with the laptop's `gate0/vivado/ppa.jsonl`.  SHA-256 of the server's
+`run_ppa.py` and `ppa_synth.tcl` is recorded with the result and must be
+compared with the laptop's copies.
+
+**Pass** if all of the following hold:
+
+- all 20 circuits agree on whether they implement;
+- LUT, FF, DSP and BRAM counts are identical for at least 19 of 20;
+- `fmax_mhz` is within 1% of the laptop value for at least 18 of 20;
+- no circuit differs by more than 3%.
+
+**If it passes:** server and laptop labels are interchangeable, and the Gate 0
+and paper numbers stay directly comparable.
+
+**If it fails:** the server becomes its own measurement contract.  Every label in
+the scaling study then comes from the server, and comparisons with Gate 0 or the
+paper go only through re-implementing those circuits on the server.  Either way,
+the run also gives the first throughput number (circuits per hour at the chosen
+parallelism).
