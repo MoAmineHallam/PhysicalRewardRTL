@@ -344,6 +344,13 @@ practical quantizer) to Gate 0, and recorded a venue assessment in the plan.
 Sixteen new CPU tests and the 23 Stage 1 tests pass. No generation, training or
 Vivado job ran.
 
+**2026-10-03:** Gate 0 completed (18 runs, 382 circuits through the primary Vivado
+flow). Pre-registered outcome **B**: GPTQ-4 compression did not lower the frequency
+of correct circuits for the 1.5B student or the Qwen-7B SFT/GRPO pair, so the
+hidden-physical-cost question (RQ1) is not supported and stops. GPTQ-4 and output-head
+trimming preserve generated-circuit quality, which enables the RQ3 edge-deployment
+alternative pending a supervisor decision. See [Gate 0 results](research/fpga2/GATE0_RESULTS_20261003.md).
+
 Append dated decisions and evidence links as the project proceeds. Keep proposed, executed, measured, estimated, and independently reproduced outcomes distinct. Record commit IDs, model/data hashes, source versions, seeds, failure counts, tool/PDK versions, and deviations from frozen protocols. A promising pilot may change the plan; it must not retroactively become a preregistered result.
 
 **2026-09-26, Stage 1 continuation:** Restored SSH access, completed corrected
