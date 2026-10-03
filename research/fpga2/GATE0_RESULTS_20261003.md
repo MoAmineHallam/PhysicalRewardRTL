@@ -58,6 +58,45 @@ arms pass, and the strata are small; it would need its own protocol and a fresh
 split before any claim.  The RL policy, already concentrated on fast forms,
 shows no such shift.
 
+## Mechanism statistics (descriptive)
+
+`support` is the mean over designs of the inverse-Simpson number of distinct
+correct circuits (0 for a design with no correct draw), so it also falls
+mechanically when correctness falls.  `off-majority` is the share of an arm's
+correct draws that differ from the FP16 policy's most frequent correct circuit,
+on designs where both arms pass.
+
+| Run | support FP16 → arm | off-majority |
+|---|---|---:|
+| stu_rtn8 | 2.92 → 2.52 | 0.64 |
+| stu_gptq4 | 2.92 → 1.99 | 0.66 |
+| stu_fp16t | 2.92 → 2.54 | 0.65 |
+| stu_gptq4t | 2.92 → 2.19 | 0.66 |
+| stu_rtn4 / rtn3 / gptq3 | 2.92 → 0.00 | — |
+| qsft_rtn4 | 2.04 → 2.98 | 0.66 |
+| qsft_gptq4 | 2.04 → 2.75 | 0.65 |
+| qsft_gptq3 | 2.04 → 3.46 | 0.83 |
+| qsft_rtn3 | 2.04 → 0.00 | — |
+| qgrpo_rtn4 | 0.71 → 1.24 | 0.89 |
+| qgrpo_gptq4 | 0.71 → 0.86 | 0.17 |
+| qgrpo_gptq3 | 0.71 → 0.61 | 0.42 |
+| qgrpo_rtn3 | 0.71 → 0.00 | — |
+
+Reading, with one limitation: no FP16-versus-FP16 resampling baseline was run,
+so off-majority shares have no null reference.  The near-lossless student arms
+(`stu_rtn8`, `stu_fp16t`, about 0.65) suggest that about two thirds of a diverse
+student's correct draws leave its FP16 majority form by sampling alone; the
+student's GPTQ-4 value (0.66) is at that level.
+
+- **RL policy:** under GPTQ-4 it stays on its FP16 majority circuit for 83% of
+  correct draws (off-majority 0.17), which accounts for its unchanged `μ`.
+  Harsher compression moves it off that circuit (0.42, 0.89), yet `μ` changes by
+  at most 3.5 MHz, so its alternative correct circuits are about as fast.
+- **SFT policy:** compression spreads probability over more correct circuits
+  (support 2.04 → 2.75 at GPTQ-4, 3.46 at GPTQ-3; off-majority 0.83 at GPTQ-3),
+  consistent with the exploratory observation that surviving circuits were
+  faster.  This remains post hoc.
+
 ## Consequence
 
 Per the protocol, RQ1 stops here.  The finding that GPTQ-4 and head trimming

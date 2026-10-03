@@ -349,7 +349,13 @@ flow). Pre-registered outcome **B**: GPTQ-4 compression did not lower the freque
 of correct circuits for the 1.5B student or the Qwen-7B SFT/GRPO pair, so the
 hidden-physical-cost question (RQ1) is not supported and stops. GPTQ-4 and output-head
 trimming preserve generated-circuit quality, which enables the RQ3 edge-deployment
-alternative pending a supervisor decision. See [Gate 0 results](research/fpga2/GATE0_RESULTS_20261003.md).
+alternative pending a supervisor decision. Mechanism statistics: under GPTQ-4 the RL
+policy stays on its FP16 majority circuit for 83% of correct draws, explaining its
+unchanged circuit frequency; compression spreads the SFT policy over more correct
+circuits (inverse-Simpson support 2.04 to 2.75 at GPTQ-4 and 3.46 at GPTQ-3), consistent
+with a post hoc observation that its surviving circuits were faster. No FP16-versus-FP16
+baseline exists for the off-majority share; near-lossless student arms sit at about 0.65.
+See [Gate 0 results](research/fpga2/GATE0_RESULTS_20261003.md).
 
 Append dated decisions and evidence links as the project proceeds. Keep proposed, executed, measured, estimated, and independently reproduced outcomes distinct. Record commit IDs, model/data hashes, source versions, seeds, failure counts, tool/PDK versions, and deviations from frozen protocols. A promising pilot may change the plan; it must not retroactively become a preregistered result.
 
