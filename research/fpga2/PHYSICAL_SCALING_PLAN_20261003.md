@@ -134,7 +134,7 @@ scaling (`q`) has prior work; how the physical quality of the correct circuits
 | Oracle | Two streams × 1,024 vectors; a draw is correct only if both pass |
 | FPGA flow | Primary: Vivado 2023.1, `xc7z020clg400-1`, 5.0 ns request (`run_ppa.py`).  Identical RTL is implemented once and reused, with a cache keyed by the hash of the normalized RTL (as in `gate0_physical.py`). |
 | Models | Qwen2.5-Coder **base** 0.5B, 1.5B, 3B, 7B; 14B on two GPUs if Phase 2 needs a wider range.  Base rather than Instruct avoids size-dependent post-training.  The family's technical report describes the same code pretraining corpus for all sizes; check this before writing it in the paper.  The 3B weights carry a research-only licence.  Second family in Phase 4: Qwen3 0.6B–8B (needs transformers ≥ 4.51). |
-| SFT recipe | Fixed across sizes: `sft_train_v2.py` settings (LoRA r=16 on q/k/v/o, loss masked to the completion, 4 epochs, effective batch 16, cosine schedule), FP16 on V100.  Learning rate per size from {5e-5, 1e-4, 2e-4}, chosen on held-out *training-family* designs, never on the dev split.  LoRA-rank sensitivity (r=64) at two sizes. |
+| SFT recipe | Fixed across sizes: `sft_train_v2.py` unchanged (LoRA r=16 on q/k/v/o, loss masked to the completion, 4 epochs, effective batch 16, cosine schedule, BF16 as for the earlier checkpoints, emulated on V100; seed added by a wrapper).  Learning rate per size from {5e-5, 1e-4, 2e-4}, chosen on held-out *training-family* designs, never on the dev split.  LoRA-rank sensitivity (r=64) at two sizes. |
 | RL recipe | The submitted paper's physical-reward method and RF reward, pinned to the commit used for its RF runs.  The same reward form at every fidelity rung (correctness gate × normalized frequency). |
 | Statistics | Paired design bootstrap stratified by family × regime (10,000 resamples), plus the unstratified sensitivity interval.  Training seeds: 3 at ≤1.5B, 2 at 3B and 7B, 1 at 14B.  Seed and design variance are reported separately. |
 | Fits | Pre-registered per phase.  Candidate forms: constant; log-linear; saturating power law `y = y∞ − A·x^(−α)`.  Selection by leave-one-level-out error.  Extrapolation test: fit the smaller levels and write the prediction for the largest level, with its interval, into the protocol before measuring it.  With four or five levels, claims hold only within the measured range. |
@@ -261,8 +261,8 @@ and unverified.
 | File | Purpose |
 |---|---|
 | `scaling/corpus.py` | Stratified data-quantity and style-coverage corpora; extra rows through `gen_sft_corpus.py`; leak check against the dev, confirmation and sealed splits |
-| `scaling/train_sft.py` | Wrapper around `sft_train_v2.py` with FP16 on V100, seed, recipe hash and training record |
-| `scaling/ladder.py` | `prepare`/`work`/`status` launcher (like `gate0.py`) over a job table: train → evaluate (`eval_compressed.py`) → collect |
+| `scaling/sft.py` | Wrapper around `sft_train_v2.py` adding the seed, a training record and held-out completion loss (written) |
+| `scaling/k1.py` | K1 launcher: `prepare`/`work`/`status`/`collect`/`analyze` with a dynamic queue (sweep → learning-rate choice → final SFT → evaluation) (written); generalised later for Phase 2 |
 | `scaling/eda_queue.py` | Shared-filesystem EDA job queue and cache keyed by normalized-RTL hash, with one worker type per rung; used by evaluation and the RL reward |
 | `scaling/rewards.py` | Rung adapters for the RL trainer with one reward form |
 | `scaling/fit.py` | Pre-registered fits, leave-one-level-out, extrapolation, bootstraps |

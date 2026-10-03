@@ -123,3 +123,17 @@ parallelism).
   has checkpoints at 25/50/76/100 (`distill_corpus.jsonl`, 407 rows).
   `grpo_qwen` saved `step_300` and `step_400`.
 - Weight SHA-256 hashing started in the background (`logs/weights.sha256`).
+
+## 2026-10-03 — recipe provenance (step 7, part 2) and K1 tools (step 8)
+
+- `training_args.bin` of `student_v1_out` and `sft_qwen_out`: **BF16** (FP16 off),
+  lr 1e-4, 4 epochs, batch 1 × 16 accumulation; LoRA on q/k/v/o.  First and last
+  logged loss 0.161 → 0.0097 (1.5B student, 100 steps) and 0.542 → 0.0108 (7B SFT,
+  88 steps).  The server's `sft_train_v2.py` hashes to `044035d5…401faad2`, as at
+  `40acc78`.  The script has no seed option (Trainer default 42, LoRA initialisation
+  unseeded), so the K1 wrapper adds the seed.  The plan's "FP16 on V100" is corrected
+  to BF16 to keep the earlier recipe unchanged.
+- K1 protocol frozen ([K1_PROTOCOL_20261003.md](K1_PROTOCOL_20261003.md)) with its
+  tools (`scaling/sft.py`, `scaling/k1.py`, `scaling/make_confirmation_split.py`);
+  37 CPU tests pass.  K1 training and generation do not need Vivado, so they can
+  start while Vivado installs; Vivado is needed only for the physical step.
