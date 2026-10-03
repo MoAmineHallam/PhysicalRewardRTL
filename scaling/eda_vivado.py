@@ -143,7 +143,10 @@ def run_parallel(files: Sequence[str], out: str, vivado: str, fpga_root: str,
         futures = {pool.submit(_job, vivado, os.path.abspath(f), clk, period): f for f in todo}
         for i, fut in enumerate(cf.as_completed(futures), 1):
             rec = fut.result()
-            if not rec.get("compiled") and any(m in rec.get("error", "") for m in INFRA_MARKERS):
+            # run_ppa adds "error" only when Vivado wrote no result file at all (a crash);
+            # a genuine synthesis failure writes {"compiled": 0} through ppa_synth.tcl.
+            if not rec.get("compiled") and ("error" in rec
+                                            or any(m in rec.get("error", "") for m in INFRA_MARKERS)):
                 raise SystemExit(f"{rec['module']}: Vivado did not run ({rec['error'][-200:]!r}); "
                                  "nothing recorded for it - fix the environment and rerun")
             fout.write(json.dumps(rec) + "\n")

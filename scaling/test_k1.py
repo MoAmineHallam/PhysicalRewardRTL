@@ -135,7 +135,8 @@ class K1Test(unittest.TestCase):
             return kwargs
         make = sft.seeded_training_arguments(original, 7)
         make(output_dir="x", seed=42)
-        self.assertEqual((seen["seed"], seen["data_seed"], seen["output_dir"]), (7, 7, "x"))
+        self.assertEqual((seen["seed"], seen["output_dir"]), (7, "x"))
+        self.assertNotIn("data_seed", seen)
 
 
 if __name__ == "__main__":

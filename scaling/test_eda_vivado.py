@@ -35,8 +35,11 @@ if sys.argv[1:] == ["-version"]:
 vfile, top, clk, period, outj = sys.argv[-5:]
 rtl = open(vfile).read()
 assert os.path.isdir(".") and not os.getcwd().startswith(os.path.dirname(vfile))
-if "BROKEN" in rtl:
+if "BROKEN" in rtl:  # genuine synthesis failure: ppa_synth.tcl still writes a result
+    json.dump({"compiled": 0}, open(outj, "w"))
     sys.exit(0)
+if "CRASH" in rtl:   # Vivado dies before writing anything
+    sys.exit(139)
 json.dump({"compiled": 1, "wns": 0.0, "fmax_mhz": 100.0 + len(rtl), "lut": len(rtl) % 7,
            "ff": 3, "dsp": 0, "bram": 0, "power_w": 0.1}, open(outj, "w"))
 '''
@@ -95,6 +98,16 @@ class EdaVivadoTest(unittest.TestCase):
                 del os.environ["FAKE_VIVADO_BROKEN"]
             self.assertFalse(os.path.exists(out))
             self.assertEqual(ev.preflight(vivado, None), "vivado v2023.1 (64-bit)")
+
+    def test_crash_is_not_recorded_as_a_circuit_result(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, vivado = fake_root(tmp)
+            circ = os.path.join(tmp, "circ")
+            write_circuits(circ, {"a": "CRASH"})
+            out = os.path.join(tmp, "res", "ppa.jsonl")
+            with self.assertRaises(SystemExit):
+                ev.run_parallel(ev.list_circuits(circ), out, vivado, root, jobs=1)
+            self.assertEqual(ev.load_records(out), {})
 
     def test_sample_is_hash_ordered_and_limited_to_reference(self):
         ref = {f"m{i}": {"compiled": 1} for i in range(30)}

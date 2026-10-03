@@ -158,3 +158,19 @@ parallelism).
   link).  With `LOCPATH` set, Vivado starts: `vivado v2023.1 (64-bit)`, SW Build
   3865809 (7 May 2023), the same build as the laptop's 2023.1.  The Linux build prints
   the version in lower case, so the preflight check was made case-insensitive.
+
+## 2026-10-03 — first K1 launch failed in setup; calibration run 2 void (Vivado crash)
+
+- **K1:** all learning-rate sweep jobs stopped before training.  The wrapper passed
+  `data_seed`, which transformers 4.46.3 refuses with the installed `accelerate`
+  (< 1.1.0).  `data_seed` is dropped: with it unset the Trainer seeds its data sampler
+  from `seed`, which the wrapper sets, so the protocol's seeding is unchanged.  No
+  training step ran, so no outcome was seen.  `--retry-failed` now retries each failed
+  job once per relaunch instead of looping.
+- **Calibration run 2:** Vivado started (locale fixed) but crashed with a segfault
+  ("Abnormal program termination (11)") right after "Routing Is Done", before
+  `ppa_synth.tcl` wrote its result.  All 20 records are therefore crashes, not
+  measurements, and the run is void like run 1.  A manual run of one circuit reproduced
+  the crash.  `eda_vivado.py` now stops without recording whenever Vivado writes no
+  result file (`run_ppa` adds an `error` field only then); genuine synthesis failures
+  still write `{"compiled": 0}` and are recorded.

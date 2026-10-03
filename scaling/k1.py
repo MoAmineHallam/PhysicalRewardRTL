@@ -246,8 +246,14 @@ def is_complete(job: dict) -> bool:
     return os.path.isfile(os.path.join(job["out_dir"], job["marker"]))
 
 
+# Failure records older than this (epoch seconds) are ignored; set by ``work --retry-failed``
+# to the worker's start time, so a job is retried once per relaunch, never in a loop.
+FAILURE_CUTOFF = 0.0
+
+
 def failure_records(job: dict) -> List[str]:
-    return sorted(glob.glob(os.path.join(WORK, "failures", f"{job['id']}-*.json")))
+    paths = glob.glob(os.path.join(WORK, "failures", f"{job['id']}-*.json"))
+    return sorted(p for p in paths if os.path.getmtime(p) >= FAILURE_CUTOFF)
 
 
 def lr_choice_path() -> str:
@@ -353,14 +359,16 @@ def run_job(job: dict, plan: dict, gpu: str) -> bool:
 
 
 def work(args: argparse.Namespace) -> None:
+    global FAILURE_CUTOFF
+    if args.retry_failed:
+        FAILURE_CUTOFF = time.time()
     plan = load_plan()
     box, gpu = args.worker.split("-")
     for sub in ("logs", "failures", "adapters", "runs"):
         os.makedirs(os.path.join(WORK, sub), exist_ok=True)
     while True:
         select_learning_rates(plan)
-        pending = [j for j in plan["jobs"] if not is_complete(j)
-                   and (args.retry_failed or not failure_records(j))]
+        pending = [j for j in plan["jobs"] if not is_complete(j) and not failure_records(j)]
         if not pending:
             print(f"[{G0.now()}] {args.worker}: nothing left to run", flush=True)
             return
@@ -568,7 +576,8 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     p.add_argument("--fpga-root", default="auto")
     w = sub.add_parser("work")
     w.add_argument("--worker", required=True, help="<box>-<gpu>, e.g. v100a-0")
-    w.add_argument("--retry-failed", action="store_true")
+    w.add_argument("--retry-failed", action="store_true",
+                   help="ignore failures recorded before this worker started (each is retried once)")
     w.add_argument("--poll", type=int, default=120, help="seconds between queue checks while waiting")
     sub.add_parser("status")
     c = sub.add_parser("collect")

@@ -8,7 +8,9 @@
 completion-masked loss, 4 epochs, batch 1 x 16 accumulation, cosine schedule,
 BF16, max length 4096).  That script has no seed option, so the wrapper adds
 exactly two things: ``transformers.set_seed(seed)`` before the LoRA weights are
-initialised, and ``seed``/``data_seed`` passed to its ``TrainingArguments``.
+initialised, and ``seed`` passed to its ``TrainingArguments`` (with ``data_seed``
+unset, the Trainer seeds its data sampler from ``seed``; ``data_seed`` itself needs a
+newer ``accelerate`` than the frozen environment has).
 It then writes ``training_record.json`` (the completion marker).
 
 ``val-loss`` scores an adapter by mean completion-token negative log-likelihood
@@ -52,7 +54,6 @@ def seeded_training_arguments(original, seed: int):
     """Wrap TrainingArguments so every call carries this run's seed."""
     def make(*args, **kwargs):
         kwargs["seed"] = seed
-        kwargs["data_seed"] = seed
         return original(*args, **kwargs)
     return make
 
