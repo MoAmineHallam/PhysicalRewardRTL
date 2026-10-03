@@ -1,9 +1,11 @@
 # Plan: a hardware-efficient RTL-generating student — 2026-10-01
 
-**Status:** agreed direction, not a result.  Supersedes the action-interface
-candidate in [ACTION_INTERFACE_PAPER_PLAN_20260930.md](ACTION_INTERFACE_PAPER_PLAN_20260930.md)
-as the next execution target.  Gate 0 tooling is implemented and tested on CPU
-([`student/`](../../student/README.md)); no Gate 0 generation or Vivado run has started.
+**Status (updated 2026-10-03):** closed.  Gate 0 ran and gave pre-registered
+outcome B ([results](GATE0_RESULTS_20261003.md)), so RQ1 stopped.  Superseded by
+the [physical-quality scaling plan](PHYSICAL_SCALING_PLAN_20261003.md), which
+reuses the [`student/`](../../student/README.md) tools.  The text below is the
+2026-10-01 plan, kept as written.  It superseded the action-interface candidate in
+[ACTION_INTERFACE_PAPER_PLAN_20260930.md](ACTION_INTERFACE_PAPER_PLAN_20260930.md).
 
 ## 1. Why the target changed
 
